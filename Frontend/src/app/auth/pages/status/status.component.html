@@ -1,0 +1,11 @@
+<div class="w-full flex flex-col justify-center items-center">
+  @if (loading) {
+    <lord-icon trigger="loop" src="/animated-icons/spinner-three-dots.json" style="height: 8rem; width: 8rem;"></lord-icon>
+  } @else if ( isAuthenticated ) {
+      <lord-icon trigger="in" src="/animated-icons/check-hover-check.json" style="height: 10rem; width: 10rem;"></lord-icon>
+      <div class="text-2xl">Autenticated!</div>
+  } @else {
+      <lord-icon trigger="in" src="/animated-icons/cross-hover-cross.json" style="height: 10rem; width: 10rem;"></lord-icon>
+      <div class="text-2xl">Something went wrong...</div>
+  }
+</div>

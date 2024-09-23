@@ -1,3 +1,12 @@
+/* Global layout styles */
+@import '../src/app/shared/styles/layout/layout.css';
+@import '../src/app/shared/styles/theme/theme.css';
+
+/* FontAwesome and Primeng */
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+@import "../node_modules/primeng/resources/primeng.min.css";
+
+/* Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

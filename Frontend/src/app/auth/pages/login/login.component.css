@@ -1,3 +1,38 @@
 :host {
   display: block;
 }
+
+.side-image {
+  background: url('https://images.unsplash.com/photo-1515965885361-f1e0095517ea?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80');
+  background-size: cover;
+  background-position: center center;
+}
+
+.pattern {
+  background-image: repeating-linear-gradient(45deg, #F9F3FC, #F2E7F8 1px, transparent 2px, transparent 6px);
+}
+
+.animated-text {
+  position: relative;
+}
+
+.animated-text:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #C28FE0;
+  border-left: 2px solid #ffff;
+  animation: animate 3s steps(15) infinite;
+}
+
+@keyframes animate {
+  40%, 60% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
+  }
+}

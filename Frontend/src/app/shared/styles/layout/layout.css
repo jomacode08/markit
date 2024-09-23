@@ -1,0 +1,6 @@
+@import "./typography.css";
+
+.container > :not(router-outlet){
+    height: 100%;
+    display: flex;
+}

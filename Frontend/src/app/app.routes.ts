@@ -1,48 +1,31 @@
 import { Routes } from '@angular/router';
+import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
+import { IsAuthenticatedActivateGuard, IsAuthenticatedMatchGuard } from './auth/guards/auth.guard';
 
 export const routes: Routes = [
     {
         path: 'auth',
-        children: [
-            {
-                path: 'login',
-                loadComponent: () => 
-                    import('./auth/pages/login/login.component')
-                    .then(c => c.LoginComponent)
-            },
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'login'
-            }
-        ]
+        loadChildren: () =>
+            import('./auth/auth.routes').then(r => r.AUTH_ROUTES)
     },
     {
         path: 'dashboard',
-        loadComponent: () => import('./dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
-        children: [
-            {
-                path: 'home',
-                loadComponent: () =>
-                    import('./dashboard/pages/home/home.component')
-                    .then(c => c.HomeComponent)
-            },
-            {
-                path: 'group',
-                loadComponent: () =>
-                    import('./dashboard/pages/group/group.component')
-                    .then(c => c.GroupComponent)
-            },
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'home'
-            }
-        ]
+        canActivate: [IsAuthenticatedActivateGuard],
+        canMatch: [IsAuthenticatedMatchGuard],
+        loadChildren: () =>
+            import('./dashboard/dashboard.routes').then(r => r.DASHBOARD_ROUTES)
+    },
+    {
+        path: 'not-found',
+        component: NotFoundComponent
     },
     {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
     },
+    {
+        path: '**',
+        redirectTo: 'not-found'
+    }
 ];
