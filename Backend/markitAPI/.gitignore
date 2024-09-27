@@ -1,0 +1,10 @@
+.vscode
+bin
+obj
+*.db
+wwwroot
+.vs/
+Log
+*.csproj.user
+
+API/appsettings.json
