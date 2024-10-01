@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace markit.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialConfig : Migration
+    public partial class InitialConfig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,9 @@ namespace markit.Infraestructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccessType = table.Column<int>(type: "int", nullable: false),
+                    RegistrationConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -192,8 +195,8 @@ namespace markit.Infraestructure.Migrations
             migrationBuilder.InsertData(
                 schema: "security",
                 table: "Users",
-                columns: new[] { "Id", "AccessFailedCount", "BirthDate", "ConcurrencyStamp", "CreatedDate", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "ca6b1e85-db19-4700-b5a7-59f0691ef2ff", 0, null, "979e5b81-6239-4870-a070-8dadbf9688ba", new DateTime(2024, 9, 26, 23, 44, 55, 119, DateTimeKind.Utc).AddTicks(8098), "jomacode.me8@gmail.com", true, "Markit", null, "Admin", false, null, "jomacode.me8@gmail.com", "jomacode.me8@gmail.com", "AQAAAAIAAYagAAAAEAaTtIsuDZoSnFk8gu0D7Gw6LHVixOIstXMtvLfy3ONczqBVNTyyMqGRXUlQ/A5I8g==", "0000000000", true, "f831b433-6f33-425e-bbb6-263744ec67a0", false, "jomacode.me8@gmail.com" });
+                columns: new[] { "Id", "AccessFailedCount", "AccessType", "BirthDate", "ConcurrencyStamp", "CreatedDate", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "RegistrationConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "ca6b1e85-db19-4700-b5a7-59f0691ef2ff", 0, 1, null, "bae06e2f-37e4-4e35-9d6b-527a1cf44e4d", new DateTime(2024, 10, 1, 20, 19, 8, 620, DateTimeKind.Utc).AddTicks(635), "jomacode.me8@gmail.com", true, "Markit", null, "Admin", false, null, null, null, "AQAAAAIAAYagAAAAEE5tnlTHgaGUh8SgHeTUBrOGLGBs9h+cd7dgCog/W42jgFDm+TCbKVc3bfv4sl/XQQ==", "0000000000", true, null, false, "fad8ac2e-eea5-43b6-b007-21f563b3a0ea", false, "jomacode.me8@gmail.com" });
 
             migrationBuilder.InsertData(
                 schema: "security",

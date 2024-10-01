@@ -12,8 +12,8 @@ using markit.Infraestructure.Persistence.EF;
 namespace markit.Infraestructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    [Migration("20240926234455_initialConfig")]
-    partial class initialConfig
+    [Migration("20241001201909_InitialConfig")]
+    partial class InitialConfig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,6 +187,9 @@ namespace markit.Infraestructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccessType")
+                        .HasColumnType("int");
+
                     b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date");
 
@@ -240,6 +243,12 @@ namespace markit.Infraestructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("RegistrationConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -267,19 +276,19 @@ namespace markit.Infraestructure.Migrations
                         {
                             Id = "ca6b1e85-db19-4700-b5a7-59f0691ef2ff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "979e5b81-6239-4870-a070-8dadbf9688ba",
-                            CreatedDate = new DateTime(2024, 9, 26, 23, 44, 55, 119, DateTimeKind.Utc).AddTicks(8098),
+                            AccessType = 1,
+                            ConcurrencyStamp = "bae06e2f-37e4-4e35-9d6b-527a1cf44e4d",
+                            CreatedDate = new DateTime(2024, 10, 1, 20, 19, 8, 620, DateTimeKind.Utc).AddTicks(635),
                             Email = "jomacode.me8@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Markit",
                             LastName = "Admin",
                             LockoutEnabled = false,
-                            NormalizedEmail = "jomacode.me8@gmail.com",
-                            NormalizedUserName = "jomacode.me8@gmail.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAaTtIsuDZoSnFk8gu0D7Gw6LHVixOIstXMtvLfy3ONczqBVNTyyMqGRXUlQ/A5I8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE5tnlTHgaGUh8SgHeTUBrOGLGBs9h+cd7dgCog/W42jgFDm+TCbKVc3bfv4sl/XQQ==",
                             PhoneNumber = "0000000000",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "f831b433-6f33-425e-bbb6-263744ec67a0",
+                            RegistrationConfirmed = false,
+                            SecurityStamp = "fad8ac2e-eea5-43b6-b007-21f563b3a0ea",
                             TwoFactorEnabled = false,
                             UserName = "jomacode.me8@gmail.com"
                         });

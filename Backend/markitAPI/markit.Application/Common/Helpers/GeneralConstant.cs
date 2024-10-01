@@ -7,6 +7,7 @@
             public static readonly string jwtSectionName = "JwtSettings";
             public static readonly string connStringSectionName = "ConnectionString";
             public static readonly string userDefaultSectionName = "UserDefaultSettings";
+            public static readonly string googleAuthSectionName = "GoogleAuthSettings";
         }
 
         public static class Role

@@ -55,13 +55,12 @@ namespace markit.API.Middleware
                     }
 
                     // Recursos no encontrados
-                    case NotFoundException NotFoundException:
+                    case NotFoundException notFoundException:
                     {
                         statusCode = HttpStatusCode.NotFound;
-                        customResponse = new(statusCode, NotFoundException.Message, ex.StackTrace);
+                        customResponse = new(statusCode, notFoundException.Message, ex.StackTrace);
                         break;
                     }
-
 
                     // Errores internos
                     default:

@@ -1,6 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GeneralConstant } from '../../shared/utils/general-constant';
-import { MarkitToken } from '../interfaces/markit-token';
 
 
 @Injectable({providedIn: 'root'})
@@ -8,18 +7,18 @@ export class AuthService {
 
     private tokenKey: string = GeneralConstant.token_key;
     
-    private getTokenFromLocalStorage(): MarkitToken | null {
-        const tokenStr = localStorage.getItem(this.tokenKey);
-        return tokenStr ? JSON.parse(tokenStr) as MarkitToken : null;
+    private getTokenFromLocalStorage(): string | null {
+        return localStorage.getItem(this.tokenKey);
     }
 
     public isAuthenticated() {
+        // TODO: Implementing validation time of the token 
         const token = this.getTokenFromLocalStorage();
-        return token != null && token.expires_in > 0;
+        return token != null;
     }
 
-    public setToken( token: MarkitToken ): void {
-        localStorage.setItem(this.tokenKey, JSON.stringify(token));
+    public setToken( token: string ): void {
+        localStorage.setItem(this.tokenKey, token);
     }
 
     public logout(): void {

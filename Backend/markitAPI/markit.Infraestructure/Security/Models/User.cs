@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using markit.Application.Models.Authentication.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +16,15 @@ namespace markit.Infraestructure.Security.Models
         public Gender? Gender { get; set; }
 
         public DateOnly? BirthDate { get; set; }
+
+        public string? Picture {  get; set; }
         
+        [Required]
+        public AccessType AccessType { get; set; }
+
+        [Required]
+        public bool RegistrationConfirmed { get; set; } = false;
+
         [Required]
         public DateTime CreatedDate { get; set; }
 
@@ -27,12 +36,5 @@ namespace markit.Infraestructure.Security.Models
                 return $"{FirstName} {LastName}";
             }
         }
-    }
-
-    public enum Gender
-    {
-        Female = 1,
-        Masculine = 2,
-        Other = 3
     }
 }

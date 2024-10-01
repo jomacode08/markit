@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using markit.Infraestructure.Security.Models;
 using markit.Application.Models.Authentication;
 using markit.Application.Helpers;
+using markit.Application.Models.Authentication.Enums;
 
 namespace markit.Infraestructure.Security.Configurations
 {
@@ -31,15 +32,14 @@ namespace markit.Infraestructure.Security.Configurations
                 FirstName = _userDefaultSettings.FirstName,
                 LastName = _userDefaultSettings.LastName,
                 UserName = _userDefaultSettings.UserName,
-                NormalizedUserName = _userDefaultSettings.UserName,
                 Email = _userDefaultSettings.UserName,
-                NormalizedEmail = _userDefaultSettings.UserName,
                 PhoneNumber = "0000000000",
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = true,
                 TwoFactorEnabled = false,
                 LockoutEnabled = false,
                 AccessFailedCount = 0,
+                AccessType = AccessType.Internal,
                 CreatedDate = DateTime.UtcNow,
             };
 

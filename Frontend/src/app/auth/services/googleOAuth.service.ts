@@ -2,7 +2,6 @@ import { computed, inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
-import { MarkitToken } from './../interfaces/markit-token';
 import { googleOAuthEnvironment } from '../../../environments/environment';
 import { OAuth20Response } from '../interfaces/google-auth-response';
 import { AuthService } from './auth.service';
@@ -34,14 +33,7 @@ export class GoogleOAuthService {
                 ['redirect_uri'] : googleOAuthEnvironment.redirectUri
             }
         }).pipe(
-            tap((authResponse) => {
-                const markitToken: MarkitToken = {
-                    access_token : authResponse.access_token,
-                    expires_in   : authResponse.expires_in,
-                    origin : 'google'
-                };
-                this.authService.setToken(markitToken);
-            })
+            tap(({ id_token }) => this.authService.setToken(id_token))
         );
     }
 }

@@ -16,6 +16,9 @@ using markit.Infraestructure.Autentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using markit.Application.Contracts.Authentication.Google;
+using markit.Infraestructure.Security.Services.Google;
+using markit.Application.Models.Authentication.Google;
 
 namespace markit.Infraestructure
 {
@@ -24,6 +27,8 @@ namespace markit.Infraestructure
         private static readonly string jwtSectionName = GeneralConstant.Configuration.jwtSectionName;
         private static readonly string connStringSectionName = GeneralConstant.Configuration.connStringSectionName;
         private static readonly string userDefaultSectionName = GeneralConstant.Configuration.userDefaultSectionName;
+        private static readonly string googleAuthSectionName = GeneralConstant.Configuration.googleAuthSectionName;
+
 
         public static IServiceCollection AddInfraestructureServices(this IServiceCollection services,
             IConfiguration configuration)
@@ -64,10 +69,14 @@ namespace markit.Infraestructure
 
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            // Mapear clase JwtSettings contra la configuración incluida en AppSettings.json
+            // Mapear clase JwtSettings, GoogleAuthSettings contra la configuración incluida en AppSettings.json
             var jwtSettings = new JwtSettings();
             services.Configure<JwtSettings>(configuration.GetSection(jwtSectionName));
             configuration.Bind(jwtSectionName, jwtSettings);
+
+            var googleAuthSettings = new GoogleAuthSettings();
+            services.Configure<GoogleAuthSettings>(configuration.GetSection(googleAuthSectionName));
+            configuration.Bind(googleAuthSectionName, googleAuthSettings);
 
             // Configurar Identity con la clase personalizada de Usuario
             services.AddIdentity<User, IdentityRole>()
@@ -76,6 +85,7 @@ namespace markit.Infraestructure
 
             // Inyección del Service de autentificación
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IGoogleAuthenticationService, GoogleAuthenticationService>();
 
             // Congigurar Autentificación
             services.AddAuthentication(options =>
