@@ -3,14 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 import { googleOAuthEnvironment } from '../../../environments/environment';
-import { OAuth20Response } from '../interfaces/google-auth-response';
+import { OAuth20Response } from '../interfaces/google/o-auth-20-response';
 import { AuthService } from './auth.service';
 
 @Injectable({providedIn: 'root'})
 export class GoogleOAuthService {
 
     private http = inject(HttpClient);
-    private authService = inject(AuthService);
 
     private baseUrlPermissionServer = 'https://accounts.google.com/o/oauth2/v2/auth';
     private scopes = 'email https://www.googleapis.com/auth/userinfo.profile';
@@ -32,8 +31,6 @@ export class GoogleOAuthService {
                 ['grant_type'] : 'authorization_code',
                 ['redirect_uri'] : googleOAuthEnvironment.redirectUri
             }
-        }).pipe(
-            tap(({ id_token }) => this.authService.setToken(id_token))
-        );
+        });
     }
 }

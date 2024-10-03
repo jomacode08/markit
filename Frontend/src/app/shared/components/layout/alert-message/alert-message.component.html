@@ -1,0 +1,74 @@
+<!-- Default Toast -->
+<p-toast key="default" position="top-right"></p-toast>
+<!-- Alert Toast -->
+<p-toast position="center" key="alert">
+
+    <ng-template let-message pTemplate="message">
+        <div class="grid">
+            <!-- Header -->
+            <div class="col-12 text-center">
+                <i [class]="message.icon ?? 'pi pi-exclamation-circle'"></i>
+            </div>
+            <div class="col-12 text-center">
+                <h4>{{ message.summary }}</h4>
+            </div>
+            <!-- Body -->
+            <div class="col-12 text-center">
+                <!-- Detalles-->
+                <div>{{ message.detail }}</div>
+            </div>
+            <!-- Footer -->
+            <div class="col-12">
+                <button 
+                    class="p-button-success w-full"
+                    label="Aceptar"
+                    type="button"
+                    pButton
+                    (click)="onClose()"
+                ></button>
+            </div>            
+        </div>
+    </ng-template>
+
+</p-toast>
+<!-- Validation Toast -->
+<p-toast position="top-right" key="validation">
+
+    <ng-template let-message pTemplate="message">
+        <div class="grid">
+            <div class="col-12 flex align-items-center text-lg">
+                <i class="pi pi-exclamation-circle mr-2" style="font-size: 2rem;"></i>
+                <span class="font-semibold">{{ message.summary }}</span> 
+            </div>
+            <div class="col-12">
+                <div class="mb-2" *ngFor="let validationError of message.data | keyvalue">
+                    <div class="font-medium">{{ validationError.key }}</div>
+                    <div class="ml-2" *ngFor="let validation of $any(validationError).value">
+                        - {{ validation }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+</p-toast>
+<!-- Confirm Dialog -->
+<p-confirmDialog #confirmDialog [style]="{width: '30vw'}">
+    <ng-template pTemplate="footer">
+        <button
+            type="button"
+            pButton
+            class="p-button-secondary"
+            icon="pi pi-times"
+            label="No"
+            (click)="confirmDialog.reject()"
+        ></button>
+        <button
+            type="button"
+            pButton
+            icon="pi pi-check"
+            label="Sí"
+            (click)="confirmDialog.accept()"
+        ></button>
+    </ng-template>
+</p-confirmDialog>

@@ -54,7 +54,7 @@ namespace markit.Infraestructure.Autentication
             return await GenerateAuthResponse(user);
         }
 
-        public async Task<AuthResponse> LoginByGoogle(GoogleSignInRequest request)
+        public async Task<AuthResponse> LoginByGoogle(GoogleAuthRequest request)
         {
             // Validate Google TokenId
             UserOperationModel googleSignInResponse = await _googleAuthenticationService.ValidateGoogleTokenId(request.TokenId);

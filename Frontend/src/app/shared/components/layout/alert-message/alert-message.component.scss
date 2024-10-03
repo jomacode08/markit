@@ -1,0 +1,13 @@
+i {
+    font-size: 3rem;
+}
+
+:host ::ng-deep {
+    .p-dialog-content {
+        background-color: #ffffff !important;
+    }
+
+    .p-confirm-dialog-message {
+        font-size: 1.3rem;
+    }
+}

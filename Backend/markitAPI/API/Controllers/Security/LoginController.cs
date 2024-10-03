@@ -29,7 +29,7 @@ namespace markit.API.Controllers.Seguridad
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticateByGoogle")]
-        public async Task<AuthResponse> AuthenticateByGoogle(GoogleSignInRequest request)
+        public async Task<AuthResponse> AuthenticateByGoogle(GoogleAuthRequest request)
         {
             return await _authService.LoginByGoogle(request);
         }

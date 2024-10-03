@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { catchError, delay, firstValueFrom } from 'rxjs';
+import { catchError, delay, firstValueFrom, switchMap } from 'rxjs';
 
 import { AuthService } from './../../services/auth.service';
 import { GoogleOAuthService } from './../../services/googleOAuth.service';
@@ -35,22 +35,23 @@ export class StatusComponent implements OnInit {
       this.loading = false;
       return;
     }
-    
+
     // In case of receive the authorization code from google, proceed to the google login process
     this.googleOAuthService.login(params['code'])
     .pipe(
-      delay(1500),
-      catchError(error => {
+      delay(1300),
+      switchMap(({ id_token }) => this.authService.loginByGoogle(id_token)),
+      catchError((error) => {
         this.setLoading(false);
-        throw new Error(error);
-      }),
-    ).subscribe(() => {
+        throw new Error(error)
+      })
+    ).subscribe(markitAuthResponse => {
       this.setLoading(false);
       // Comunicate the authentication is completed to the login window
-      // The addition of the dalay 500ms is for user experience purposes
+      // The addition of the dalay 1300ms is for user experience purposes
       setTimeout(() => {
         window.opener.postMessage('auth-completed');
-        window.close();
+        // window.close();
       }, 800);
     });
   }
