@@ -1,8 +1,12 @@
-<div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-    <div class="flex flex-col items-center flex-1 h-full justify-center px-4 sm:px-0">        
-        <div class="container w-full sm:w-3/4 lg:w-1/2 rounded-lg bg-white border-2 border-b-4 border-r-4 shadow-xl border-blue-950 sm:mx-0" style="height: 500px">
+<div class="magicpattern absolute h-full w-full flex items-center justify-center px-4 sm:px-0 bg-retropurple-100 overflow-hidden">
+    <div class="relative w-full sm:w-3/4 lg:w-1/2">
+        <!-- Containter -->
+        <div class="container  shadow-xl" style="height: 500px">
             <router-outlet />
+        </div>
+        <!-- Spaceman image -->
+        <div class="absolute hidden md:block -right-20 -bottom-28">
+            <img width="300" height="300" src="/spaceman.png" alt="space man"/>
         </div>
     </div>
 </div>
-

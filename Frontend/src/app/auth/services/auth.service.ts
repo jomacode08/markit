@@ -8,6 +8,7 @@ import { AuthResponse } from '../interfaces/auth-response';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { GoogleAuthRequest } from '../interfaces/google/google-auth-request';
+import { AuthRequest } from '../interfaces/auth-request';
 
 
 @Injectable({ providedIn: 'root' })
@@ -26,11 +27,18 @@ export class AuthService {
     return token;
   }
 
+  public login(authRequest: AuthRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${ environment.baseApiUrl }/login/authenticate`, authRequest)
+      .pipe(
+        tap(({ token }) => this.setToken(token))
+      );
+  }
+
   public loginByGoogle(googleTokenId: string): Observable<AuthResponse> {
     const googleSignRequest: GoogleAuthRequest = {
       tokenId: googleTokenId
     };
-    return this.http.post<AuthResponse>(`${environment.baseApiUrl}/login/authenticateByGoogle`, googleSignRequest)
+    return this.http.post<AuthResponse>(`${ environment.baseApiUrl }/login/authenticateByGoogle`, googleSignRequest)
       .pipe(
         tap(({ token }) => this.setToken(token))
       );

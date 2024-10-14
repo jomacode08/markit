@@ -4,21 +4,27 @@ import { CommonModule } from '@angular/common';
 import { GeneralButtonComponent } from './components/ui/buttons/general-button.component';
 import { PrimengModule } from './primeng/primeng.module';
 import { AlertMessageComponent } from './components/layout/alert-message/alert-message.component';
+import { ErrorFieldComponent } from './components/layout/error-field/error-field.component';
+import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
 
 @NgModule({
     imports: [
         CommonModule,
         PrimengModule
     ],
-    exports: [
-        NotFoundComponent,
-        GeneralButtonComponent,
-        AlertMessageComponent,
-    ],
     declarations: [
         NotFoundComponent,
         GeneralButtonComponent,
         AlertMessageComponent,
+        ErrorFieldComponent,
+        ErrorFieldMessagePipe,
+    ],
+    exports: [
+        NotFoundComponent,
+        GeneralButtonComponent,
+        AlertMessageComponent,
+        ErrorFieldComponent,
+        ErrorFieldMessagePipe,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

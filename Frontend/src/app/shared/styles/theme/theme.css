@@ -3,3 +3,8 @@
 body {
     font-family: "Cera Round Pro";
 }
+
+input {
+    padding: 8px !important;
+    border: 2px solid #94a3b8;
+}

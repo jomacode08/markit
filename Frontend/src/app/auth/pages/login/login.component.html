@@ -1,32 +1,84 @@
     <!-- Login Form -->
-    <div class="flex flex-col w-full md:w-1/2 p-4 border-r-2 border-blue-950">
+    <div class="bg-slate-50 rounded-lg md:rounded-r-none flex flex-col w-full md:w-1/2 p-4">
         <div class="flex flex-col flex-1 justify-center">
             <!-- Label -->
-            <h1 class="text-4xl text-center font-bold text-blue-950 mb-5">Welcome <span class="text-retropurple-400">Back.</span></h1>
-            <!-- Google Button -->
-            <div class="w-3/4 flex flex-col mx-auto">
-                <shared-general-button
-                    label="Login with google"
-                    icon="fa-brands fa-google"
-                    backgroundColor="bg-retroyellow-500"
-                    [disabled]="submit"
-                    (click)="onGoogleBtnClick()"
-                ></shared-general-button>
-            </div>
+            <h1 class="text-4xl text-center font-bold text-retropurple-900 mb-5">Welcome <span class="text-retropurple-500">Back.</span></h1>
+            
+            <form
+                [formGroup]="form"
+                (submit)="onLogin()"
+                autocomplete="off"
+            >
+                <div class="w-3/4 flex flex-col mx-auto">
+                    <div class="mb-3">
+                        <!-- Email -->
+                        <label for="email" class="text-lg mb-2">Email</label>
+                        <input 
+                            id="email"
+                            pInputText
+                            formControlName="email"
+                            type="text"
+                            placeholder="Email address"
+                            class="w-full"
+                            autocomplete="off"
+                        >
+                        <shared-error-field
+                            *ngIf="isInvalidField('email')"
+                            [validationField]="getValidationField('email', 'masc')">
+                        </shared-error-field>
+                    </div>
+                    <div class="mb-5">
+                        <!-- Password -->
+                        <label for="password" class="text-lg mb-2">Password</label>
+                        <p-password
+                            inputId="password"
+                            formControlName="password"
+                            placeholder="Password"
+                            styleClass="w-full"
+                            inputStyleClass="w-full"
+                            autocomplete="off "
+                            [toggleMask]="true"
+                            [feedback]="false"
+                        >
+                        </p-password>
+                        <shared-error-field
+                            *ngIf="isInvalidField('password')"
+                            [validationField]="getValidationField('password', 'masc')">
+                        </shared-error-field>
+                    </div>
+                    <!-- Login submit -->
+                    <div class="mb-5">
+                        <shared-general-button
+                            label="Login"
+                            backgroundColor="bg-retroyellow-500"
+                            [disabled]="submit"
+                            [submit]="true"
+                        ></shared-general-button>
+                    </div>
+                    <!-- Google Button -->
+                    <div>
+                        <shared-general-button
+                            label="Sign in with google"
+                            icon="fa-brands fa-google"
+                            backgroundColor="bg-white"
+                            [disabled]="submit"
+                            (click)="onGoogleLogin()"
+                        ></shared-general-button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     
     <!-- Side Container -->
-    <div class="bg-retropurple-400 hidden md:block md:w-1/2 rounded-r-sm overflow-hidden">
-        <div class="text-slate-50 h-full flex flex-col justify-center">
+    <div class="bg-white/30 rounded-r-lg hidden md:block md:w-1/2 overflow-hidden">
+        <div class="text-white h-full flex flex-col justify-center">
             <!-- Question Label -->
             <div class="px-5 text-4xl font-bold mb-5">Did you find something interesting?...</div>
             <!-- Typing animation -->
             <div class="px-5 text-3xl mb-5">
                 <span class="animated-text">{{ mediaTypes[mediaCounter] }}</span>
             </div>
-            <!-- Divider -->
-            <div class="pattern mb-5 h-3"></div>
             <!-- Markit label -->
             <div class="px-5 flex items-center mb-5">
                 <div class="flex items-center p-2 rounded-lg bg-white text-4xl mr-2">

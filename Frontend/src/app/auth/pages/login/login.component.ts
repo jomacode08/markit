@@ -1,23 +1,35 @@
+import { PrimengModule } from './../../../shared/primeng/primeng.module';
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { GoogleOAuthService } from './../../services/googleOAuth.service';
 import { SharedModule } from "../../../shared/shared.module";
+import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { AuthRequest } from '../../interfaces/auth-request';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    PrimengModule,
+    ReactiveFormsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent extends ValidatorErrorField implements OnInit, OnDestroy {
+  public form = new FormGroup({
+    email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320)]),
+    password:    new FormControl<string>('', Validators.required),
+  });
   
+  private authService = inject(AuthService);
   private googleOAuthService = inject(GoogleOAuthService);
   private router = inject(Router);
   public submit = false;
@@ -25,6 +37,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   public mediaTypes: string[] = ["Posts", "Reels", "Videos", "Notes", "Articles", "Code"];
   public mediaCounter: number = 0;
   public mediaIntervalId ?: ReturnType<typeof setTimeout>;
+
+  public get authRequest(): AuthRequest {
+    return this.form.value as AuthRequest;
+  }
   
   public ngOnInit(): void {
     this.mediaLoad();
@@ -34,6 +50,44 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.mediaIntervalId != null) clearInterval(this.mediaIntervalId);
   }
 
+  public onGoogleLogin(): void {
+    const googleWindow = this.showGoogleWindow();
+    this.setSubmit(true);
+
+    // Check if the window is closed
+    const intervalId = setInterval(() => {
+      if (googleWindow.closed) {
+        clearInterval(intervalId);
+        this.setSubmit(false);
+      }
+    }, 100);
+  }
+
+  public onLogin(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.setSubmit(true);
+    this.login();
+  }
+
+  private login(): void {
+    this.authService.login(this.authRequest)
+    .subscribe({
+        next : () => {
+            this.router.navigate(['dashboard']);
+            this.setSubmit(false);
+        },
+        error : () => this.setSubmit(false)
+    });
+}
+  
+  private setSubmit(state: boolean): void {
+    this.submit = state;
+  }
+
   private mediaLoad(): void {
     this.mediaIntervalId = setInterval(() => {
       if (this.mediaCounter === this.mediaTypes.length - 1)
@@ -41,23 +95,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       else
         this.mediaCounter++;
     }, 3000);
-  }
-
-  public onGoogleBtnClick(): void {
-    const googleWindow = this.showGoogleWindow();
-    this.onSubmit(true);
-
-    // Check if the window is closed
-    const intervalId = setInterval(() => {
-      if (googleWindow.closed) {
-        clearInterval(intervalId);
-        this.onSubmit(false);
-      }
-    }, 100);
-  }
-  
-  private onSubmit(state: boolean): void {
-    this.submit = state;
   }
 
   private showGoogleWindow(): Window {

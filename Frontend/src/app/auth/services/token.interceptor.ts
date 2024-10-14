@@ -18,11 +18,8 @@ export class TokenInterceptor implements HttpInterceptor {
   private readonly generalError = "Something went wrong, we keep track of this error, but feel free to contact us if refreshing doesn't fix things.";
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get the hostname from the intercepted request
-    const hostname = new URL(request.url).hostname;
-
     // Evaluate if the hostname is from a 3rd party
-    if (hostname != environment.baseApiUrl) return next.handle(request);
+    if (!request.url.includes(environment.baseApiUrl)) return next.handle(request);
 
     // set the base content type header
     request.headers.set('Content-Type','application/json, text/plain')
@@ -69,8 +66,11 @@ export class TokenInterceptor implements HttpInterceptor {
           }
 
           default:
+          {
+            console.log("Default triggers!");
             this.showErrorMessage(error.message ?? this.generalError);
             break;
+          }
 
         }
         
