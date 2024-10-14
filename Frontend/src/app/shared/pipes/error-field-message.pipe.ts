@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValidationField } from '../interfaces/form/form/validation-field.interface';
+import { ValidationField } from '../interfaces/form/validation-field.interface';
 
 @Pipe({
     name: 'errorFieldMessage'

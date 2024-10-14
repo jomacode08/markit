@@ -6,8 +6,31 @@ i {
     .p-dialog-content {
         background-color: #ffffff !important;
     }
-
+    
     .p-confirm-dialog-message {
         font-size: 1.3rem;
+    }
+    
+    .p-toast .p-toast-message {
+        background-color: #F8FAFC;
+        border-left: solid 10px;
+        font-family: "Cera Round Pro";
+        color: #3B1650;
+    }
+
+    .p-toast .p-toast-message.p-toast-message-error {
+        border-left-color: #ff5757;
+    }
+
+    .p-toast .p-toast-message.p-toast-message-info {
+        border-left-color: #3b82f6;
+    }
+
+    .p-toast .p-toast-message.p-toast-message-success {
+        border-left-color: #1ea97c;
+    }
+
+    .p-toast .p-toast-message.p-toast-message-warn {
+        border-left-color: #cc8925;
     }
 }

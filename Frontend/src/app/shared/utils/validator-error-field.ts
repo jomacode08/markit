@@ -1,6 +1,6 @@
 import { FormGroup } from "@angular/forms";
-import { GramaticalGender } from "../interfaces/form/form/gramatical-gender.type";
-import { ValidationField } from "../interfaces/form/form/validation-field.interface";
+import { GramaticalGender } from "../interfaces/form/gramatical-gender.type";
+import { ValidationField } from "../interfaces/form/validation-field.interface";
 
 export abstract class ValidatorErrorField {
 

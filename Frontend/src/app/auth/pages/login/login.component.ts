@@ -9,6 +9,7 @@ import { ValidatorErrorField } from '../../../shared/utils/validator-error-field
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { AuthRequest } from '../../interfaces/auth-request';
+import { ValidatorService } from '../../../shared/service/validator.service';
 
 @Component({
   selector: 'app-login',
@@ -24,16 +25,17 @@ import { AuthRequest } from '../../interfaces/auth-request';
   styleUrl: './login.component.css'
 })
 export class LoginComponent extends ValidatorErrorField implements OnInit, OnDestroy {
-  public form = new FormGroup({
-    email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320)]),
-    password:    new FormControl<string>('', Validators.required),
-  });
-  
   private authService = inject(AuthService);
   private googleOAuthService = inject(GoogleOAuthService);
   private router = inject(Router);
-  public submit = false;
+  private validatorService = inject(ValidatorService);
+
+  public form = new FormGroup({
+    email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validatorService.emailPattern)]),
+    password:    new FormControl<string>('', [Validators.required]),
+  });
   
+  public submit = false;
   public mediaTypes: string[] = ["Posts", "Reels", "Videos", "Notes", "Articles", "Code"];
   public mediaCounter: number = 0;
   public mediaIntervalId ?: ReturnType<typeof setTimeout>;
@@ -43,7 +45,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
   }
   
   public ngOnInit(): void {
-    this.mediaLoad();
+    this.mediaLoader();
   }
 
   public ngOnDestroy(): void {
@@ -88,7 +90,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
     this.submit = state;
   }
 
-  private mediaLoad(): void {
+  private mediaLoader(): void {
     this.mediaIntervalId = setInterval(() => {
       if (this.mediaCounter === this.mediaTypes.length - 1)
         this.mediaCounter = 0;

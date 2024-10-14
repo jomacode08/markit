@@ -90,7 +90,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private showValidationMessage(validations: ValidationError): void {
     const message: CustomMessage = {
-      type: MessageType.error,
+      type: MessageType.warn,
       title: 'Please verify:',
       validations: validations
     };
