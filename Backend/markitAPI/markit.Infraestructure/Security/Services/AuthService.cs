@@ -40,11 +40,13 @@ namespace markit.Infraestructure.Autentication
 
         public async Task<AuthResponse> Login(AuthRequest request)
         {
-            // Validación de existencia de Usuario.
-            User user = await _userManager.FindByEmailAsync(request.Email) ??
+            User? user = await _userManager.FindByEmailAsync(request.Email);
+
+            // Validate the existency of the internal user
+            if (user == null || !user.AccessType.Equals(AccessType.Internal))
                 throw new CustomValidationException($"The user with email: {request.Email} doesn't exist");
 
-            // Validación de Password
+            // Password validation
             SignInResult signInResult = await _signInManager
                 .PasswordSignInAsync(user.UserName!, request.Password, false, lockoutOnFailure: false);
 
@@ -90,7 +92,7 @@ namespace markit.Infraestructure.Autentication
                 Picture = request.Picture,
                 AccessType = request.AccessType,
                 CreatedDate = DateTime.UtcNow,
-                EmailConfirmed = request.AccessType == AccessType.Google,
+                EmailConfirmed = request.AccessType == AccessType.Google
             };
 
             IdentityResult registrationResult = user.AccessType == AccessType.Google

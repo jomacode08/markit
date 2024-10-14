@@ -33,6 +33,8 @@ namespace markit.Infraestructure.Security.Configurations
                 LastName = _userDefaultSettings.LastName,
                 UserName = _userDefaultSettings.UserName,
                 Email = _userDefaultSettings.UserName,
+                NormalizedUserName = _userDefaultSettings.UserName.ToUpper(),
+                NormalizedEmail = _userDefaultSettings.UserName.ToUpper(),
                 PhoneNumber = "0000000000",
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = true,

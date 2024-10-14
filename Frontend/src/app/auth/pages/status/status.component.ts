@@ -51,7 +51,7 @@ export class StatusComponent implements OnInit {
       // The addition of the dalay 1300ms is for user experience purposes
       setTimeout(() => {
         window.opener.postMessage('auth-completed');
-        // window.close();
+        window.close();
       }, 800);
     });
   }
