@@ -1,0 +1,27 @@
+<div class="h-full flex items-center justify-around bg-white/95 shadow-xl rounded-2xl rounded-t-none p-5">
+    <!-- Brand Name -->
+    <div class="flex items-center text-3xl">
+        <h1 class="mr-3 font-bold text-retropurple-900">Mark it</h1>
+        <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#C28FE0" style="height: 2rem; width: 2rem;"></lord-icon>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="flex items-center gap-3">
+        <!-- Search -->
+        <p-button styleClass="nav-button" icon="fa fa-search"/>
+        <!-- Menu -->
+        <p-button
+            styleClass="nav-button"
+            icon="fa fa-bars"
+            (onClick)="onNavigationAction.emit(this.navigationRutes)"
+        />
+        <!-- User -->
+        <p-avatar
+            (click)="onNavigationAction.emit(this.userActions)"
+            styleClass="profile-button"
+            icon="fa fa-user"
+            size="large"
+            shape="circle" 
+        />
+    </div>
+</div>

@@ -8,10 +8,6 @@
   background-position: center center;
 }
 
-.pattern {
-  background-image: repeating-linear-gradient(45deg, #F9F3FC, #F2E7F8 1px, transparent 2px, transparent 6px);
-}
-
 .animated-text {
   position: relative;
 }

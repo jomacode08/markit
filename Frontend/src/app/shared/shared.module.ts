@@ -1,11 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { CommonModule } from '@angular/common';
-import { GeneralButtonComponent } from './components/ui/buttons/general-button.component';
+
 import { PrimengModule } from './primeng/primeng.module';
+
 import { AlertMessageComponent } from './components/layout/alert-message/alert-message.component';
 import { ErrorFieldComponent } from './components/layout/error-field/error-field.component';
 import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
+import { GeneralButtonComponent } from './components/ui/buttons/general-button.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { MainBarComponent } from './components/layout/main-bar/main-bar.component';
 
 @NgModule({
     imports: [
@@ -18,6 +21,7 @@ import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
         AlertMessageComponent,
         ErrorFieldComponent,
         ErrorFieldMessagePipe,
+        MainBarComponent,
     ],
     exports: [
         NotFoundComponent,
@@ -25,6 +29,7 @@ import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
         AlertMessageComponent,
         ErrorFieldComponent,
         ErrorFieldMessagePipe,
+        MainBarComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

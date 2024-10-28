@@ -20,7 +20,8 @@ a {
     text-decoration: none;
     color: var(--primary-color);
 }
-.container > :not(router-outlet){
+
+.auth-container > :not(router-outlet){
     height: 100%;
     display: flex;
 }
