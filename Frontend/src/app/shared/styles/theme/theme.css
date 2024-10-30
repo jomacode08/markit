@@ -19,16 +19,26 @@ input {
     background-color: var(--neutral-background-color);
     padding: 5px;
     color: var(--text-color);
+    border: var(--text-color) solid 1px;
+    border-bottom: var(--text-color) solid 2px;
 }
 
-.p-button:active {
-    border-color: red !important;
+.p-button.nav-button:hover {
+    background-color: var(--light-purple-color);
+    transition: 300ms;
+}
+
+.p-button.nav-button:focus {
+    background-color: var(--light-purple-color);
 }
 
 .p-avatar {
     display: flex;
     cursor: pointer;
     color: var(--text-color);
+    background-color: var(--neutral-background-color);
+    border: var(--text-color) solid 1px;
+    border-bottom: var(--text-color) solid 2px;
 }
 
 .p-menuitem-content {

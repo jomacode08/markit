@@ -6,6 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        blackBase: {
+          500: "#121212"
+        },
         retroyellow: {
           50: "#FFF9F0",
           100: "#FFF3E0",

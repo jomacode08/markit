@@ -2,49 +2,53 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, CanMatchFn, Route, Router, RouterStateSnapshot, UrlSegment } from "@angular/router";
 import { AuthService } from "../services/auth.service";
 
-const checkAuthStatus = (): boolean => 
+//* === Utilities === *//
+const checkAuthenticationStatus = (): boolean => 
 {
     const authService = inject(AuthService);
     return authService.isAuthenticated();
 }
 
-const isAuthenticated = (): boolean => 
+const requireAuthentication = (): boolean => 
 {
-    const router = inject(Router);
-
-    if (!checkAuthStatus()) {
-        router.navigate(['auth']);
+    const isAuthenticated : boolean = checkAuthenticationStatus();
+    
+    if (!isAuthenticated) {
+        const router = inject(Router);
+        router.navigate(['auth/login']);
     }
-
-    return checkAuthStatus();
+    
+    return isAuthenticated;
 }
 
-// CanActivate GUARDS
+//* === Guard Methods === *//
+//* For Routes that requires authentication
 export const IsAuthenticatedActivateGuard : CanActivateFn = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ): boolean => 
 {
-    return isAuthenticated();
+    return requireAuthentication();
 }
 
+export const IsAuthenticatedMatchGuard: CanMatchFn = (
+    route: Route,
+    segments: UrlSegment[]
+): boolean => 
+{
+    return requireAuthentication();
+}
+
+
+//* For routes that requires no-authentication behaviour
 export const IsNotAuthenticatedActivateGuard : CanActivateFn = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
 ): boolean => 
 {
     const router = inject(Router);
-    const isAuthenticaded = checkAuthStatus();
+    const isAuthenticaded = checkAuthenticationStatus();
     
     if (isAuthenticaded) router.navigate(['/']);
     return !isAuthenticaded;
-}
-
-// Can Match Guards
-export const IsAuthenticatedMatchGuard: CanMatchFn = (
-    route: Route,
-    segments: UrlSegment[]
-): boolean => 
-{
-    return isAuthenticated();
 }

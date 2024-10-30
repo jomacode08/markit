@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { AuthService } from './../../../../auth/services/auth.service';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -24,9 +25,16 @@ export class MainBarComponent {
     },
     {
       label: 'Logout',
-      icon: 'fa fa-right-to-bracket'
+      icon: 'fa fa-right-to-bracket',
+      command: () => this.authService.logout()
     },
   ];
+
+  public userPictureUrl ?: string;
+
+  constructor(private authService : AuthService) {
+    this.userPictureUrl = authService.currentUser?.userPictureUrl;
+  }
 
   @Output()
   public onNavigationAction = new EventEmitter<MenuItem[]>();

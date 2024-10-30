@@ -18,8 +18,9 @@
         <!-- User -->
         <p-avatar
             (click)="onNavigationAction.emit(this.userActions)"
-            styleClass="profile-button"
-            icon="fa fa-user"
+            [styleClass]="userPictureUrl ? 'border-0' : ''"
+            [image]="userPictureUrl"
+            [icon]="userPictureUrl ? '' : 'fa fa-user'"
             size="large"
             shape="circle" 
         />

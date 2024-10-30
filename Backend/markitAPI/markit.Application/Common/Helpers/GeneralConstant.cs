@@ -18,5 +18,10 @@
             public static readonly string adminUuid = "5335f3ce-37dd-11ee-be56-0242ac120002";
             public static readonly string generalUuid = "6ff7edb4-37dd-11ee-be56-0242ac120002";
         }
+
+        public static class CustomClaimType
+        {
+            public static readonly string ProfilePictureUrl = "prof_pic_url";
+        }
     }
 }

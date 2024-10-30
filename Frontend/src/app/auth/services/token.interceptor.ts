@@ -47,7 +47,6 @@ export class TokenInterceptor implements HttpInterceptor {
             break;
 
           case HttpStatusCode.Unauthorized: {
-            this.router.navigate(['/auth/login']);
             this.authService.logout();
             break;
           }
@@ -67,7 +66,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
           default:
           {
-            console.log("Default triggers!");
             this.showErrorMessage(error.message ?? this.generalError);
             break;
           }

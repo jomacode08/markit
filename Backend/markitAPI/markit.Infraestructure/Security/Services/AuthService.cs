@@ -13,6 +13,7 @@ using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
 using static markit.Application.Helpers.GeneralConstant;
 using markit.Application.Contracts.Authentication.Google;
+using markit.Application.Helpers;
 
 namespace markit.Infraestructure.Autentication
 {
@@ -123,7 +124,7 @@ namespace markit.Infraestructure.Autentication
 
             return new AuthResponse()
             {
-                Token = GenerateToken(user, user.FullName, roles),
+                Token = GenerateToken(user, user.FullName, roles)
             };
         }
 
@@ -141,6 +142,8 @@ namespace markit.Infraestructure.Autentication
                 new Claim(JwtRegisteredClaimNames.NameId, usuario.Id),
                 new Claim(JwtRegisteredClaimNames.GivenName, givenName),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email!),
+                new Claim(CustomClaimType.ProfilePictureUrl, usuario.Picture ?? ""),
+
             }
             .Union(roleClaims);
 
