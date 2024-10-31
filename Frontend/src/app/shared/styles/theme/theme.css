@@ -25,7 +25,6 @@ input {
 
 .p-button.nav-button:hover {
     background-color: var(--light-purple-color);
-    transition: 300ms;
 }
 
 .p-button.nav-button:focus {
