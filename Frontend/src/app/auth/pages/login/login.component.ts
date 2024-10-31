@@ -70,6 +70,13 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
   public onGoogleLogin(): void {
     this.googleAuthWindow = this.showGoogleWindow();
     this.setSubmit(true);
+    // Check if the window is closed
+    const intervalId = setInterval(() => {
+      if (this.googleAuthWindow?.closed) {
+        clearInterval(intervalId);
+        this.setSubmit(false);
+      }
+    }, 100);
   }
 
   private login(): void {

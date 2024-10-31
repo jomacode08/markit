@@ -19,9 +19,9 @@ export class LoaderComponent implements OnInit {
   public async ngOnInit(): Promise<void> {
     const params = await this.getUrlParams();
 
-    if (params['code'] == null) {
-      return;
-    }
+    if (params['error'] != null) return window.close();
+
+    if (params['code'] == null) return;
     
     window.opener.postMessage(params['code']);
   }

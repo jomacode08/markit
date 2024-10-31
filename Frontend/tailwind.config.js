@@ -9,6 +9,19 @@ module.exports = {
         blackBase: {
           500: "#121212"
         },
+        lila: {
+          50: "#F5F5FF",
+          100: "#EBEBFF",
+          200: "#DCDBFF",
+          300: "#C3C2FF",
+          400: "#AAA8FF",
+          500: "#8987FF",
+          600: "#7875FF",
+          700: "#6461FF",
+          800: "#403DFF",
+          900: "#0400EB",
+          950: "#0300AD"
+        },
         retroyellow: {
           50: "#FFF9F0",
           100: "#FFF3E0",
