@@ -1,15 +1,17 @@
-import { PrimengModule } from './../../../shared/primeng/primeng.module';
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
+import { delay, switchMap } from 'rxjs';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PrimengModule } from './../../../shared/primeng/primeng.module';
 import { Router } from '@angular/router';
 
+import { AuthRequest } from '../../interfaces/auth-request';
+import { AuthService } from '../../services/auth.service';
 import { GoogleOAuthService } from './../../services/googleOAuth.service';
 import { SharedModule } from "../../../shared/shared.module";
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { AuthRequest } from '../../interfaces/auth-request';
 import { ValidatorService } from '../../../shared/service/validator.service';
+import { CustomMessageService } from '../../../shared/service/custom-message.service';
 
 @Component({
   selector: 'app-login',
@@ -25,10 +27,13 @@ import { ValidatorService } from '../../../shared/service/validator.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent extends ValidatorErrorField implements OnInit, OnDestroy {
-  private authService = inject(AuthService);
+  private authService        = inject(AuthService);
   private googleOAuthService = inject(GoogleOAuthService);
-  private router = inject(Router);
-  private validatorService = inject(ValidatorService);
+  private router             = inject(Router);
+  private validatorService   = inject(ValidatorService);
+  private messageService     = inject(CustomMessageService);
+  
+  private googleAuthWindow : Window | null = null;
 
   public form = new FormGroup({
     email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validatorService.emailPattern)]),
@@ -52,19 +57,6 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
     if (this.mediaIntervalId != null) clearInterval(this.mediaIntervalId);
   }
 
-  public onGoogleLogin(): void {
-    const googleWindow = this.showGoogleWindow();
-    this.setSubmit(true);
-
-    // Check if the window is closed
-    const intervalId = setInterval(() => {
-      if (googleWindow.closed) {
-        clearInterval(intervalId);
-        this.setSubmit(false);
-      }
-    }, 100);
-  }
-
   public onLogin(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -75,17 +67,43 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
     this.login();
   }
 
+  public onGoogleLogin(): void {
+    this.googleAuthWindow = this.showGoogleWindow();
+    this.setSubmit(true);
+  }
+
   private login(): void {
     this.authService.login(this.authRequest)
     .subscribe({
-        next : () => {
-            this.router.navigate(['dashboard']);
-            this.setSubmit(false);
-        },
+        next : () => this.confirmSession(),
         error : () => this.setSubmit(false)
     });
-}
+  }
+
+  // In case of receive the authorization code from google, proceed to the internal google login process
+  private loginByGoogle( authCode: string ): void {
+    this.googleOAuthService.login(authCode)
+    .pipe(
+      delay(2000),
+      switchMap(({ id_token }) => this.authService.loginByGoogle(id_token)),
+    ).subscribe({
+      next: () => {
+        this.confirmSession();
+        this.googleAuthWindow?.close();
+      },
+      error : () => {
+        this.setSubmit(false);
+        this.googleAuthWindow?.close();
+      }
+    });
+  }
   
+  //* Utilities *//
+  @HostListener('window:message', ['$event'])
+  private onGoogleAuthorizated(event: MessageEvent): void {
+    this.loginByGoogle(event.data);
+  }
+
   private setSubmit(state: boolean): void {
     this.submit = state;
   }
@@ -101,23 +119,24 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
 
   private showGoogleWindow(): Window {
     const popUpHeight = 600;
-    const popUpWidth = 450;
+    const popUpWidth  = 450;
   
     const dualScreenLeft = window.screenLeft ?? window.screenX;
-    const dualScreenTop = window.screenTop ?? window.screenY;
-    const width = window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
-    const height = window.innerHeight ?? document.documentElement.clientHeight ?? screen.height;
+    const dualScreenTop  = window.screenTop ?? window.screenY;
+    const width          = window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
+    const height         = window.innerHeight ?? document.documentElement.clientHeight ?? screen.height;
   
     const systemZoom = width / window.screen.availWidth;
-    const left = (width - popUpWidth) / 2 / systemZoom + dualScreenLeft;
-    const top = (height - popUpHeight) / 2 / systemZoom + dualScreenTop;
+    const left       = (width - popUpWidth) / 2 / systemZoom + dualScreenLeft;
+    const top        = (height - popUpHeight) / 2 / systemZoom + dualScreenTop;
   
     const windowFeatures = `width=${ popUpWidth / systemZoom }, height=${ popUpHeight / systemZoom }, top=${ top }, left=${ left }`
     return window.open(this.googleOAuthService.permissionServerUrl(), '_blank', windowFeatures)!;
   }
 
-  @HostListener('window:message', ['$event'])
-  private onGoogleAuthCompleted(event: MessageEvent): void {
-    this.router.navigate(['dashboard/home']);
+  private confirmSession(): void {
+    this.setSubmit(false);
+    this.router.navigate(['dashboard']);
+    this.messageService.showGeneralSuccess("Successful login!");
   }
 }

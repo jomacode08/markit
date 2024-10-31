@@ -25,8 +25,8 @@ export class TokenInterceptor implements HttpInterceptor {
     request.headers.set('Content-Type','application/json, text/plain')
 
     // Evaluate if we have a token for adding it to the Authorization header
-    if (this.authService.token) {
-      request.headers.set('Authorization', `Bearer ${this.authService.token}`);
+    if (this.authService.token()) {
+      request.headers.set('Authorization', `Bearer ${this.authService.token()}`);
     }
 
     // Catching errors

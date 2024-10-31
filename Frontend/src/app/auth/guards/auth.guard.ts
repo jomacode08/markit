@@ -6,7 +6,7 @@ import { AuthService } from "../services/auth.service";
 const checkAuthenticationStatus = (): boolean => 
 {
     const authService = inject(AuthService);
-    return authService.isAuthenticated();
+    return authService.isTokenAvailable();
 }
 
 const requireAuthentication = (): boolean => 

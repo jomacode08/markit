@@ -33,7 +33,7 @@ export class MainBarComponent {
   public userPictureUrl ?: string;
 
   constructor(private authService : AuthService) {
-    this.userPictureUrl = authService.currentUser?.userPictureUrl;
+    this.userPictureUrl = authService.currentUser()?.userPictureUrl;
   }
 
   @Output()

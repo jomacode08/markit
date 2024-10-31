@@ -22,8 +22,8 @@ export const AUTH_ROUTES: Routes = [
                 path: 'status',
                 canActivate: [IsNotAuthenticatedActivateGuard],
                 loadComponent: () =>
-                    import('./pages/status/status.component')
-                    .then(c => c.StatusComponent)
+                    import('./pages/loader/loader.component')
+                    .then(c => c.LoaderComponent)
             }
         ]
     }
