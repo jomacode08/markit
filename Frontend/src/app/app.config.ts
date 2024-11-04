@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, TitleStrategy, withViewTransitions } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
@@ -7,6 +7,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { TokenInterceptor } from './auth/services/token.interceptor';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TemplatePageTitleStrategy } from './shared/utils/template-page-title-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: JWT_OPTIONS,
       useValue: JWT_OPTIONS
+    },
+    {
+      provide: TitleStrategy,
+      useClass: TemplatePageTitleStrategy
     },
     JwtHelperService,
     MessageService,

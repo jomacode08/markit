@@ -3,11 +3,16 @@
     <div class="container flex justify-center mx-auto">
         <!-- Navigation Bar -->
         <div id="top-bar" class="w-full fixed sm:max-w-screen-sm">
-            <shared-main-bar (onNavigationAction)="showBottomNavigationBar($event)" />
+            <app-main-bar (onNavigationAction)="showBottomNavigationBar($event)" />
         </div>
-        <!-- Main Container -->
         <div id="main-container" class="w-full min-h-screen flex flex-col justify-between">
+            <!-- Main Container -->
             <div class="flex-auto bg-white p-5 rounded-3xl">
+                <!-- Bread crumb -->
+                <app-bread-crumb [url]="activatedUrl" />
+                <!-- Component Title -->
+                <p *ngIf="titleComponent" class="py-3 text-2xl font-bold">{{ titleComponent }}</p>
+                <!-- Router Outlet -->
                 <router-outlet />
             </div>
             <footer class="text-center p-5 my-5">

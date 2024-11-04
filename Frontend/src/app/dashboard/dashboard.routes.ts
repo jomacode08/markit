@@ -12,12 +12,14 @@ export const DASHBOARD_ROUTES: Routes = [
             },
             {
                 path: 'home',
+                title: 'Home',
                 loadComponent: () =>
                     import('./pages/home/home.component')
                     .then(c => c.HomeComponent)
             },
             {
                 path: 'group',
+                title: 'Group',
                 loadComponent: () =>
                     import('./pages/group/group.component')
                     .then(c => c.GroupComponent)

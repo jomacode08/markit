@@ -1,10 +1,16 @@
+import { PrimengModule } from './../../../../shared/primeng/primeng.module';
 import { AuthService } from './../../../../auth/services/auth.service';
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'shared-main-bar',
+  selector: 'app-main-bar',
   templateUrl: './main-bar.component.html',
+  standalone: true,
+  imports: [
+    PrimengModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MainBarComponent {
   public navigationRutes : MenuItem[] = [
