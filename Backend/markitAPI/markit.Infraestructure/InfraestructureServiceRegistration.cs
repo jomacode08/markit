@@ -79,7 +79,7 @@ namespace markit.Infraestructure
             configuration.Bind(googleAuthSectionName, googleAuthSettings);
 
             // Configurar Identity con la clase personalizada de Usuario
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<MarkitDbContext>()
                 .AddDefaultTokenProviders();
 

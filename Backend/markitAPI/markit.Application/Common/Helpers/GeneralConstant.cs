@@ -22,6 +22,7 @@
         public static class CustomClaimType
         {
             public static readonly string ProfilePictureUrl = "prof_pic_url";
+            public static readonly string CreatorId = "creatorId";
         }
     }
 }

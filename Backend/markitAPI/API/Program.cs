@@ -46,6 +46,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-await app.SeedDatabase();
+await app.SeedDatabase(builder.Configuration);
 
 app.Run();

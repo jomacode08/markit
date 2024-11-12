@@ -1,16 +1,17 @@
 ﻿using markit.Application.Models.Authentication.Enums;
+using markit.Domain.Entities;
 
 namespace markit.Application.Models.Authentication
 {
-    public class UserOperationModel
+    public class UserViewModel
     {
-        public UserOperationModel
+        public UserViewModel
         (
             string email,
             string? password,
             string firstName,
             string lastName,
-            string picture,
+            string? picture,
             AccessType accessType,
             DateOnly? birthDate = null,
             Gender? gender = null
@@ -30,7 +31,7 @@ namespace markit.Application.Models.Authentication
         public string? Password { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
-        public string Picture { get; private set; }
+        public string? Picture { get; private set; }
         public AccessType AccessType { get; private set; }
         public DateOnly? BirthDate { get; private set; }
         public Gender? Gender { get; private set; }

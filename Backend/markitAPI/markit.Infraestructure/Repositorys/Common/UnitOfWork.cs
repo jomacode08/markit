@@ -1,6 +1,8 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Contracts.Persistence.Users;
 using markit.Domain.Common;
 using markit.Infraestructure.Persistence.EF;
+using markit.Infraestructure.Repositorys.Users;
 using System.Collections;
 
 namespace markit.Infraestructure.Repositorys.Common
@@ -12,7 +14,9 @@ namespace markit.Infraestructure.Repositorys.Common
 
         // Inyección de repositorios personalizados
         #region Repositorios personalizados
+        private ICreatorRepository _creatorRepository;
 
+        public ICreatorRepository creatorRepository => _creatorRepository = new CreatorRepository(_context);
         #endregion
 
         public UnitOfWork(MarkitDbContext context)

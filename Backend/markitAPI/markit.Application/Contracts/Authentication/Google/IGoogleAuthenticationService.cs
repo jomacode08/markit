@@ -4,6 +4,6 @@ namespace markit.Application.Contracts.Authentication.Google
 {
     public interface IGoogleAuthenticationService
     {
-        Task<UserOperationModel> ValidateGoogleTokenId(string token);
+        Task<UserViewModel> ValidateGoogleTokenId(string token);
     }
 }

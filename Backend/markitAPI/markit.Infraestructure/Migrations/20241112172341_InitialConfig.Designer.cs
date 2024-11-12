@@ -12,8 +12,8 @@ using markit.Infraestructure.Persistence.EF;
 namespace markit.Infraestructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    [Migration("20241014190446_UpdateDefaultUserCredentials")]
-    partial class UpdateDefaultUserCredentials
+    [Migration("20241112172341_InitialConfig")]
+    partial class InitialConfig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,32 +179,24 @@ namespace markit.Infraestructure.Migrations
                     b.ToTable("UserTokens", "security");
                 });
 
-            modelBuilder.Entity("markit.Infraestructure.Security.Models.User", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Creator", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccessType")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
+                    b.Property<bool>("Enable")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
@@ -219,6 +211,49 @@ namespace markit.Infraestructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Creators");
+                });
+
+            modelBuilder.Entity("markit.Infraestructure.Security.Models.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AccessType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GivenName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -277,20 +312,19 @@ namespace markit.Infraestructure.Migrations
                             Id = "ca6b1e85-db19-4700-b5a7-59f0691ef2ff",
                             AccessFailedCount = 0,
                             AccessType = 1,
-                            ConcurrencyStamp = "e94b8073-0fd1-4951-b0ce-18d66582e921",
-                            CreatedDate = new DateTime(2024, 10, 14, 19, 4, 46, 366, DateTimeKind.Utc).AddTicks(6179),
+                            ConcurrencyStamp = "10f95806-a1ee-498e-b527-68e1e3076e51",
+                            CreatedDate = new DateTime(2024, 11, 12, 17, 23, 40, 989, DateTimeKind.Utc).AddTicks(708),
                             Email = "jomacode8@gmail.com",
                             EmailConfirmed = true,
-                            FirstName = "Markit",
-                            LastName = "Admin",
+                            GivenName = "Markit Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "JOMACODE8@GMAIL.COM",
                             NormalizedUserName = "JOMACODE8@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA0/ag+Y22YuaAO7yygFPUqpONGSolgGx9BiYwlCxwebC7YRuIxWi/23ehkvlg2mOw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAidHDSSZF/w2tAOvNa+5tRwFvto4vQc9fotP4JgDJLsE1/+KubtCFqhtdkWTq0iuA==",
                             PhoneNumber = "0000000000",
                             PhoneNumberConfirmed = true,
                             RegistrationConfirmed = false,
-                            SecurityStamp = "d4728ead-3fe1-4ea3-ba9b-7992252ba3ec",
+                            SecurityStamp = "31261426-a7e8-4864-8c02-027eab1339d5",
                             TwoFactorEnabled = false,
                             UserName = "jomacode8@gmail.com"
                         });
@@ -307,7 +341,7 @@ namespace markit.Infraestructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("markit.Infraestructure.Security.Models.User", null)
+                    b.HasOne("markit.Infraestructure.Security.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -316,7 +350,7 @@ namespace markit.Infraestructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("markit.Infraestructure.Security.Models.User", null)
+                    b.HasOne("markit.Infraestructure.Security.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -331,7 +365,7 @@ namespace markit.Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("markit.Infraestructure.Security.Models.User", null)
+                    b.HasOne("markit.Infraestructure.Security.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,7 +374,7 @@ namespace markit.Infraestructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("markit.Infraestructure.Security.Models.User", null)
+                    b.HasOne("markit.Infraestructure.Security.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

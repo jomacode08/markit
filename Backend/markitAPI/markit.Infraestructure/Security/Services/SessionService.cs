@@ -1,5 +1,6 @@
 ﻿using markit.Application.Contracts.Authentication;
 using Microsoft.AspNetCore.Http;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infraestructure.Security.Services
 {
@@ -14,7 +15,7 @@ namespace markit.Infraestructure.Security.Services
             _contextAccessor = contextAccessor;
         }
 
-        public string? GetSessionUserIdentification()
+        public string? GetIdentity()
         {
             if (_contextAccessor.HttpContext == null) return null;
 
@@ -24,6 +25,17 @@ namespace markit.Infraestructure.Security.Services
             if (email == null || userId == null) return null;
 
             return $"{email} - ID:{ userId }";
+        }
+
+        public int GetCreatorId()
+        {
+            string creatorIdStr = _contextAccessor.HttpContext?.User.FindFirst(CustomClaimType.CreatorId)?.Value
+                ?? throw new ArgumentNullException(CustomClaimType.CreatorId);
+
+            if (!int.TryParse(creatorIdStr, out int creatorId))
+                throw new FormatException();
+            
+            return creatorId;
         }
     }
 }

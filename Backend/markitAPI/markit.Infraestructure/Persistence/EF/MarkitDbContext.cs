@@ -1,5 +1,6 @@
 ﻿using markit.Application.Models.Authentication;
 using markit.Domain.Common;
+using markit.Domain.Entities;
 using markit.Infraestructure.Security.Configurations;
 using markit.Infraestructure.Security.Models;
 using markit.Infraestructure.Security.Services;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace markit.Infraestructure.Persistence.EF
 {
-    public class MarkitDbContext : IdentityDbContext<User>
+    public class MarkitDbContext : IdentityDbContext<AppUser>
     {
         private readonly UserDefaultSettings _userDefaultSettings;
         private readonly SessionService _sessionService;
@@ -26,7 +27,8 @@ namespace markit.Infraestructure.Persistence.EF
             _userDefaultSettings = userDefaultSettings.Value;
         }
 
-        public DbSet<User> User { get; set; }
+        public DbSet<AppUser> User { get; set; }
+        public DbSet<Creator> Creators { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -46,7 +48,7 @@ namespace markit.Infraestructure.Persistence.EF
         /// <param name="cancellationToken"></param>
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            string? userIdentification = _sessionService.GetSessionUserIdentification();
+            string? userIdentification = _sessionService.GetIdentity();
 
             foreach (var entry in ChangeTracker.Entries<BaseModel>())
             {
@@ -75,7 +77,7 @@ namespace markit.Infraestructure.Persistence.EF
         private static void ChangeNameSchemas(ModelBuilder builder)
         {
             const string securitySchema = "security";
-            builder.Entity<User>().ToTable("Users", securitySchema);
+            builder.Entity<AppUser>().ToTable("Users", securitySchema);
             builder.Entity<IdentityRole>().ToTable("Roles", securitySchema);
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", securitySchema);
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", securitySchema);

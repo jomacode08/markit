@@ -2,6 +2,6 @@
 {
     public interface ISessionService
     {
-        string? GetSessionUserIdentification();
+        string? GetIdentity();
     }
 }

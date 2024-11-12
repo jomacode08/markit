@@ -17,6 +17,27 @@ namespace markit.Infraestructure.Migrations
                 name: "security");
 
             migrationBuilder.CreateTable(
+                name: "Creators",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Gender = table.Column<int>(type: "int", nullable: true),
+                    BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Enable = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Creators", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 schema: "security",
                 columns: table => new
@@ -37,10 +58,8 @@ namespace markit.Infraestructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Gender = table.Column<int>(type: "int", nullable: true),
-                    BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    CreatorId = table.Column<int>(type: "int", nullable: true),
+                    GivenName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessType = table.Column<int>(type: "int", nullable: false),
                     RegistrationConfirmed = table.Column<bool>(type: "bit", nullable: false),
@@ -195,8 +214,8 @@ namespace markit.Infraestructure.Migrations
             migrationBuilder.InsertData(
                 schema: "security",
                 table: "Users",
-                columns: new[] { "Id", "AccessFailedCount", "AccessType", "BirthDate", "ConcurrencyStamp", "CreatedDate", "Email", "EmailConfirmed", "FirstName", "Gender", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "RegistrationConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "ca6b1e85-db19-4700-b5a7-59f0691ef2ff", 0, 1, null, "bae06e2f-37e4-4e35-9d6b-527a1cf44e4d", new DateTime(2024, 10, 1, 20, 19, 8, 620, DateTimeKind.Utc).AddTicks(635), "jomacode.me8@gmail.com", true, "Markit", null, "Admin", false, null, null, null, "AQAAAAIAAYagAAAAEE5tnlTHgaGUh8SgHeTUBrOGLGBs9h+cd7dgCog/W42jgFDm+TCbKVc3bfv4sl/XQQ==", "0000000000", true, null, false, "fad8ac2e-eea5-43b6-b007-21f563b3a0ea", false, "jomacode.me8@gmail.com" });
+                columns: new[] { "Id", "AccessFailedCount", "AccessType", "ConcurrencyStamp", "CreatedDate", "CreatorId", "Email", "EmailConfirmed", "GivenName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "RegistrationConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "ca6b1e85-db19-4700-b5a7-59f0691ef2ff", 0, 1, "10f95806-a1ee-498e-b527-68e1e3076e51", new DateTime(2024, 11, 12, 17, 23, 40, 989, DateTimeKind.Utc).AddTicks(708), null, "jomacode8@gmail.com", true, "Markit Admin", false, null, "JOMACODE8@GMAIL.COM", "JOMACODE8@GMAIL.COM", "AQAAAAIAAYagAAAAEAidHDSSZF/w2tAOvNa+5tRwFvto4vQc9fotP4JgDJLsE1/+KubtCFqhtdkWTq0iuA==", "0000000000", true, null, false, "31261426-a7e8-4864-8c02-027eab1339d5", false, "jomacode8@gmail.com" });
 
             migrationBuilder.InsertData(
                 schema: "security",
@@ -254,6 +273,9 @@ namespace markit.Infraestructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Creators");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "security");

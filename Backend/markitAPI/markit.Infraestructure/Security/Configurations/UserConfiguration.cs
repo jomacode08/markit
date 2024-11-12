@@ -3,12 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using markit.Infraestructure.Security.Models;
 using markit.Application.Models.Authentication;
-using markit.Application.Helpers;
 using markit.Application.Models.Authentication.Enums;
 
 namespace markit.Infraestructure.Security.Configurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserConfiguration : IEntityTypeConfiguration<AppUser>
     {
         private readonly UserDefaultSettings _userDefaultSettings;
 
@@ -17,21 +16,20 @@ namespace markit.Infraestructure.Security.Configurations
             _userDefaultSettings = userDefaultSettings;
         }
 
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             CreateAdmin(builder);
         }
 
-        private void CreateAdmin(EntityTypeBuilder<User> builder)
+        private void CreateAdmin(EntityTypeBuilder<AppUser> builder)
         {
-            PasswordHasher<User> hasher = new();
+            PasswordHasher<AppUser> hasher = new();
 
-            User superUsuario = new()
+            AppUser superUsuario = new()
             {
                 Id = _userDefaultSettings.Id,
-                FirstName = _userDefaultSettings.FirstName,
-                LastName = _userDefaultSettings.LastName,
                 UserName = _userDefaultSettings.UserName,
+                GivenName = $"{ _userDefaultSettings.FirstName } { _userDefaultSettings.LastName }",
                 Email = _userDefaultSettings.UserName,
                 NormalizedUserName = _userDefaultSettings.UserName.ToUpper(),
                 NormalizedEmail = _userDefaultSettings.UserName.ToUpper(),
