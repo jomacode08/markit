@@ -8,3 +8,5 @@ Log
 *.csproj.user
 
 API/appsettings.json
+API/Logs/*
+!API/Logs/.gitkeep
