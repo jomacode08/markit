@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+
+@media only screen and (min-width: 768px) {
+  #profile-container {
+    max-width: 50vw;
+    margin: auto;
+  }
+}

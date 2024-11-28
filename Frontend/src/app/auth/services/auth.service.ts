@@ -1,4 +1,4 @@
-import { catchError, Observable, of, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { computed, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -20,6 +20,7 @@ export class AuthService {
   private _token       = signal<string | null>(null);
   private _currentUser = signal<UserInfo | null>(null);
   private _authStatus  = signal<AuthStatus>(AuthStatus.checking);
+  private baseUrl: string = `${ environment.baseApiUrl }/login`;
 
   //! To the external world
   public token       = computed( () => this._token() );
@@ -37,7 +38,7 @@ export class AuthService {
 
   //* === Login Methods === *//
   public login(authRequest: AuthRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${ environment.baseApiUrl }/login/authenticate`, authRequest)
+    return this.http.post<AuthResponse>(`${ this.baseUrl }/authenticate`, authRequest)
       .pipe(
         tap(({ token }) => this.setAuthentication(token))
       );
@@ -47,7 +48,7 @@ export class AuthService {
     const googleSignRequest: GoogleAuthRequest = {
       tokenId: googleTokenId
     };
-    return this.http.post<AuthResponse>(`${ environment.baseApiUrl }/login/authenticateByGoogle`, googleSignRequest)
+    return this.http.post<AuthResponse>(`${ this.baseUrl }/authenticateByGoogle`, googleSignRequest)
       .pipe(
         tap(({ token }) => this.setAuthentication(token))
       );
@@ -97,10 +98,11 @@ export class AuthService {
   }
 
   private getUserInfo( token: string ): UserInfo {
-    const { given_name, prof_pic_url } = this.jwtHelper.decodeToken(token);
+    const { given_name, prof_pic_url, creatorId } = this.jwtHelper.decodeToken(token);
     return {
       given_name : given_name,
-      userPictureUrl : prof_pic_url
+      userPictureUrl : prof_pic_url,
+      creatorId : creatorId
     }
   }
 }

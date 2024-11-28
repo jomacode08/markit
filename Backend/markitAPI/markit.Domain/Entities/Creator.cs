@@ -29,7 +29,7 @@ namespace markit.Domain.Entities
     public enum Gender
     {
         Female = 1,
-        Masculine = 2,
+        Male = 2,
         Other = 3
     }
 }

@@ -1,5 +1,5 @@
-﻿using markit.Application.Contracts.Autentication;
-using markit.Application.Models.Autentication;
+﻿using markit.Application.Contracts.Authentication;
+using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

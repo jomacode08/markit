@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using markit.Application.Contracts.Autentication;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
 using MediatR;
@@ -25,12 +25,13 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IAuthService _authService;
-        public CreateCreatorCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAuthService authService)
+        private readonly IAppUserService _appUserService;
+
+        public CreateCreatorCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserService appUserService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _authService = authService;
+            _appUserService = appUserService;
         }
 
         public async Task<Unit> Handle(CreateCreatorCommand request, CancellationToken cancellationToken)
@@ -52,7 +53,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
 
         private async Task AddSystemAccess(CreateCreatorCommand request, int creatorId)
         {
-            UserViewModel user = new(
+            CreateAppUserRequest user = new(
                 request.Email,
                 request.Password,
                 request.FirstName,
@@ -61,7 +62,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
                 request.AccessType
             );
 
-            await _authService.CreateIdentityUser(user, creatorId);
+            await _appUserService.CreateIdentityUser(user, creatorId);
         }
     }
 }

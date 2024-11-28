@@ -7,7 +7,7 @@ namespace markit.Infraestructure.Security.Services
     public class SessionService : ISessionService
     {
         private readonly string EmailClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-        private readonly string UserIdClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid";
+        private readonly string UserIdClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         private readonly IHttpContextAccessor _contextAccessor;
 
         public SessionService(IHttpContextAccessor contextAccessor)

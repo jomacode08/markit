@@ -3,10 +3,13 @@
     <div class="container flex justify-center mx-auto">
         <!-- Navigation Bar -->
         <div id="top-bar" class="w-full fixed sm:max-w-screen-sm">
-            <app-main-bar (onNavigationAction)="showBottomNavigationBar($event)" />
+            <app-main-bar
+                (onShowSideBar)="showSideBar($event)"
+                (onHideSideBar)="hideSideBar()"
+            />
         </div>
+        <!-- Main Container -->
         <div id="main-container" class="w-full min-h-screen flex flex-col justify-between">
-            <!-- Main Container -->
             <div class="flex-auto bg-white p-5 rounded-3xl">
                 <!-- Bread crumb -->
                 <app-bread-crumb [url]="activatedUrl" />
@@ -25,9 +28,10 @@
 
 </div>
 
-<!-- BottomNavigation Bar -->
+<!-- Side Bar -->
 <p-sidebar
-    [(visible)]="this.isBottomNavigationBarVisible"
+    #sideBar
+    [(visible)]="this.isSideBarVisible"
     [position]="width < 640 ? 'bottom' : 'right'"
     [styleClass]="width < 640 ? 'h-1/2 rounded-t-3xl' : ''"
 >

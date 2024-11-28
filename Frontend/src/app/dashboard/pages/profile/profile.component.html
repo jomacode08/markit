@@ -1,0 +1,103 @@
+<div id="profile-container">
+    <!-- User Picture -->
+    <div class="flex justify-center items-center">
+        @if( pictureUrl ) {
+            <img class="rounded-full min-h-32" [src]="pictureUrl" alt="user picture">
+        } @else {
+            <div class="p-avatar rounded-full h-32 w-32">
+                <i class="fa fa-user text-4xl"></i>
+            </div>
+        }
+    </div>
+    <form
+        [formGroup]="form"
+        (submit)="onSubmitForm()"
+        autocomplete="off"
+    >
+        <!-- First Name -->
+        <div class="mb-3">
+            <label for="firstName" class="text-lg mb-2">First Name</label>
+            <input 
+                id="firstName"
+                pInputText
+                formControlName="firstName"
+                type="text"
+                placeholder="First Name"
+                class="w-full"
+                autocomplete="off"
+            />
+            <shared-error-field
+                *ngIf="isInvalidField('firstName')"
+                [validationField]="getValidationField('firstName', 'masc', 'first name')">
+            </shared-error-field>              
+        </div>
+        <!-- Last Name -->
+        <div class="mb-3">
+            <label for="lastName" class="text-lg mb-2">Last Name</label>
+            <input 
+                id="lastName"
+                pInputText
+                formControlName="lastName"
+                type="text"
+                placeholder="Last Name"
+                class="w-full"
+                autocomplete="off"
+            />
+            <shared-error-field
+                *ngIf="isInvalidField('lastName')"
+                [validationField]="getValidationField('lastName', 'masc', 'last name')">
+            </shared-error-field>              
+        </div>
+        <!-- Birth Date -->
+        <div class="mb-3">
+            <label for="birthDate" class="text-lg mb-2">Birth Date</label>
+            <p-calendar 
+                formControlName="birthDate"
+                inputId="birthDate"
+                dateFormat="dd/mm/yy"
+                dataType="string"
+                [maxDate]="maxBirthDate"
+                [minDate]="minBirthDate"
+                [iconDisplay]="'input'"
+                [showIcon]="true"
+            />
+            <shared-error-field
+                *ngIf="isInvalidField('birthDate')"
+                [validationField]="getValidationField('birthDate', 'masc', 'birth date')"
+            ></shared-error-field>
+        </div>
+        <!-- Gender -->
+        <div class="mb-9">
+            <div class="flex gap-5">
+                <div class="field-radiobutton">
+                    <p-radioButton
+                        [value]="Gender.Female"
+                        inputId="female"
+                        formControlName="gender">
+                    </p-radioButton>
+                    <label for="female" class="ml-2">Female</label>
+                </div>
+                <div class="field-radiobutton">
+                    <p-radioButton
+                        [value]="Gender.Male"
+                        inputId="male"
+                        formControlName="gender">
+                    </p-radioButton>
+                    <label for="male" class="ml-2">Male</label>
+                </div>
+            </div>
+            <shared-error-field
+                *ngIf="isInvalidField('gender')"
+                [validationField]="getValidationField('gender', 'masc')"
+            ></shared-error-field>                
+        </div>
+        <!-- Submit Button -->
+        <shared-general-button
+            label="Edit"
+            icon="fa fa-pencil"
+            backgroundColor="bg-retroyellow-500"
+            [submit]="true"
+            [disabled]="submit"
+        ></shared-general-button>
+    </form>
+</div>

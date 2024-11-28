@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { ErrorException, HttpStatusCode, ValidationError } from '../interfaces/error-exception';
 import { CustomMessage, MessageType } from '../../shared/interfaces/message/custom-message.interface';
-import { CustomMessageService } from '../../shared/service/custom-message.service';
+import { CustomMessageService } from '../../shared/services/custom-message.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -21,13 +21,15 @@ export class TokenInterceptor implements HttpInterceptor {
     // Evaluate if the hostname is from a 3rd party
     if (!request.url.includes(environment.baseApiUrl)) return next.handle(request);
 
-    // set the base content type header
-    request.headers.set('Content-Type','application/json, text/plain')
-
-    // Evaluate if we have a token for adding it to the Authorization header
-    if (this.authService.token()) {
-      request.headers.set('Authorization', `Bearer ${this.authService.token()}`);
-    }
+    // Set headers to the request
+    request = request.clone(
+      {
+        setHeaders: {
+          'Content-Type'  : 'application/json, text/plain',
+          'Authorization' : `Bearer ${ this.authService.token() ?? '' }` 
+        }
+      }
+    );
 
     // Catching errors
     return next.handle(request).pipe(

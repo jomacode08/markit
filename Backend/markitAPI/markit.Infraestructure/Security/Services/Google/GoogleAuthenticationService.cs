@@ -23,7 +23,7 @@ namespace markit.Infraestructure.Security.Services.Google
         /// </summary>
         /// <param name="token"></param>
         /// <returns>The email related to the google account</returns>
-        public async Task<UserViewModel> ValidateGoogleTokenId(string token)
+        public async Task<GoogleAuthResponse> ValidateGoogleTokenId(string token)
         {
             Payload payload;
 
@@ -41,13 +41,11 @@ namespace markit.Infraestructure.Security.Services.Google
                 throw new CustomValidationException("The token is invalid");
             }
 
-            return new UserViewModel(
+            return new GoogleAuthResponse(
                 payload.Email,
-                null,
                 payload.GivenName,
                 payload.FamilyName,
-                payload.Picture,
-                AccessType.Google
+                payload.Picture
             );
         }
     }

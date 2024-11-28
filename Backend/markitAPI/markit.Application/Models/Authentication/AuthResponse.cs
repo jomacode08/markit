@@ -1,5 +1,5 @@
 ﻿
-namespace markit.Application.Models.Autentication
+namespace markit.Application.Models.Authentication
 {
     public class AuthResponse
     {

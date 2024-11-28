@@ -13,11 +13,11 @@
         <p-button
             styleClass="nav-button transition ease-in-out delay-150 hover:-translate-y-1 duration-300"
             icon="fa fa-bars"
-            (onClick)="onNavigationAction.emit(this.navigationRutes)"
+            (onClick)="onShowSideBar.emit(this.navigationRutes)"
         />
         <!-- User -->
         <p-avatar
-            (click)="onNavigationAction.emit(this.userActions)"
+            (click)="onShowSideBar.emit(this.userActions)"
             [styleClass]="userPictureUrl ? 'border-0' : ''"
             [image]="userPictureUrl"
             [icon]="userPictureUrl ? '' : 'fa fa-user'"

@@ -3,5 +3,6 @@
     public interface ISessionService
     {
         string? GetIdentity();
+        int GetCreatorId();
     }
 }

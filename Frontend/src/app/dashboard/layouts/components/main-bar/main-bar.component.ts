@@ -1,7 +1,10 @@
-import { PrimengModule } from './../../../../shared/primeng/primeng.module';
-import { AuthService } from './../../../../auth/services/auth.service';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { MenuItem } from 'primeng/api';
+import { PrimengModule } from './../../../../shared/primeng/primeng.module';
+
+import { AuthService } from './../../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-main-bar',
@@ -27,8 +30,9 @@ export class MainBarComponent {
   public userActions : MenuItem[] = [
     {
       label: 'Profile',
-      icon: 'fa fa-user'
-    },
+      icon: 'fa fa-user',
+      command: () => this.navigate('dashboard/profile')
+     },
     {
       label: 'Logout',
       icon: 'fa fa-right-to-bracket',
@@ -38,10 +42,20 @@ export class MainBarComponent {
 
   public userPictureUrl ?: string;
 
-  constructor(private authService : AuthService) {
+  constructor(
+    private authService : AuthService,
+    private router: Router
+  ) {
     this.userPictureUrl = authService.currentUser()?.userPictureUrl;
   }
 
   @Output()
-  public onNavigationAction = new EventEmitter<MenuItem[]>();
+  public onShowSideBar = new EventEmitter<MenuItem[]>();
+  @Output()
+  public onHideSideBar = new EventEmitter<boolean>();
+
+  private navigate( path: string ): void {
+    this.router.navigate([path]);
+    this.onHideSideBar.emit(true);
+  }
 }

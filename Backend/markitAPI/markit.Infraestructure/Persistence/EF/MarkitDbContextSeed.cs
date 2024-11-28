@@ -1,7 +1,7 @@
 ﻿using markit.Application.Exceptions;
 using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
-using markit.Infraestructure.Security.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 

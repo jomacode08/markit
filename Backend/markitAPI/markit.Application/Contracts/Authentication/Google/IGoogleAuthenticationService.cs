@@ -1,9 +1,11 @@
 ﻿using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.Google;
+
 
 namespace markit.Application.Contracts.Authentication.Google
 {
     public interface IGoogleAuthenticationService
     {
-        Task<UserViewModel> ValidateGoogleTokenId(string token);
+        Task<GoogleAuthResponse> ValidateGoogleTokenId(string token);
     }
 }

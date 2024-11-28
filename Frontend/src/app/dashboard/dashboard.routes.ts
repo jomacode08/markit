@@ -18,6 +18,13 @@ export const DASHBOARD_ROUTES: Routes = [
                     .then(c => c.HomeComponent)
             },
             {
+                path: 'profile',
+                title: 'Profile',
+                loadComponent: () =>
+                    import('./pages/profile/profile.component')
+                    .then(c => c.ProfileComponent)
+            },
+            {
                 path: 'group',
                 title: 'Group',
                 loadComponent: () =>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
@@ -7,7 +7,7 @@ import { MenuItem } from 'primeng/api';
 import { PrimengModule } from '../../shared/primeng/primeng.module';
 import { MainBarComponent } from './components/main-bar/main-bar.component';
 import { BreadCrumbComponent } from "./components/bread-crumb/bread-crumb.component";
-import { Observable } from 'rxjs';
+import { Sidebar } from 'primeng/sidebar';
 
 @Component({
   selector: 'app-app-layout',
@@ -29,18 +29,24 @@ export class AppLayoutComponent {
   public activatedUrl   ?: string;
 
   //* Menu Congifuration
+  @ViewChild('sideBar')
+  public sideBarRef !: Sidebar;
   public menuItems: MenuItem[] = []
-  public isBottomNavigationBarVisible : boolean = false;
+  public isSideBarVisible : boolean = false;
   public width : number = window.innerWidth;
   
-  public showBottomNavigationBar = ( menuItems: MenuItem[] ) => {
-    this.width = window.innerWidth;
-    this.menuItems = menuItems;
-    this.isBottomNavigationBarVisible = true;
-  }
-
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.handleRouterEvents();
+  }
+
+  public showSideBar = ( menuItems: MenuItem[] ) => {
+    this.width = window.innerWidth;
+    this.menuItems = menuItems;
+    this.isSideBarVisible = true;
+  }
+
+  public hideSideBar = () => {
+    this.sideBarRef.close(new Event('click'));
   }
 
   private handleRouterEvents(): void {
@@ -51,4 +57,5 @@ export class AppLayoutComponent {
       }
     });
   }
+
 }

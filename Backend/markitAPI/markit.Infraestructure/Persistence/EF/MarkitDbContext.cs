@@ -1,8 +1,8 @@
 ﻿using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Common;
 using markit.Domain.Entities;
 using markit.Infraestructure.Security.Configurations;
-using markit.Infraestructure.Security.Models;
 using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

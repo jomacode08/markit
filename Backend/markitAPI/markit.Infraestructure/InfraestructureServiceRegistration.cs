@@ -8,17 +8,15 @@ using markit.Infraestructure.Security.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using markit.Application.Models.Autentication;
 using Microsoft.AspNetCore.Identity;
-using markit.Infraestructure.Security.Models;
-using markit.Application.Contracts.Autentication;
-using markit.Infraestructure.Autentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using markit.Application.Contracts.Authentication.Google;
 using markit.Infraestructure.Security.Services.Google;
 using markit.Application.Models.Authentication.Google;
+using markit.Application.Contracts.Authentication;
+using markit.Application.Models.Authentication.AppUser;
 
 namespace markit.Infraestructure
 {
@@ -83,9 +81,10 @@ namespace markit.Infraestructure
                 .AddEntityFrameworkStores<MarkitDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Inyección del Service de autentificación
+            // Inyección de services de autentificación
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IGoogleAuthenticationService, GoogleAuthenticationService>();
+            services.AddTransient<IAppUserService, AppUserService>();
 
             // Congigurar Autentificación
             services.AddAuthentication(options =>

@@ -10,8 +10,8 @@ import { AuthService } from '../../services/auth.service';
 import { GoogleOAuthService } from './../../services/googleOAuth.service';
 import { SharedModule } from "../../../shared/shared.module";
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { ValidatorService } from '../../../shared/service/validator.service';
-import { CustomMessageService } from '../../../shared/service/custom-message.service';
+import { ValidatorService } from '../../../shared/services/validator.service';
+import { CustomMessageService } from '../../../shared/services/custom-message.service';
 
 @Component({
   selector: 'app-login',

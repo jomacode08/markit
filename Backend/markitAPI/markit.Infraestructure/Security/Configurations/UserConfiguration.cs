@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using markit.Infraestructure.Security.Models;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Authentication.AppUser;
 
 namespace markit.Infraestructure.Security.Configurations
 {
