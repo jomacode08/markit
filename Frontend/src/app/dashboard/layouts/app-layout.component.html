@@ -1,16 +1,16 @@
 <div class="pattern min-h-screen overflow-hidden">
 
-    <div class="container flex justify-center mx-auto">
+    <div class="mx-0 md:mx-8 flex justify-content-center mx-auto">
         <!-- Navigation Bar -->
-        <div id="top-bar" class="w-full fixed sm:max-w-screen-sm">
+        <div id="top-bar" class="w-full fixed">
             <app-main-bar
                 (onShowSideBar)="showSideBar($event)"
                 (onHideSideBar)="hideSideBar()"
             />
         </div>
         <!-- Main Container -->
-        <div id="main-container" class="w-full min-h-screen flex flex-col justify-between">
-            <div class="flex-auto bg-white p-5 rounded-3xl">
+        <div id="main-container" class="w-full min-h-screen flex flex-column justify-content-between">
+            <div class="flex-auto bg-white p-5 border-round-3xl">
                 <!-- Bread crumb -->
                 <app-bread-crumb [url]="activatedUrl" />
                 <!-- Component Title -->
@@ -18,9 +18,9 @@
                 <!-- Router Outlet -->
                 <router-outlet />
             </div>
-            <footer class="text-center p-5 my-5">
-                <p class="bg-slate-100 inline p-2 rounded-2xl text-retropurple-900">
-                    © <a class="font-bold" href="https://www.jomacode.com/" target="_blank">jomacode</a>
+            <footer class="text-center p-5">
+                <p class="bg-white-alpha-90 inline p-2 border-round-2xl">
+                    <a class="font-bold text-purple-800" href="https://www.jomacode.com/" target="_blank">© jomacode</a>
                 </p>
             </footer>
         </div>
@@ -33,7 +33,7 @@
     #sideBar
     [(visible)]="this.isSideBarVisible"
     [position]="width < 640 ? 'bottom' : 'right'"
-    [styleClass]="width < 640 ? 'h-1/2 rounded-t-3xl' : ''"
+    [styleClass]="width < 640 ? 'h-50 border-round-top-3xl' : ''"
 >
     <p-menu
         [model]="menuItems"

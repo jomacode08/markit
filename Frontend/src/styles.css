@@ -7,7 +7,5 @@
 @import "../node_modules/primeng/resources/primeng.min.css";
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 
-/* Tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* PrimeFlex */
+@import "../node_modules/primeflex/primeflex.scss";

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
   exports: [
     AvatarGroupModule,
     AvatarModule,
+    ButtonModule,
     CalendarModule,
     ConfirmDialogModule,
     InputTextModule,

@@ -1,15 +1,14 @@
     <!-- Login Form -->
-    <div class="bg-slate-50 rounded-lg md:rounded-r-none flex flex-col w-full md:w-1/2 p-4">
-        <div class="flex flex-col flex-1 justify-center">
+    <div class="surface-100 border-round-lg md:border-noround-right flex flex-column w-full md:w-6 p-4">
+        <div class="flex flex-column flex-1 justify-content-center">
             <!-- Label -->
-            <h1 class="text-4xl text-center font-bold text-retropurple-900 mb-5">Welcome <span class="text-retropurple-500">Back.</span></h1>
-            
+            <h1 class="text-4xl text-center font-bold text-purple-900 mb-5">Welcome <span class="text-purple-600">Back.</span></h1>
             <form
                 [formGroup]="form"
                 (submit)="onLogin()"
                 autocomplete="off"
             >
-                <div class="w-3/4 flex flex-col mx-auto">
+                <div class="w-9 flex flex-column mx-auto">
                     <div class="mb-3">
                         <!-- Email -->
                         <label for="email" class="text-lg mb-2">Email</label>
@@ -50,7 +49,7 @@
                     <div class="mb-5">
                         <shared-general-button
                             label="Login"
-                            backgroundColor="bg-retroyellow-500"
+                            backgroundColor="bg-yellow-500"
                             [disabled]="submit"
                             [submit]="true"
                         ></shared-general-button>
@@ -71,8 +70,8 @@
     </div>
     
     <!-- Side Container -->
-    <div class="bg-white/30 rounded-r-lg hidden md:block md:w-1/2 overflow-hidden">
-        <div class="text-white h-full flex flex-col justify-center">
+    <div class="blured border-round-right-lg hidden md:block md:w-6 overflow-hidden">
+        <div class="text-white h-full flex flex-column justify-content-center">
             <!-- Question Label -->
             <div class="px-5 text-4xl font-bold mb-5">Did you find something interesting?...</div>
             <!-- Typing animation -->
@@ -80,9 +79,9 @@
                 <span class="animated-text">{{ mediaTypes[mediaCounter] }}</span>
             </div>
             <!-- Markit label -->
-            <div class="px-5 flex items-center mb-5">
-                <div class="flex items-center p-2 rounded-lg bg-white text-4xl mr-2">
-                    <span class="mr-3 font-bold text-retropurple-900">Mark it!</span>
+            <div class="px-5 flex align-items-center mb-5">
+                <div class="flex align-items-center p-2 border-round-lg bg-white text-4xl mr-2">
+                    <span class="mr-3 font-bold text-purple-700">Mark it!</span>
                     <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#C28FE0" style="height: 3rem; width: 3rem;"></lord-icon>
                 </div>
             </div>

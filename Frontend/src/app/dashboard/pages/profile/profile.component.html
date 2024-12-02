@@ -1,10 +1,10 @@
 <div id="profile-container">
     <!-- User Picture -->
-    <div class="flex justify-center items-center">
+    <div class="flex justify-content-center align-items-center">
         @if( pictureUrl ) {
-            <img class="rounded-full min-h-32" [src]="pictureUrl" alt="user picture">
+            <img class="border-circle" [src]="pictureUrl" alt="user picture">
         } @else {
-            <div class="p-avatar rounded-full h-32 w-32">
+            <div class="p-avatar border-circle h-8rem w-8rem">
                 <i class="fa fa-user text-4xl"></i>
             </div>
         }
@@ -51,7 +51,8 @@
         <!-- Birth Date -->
         <div class="mb-3">
             <label for="birthDate" class="text-lg mb-2">Birth Date</label>
-            <p-calendar 
+            <p-calendar
+                styleClass="w-full"
                 formControlName="birthDate"
                 inputId="birthDate"
                 dateFormat="dd/mm/yy"
@@ -95,7 +96,7 @@
         <shared-general-button
             label="Edit"
             icon="fa fa-pencil"
-            backgroundColor="bg-retroyellow-500"
+            backgroundColor="bg-yellow-400"
             [submit]="true"
             [disabled]="submit"
         ></shared-general-button>

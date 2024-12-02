@@ -3,10 +3,10 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'shared-general-button',
     template: `
-    <button
-    [type]="submit ? 'submit' : 'button'"
-    [disabled]="disabled"
-    class="{{ backgroundColor }} w-full text-blue-950 rounded-xl drop-shadow-lg group flex items-center justify-center border border-b-4 border-blue-950 cursor-pointer enabled:duration-150 enabled:hover:!border-b-2 disabled:opacity-65 disabled:cursor-default">
+    <p-button
+        [type]="submit ? 'submit' : 'button'"
+        [disabled]="disabled"
+        styleClass="{{ backgroundColor }} text-blue-900 font-medium border-1 border-bottom-3 border-blue-900 p-1 w-full border-round-xl flex align-items-center justify-content-center">
         <!-- Icon -->
         <div *ngIf="icon" class="py-2 pl-3">
             <i [class]="icon"></i>
@@ -16,7 +16,7 @@ import { Component, Input } from '@angular/core';
             {{ label }}
         </div>
         <lord-icon *ngIf="disabled" trigger="loop" src="/animated-icons/spinner-three-dots.json" style="height: 2rem; width: 2rem;"/>
-    </button>
+    </p-button>
   `
 })
 export class GeneralButtonComponent {

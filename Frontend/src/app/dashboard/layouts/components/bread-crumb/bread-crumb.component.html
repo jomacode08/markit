@@ -1,10 +1,10 @@
-<div class="flex items-center gap-2">
+<div class="flex align-items-center gap-2">
     @for( segment of urlSegments; track $index ) {
-        <div (click)="navigate($index)" routerLinkActive="router-link-active"  class="p-2 italic text-gray-600 text-base rounded-md hover:bg-neutralGray hover:cursor-pointer">
+        <div (click)="navigate($index)" routerLinkActive="router-link-active"  class="p-2 font-italic text-gray-600 text-normal border-round-md cursor-pointer hover:bg-gray-200">
           {{ segment | titlecase }}
         </div>
         <div *ngIf="$index < urlSegments.length - 1" class="mx-2">
-          <i class="fa fa-chevron-right text-lila-500 text-base"></i>
+          <i class="fa fa-chevron-right text-indigo-500"></i>
         </div>
     }
 </div>
