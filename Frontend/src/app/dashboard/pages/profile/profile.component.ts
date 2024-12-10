@@ -30,8 +30,8 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
   //** Form
   public form = new FormGroup({
     id        : new FormControl<number>(0),
-    firstName : new FormControl<string>('', [Validators.required, Validators.maxLength(100)]),
-    lastName  : new FormControl<string>('', [Validators.required, Validators.maxLength(100)]),
+    firstName : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*')]),
+    lastName  : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*')]),
     gender    : new FormControl<Gender | null>(null, [Validators.required]),
     birthDate : new FormControl<string>('', [Validators.required])
   });

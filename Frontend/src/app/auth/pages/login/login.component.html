@@ -1,17 +1,31 @@
-    <!-- Login Form -->
-    <div class="surface-100 border-round-lg md:border-noround-right flex flex-column w-full md:w-6 p-4">
-        <div class="flex flex-column flex-1 justify-content-center">
+    <div class="grid">
+        <!-- Login Form -->
+        <div id="form-container" class="col-12 bg-main-purple p-7 flex flex-column justify-content-center md:col-6">
             <!-- Label -->
-            <h1 class="text-4xl text-center font-bold text-purple-900 mb-5">Welcome <span class="text-purple-600">Back.</span></h1>
+            <h1 class="text-5xl text-main-black text-center font-bold mb-8 md:mb-5">Welcome <span class="text-main-black">Back.</span></h1>
+
+            <img id="books-img" *ngIf="!showLoginForm" class="mb-8 md:mb-5" src="/work.svg" alt="space man"/>
+
+            <!-- Sign in Button -->
+            <div *ngIf="!showLoginForm" class="w-full mb-3 mx-auto">
+                <shared-general-button
+                    type="primary"
+                    label="Sign in"
+                    (click)="onSignIn()"
+                ></shared-general-button>
+            </div>
+
+            <!-- Login form -->
             <form
+                *ngIf="showLoginForm"
                 [formGroup]="form"
                 (submit)="onLogin()"
                 autocomplete="off"
             >
-                <div class="w-9 flex flex-column mx-auto">
-                    <div class="mb-3">
+                <div class="flex flex-column mx-auto mb-3">
+                    <div class="field">
                         <!-- Email -->
-                        <label for="email" class="text-lg mb-2">Email</label>
+                        <label for="email" class="text-lg text-main-black mb-2">Email</label>
                         <input 
                             id="email"
                             pInputText
@@ -26,9 +40,9 @@
                             [validationField]="getValidationField('email', 'masc')">
                         </shared-error-field>
                     </div>
-                    <div class="mb-5">
+                    <div class="field mb-5">
                         <!-- Password -->
-                        <label for="password" class="text-lg mb-2">Password</label>
+                        <label for="password" class="text-lg text-main-black mb-2">Password</label>
                         <p-password
                             inputId="password"
                             formControlName="password"
@@ -46,43 +60,46 @@
                         </shared-error-field>
                     </div>
                     <!-- Login submit -->
-                    <div class="mb-5">
+                    <div>
                         <shared-general-button
+                            type="primary"
                             label="Login"
-                            backgroundColor="bg-yellow-500"
                             [disabled]="submit"
                             [submit]="true"
                         ></shared-general-button>
                     </div>
-                    <!-- Google Button -->
-                    <div>
-                        <shared-general-button
-                            label="Sign in with google"
-                            icon="fa-brands fa-google"
-                            backgroundColor="bg-white"
-                            [disabled]="submit"
-                            (click)="onGoogleLogin()"
-                        ></shared-general-button>
-                    </div>
                 </div>
             </form>
-        </div>
-    </div>
-    
-    <!-- Side Container -->
-    <div class="blured border-round-right-lg hidden md:block md:w-6 overflow-hidden">
-        <div class="text-white h-full flex flex-column justify-content-center">
-            <!-- Question Label -->
-            <div class="px-5 text-4xl font-bold mb-5">Did you find something interesting?...</div>
-            <!-- Typing animation -->
-            <div class="px-5 text-3xl mb-5">
-                <span class="animated-text">{{ mediaTypes[mediaCounter] }}</span>
+
+             <!-- Google Button -->
+            <div class="w-full mx-auto">
+                <shared-general-button
+                    type="terceary"
+                    label="Sign in with google"
+                    icon="fa-brands fa-google"
+                    [disabled]="submit"
+                    (click)="onGoogleLogin()"
+                ></shared-general-button>
             </div>
-            <!-- Markit label -->
-            <div class="px-5 flex align-items-center mb-5">
-                <div class="flex align-items-center p-2 border-round-lg bg-white text-4xl mr-2">
-                    <span class="mr-3 font-bold text-purple-700">Mark it!</span>
-                    <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#C28FE0" style="height: 3rem; width: 3rem;"></lord-icon>
+        </div>
+
+        <!-- Auth Cards -->
+        <div class="col-12 p-0 display flex flex-column md:col-6 md:gap-4 md:pl-3">
+            <div class="card bg-main-orange">
+                <!-- Question label -->
+                    <p class="text-main-black text-4xl m-0 z-1">Did you find something <span class="font-bold text-5xl">interesting?</span></p>
+                <!-- Typing animation -->
+                <div class="text-3xl">
+                    <span class="animated-text text-white text-4xl border-0">{{ mediaTypes[mediaCounter] }}</span>
+                </div>
+                <!-- Searching icon -->
+                <i id="search-icon-white" class="absolute fa-solid fa-magnifying-glass text-main-black text-8xl"></i>
+                <i id="search-icon-black" class="absolute fa-solid fa-magnifying-glass text-main-black text-8xl"></i>
+            </div>
+            <div class="card brand md:border-1">
+                <div class="flex align-items-center justify-content-center">
+                    <p class="m-0 mr-3">Mark it</p>
+                    <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#f5f378" style="height: 4rem; width: 4rem;"></lord-icon>
                 </div>
             </div>
         </div>

@@ -1,12 +1,15 @@
 import { Component, Input } from '@angular/core';
 
+export type TypeButton = "primary" | "secondary" | "terceary";
+
 @Component({
     selector: 'shared-general-button',
     template: `
     <p-button
         [type]="submit ? 'submit' : 'button'"
         [disabled]="disabled"
-        styleClass="{{ backgroundColor }} text-blue-900 font-medium border-1 border-bottom-3 border-blue-900 p-1 w-full border-round-xl flex align-items-center justify-content-center">
+        styleClass="general-button {{ type }}-button up-down-transition"
+    >
         <!-- Icon -->
         <div *ngIf="icon" class="py-2 pl-3">
             <i [class]="icon"></i>
@@ -24,7 +27,7 @@ export class GeneralButtonComponent {
     public label!: string;
     
     @Input({ required: true })
-    public backgroundColor!: string;
+    public type!: TypeButton;
 
     @Input()
     public icon: string | undefined;

@@ -33,14 +33,15 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
   private validatorService   = inject(ValidatorService);
   private messageService     = inject(CustomMessageService);
   
-  private googleAuthWindow : Window | null = null;
-
   public form = new FormGroup({
     email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validatorService.emailPattern)]),
     password:    new FormControl<string>('', [Validators.required]),
   });
   
-  public submit = false;
+  //* Configuration
+  private googleAuthWindow : Window | null = null;
+  public submit: boolean = false;
+  public showLoginForm: boolean = false;
   public mediaTypes: string[] = ["Posts", "Reels", "Videos", "Notes", "Articles", "Code"];
   public mediaCounter: number = 0;
   public mediaIntervalId ?: ReturnType<typeof setTimeout>;
@@ -56,6 +57,8 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
   public ngOnDestroy(): void {
     if (this.mediaIntervalId != null) clearInterval(this.mediaIntervalId);
   }
+
+  public onSignIn = (): void => { this.showLoginForm = true; }
 
   public onLogin(): void {
     if (this.form.invalid) {

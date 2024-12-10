@@ -21,7 +21,19 @@ a {
     color: var(--primary-color);
 }
 
-.auth-container > :not(router-outlet){
-    height: 100%;
-    display: flex;
+/* Aplica width >= 768px */
+@media only screen and (min-width: 768px) {
+    .card {
+        height: 50%;
+    }
+}
+
+/* Aplica width <= 768px */
+@media only screen and (max-width: 768px) {
+    #form-container {
+        height: 100vh;
+    }
+    .card {
+        min-height: 16rem;
+    }
 }

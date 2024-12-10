@@ -1,22 +1,4 @@
 @font-face {
-    font-family: "Cera Round Pro";
-    font-style: normal;
-    font-weight: 400;
-    src: url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.eot");
-    src: url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.eot?#iefix")format("embedded-opentype"),
-    url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.woff2")format("woff2"),
-    url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.woff")format("woff"),
-    url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.ttf")format("truetype"),
-    url("https://db.onlinewebfonts.com/t/423f58b9fc607c2ccd71d1ab6bf42c30.svg#CeraRoundPro-Regular")format("svg");
-}
-@font-face {
-    font-family: "Cera Round Pro";
-    font-style: bold;
-    font-weight: 700;
-    src: url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.eot");
-    src: url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.eot?#iefix")format("embedded-opentype"),
-    url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.woff2")format("woff2"),
-    url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.woff")format("woff"),
-    url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.ttf")format("truetype"),
-    url("https://db.onlinewebfonts.com/t/9d23cda2fd2a195a8467e0967debd4d3.svg#Cera Round Pro Bold")format("svg");
+    font-family: "Nunito";
+    src: url('../fonts/Nunito-VariableFont_wght.ttf');
 }

@@ -14,6 +14,9 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
             RuleFor(c => c.FirstName).NotEmpty().WithMessage("The first name is required");
             RuleFor(c => c.LastName).NotEmpty().WithMessage("The first name is required");
 
+            RuleFor(c => c.FirstName).Matches("[a-zA-Z ]*");
+            RuleFor(c => c.LastName).Matches("[a-zA-Z ]*");
+
             RuleFor(c => c.FirstName).MaximumLength(100).WithMessage("The maximun length of first name is 100");
             RuleFor(c => c.LastName).MaximumLength(100).WithMessage("The maximun length of last name is 100");
 

@@ -8,6 +8,7 @@ import { PrimengModule } from '../../shared/primeng/primeng.module';
 import { MainBarComponent } from './components/main-bar/main-bar.component';
 import { BreadCrumbComponent } from "./components/bread-crumb/bread-crumb.component";
 import { Sidebar } from 'primeng/sidebar';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-app-layout',
@@ -34,9 +35,15 @@ export class AppLayoutComponent {
   public menuItems: MenuItem[] = []
   public isSideBarVisible : boolean = false;
   public width : number = window.innerWidth;
+  public userName ?: string;
   
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {
     this.handleRouterEvents();
+    this.userName = this.authService.currentUser()?.given_name;
   }
 
   public showSideBar = ( menuItems: MenuItem[] ) => {

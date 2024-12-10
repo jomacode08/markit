@@ -1,0 +1,195 @@
+:root {
+    --main-black-color: #1a1a1a;
+    --main-gray-color: #2f2f2f;
+    --main-purple-color: #dcc1ff;
+    --main-yellow-color: #f5f378;
+    --main-orange-color: #ec704b;
+    --neutral-background-color: #E8EAED;
+
+    --main-purple-hover-color: #ab93e0;
+    --main-yellow-hover-color: #dfdd56;
+    --main-orange-hover-color: #b9573a;
+
+}
+
+body {
+    /* font-family: "Cera Round Pro"; */
+    font-family: "Nunito";
+    color: #ffff;
+}
+
+/** Inputs **/
+input {
+    padding: 0.75rem;
+    color: var(--main-gray-color);
+    border-radius: 1.5rem;
+    border-width: 2px;
+    border-color: #6c6c6c;
+}
+
+input:focus {
+  box-shadow: 0 0 0 0.2rem #6c6c6c;
+  border: none;
+}
+
+input:hover {
+  border-color: var(--main-gray-color);
+}
+
+/** Backgrounds */
+.bg-main-black {
+  background-color: var(--main-black-color);
+}
+.bg-main-gray {
+  background-color: var(--main-gray-color);
+}
+.bg-main-purple {
+  background-color: var(--main-purple-color);
+}
+.bg-main-yellow {
+  background-color: var(--main-yellow-color);
+}
+.bg-main-orange {
+  background-color: var(--main-orange-color);
+}
+
+/**Typography**/
+.text-main-black {
+  color: var(--main-black-color);
+}
+.text-main-gray {
+  color: var(--main-gray-color);
+}
+.text-main-purple {
+  color: var(--main-purple-color);
+}
+.text-main-yellow {
+  color: var(--main-yellow-color);
+}
+.text-main-orange {
+  color: var(--main-orange-color);
+}
+
+/** Button */
+.general-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 1.25rem;
+  padding: 0.5rem;
+  color: var(--main-black-color);
+}
+.general-button:disabled {
+  background-color: #6c6c6c;
+  font-weight: bold;
+}
+.general-button:focus {
+  box-shadow: none;
+}
+
+.up-down-transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.general-button:hover, .p-button.nav-button:hover  {
+  transform: translateY(-0.25rem);
+  transition-duration: 300ms;
+}
+
+.primary-button {
+  background-color: var(--main-yellow-color);
+}
+.primary-button:hover, .primary-button:focus {
+  background-color: var(--main-yellow-hover-color);
+}
+
+.secondary-button {
+  background-color: var(--main-purple-color);
+}
+.secondary-button:hover, .secondary-button:focus {
+  background-color: var(--main-purple-hover-color);
+}
+
+.terceary-button {
+  background-color: #ffffff;
+}
+.terceary-button:hover, .terceary-button:focus {
+  background-color: #f2f2f2;
+}
+
+.p-button.nav-button {
+    background-color: transparent;
+    padding: 5px;
+    color: #ffffff;
+    border-width: 0 0 2px 0;
+    border-color: #ffffff;
+    border-radius: 0px;
+}
+.p-button.nav-button:focus {
+    background-color: var(--neutral-background-color);
+    color: var(--main-black-color);
+    box-shadow: none;
+}
+
+/** Radio Button */
+.p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+  border-color: var(--main-orange-hover-color) !important;
+}
+.p-radiobutton .p-radiobutton-box.p-highlight {
+  border-color: var(--main-orange-color);
+  background: var(--main-orange-color);
+}
+.p-radiobutton .p-radiobutton-box.p-highlight:not(.p-disabled):hover {
+  border-color: var(--main-orange-hover-color);
+  background: var(--main-orange-hover-color);
+  color: #ffffff;
+}
+
+/** Avatar */
+.p-avatar {
+    display: flex;
+    cursor: pointer;
+    color: var(--main-black-color);
+    background-color: var(--neutral-background-color);
+    border: var(--text-color) solid 1px;
+    border-bottom: var(--text-color) solid 2px;
+}
+
+/** Sidebar */
+.p-sidebar {
+  background-color: var(--main-purple-color);
+  color: var(--main-black-color);
+}
+.p-sidebar-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.p-sidebar-header {
+  padding: 10px;
+}
+
+/** Menu */
+.p-menu {
+    background-color: transparent;
+    border: none;
+}
+.p-menuitem-content {
+    background-color: var(--main-gray-color);
+    margin-bottom: 1em;
+    border-radius: 25px;
+}
+.p-menuitem-text, .p-menuitem-icon {
+    color: var(--main-purple-color);
+}
+.p-menuitem-icon {
+    margin-right: 15px;
+}
+
+/** Utils */
+.h-50 {
+    height: 50% !important;
+}

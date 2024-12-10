@@ -1,26 +1,31 @@
-<div class="h-full flex align-items-center justify-content-around bg-white shadow-6 border-round-2xl border-noround-top">
+<div class="wrap purple-wrap"></div>
+<div class="wrap orange-wrap"></div>
+<div class="h-full relative flex align-items-center justify-content-around bg-main-gray">
     <!-- Brand Name -->
     <div class="flex align-items-center">
-        <h1 class="mr-3 font-bold text-purple-900">Mark it</h1>
-        <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#C28FE0" style="height: 2rem; width: 2rem;"></lord-icon>
+        <h1 class="mr-3 font-bold text-4xl">Mark it</h1>
+        <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#f5f378" style="height: 2rem; width: 2rem;"></lord-icon>
     </div>
-
+    
     <!-- Navigation buttons -->
     <div class="flex align-items-center gap-3">
         <!-- Search -->
-        <p-button styleClass="nav-button p-2" icon="fa fa-search"/>
+        <p-button
+            styleClass="nav-button p-2 up-down-transition" 
+            icon="fa fa-search"
+        />
         <!-- Menu -->
         <p-button
-            styleClass="nav-button p-2"
+            styleClass="nav-button p-2 up-down-transition"
             icon="fa fa-bars"
             (onClick)="onShowSideBar.emit(this.navigationRutes)"
         />
         <!-- User -->
         <p-avatar
             (click)="onShowSideBar.emit(this.userActions)"
-            [styleClass]="userPictureUrl ? 'border-0' : ''"
+            [styleClass]="!userPictureUrl ? 'border-0' : ''"
+            [icon]="!userPictureUrl ? 'fa fa-user' : ''"
             [image]="userPictureUrl"
-            [icon]="userPictureUrl ? '' : 'fa fa-user'"
             size="large"
             shape="circle" 
         />

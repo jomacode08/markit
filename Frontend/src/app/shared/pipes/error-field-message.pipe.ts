@@ -9,43 +9,24 @@ export class ErrorFieldMessagePipe implements PipeTransform {
     transform( field: ValidationField | null ): string {
         if (!field) return '';
 
-        // Gestión de pronombre gramatical
-        let pronoun: string = '';
-        let endsWith: string = '';
-        let name : string = field.normalizedName ?? field.name;
-
-        switch (field.gender) {
-            case 'fem':
-                pronoun = 'La';
-                endsWith = 'a';
-                break;
-
-            case 'masc':
-                pronoun = 'El';
-                endsWith = 'o';
-                break;
-
-            default:
-                break;
-        }
-
+        let name : string    = field.normalizedName ?? field.name;
         // Obtener Keys contenidas en ValidationError
         const errors = Object.keys(field.validationError);
 
         // Retornar el mensaje de error del primer error encontrado.
         switch (errors[0]) {
             case 'required':
-                return `${ pronoun } ${ name } es requerid${ endsWith }`;
+                return `The ${ name } field is required`;
             case 'minlength':
-                return `Se requieren mínimo ${ field.validationError!['minlength'].requiredLength } caracteres`
+                return `A minimum of ${ field.validationError!['minlength'].requiredLength } characters is required`
             case 'maxlength':
-                return `El límite máximo es de ${ field.validationError!['maxlength'].requiredLength } caracteres`
+                return `A maximum of ${ field.validationError!['maxlength'].requiredLength } characters is required`
             case 'pattern' :
-                return `${ pronoun } ${ name } cuenta con un formato inválido`;
+                return `The ${ name } field has an invalid format`;
             case 'notEqual' :
-                return `${ pronoun } ${ name } no es correct${ endsWith }`;
+                return `The value of ${ name.toLowerCase() } isn't correct`;
             case 'notGroupValidCheckbox' :
-                return `Por lo menos un campo debe ser seleccionado`;
+                return `At least one field must be selected`;
             default:
                 return '';
         }

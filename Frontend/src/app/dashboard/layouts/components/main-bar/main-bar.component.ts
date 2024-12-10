@@ -13,7 +13,8 @@ import { AuthService } from './../../../../auth/services/auth.service';
   imports: [
     PrimengModule
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  styleUrl: './main-bar.component.css'
 })
 export class MainBarComponent {
   public navigationRutes : MenuItem[] = [
