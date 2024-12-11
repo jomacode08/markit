@@ -2,3 +2,11 @@
     font-family: "Nunito";
     src: url('../fonts/Nunito-VariableFont_wght.ttf');
 }
+@font-face {
+    font-family: "Fraunces";
+    src: url('../fonts/Fraunces-VariableFont_SOFT\,WONK\,opsz\,wght.ttf');
+}
+
+.font-fraunces {
+    font-family: 'Fraunces';
+}
