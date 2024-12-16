@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-export type TypeButton = "primary" | "secondary" | "terceary";
+export type TypeButton = "primary" | "secondary" | "terceary" | "cancel";
 
 @Component({
     selector: 'shared-general-button',

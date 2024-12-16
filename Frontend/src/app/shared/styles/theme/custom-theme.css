@@ -4,8 +4,10 @@
     --main-purple-color: #dcc1ff;
     --main-yellow-color: #f5f378;
     --main-orange-color: #ec704b;
+    
     --neutral-background-color: #E8EAED;
-
+    --light-gray-color: #6c6c6c;
+    
     --main-purple-hover-color: #ab93e0;
     --main-yellow-hover-color: #dfdd56;
     --main-orange-hover-color: #b9573a;
@@ -13,22 +15,32 @@
 }
 
 body {
-    /* font-family: "Cera Round Pro"; */
     font-family: "Nunito";
     color: #ffff;
 }
 
 /** Inputs **/
 input {
-    padding: 0.75rem;
-    color: var(--main-gray-color);
-    border-radius: 1.5rem;
-    border-width: 2px;
-    border-color: #6c6c6c;
+  padding: 0.75rem;
+  border-width: 2px;
+  border-color: var(--light-gray-color);
+}
+
+input.rounded {
+  color: var(--main-gray-color);
+  border-radius: 1.5rem;
+}
+
+input.square {
+  background-color: var(--main-gray-color);
+  color: #ffff;
+  border-radius: 0px;
+  border-color: var(--main-purple-hover-color);
+  border-width: 0px 2px 2px 0px !important;
 }
 
 input:focus {
-  box-shadow: 0 0 0 0.2rem #6c6c6c;
+  box-shadow: 0 0 0 0.2rem var(--light-gray-color);
   border: none;
 }
 
@@ -82,7 +94,7 @@ input:hover {
   color: var(--main-black-color);
 }
 .general-button:disabled {
-  background-color: #6c6c6c;
+  background-color: var(--light-gray-color);
   font-weight: bold;
 }
 .general-button:focus {
@@ -120,6 +132,14 @@ input:hover {
   background-color: #f2f2f2;
 }
 
+.cancel-button {
+  background-color: transparent;
+  color: #ffffff;
+}
+.cancel-button:hover, .cancel-button:focus {
+  background-color: var(--main-gray-color);
+}
+
 .p-button.nav-button {
     background-color: transparent;
     padding: 5px;
@@ -135,6 +155,10 @@ input:hover {
 }
 
 /** Radio Button */
+.p-radiobutton-icon, .p-radiobutton .p-radiobutton-box {
+  background-color: var(--main-gray-color);
+  border-color: var(--light-gray-color);
+}
 .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
   border-color: var(--main-orange-hover-color) !important;
 }
@@ -187,6 +211,15 @@ input:hover {
 }
 .p-menuitem-icon {
     margin-right: 15px;
+}
+
+/** Divider */
+.p-divider-content {
+  background-color: var(--main-black-color);
+  font-family: Fraunces;
+  font-weight: 500;
+  padding: 0.5em;
+  z-index: 0;
 }
 
 /** Utils */

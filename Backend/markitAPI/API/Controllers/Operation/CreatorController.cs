@@ -42,10 +42,9 @@ namespace markit.API.Controllers.Operation
 
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> Update([FromBody] UpdateCreatorCommand command)
+        public async Task<CreatorViewModel> Update([FromBody] UpdateCreatorCommand command)
         {
-            await _mediator.Send(command);
-            return NoContent();
+            return await _mediator.Send(command);
         }
     }
 }

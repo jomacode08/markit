@@ -22,7 +22,7 @@ export class CreatorService {
     return this.http.get<Creator>(`${ this.baseUrl }/getByCurrentSession`);
   }
 
-  public update( creator: Creator ): Observable<void> {
-    return this.http.put<void>(`${ this.baseUrl }/update`, creator);
+  public update( creator: Creator ): Observable<Creator> {
+    return this.http.put<Creator>(`${ this.baseUrl }/update`, creator);
   }
 }

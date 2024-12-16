@@ -5,6 +5,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -22,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
     ButtonModule,
     CalendarModule,
     ConfirmDialogModule,
+    DividerModule,
     InputTextModule,
     MenuModule,
     OverlayPanelModule,

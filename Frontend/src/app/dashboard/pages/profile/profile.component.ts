@@ -30,8 +30,8 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
   //** Form
   public form = new FormGroup({
     id        : new FormControl<number>(0),
-    firstName : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*')]),
-    lastName  : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*')]),
+    firstName : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z\u00C0-\u024F ]*')]),
+    lastName  : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z\u00C0-\u024F ]*')]),
     gender    : new FormControl<Gender | null>(null, [Validators.required]),
     birthDate : new FormControl<string>('', [Validators.required])
   });
@@ -39,16 +39,24 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
   public get currentCreator(): Creator {
     return this.form.value as Creator;
   }
-
+  
   public get Gender(): typeof Gender {
     return Gender;
   }
 
+  public get birthDate(): string {
+    return this.creatorInDatabase?.birthDate?.split("/")
+    .reverse()
+    .join("/") ?? '';
+  }
+  
   //* Configuration
+  public creatorInDatabase ?: Creator;
   public pictureUrl   ?: string;
   public maxBirthDate ?: Date;
   public minBirthDate ?: Date;
   public submit: boolean = false;
+  public showForm: boolean = false;
 
   public async ngOnInit(): Promise<void> {
     // Initialize range birth date values
@@ -58,8 +66,9 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
 
     // Initialize form
     const creator = await this.getCreator();
+    this.creatorInDatabase = creator;
     this.form.reset(creator);
-    this.pictureUrl = creator.picture;
+    this.pictureUrl = creator.picture?.replace("s96-c", "s300-c");
   }
 
   public onSubmitForm(): void {
@@ -74,8 +83,9 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
 
   private updateCreator(creator: Creator): void {
     this.creatorService.update(creator).subscribe({
-      next : () => {
+      next : (creator) => {
         this.setSubmit(false);
+        this.creatorInDatabase = creator;
         this.messageService.showGeneralSuccess("Creator updated successfully");
       },
       error : () => {
@@ -84,7 +94,6 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
     });
   }
 
-  private setSubmit(state: boolean): void {
-    this.submit = state;
-  }
+  public setShowForm = (state: boolean) => this.showForm = state;
+  private setSubmit = (state: boolean) => this.submit = state;
 }

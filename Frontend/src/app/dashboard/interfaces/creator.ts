@@ -5,8 +5,9 @@ export interface Creator {
     gender ?:              Gender;
     birthDate?:            string;
     email:                 string;
-    picture:               string;
+    picture?:              string;
     registrationConfirmed: boolean;
+    createdDate:           Date;
 }
 
 export enum Gender {

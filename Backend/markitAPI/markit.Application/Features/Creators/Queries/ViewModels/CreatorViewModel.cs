@@ -9,6 +9,7 @@ namespace markit.Application.Features.Creators.Queries.ViewModels
         public string LastName { get; set; } = string.Empty;
         public Gender? Gender { get; set; }
         public string? BirthDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         // System Access properties
         public string Email { get; set; } = string.Empty;

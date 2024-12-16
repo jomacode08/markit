@@ -1,15 +1,63 @@
 <div id="profile-container">
-    <!-- User Picture -->
-    <div class="flex justify-content-center align-items-center">
-        @if( pictureUrl ) {
-            <img class="border-circle" [src]="pictureUrl" alt="user picture">
-        } @else {
-            <div class="p-avatar border-circle h-8rem w-8rem">
-                <i class="fa fa-user text-4xl"></i>
+    <!-- User Presentation -->
+     <div class="grid my-5">
+        <!-- Picture -->
+        <div class="col-12 md:col-5 flex justify-content-center">
+            <div class="p-avatar border-none border-circle shadow-5">
+                
+                @if( pictureUrl  ) {
+                    <img class="border-circle" [src]="pictureUrl" alt="user picture">
+                }
+                @else {
+                    <i class="fa fa-user text-7xl"></i>
+                }
+                
             </div>
-        }
+        </div>
+        <!-- Welcome text -->
+        <div class="col-12 md:col-7 flex align-items-center justify-content-center md:border-left-1">
+            <p class="text-3xl font-light">
+                <span>Hello, </span>
+                <span class="font-semibold md:mr-3">{{ creatorInDatabase?.firstName }}</span>
+                <i id="edit-icon" class="fa-solid fa-pencil" (click)="setShowForm(true)"></i>
+            </p>
+        </div>
+     </div>
+
+    <!-- General Information Section -->
+    <p-divider align="left" type="solid">
+        <span class="text-xl">General information</span>
+    </p-divider>
+    <div class="grid" *ngIf="!showForm">
+        <div class="col-12 pb-0 md:col-6 md:p-2">
+            <p>
+                <i class="fa-solid fa-user mr-2"></i>
+                <span class="font-semibold font-fraunces mr-3">Name: </span>
+                {{ creatorInDatabase?.firstName }} {{ creatorInDatabase?.lastName }}
+            </p>
+            <p class="mb-0 md:my-3">
+                <i class="fa-solid fa-calendar mr-2"></i>
+                <span class="font-semibold font-fraunces mr-3">Birth Date:</span>
+                {{ birthDate | date}}
+            </p>
+        </div>
+        <div class="col-12 pt-0 md:col-6 md:p-2">
+            <p>
+                <i class="fa-solid fa-envelope mr-2"></i>
+                <span class="font-semibold font-fraunces mr-3">Email:</span>
+                {{ creatorInDatabase?.email }}
+            </p>
+            <p>
+                <i class="fa-solid fa-thumbtack mr-2"></i>
+                <span class="font-semibold font-fraunces mr-3">Member since:</span>
+                {{ creatorInDatabase?.createdDate | date }}
+            </p>
+        </div>
     </div>
+
+    <!-- Form -->
     <form
+        *ngIf="showForm"
         [formGroup]="form"
         (submit)="onSubmitForm()"
         autocomplete="off"
@@ -23,7 +71,7 @@
                 formControlName="firstName"
                 type="text"
                 placeholder="First Name"
-                class="w-full"
+                class="square w-full"
                 autocomplete="off"
             />
             <shared-error-field
@@ -40,7 +88,7 @@
                 formControlName="lastName"
                 type="text"
                 placeholder="Last Name"
-                class="w-full"
+                class="square w-full"
                 autocomplete="off"
             />
             <shared-error-field
@@ -52,15 +100,16 @@
         <div class="field">
             <label for="birthDate" class="text-lg">Birth Date</label>
             <p-calendar
-            styleClass="w-full"
-            formControlName="birthDate"
-            inputId="birthDate"
-            dateFormat="dd/mm/yy"
-            dataType="string"
-            [maxDate]="maxBirthDate"
-            [minDate]="minBirthDate"
-            [iconDisplay]="'input'"
-            [showIcon]="true"
+                styleClass="w-full"
+                formControlName="birthDate"
+                inputId="birthDate"
+                inputStyleClass="square"
+                dateFormat="dd/mm/yy"
+                dataType="string"
+                [maxDate]="maxBirthDate"
+                [minDate]="minBirthDate"
+                [iconDisplay]="'input'"
+                [showIcon]="true"
             />
             <shared-error-field
             *ngIf="isInvalidField('birthDate')"
@@ -68,7 +117,7 @@
             ></shared-error-field>
         </div>
         <!-- Gender -->
-        <div class="field mb-5">
+        <div class="field mb-6">
             <label for="birthDate" class="text-lg">Gender</label>
             <div class="flex gap-5">
                 <div>
@@ -94,12 +143,25 @@
             ></shared-error-field>                
         </div>
         <!-- Submit Button -->
-        <shared-general-button
-            type="primary"
-            label="Edit"
-            icon="fa fa-pencil"
-            [submit]="true"
-            [disabled]="submit"
-        ></shared-general-button>
+        <div class="grid">
+            <div class="col-12 md:col-6">
+                <shared-general-button
+                    type="primary"
+                    label="Edit"
+                    icon="fa fa-pencil"
+                    [submit]="true"
+                    [disabled]="submit"
+                ></shared-general-button>
+            </div>
+            <div class="col-12 md:col-6">
+                <shared-general-button
+                    type="cancel"
+                    label="Cancel"
+                    icon="fa-solid fa-angles-left"
+                    [disabled]="submit"
+                    (click)="setShowForm(false)"
+                ></shared-general-button>
+            </div>
+        </div>
     </form>
 </div>

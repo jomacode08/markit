@@ -2,6 +2,8 @@
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Features.Creators.Queries;
+using markit.Application.Features.Creators.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 using MediatR;
@@ -9,8 +11,9 @@ using System.Transactions;
 
 namespace markit.Application.Features.Creators.Commands.UpdateCreator
 {
-    public class UpdateCreatorCommand : IRequest<Unit>
+    public class UpdateCreatorCommand : IRequest<CreatorViewModel>
     {
+
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -18,28 +21,36 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
         public Gender Gender { get; set; }
     }
 
-    public class UpdateCreatorCommandHandler : IRequestHandler<UpdateCreatorCommand, Unit>
+    public class UpdateCreatorCommandHandler : IRequestHandler<UpdateCreatorCommand, CreatorViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly IAppUserService _appUserService;
 
-        public UpdateCreatorCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppUserService appUserService)
+        public UpdateCreatorCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppUserService appUserService, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _appUserService = appUserService;
+            _mediator = mediator;
         }
 
-        public async Task<Unit> Handle(UpdateCreatorCommand request, CancellationToken cancellationToken)
+        public async Task<CreatorViewModel> Handle(UpdateCreatorCommand request, CancellationToken cancellationToken)
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
             await UpdateCreator(request);
             await UpdateAppUser(request);
 
+            var creatorUpdated = await _mediator.Send(
+                new GetCreatorByIdQuery {
+                    Id = request.Id 
+                }
+            );
+
             scope.Complete();
-            return Unit.Value;
+            return creatorUpdated;
         }
 
         private async Task UpdateCreator(UpdateCreatorCommand request) {
