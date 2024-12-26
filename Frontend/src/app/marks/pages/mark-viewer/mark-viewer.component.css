@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+#name {
+  background-color: transparent;
+  color: hsl(0, 0%, 100%);
+  border: 0px;
+}
+
+#name:focus {
+  box-shadow: none;
+}

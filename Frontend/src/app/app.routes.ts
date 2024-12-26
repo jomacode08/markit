@@ -16,6 +16,13 @@ export const routes: Routes = [
             import('./dashboard/dashboard.routes').then(r => r.DASHBOARD_ROUTES)
     },
     {
+        path: 'mark',
+        canActivate: [IsAuthenticatedActivateGuard],
+        canMatch: [IsAuthenticatedActivateGuard],
+        loadChildren: () => 
+            import('./marks/mark.routes').then(r => r.MARK_ROUTES)
+    },
+    {
         path: 'not-found',
         component: NotFoundComponent
     },

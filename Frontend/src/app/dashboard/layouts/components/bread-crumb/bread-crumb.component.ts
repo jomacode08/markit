@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './bread-crumb.component.html',
   styleUrl: './bread-crumb.component.css',
 })
-export class BreadCrumbComponent implements OnInit, OnChanges {
+export class BreadCrumbComponent implements OnChanges {
   private router = inject(Router);
   
   @Input({ required: true })
@@ -23,10 +23,6 @@ export class BreadCrumbComponent implements OnInit, OnChanges {
       this.url = changes['url'].currentValue;
       this.urlSegments = this.getUrlSegments(this.url);
     }
-  }
-
-  ngOnInit(): void {
-    this.urlSegments = this.getUrlSegments(this.url);
   }
   
   public navigate( urlSegmentIndex: number ): void {

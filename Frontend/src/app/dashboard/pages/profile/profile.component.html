@@ -1,17 +1,15 @@
-<div id="profile-container">
+<div class="container">
     <!-- User Presentation -->
      <div class="grid my-5">
         <!-- Picture -->
         <div class="col-12 md:col-5 flex justify-content-center">
-            <div class="p-avatar border-none border-circle shadow-5">
-                
+            <div class="p-avatar">
                 @if( pictureUrl  ) {
-                    <img class="border-circle" [src]="pictureUrl" alt="user picture">
+                    <img class="border-circle" [src]="pictureUrl" alt="user picture" referrerpolicy="no-referrer">
                 }
                 @else {
                     <i class="fa fa-user text-7xl"></i>
                 }
-                
             </div>
         </div>
         <!-- Welcome text -->

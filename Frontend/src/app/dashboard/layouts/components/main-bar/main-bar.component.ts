@@ -19,12 +19,14 @@ import { AuthService } from './../../../../auth/services/auth.service';
 export class MainBarComponent {
   public navigationRutes : MenuItem[] = [
     {
-      label: 'Test 1',
-      icon: 'fa fa-user'
+      label: 'Home',
+      icon: 'fa fa-home',
+      command: () => this.navigate('dashboard')
     },
     {
-      label: 'Test2',
-      icon: 'fa fa-right-to-bracket'
+      label: 'My marks',
+      icon: 'fa fa-bookmark',
+      command: () => this.navigate('mark')
     },
   ];
 

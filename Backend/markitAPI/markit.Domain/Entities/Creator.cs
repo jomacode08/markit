@@ -24,6 +24,9 @@ namespace markit.Domain.Entities
                 return $"{FirstName} {LastName}";
             }
         }
+
+        public virtual ICollection<Mark>? Marks { get; set; }
+
     }
 
     public enum Gender

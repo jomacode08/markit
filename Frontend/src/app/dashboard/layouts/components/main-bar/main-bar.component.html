@@ -20,14 +20,19 @@
             icon="fa fa-bars"
             (onClick)="onShowSideBar.emit(this.navigationRutes)"
         />
-        <!-- User -->
-        <p-avatar
-            (click)="onShowSideBar.emit(this.userActions)"
-            [styleClass]="!userPictureUrl ? 'border-0' : ''"
-            [icon]="!userPictureUrl ? 'fa fa-user' : ''"
-            [image]="userPictureUrl"
-            size="large"
-            shape="circle" 
-        />
+        <!-- User Picture -->
+        <div class="p-avatar" (click)="onShowSideBar.emit(this.userActions)">
+            @if ( userPictureUrl ) {
+                <img
+                    [src]="userPictureUrl"
+                    class="border-circle"
+                    alt="user picture"
+                    referrerpolicy="no-referrer"
+                >
+            }
+            @else {
+                <i class="fa fa-user text-lg"></i>
+            }
+        </div>
     </div>
 </div>

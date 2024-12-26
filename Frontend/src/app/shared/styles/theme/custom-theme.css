@@ -174,12 +174,19 @@ input:hover {
 
 /** Avatar */
 .p-avatar {
-    display: flex;
-    cursor: pointer;
-    color: var(--main-black-color);
-    background-color: var(--neutral-background-color);
-    border: var(--text-color) solid 1px;
-    border-bottom: var(--text-color) solid 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--main-black-color);
+  background-color: var(--neutral-background-color);
+  border-radius: 50%;
+}
+
+.p-avatar img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 /** Sidebar */
@@ -222,7 +229,27 @@ input:hover {
   z-index: 0;
 }
 
+/** Editor */
+.p-editor-toolbar {
+  border-radius: 0px !important;
+  background-color: var(--main-black-color) !important;
+  border-color: transparent !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+.p-editor-content {
+  margin-top: 1em !important;
+  font-family: 'Nunito' !important;
+  font-size: 1rem !important;
+}
+.p-editor-content, .ql-editor{
+  border-radius: 6px;
+  background-color: #fbf4e9 !important;
+  min-height: 200px;
+  color: var(--main-black-color) !important;
+}
+
 /** Utils */
 .h-50 {
-    height: 50% !important;
+  height: 50% !important;
 }

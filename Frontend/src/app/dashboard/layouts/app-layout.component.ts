@@ -59,10 +59,10 @@ export class AppLayoutComponent {
   private handleRouterEvents(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.activatedUrl = this.router.url;
+        console.log(this.activatedRoute?.firstChild?.routeConfig);
+        this.activatedUrl = event.url;
         this.titleComponent = this.activatedRoute.firstChild?.routeConfig?.title?.toString();
       }
     });
   }
-
 }

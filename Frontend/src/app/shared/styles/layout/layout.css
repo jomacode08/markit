@@ -21,13 +21,19 @@ a {
     color: var(--primary-color);
 }
 
+/* Aplica width >= 992px */
+@media only screen and (min-width: 992px) {
+    .container {
+        max-width: 40vw;
+        margin: auto;
+    }
+}
 /* Aplica width >= 768px */
 @media only screen and (min-width: 768px) {
     .card {
         height: 50%;
     }
 }
-
 /* Aplica width <= 768px */
 @media only screen and (max-width: 768px) {
     #form-container {

@@ -1,13 +1,13 @@
-/* Global layout styles */
+/* Global custom styles */
 @import '../src/app/shared/styles/layout/layout.css';
-/*Primeng Core theme*/
-@import '../src/app/shared/styles/theme/core-theme.css';
-/*File with custom changes*/
 @import '../src/app/shared/styles/theme/custom-theme.css';
 
 /* FontAwesome and Primeng */
+@import '../src/app/shared/styles/theme/core-theme.css';
+@import "../node_modules/primeflex/primeflex.scss";
 @import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 @import "../node_modules/primeng/resources/primeng.min.css";
 
-/* PrimeFlex */
-@import "../node_modules/primeflex/primeflex.scss";
+/* Quill styles */
+@import "../node_modules/quill/dist/quill.core.css";
+@import "../node_modules/quill/dist/quill.snow.css";

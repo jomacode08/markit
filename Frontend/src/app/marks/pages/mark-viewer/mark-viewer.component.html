@@ -1,0 +1,38 @@
+<div class="container">
+    <form
+        [formGroup]="markForm"
+        autof
+        autocomplete="off"
+    >
+        <!-- Name -->
+        <input
+            id="name"
+            pInputText
+            formControlName="name"
+            type="text"
+            class="w-full my-5 px-0 text-2xl font-fraunces font-semibold"
+        />
+        <!-- Content -->
+        <p-editor formControlName="content" placeholder="Type something here...">
+            <ng-template pTemplate="header">
+                <span class="ql-formats">
+                    <select class="ql-size"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <select class="ql-align"></select>
+                  </span>
+            </ng-template>
+        </p-editor>
+    </form>
+</div>

@@ -13,3 +13,8 @@
     top: 12px;
     background-color: #cfb6f2;
 }
+
+.p-avatar {
+    width:  55px;
+    height: 55px;
+}
