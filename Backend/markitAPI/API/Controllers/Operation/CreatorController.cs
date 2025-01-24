@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace markit.API.Controllers.Operation
 {
-    
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/creators")]
     [ApiController]
     public class CreatorController : ControllerBase
     {

@@ -151,6 +151,14 @@ namespace markit.Infraestructure.Repositorys
             entity.Enable = false;
             UpdateEntity(entity);
         }
+
+        public void SoftDeleteRangeEntity(List<T> entityList)
+        {
+            foreach (var entity in entityList)
+            {
+                SoftDeleteEntity(entity);
+            }
+        }
         #endregion
     }
 }

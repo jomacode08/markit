@@ -41,6 +41,7 @@ namespace markit.Infraestructure.Persistence.EF
             builder.ApplyConfiguration(new UserRoleConfiguration(_userDefaultSettings));
 
             ChangeNameSchemas(builder);
+            AddQueryFilters(builder);
         }
 
         /// <summary>
@@ -86,6 +87,11 @@ namespace markit.Infraestructure.Persistence.EF
             builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", securitySchema);
             builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", securitySchema);
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", securitySchema);
+        }
+
+        private static void AddQueryFilters(ModelBuilder builder) {
+            builder.Entity<Creator>().HasQueryFilter(m => m.Enable);
+            builder.Entity<Mark>().HasQueryFilter(m => m.Enable);
         }
     }
 }

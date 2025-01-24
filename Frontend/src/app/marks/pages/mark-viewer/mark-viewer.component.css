@@ -1,7 +1,4 @@
-:host {
-  display: block;
-}
-
+/** Name input */
 #name {
   background-color: transparent;
   color: hsl(0, 0%, 100%);

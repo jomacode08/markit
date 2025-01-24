@@ -1,7 +1,23 @@
-<div class="max-w-20rem">
-    <shared-general-button
-        label="Add new mark"
-        type="primary"
-        (click)="onAddButtonClick()"
-    ></shared-general-button>
+<div>
+
+    <div class="grid">
+        @for (mark of markList; track $index) {
+            <div class="col-12 md:col-4">{{ mark.name }}</div>
+            <div class="col-12 md:col-4">{{ mark.content }}</div>
+            <div class="col-12 md:col-4 flex justify-content-center">
+                <i class="fa fa-eye cursor-pointer" (click)="onSeeButtonClick(mark.id)"></i>
+            </div>
+        }
+    </div>
+    <div class="grid justify-content-center">
+        <div class="col-12 md:col-4 mt-5">            
+            <shared-general-button
+                label="Add new mark"
+                type="primary"
+                icon="fa fa-plus"
+                (click)="onAddButtonClick()"
+            ></shared-general-button>
+        </div>
+    </div>
+
 </div>

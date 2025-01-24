@@ -1,38 +1,65 @@
-<div class="container">
+<div class="container relative">
     <form
-        [formGroup]="markForm"
-        autof
+        *ngIf="!loading; else skeleton"
+        [formGroup]="form"
+        (submit)="onSubmit()"
         autocomplete="off"
     >
         <!-- Name -->
-        <input
-            id="name"
-            pInputText
-            formControlName="name"
-            type="text"
-            class="w-full my-5 px-0 text-2xl font-fraunces font-semibold"
-        />
-        <!-- Content -->
-        <p-editor formControlName="content" placeholder="Type something here...">
-            <ng-template pTemplate="header">
-                <span class="ql-formats">
-                    <select class="ql-size"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                    <select class="ql-align"></select>
-                  </span>
-            </ng-template>
-        </p-editor>
+        <div class="my-5">
+            <input
+                id="name"
+                pInputText
+                formControlName="name"
+                type="text"
+                class="w-full px-0 text-2xl font-fraunces font-semibold"
+            />
+            <shared-error-field
+                *ngIf="isInvalidField('name')"
+                [validationField]="getValidationField('name', 'masc', 'name title')">
+            </shared-error-field>  
+        </div>
+
+        <!-- Editor -->
+        <marks-text-editor formControlName="content"/>
+
+        <!-- Temporary Submit button -->
+        <div class="grid mt-5">
+            <div class="col-12 md:col-6">
+                <shared-general-button
+                    type="primary"
+                    label="Save"
+                    icon="fa fa-floppy-disk"
+                    [submit]="true"
+                    [disabled]="submit"
+                ></shared-general-button>
+            </div>
+            <div class="col-12 md:col-6">
+                <shared-general-button
+                    type="cancel"
+                    label="Cancel"
+                    icon="fa-solid fa-angles-left"
+                    [disabled]="submit"
+                    (click)="onCancel()"
+                ></shared-general-button>
+            </div>
+        </div>
     </form>
 </div>
+
+<ng-template #skeleton>
+    <div class="w-full my-5">
+        <p-skeleton height="3rem"/>
+    </div>
+    <div class="w-full mb-5">
+        <p-skeleton height="200px"/>
+    </div>
+    <div class="grid">
+        <div class="col-12 md:col-6">
+            <p-skeleton height="2.5rem"/>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-skeleton height="2.5rem"/>
+        </div>
+    </div>
+</ng-template>

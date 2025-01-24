@@ -1,0 +1,56 @@
+<!-- Text editor -->
+<tiptap-editor
+    id="editor"
+    [editor]="editor"
+    [(ngModel)]="input"
+    (ngModelChange)="onChange($event)"
+    (blur)="onTouched()"
+/>
+
+<!-- Floating edition menu button -->
+<p-button
+    styleClass="floating-button"
+    icon="fa fa-font"
+    size="large"
+    [rounded]="true"
+    [raised]="true"
+    (onClick)="setEditionMenuState()"
+/>
+
+<!-- Main Edition menu -->
+<p-sidebar
+    id="edition-menu"
+    [visible]="isEditionMenuVisible"
+    [modal]="false"
+    [dismissible]="false"
+    position="bottom"
+>
+    <div class="scroll-container">
+        <!-- Back button -->
+        <div
+            class="active"
+            *ngIf="currentEditionOptions !== mainEditionOptions()"
+            (click)="this.currentEditionOptions = this.mainEditionOptions()"
+        >
+            <i class="fa fa-angles-left"></i>
+        </div>
+
+        <!-- Edition options -->
+        @for (option of currentEditionOptions; track $index) {
+            <div 
+                [class]="isNodeMarkActive(option) ? 'active' : ''"
+                (click)="option.children
+                ? this.currentEditionOptions = option.children
+                : option?.command(this.editor)"
+            >
+                <!-- icon -->
+                <i
+                    [class]="option.icon" 
+                    [style]="getColorStyleDeclaration(option.color)"
+                ></i>
+                <!-- Description -->
+                <span class="block">{{ option.label }}</span>
+            </div>
+        }
+    </div>
+</p-sidebar>

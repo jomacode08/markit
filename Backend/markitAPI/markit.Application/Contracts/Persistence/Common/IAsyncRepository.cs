@@ -33,6 +33,7 @@ namespace markit.Application.Contracts.Persistence.Common
         void UpdateEntity(T entity);
         void HardDeleteEntity(T entity);
         void SoftDeleteEntity(T entity);
+        void SoftDeleteRangeEntity(List<T> entityList);
         #endregion
     }
 }

@@ -30,8 +30,23 @@ a {
 }
 /* Aplica width >= 768px */
 @media only screen and (min-width: 768px) {
+    #edition-menu {
+        .p-sidebar {
+            max-width: 640px;
+            left: calc(50% - (640px) / 2);
+            bottom: 1rem;
+            border-radius: 50px;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+        }
+    }
     .card {
         height: 50%;
+    }
+    .floating-button {
+        position: fixed;
+        right: 30%;
+        bottom: 7.5rem;
     }
 }
 /* Aplica width <= 768px */
@@ -41,5 +56,10 @@ a {
     }
     .card {
         min-height: 16rem;
+    }
+    .floating-button {
+        position: fixed;
+        right:  1rem;
+        bottom: 6.5rem;
     }
 }

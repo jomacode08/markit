@@ -13,8 +13,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SidebarModule } from 'primeng/sidebar';
+import { SkeletonModule } from 'primeng/skeleton';
+import { SpeedDialModule } from 'primeng/speeddial';
 import { ToastModule } from 'primeng/toast';
-
 
 
 @NgModule({
@@ -32,6 +33,8 @@ import { ToastModule } from 'primeng/toast';
     PasswordModule,
     RadioButtonModule,
     SidebarModule,
+    SkeletonModule,
+    SpeedDialModule,
     ToastModule,
   ]
 })

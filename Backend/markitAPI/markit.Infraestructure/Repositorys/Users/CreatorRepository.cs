@@ -6,7 +6,7 @@ namespace markit.Infraestructure.Repositorys.Users
 {
     public class CreatorRepository : BaseRepository<Creator>, ICreatorRepository
     {
-        public CreatorRepository(MarkitDbContext mirefDbContext) : base(mirefDbContext)
+        public CreatorRepository(MarkitDbContext markitDbContext) : base(markitDbContext)
         {
         }
     }

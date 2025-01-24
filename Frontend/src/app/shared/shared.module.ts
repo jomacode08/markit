@@ -9,10 +9,11 @@ import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
 import { GeneralButtonComponent } from './components/ui/buttons/general-button.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
+
 @NgModule({
     imports: [
         CommonModule,
-        PrimengModule
+        PrimengModule,
     ],
     declarations: [
         NotFoundComponent,

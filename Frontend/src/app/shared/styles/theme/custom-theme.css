@@ -17,6 +17,7 @@
 body {
     font-family: "Nunito";
     color: #ffff;
+    background-color: var(--main-black-color);
 }
 
 /** Inputs **/
@@ -133,7 +134,7 @@ input:hover {
 }
 
 .cancel-button {
-  background-color: transparent;
+  background-color: var(--main-black-color);
   color: #ffffff;
 }
 .cancel-button:hover, .cancel-button:focus {
@@ -152,6 +153,19 @@ input:hover {
     background-color: var(--neutral-background-color);
     color: var(--main-black-color);
     box-shadow: none;
+}
+
+.p-button.floating-button {
+  background-color: var(--light-gray-color);
+  border: none;
+  opacity: 0.9;
+}
+.p-button.floating-button:focus {
+  box-shadow: none;
+}
+.p-button.floating-button:hover {
+  background-color: var(--main-purple-hover-color);
+  opacity: 1;
 }
 
 /** Radio Button */
@@ -191,16 +205,36 @@ input:hover {
 
 /** Sidebar */
 .p-sidebar {
-  background-color: var(--main-purple-color);
   color: var(--main-black-color);
-}
-.p-sidebar-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 .p-sidebar-header {
   padding: 10px;
+}
+
+#main-sidebar {
+  .p-sidebar {
+    background-color: var(--main-purple-color);
+  }
+  .p-sidebar-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+#edition-menu {
+  .p-sidebar {
+    background-color: var(--main-gray-color);
+    height: 6rem;
+  }
+  .p-sidebar-content {
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  .p-sidebar-header {
+    display: none;
+  }
 }
 
 /** Menu */
@@ -248,6 +282,12 @@ input:hover {
   min-height: 200px;
   color: var(--main-black-color) !important;
 }
+
+/** Skeleton */
+.p-skeleton {
+  background-color: var(--main-gray-color);
+}
+
 
 /** Utils */
 .h-50 {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace markit.API.Controllers.Seguridad
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/login")]
     [ApiController]
     public class LoginController : ControllerBase
     {

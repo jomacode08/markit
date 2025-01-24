@@ -2,6 +2,9 @@
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries.ViewModels;
+using markit.Application.Features.Marks.Commands.CreateMarkCommand;
+using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
+using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 
@@ -27,6 +30,10 @@ namespace markit.Application.Mappings
                     opt  => opt.MapFrom(src => src.BirthDate.ToString())
                 );
 
+            // Marks
+            CreateMap<CreateMarkCommand, Mark>();
+            CreateMap<UpdateMarkCommand, Mark>();
+            CreateMap<Mark, MarkViewModel>();
         }
     }
 }

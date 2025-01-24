@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class CreatorService {
 
-  private baseUrl: string = `${ environment.baseApiUrl }/creator`;
+  private baseUrl: string = `${ environment.baseApiUrl }/creators`;
 
   constructor(private http: HttpClient) { }
 
