@@ -15,9 +15,20 @@
 }
 
 body {
-    font-family: "Nunito";
-    color: #ffff;
-    background-color: var(--main-black-color);
+  font-family: "Nunito";
+  color: #ffff;
+  background-color: var(--main-black-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--light-gray-color);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+::-webkit-scrollbar {
+  width: 8px;
 }
 
 /** Inputs **/
@@ -25,6 +36,7 @@ input {
   padding: 0.75rem;
   border-width: 2px;
   border-color: var(--light-gray-color);
+  border-radius: 0px;
 }
 
 input.rounded {
@@ -84,6 +96,11 @@ input:hover {
 }
 
 /** Button */
+button {
+  background-color: transparent;
+  color: #ffffff;
+}
+
 .general-button {
   width: 100%;
   display: flex;
@@ -118,14 +135,12 @@ input:hover {
 .primary-button:hover, .primary-button:focus {
   background-color: var(--main-yellow-hover-color);
 }
-
 .secondary-button {
   background-color: var(--main-purple-color);
 }
 .secondary-button:hover, .secondary-button:focus {
   background-color: var(--main-purple-hover-color);
 }
-
 .terceary-button {
   background-color: #ffffff;
 }
@@ -142,17 +157,17 @@ input:hover {
 }
 
 .p-button.nav-button {
-    background-color: transparent;
-    padding: 5px;
-    color: #ffffff;
-    border-width: 0 0 2px 0;
-    border-color: #ffffff;
-    border-radius: 0px;
+  background-color: transparent;
+  padding: 5px;
+  color: #ffffff;
+  border-width: 0 0 2px 0;
+  border-color: #ffffff;
+  border-radius: 0px;
 }
 .p-button.nav-button:focus {
-    background-color: var(--neutral-background-color);
-    color: var(--main-black-color);
-    box-shadow: none;
+  background-color: var(--neutral-background-color);
+  color: var(--main-black-color);
+  box-shadow: none;
 }
 
 .p-button.floating-button {
@@ -222,15 +237,18 @@ input:hover {
   }
 }
 
-#edition-menu {
+#floating-menu {
   .p-sidebar {
-    background-color: var(--main-gray-color);
+    background: transparent;
     height: 6rem;
+    box-shadow: none;
   }
   .p-sidebar-content {
-    padding: 0.5rem 2rem 0.5rem 2rem;
     display: flex;
     justify-content: center;
+    background-color: var(--main-gray-color);
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
   .p-sidebar-header {
     display: none;

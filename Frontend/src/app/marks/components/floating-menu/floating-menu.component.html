@@ -1,0 +1,35 @@
+<p-sidebar
+    #sidebar
+    id="floating-menu"
+    position="bottom"
+    [visible]="visible"
+    [modal]="false"
+    [dismissible]="false"
+>
+    <div class="scroll-container">
+        <!-- Back button -->
+        <div
+            class="active"
+            *ngIf="isBackButtonVisible"
+            (click)="onBackButtonClick()"
+        >
+            <i class="fa fa-angles-left"></i>
+        </div>
+
+        <!-- Edition options -->
+        @for (option of currentMenuOptions; track $index) {
+            <div 
+                [ngClass]="{ 'active' : option.isActive ? option.isActive() : false }" 
+                (click)="onOptionClick(option)"
+            >
+                <!-- icon -->
+                <i
+                    [class]="option.icon"
+                    [style]="getColorStyleDeclaration(option.color)"
+                ></i>
+                <!-- Description -->
+                <span class="block">{{ option.label }}</span>
+            </div>
+        }
+    </div>
+</p-sidebar>

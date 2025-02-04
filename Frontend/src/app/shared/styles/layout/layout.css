@@ -24,20 +24,23 @@ a {
 /* Aplica width >= 992px */
 @media only screen and (min-width: 992px) {
     .container {
-        max-width: 40vw;
+        max-width: 50vw;
         margin: auto;
     }
 }
 /* Aplica width >= 768px */
 @media only screen and (min-width: 768px) {
-    #edition-menu {
+    #floating-menu {
         .p-sidebar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .p-sidebar-content {
             max-width: 640px;
-            left: calc(50% - (640px) / 2);
-            bottom: 1rem;
             border-radius: 50px;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
+            padding-left:  5rem !important;
+            padding-right: 5rem !important;
         }
     }
     .card {

@@ -16,7 +16,7 @@
         <div class="col-12 md:col-7 flex align-items-center justify-content-center md:border-left-1">
             <p class="text-3xl font-light">
                 <span>Hello, </span>
-                <span class="font-semibold md:mr-3">{{ creatorInDatabase?.firstName }}</span>
+                <span class="font-semibold md:mr-3">{{ creatorInSession?.firstName }}</span>
                 <i id="edit-icon" class="fa-solid fa-pencil" (click)="setShowForm(true)"></i>
             </p>
         </div>
@@ -31,7 +31,7 @@
             <p>
                 <i class="fa-solid fa-user mr-2"></i>
                 <span class="font-semibold font-fraunces mr-3">Name: </span>
-                {{ creatorInDatabase?.firstName }} {{ creatorInDatabase?.lastName }}
+                {{ creatorInSession?.firstName }} {{ creatorInSession?.lastName }}
             </p>
             <p class="mb-0 md:my-3">
                 <i class="fa-solid fa-calendar mr-2"></i>
@@ -43,12 +43,12 @@
             <p>
                 <i class="fa-solid fa-envelope mr-2"></i>
                 <span class="font-semibold font-fraunces mr-3">Email:</span>
-                {{ creatorInDatabase?.email }}
+                {{ creatorInSession?.email }}
             </p>
             <p>
                 <i class="fa-solid fa-thumbtack mr-2"></i>
                 <span class="font-semibold font-fraunces mr-3">Member since:</span>
-                {{ creatorInDatabase?.createdDate | date }}
+                {{ creatorInSession?.createdDate | date }}
             </p>
         </div>
     </div>

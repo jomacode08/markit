@@ -53,22 +53,32 @@
 
 </p-toast>
 <!-- Confirm Dialog -->
-<p-confirmDialog #confirmDialog [style]="{width: '30vw'}">
-    <ng-template pTemplate="footer">
-        <button
-            type="button"
-            pButton
-            class="p-button-secondary"
-            icon="pi pi-times"
-            label="No"
-            (click)="confirmDialog.reject()"
-        ></button>
-        <button
-            type="button"
-            pButton
-            icon="pi pi-check"
-            label="Sí"
-            (click)="confirmDialog.accept()"
-        ></button>
+<p-confirmDialog styleClass="w-10 md:w-20rem" #confirmDialog>
+    <ng-template pTemplate="headless" let-message>
+        <div class="confirm-dialog-icon">
+            <i [class]="message.icon"></i>
+        </div>
+        <div class="confirm-dialog-header">
+            {{ message.header }}
+        </div>
+        <div class="confirm-dialog-content">
+            {{ message.message }}
+        </div>
+        <div class="confirm-dialog-footer">
+            <button
+                class="up-down-transition"
+                type="button"
+                pButton
+                label="Accept"
+                (click)="confirmDialog.accept()"
+            ></button>
+            <button
+                class="up-down-transition"
+                type="button"
+                pButton
+                label="Cancel"
+                (click)="confirmDialog.reject()"
+            ></button>
+        </div>
     </ng-template>
 </p-confirmDialog>

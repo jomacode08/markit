@@ -31,6 +31,7 @@ namespace markit.Infraestructure.Persistence.EF
         public DbSet<Creator> Creators { get; set; }
         public DbSet<Mark> Marks { get; set; }
         public DbSet<Link> Links { get; set; }
+        public DbSet<Block> Blocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -92,6 +93,8 @@ namespace markit.Infraestructure.Persistence.EF
         private static void AddQueryFilters(ModelBuilder builder) {
             builder.Entity<Creator>().HasQueryFilter(m => m.Enable);
             builder.Entity<Mark>().HasQueryFilter(m => m.Enable);
+            builder.Entity<Link>().HasQueryFilter(m => m.Enable);
+            builder.Entity<Block>().HasQueryFilter(m => m.Enable);
         }
     }
 }

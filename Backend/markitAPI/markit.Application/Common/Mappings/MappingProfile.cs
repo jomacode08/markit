@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries.ViewModels;
@@ -31,9 +32,57 @@ namespace markit.Application.Mappings
                 );
 
             // Marks
-            CreateMap<CreateMarkCommand, Mark>();
-            CreateMap<UpdateMarkCommand, Mark>();
-            CreateMap<Mark, MarkViewModel>();
+            CreateMap<CreateMarkCommand, Mark>()
+                .ForMember(dest => dest.Blocks, opt =>
+                    opt.MapFrom(src => src.Blocks));
+
+            CreateMap<UpdateMarkCommand, Mark>()
+                // Ignore Blocks initially due to AutoMapper replace the existent collection with the new one.
+                // This could provocate data loss, it's better to mapping the collection manually.
+                .ForMember(dest => dest.Blocks, opt => opt.Ignore())
+                // Mapping blocks mannually
+                .AfterMap((src, dest) =>
+                {
+                    List<Block> blocksToDelete = dest.Blocks != null ? dest.Blocks.ToList() : [];
+
+                    foreach (var block in src.Blocks)
+                    {
+                        var existingBlock = dest.Blocks?.FirstOrDefault(b => b.Id == block.Id);
+
+                        // Update the existent block properties
+                        if (existingBlock != null)
+                        {
+                            blocksToDelete.Remove(existingBlock);
+
+                            existingBlock.Cols = block.Cols;
+                            existingBlock.Color = block.Color;
+                            existingBlock.Content = block.Content;
+                        }
+                        // Otherwise, add the new block
+                        else
+                        {
+                            dest.Blocks?.Add(new Block
+                            {
+                                Cols = block.Cols,
+                                Color = block.Color,
+                                Content = block.Content,
+                            });
+                        }
+                    }
+                    // Delete the blocks that aren't in the src object, which means the user deleted them
+                    foreach(var blockToDelete in blocksToDelete)
+                    {
+                        dest.Blocks?.Remove(blockToDelete);
+                    }
+                });
+
+            CreateMap<Mark, MarkViewModel>()
+                .ForMember(dest => dest.Blocks, opt =>
+                    opt.MapFrom(src => src.Blocks));
+
+            // Blocks
+            CreateMap<BlockViewModel, Block>();
+            CreateMap<Block, BlockViewModel>();
         }
     }
 }

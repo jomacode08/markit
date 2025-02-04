@@ -16,17 +16,17 @@ export class ErrorFieldMessagePipe implements PipeTransform {
         // Retornar el mensaje de error del primer error encontrado.
         switch (errors[0]) {
             case 'required':
-                return `The ${ name } field is required`;
+                return `The ${ name } is required`;
             case 'minlength':
                 return `A minimum of ${ field.validationError!['minlength'].requiredLength } characters is required`
             case 'maxlength':
                 return `A maximum of ${ field.validationError!['maxlength'].requiredLength } characters is required`
             case 'pattern' :
-                return `The ${ name } field has an invalid format`;
+                return `The ${ name } has an invalid format`;
             case 'notEqual' :
                 return `The value of ${ name.toLowerCase() } isn't correct`;
             case 'notGroupValidCheckbox' :
-                return `At least one field must be selected`;
+                return `At least one must be selected`;
             default:
                 return '';
         }

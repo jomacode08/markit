@@ -18,8 +18,8 @@ export class MarkService {
         return this.http.get<Mark[]>(`${ this.baseUrl }/getByCurrentSession`);
     }
 
-    public create(mark: Mark): Observable<void> {
-        return this.http.post<void>(`${ this.baseUrl }/create`, mark);
+    public create(mark: Mark): Observable<Mark> {
+        return this.http.post<Mark>(`${ this.baseUrl }/create`, mark);
     }
 
     public patch(mark : Mark): Observable<Mark> {

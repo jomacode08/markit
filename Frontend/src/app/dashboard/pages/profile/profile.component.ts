@@ -45,13 +45,13 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
   }
 
   public get birthDate(): string {
-    return this.creatorInDatabase?.birthDate?.split("/")
+    return this.creatorInSession?.birthDate?.split("/")
     .reverse()
     .join("/") ?? '';
   }
   
   //* Configuration
-  public creatorInDatabase ?: Creator;
+  public creatorInSession ?: Creator;
   public pictureUrl   ?: string;
   public maxBirthDate ?: Date;
   public minBirthDate ?: Date;
@@ -66,7 +66,7 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
 
     // Initialize form
     const creator = await this.getCreator();
-    this.creatorInDatabase = creator;
+    this.creatorInSession = creator;
     this.form.reset(creator);
     this.pictureUrl = creator.picture?.replace("s96-c", "s300-c");
   }
@@ -85,7 +85,7 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
     this.creatorService.update(creator).subscribe({
       next : (creator) => {
         this.setSubmit(false);
-        this.creatorInDatabase = creator;
+        this.creatorInSession = creator;
         this.messageService.showGeneralSuccess("Creator updated successfully");
       },
       error : () => {

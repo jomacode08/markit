@@ -1,34 +1,76 @@
-i {
-    font-size: 3rem;
-}
-
 :host ::ng-deep {
-    .p-dialog-content {
-        background-color: #ffffff !important;
+    //** Confirm dialog  **/
+    #message-icon {
+        font-size: 3rem;
+    }
+    .p-dialog {
+        background: var(--main-purple-color);
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+    .confirm-dialog-header, .confirm-dialog-content {
+        text-align: center;
+    }
+    .confirm-dialog-header, .confirm-dialog-content, .confirm-dialog-footer {
+        color: var(--main-black-color);
+    }
+    .confirm-dialog-icon {
+        display: flex;
+        justify-content: center;
+        color: var(--main-gray-color);
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+    }
+    .confirm-dialog-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-family: Fraunces;
+        margin-bottom: 0.5rem;
+    }
+    .confirm-dialog-content {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    .confirm-dialog-footer {
+        display: flex;
+        justify-content: space-around;
+    }
+    .confirm-dialog-footer > .p-button:first-child {
+        color: var(--main-purple-color);
+        background-color: var(--main-gray-color);
+    }
+    .confirm-dialog-footer > .p-button:last-child {
+        color: var(--main-gray-color);
+    }
+    .p-dialog .confirm-dialog-footer .p-button {
+        border: solid 1px var(--main-gray-color);
+        border-radius: 1.5rem;
+        padding: 0.5rem;
+        width: 45%;
+    }
+    .p-dialog .confirm-dialog-footer .p-button:hover {
+        transform: translateY(-0.25rem);
+        transition-duration: 300ms;
+    }
+    .p-dialog .confirm-dialog-footer .p-button:focus {
+        box-shadow: none;
     }
     
-    .p-confirm-dialog-message {
-        font-size: 1.3rem;
-    }
-    
+    //** Toast **/
     .p-toast .p-toast-message {
         background-color: #F8FAFC;
         border-left: solid 10px;
         color: #3B1650;
     }
-
     .p-toast .p-toast-message.p-toast-message-error {
         border-left-color: #ff5757;
     }
-
     .p-toast .p-toast-message.p-toast-message-info {
         border-left-color: #3b82f6;
     }
-
     .p-toast .p-toast-message.p-toast-message-success {
         border-left-color: #1ea97c;
     }
-
     .p-toast .p-toast-message.p-toast-message-warn {
         border-left-color: #cc8925;
     }

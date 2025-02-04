@@ -1,3 +1,4 @@
+<!-- Form -->
 <div class="container relative">
     <form
         *ngIf="!loading; else skeleton"
@@ -9,6 +10,7 @@
         <div class="my-5">
             <input
                 id="name"
+                placeholder="New Mark"
                 pInputText
                 formControlName="name"
                 type="text"
@@ -20,8 +22,25 @@
             </shared-error-field>  
         </div>
 
-        <!-- Editor -->
-        <marks-text-editor formControlName="content"/>
+        <!-- Blocks -->
+        <ng-container formArrayName="blocks">
+            <div class="grid">
+                @for (blockForm of currentBlocks.controls; track $index; let i = $index;) {
+                    <div 
+                        [class]="'col-12 md:col-' + blockForm.value['cols'] + ' mb-3'"
+                        [formGroup]="castAbstractControlToFormGroup(blockForm)"
+                    >
+                        <!-- Text editor -->
+                        <marks-text-editor
+                            [color]="blockForm.value['color']"
+                            (onEditorSelected)="onEditorSelected($event)"
+                            (onOptionsButtonClicked)="onBlockOptionsButtonClick(i)"
+                            formControlName="content"
+                        />
+                    </div>
+                }
+            </div>
+        </ng-container>
 
         <!-- Temporary Submit button -->
         <div class="grid mt-5">
@@ -47,6 +66,29 @@
     </form>
 </div>
 
+<!-- Floating font menu button -->
+<p-button
+    styleClass="floating-button"
+    icon="fa fa-font"
+    size="large"
+    [rounded]="true"
+    [raised]="true"
+    (onClick)="changeMarkMenuState()"
+/>
+
+<!-- Mark menu -->
+<marks-floating-menu
+    [menuOptions]="fontOptions()"
+    [visible]="isMarkMenuVisible"
+/>
+
+<!-- Block menu -->
+<marks-floating-menu
+    [menuOptions]="blockOptions()"
+    [visible]="isBlockMenuVisible"
+/>
+
+<!-- Loading skeleton template -->
 <ng-template #skeleton>
     <div class="w-full my-5">
         <p-skeleton height="3rem"/>

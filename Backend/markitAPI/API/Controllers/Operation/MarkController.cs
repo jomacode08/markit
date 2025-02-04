@@ -43,11 +43,10 @@ namespace markit.API.Controllers.Operation
 
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult> Create([FromBody] CreateMarkCommand command)
+        public async Task<MarkViewModel> Create([FromBody] CreateMarkCommand command)
         {
             command.CreatorId = _sessionService.GetCreatorId();
-            await _mediator.Send(command);
-            return NoContent();
+            return await _mediator.Send(command);
         }
 
         [HttpPatch]

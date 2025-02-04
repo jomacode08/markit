@@ -1,19 +1,21 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Features.Blocks.Queries.ViewModels;
+using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Domain.Entities;
 using MediatR;
 
 namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 {
-    public class CreateMarkCommand : IRequest<Unit>
+    public class CreateMarkCommand : IRequest<MarkViewModel>
     {
         public string Name { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
         public int CreatorId { get; set; }
+        public List<BlockViewModel> Blocks { get; set; } = new();
     }
 
-    public class CreateMarkCommandHandler : IRequestHandler<CreateMarkCommand, Unit>
+    public class CreateMarkCommandHandler : IRequestHandler<CreateMarkCommand, MarkViewModel>
     {
         private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
@@ -24,7 +26,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(CreateMarkCommand request, CancellationToken cancellationToken)
+        public async Task<MarkViewModel> Handle(CreateMarkCommand request, CancellationToken cancellationToken)
         {
             // Validate the existence of the creator
             Creator? creator = await _unitOfWork.creatorRepository.GetByIdAsync(request.CreatorId);
@@ -37,7 +39,8 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
             // Complete the transaction
             await _unitOfWork.Complete();
-            return Unit.Value;
+            
+            return _mapper.Map<MarkViewModel>(mark);
         }
     }
 }

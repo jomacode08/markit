@@ -1,0 +1,30 @@
+/** Edition menu */
+.scroll-container {
+  display: flex;
+  white-space: nowrap;
+  overflow-x: auto;
+  gap: 2rem;
+}
+
+.scroll-container > div {
+  align-self: center;
+  text-align: center;
+  color: #7f7f7f;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.scroll-container > div > i {
+  font-size: 1.5em;
+}
+
+.scroll-container > div.active {
+  color: var(--main-purple-color);
+}
+
+.scroll-container > div:hover {
+  color: #ffffff;
+}
+.scroll-container::-webkit-scrollbar {
+  height: 8px;
+}

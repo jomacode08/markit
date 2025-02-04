@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Domain.Entities;
 using MediatR;
@@ -11,7 +12,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
+        public List<BlockViewModel> Blocks { get; set; } = new();
     }
 
     public class UpdateMarkCommandHandler : IRequestHandler<UpdateMarkCommand, MarkViewModel>
@@ -28,7 +29,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
         public async Task<MarkViewModel> Handle(UpdateMarkCommand request, CancellationToken cancellationToken)
         {
             // Validate the existence of the mark
-            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id)
+            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Blocks")
                 ?? throw new NotFoundException("Mark", request.Id);
 
             // Mapping the request to the mark entity

@@ -61,7 +61,7 @@ export class CustomMessageService {
     this.confirmationService.confirm({
       message: confirm.message,
       header: confirm.header,
-      icon: confirm.icon ?? 'pi pi-exclamation-triangle',
+      icon: confirm.icon ?? 'fa fa-warning',
       accept: () => {
         confirm.accept();
       }

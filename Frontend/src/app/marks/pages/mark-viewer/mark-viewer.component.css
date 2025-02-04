@@ -8,3 +8,10 @@
 #name:focus {
   box-shadow: none;
 }
+
+/** Floating button */
+.floating-button {
+  position: fixed;
+  z-index: 1;
+}
+

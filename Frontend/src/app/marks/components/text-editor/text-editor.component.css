@@ -1,20 +1,28 @@
-/** Floating button */
-.floating-button {
-  position: fixed;
-  z-index: 1;
+/** Options button **/
+.relative .absolute {
+  font-size: 1.3rem;
+  color: #929292;
+  right: 0.5em;
+  top: 0.5em;
+}
+.relative .absolute i {
+  cursor: pointer;
+}
+.relative .absolute i:hover {
+  color: var(--main-purple-hover-color);
+  transition: 0.5s;
 }
 
 /** Text editor */
 .tiptap {
-  background-color: #fbf4e9;
   color: var(--main-black-color);
   border-radius: 6px;
-  padding: 1em;
+  padding: 1.5em;
   min-height: 200px;
 }
 
 .tiptap p.is-editor-empty:first-child::before {
-  color: #666666;
+  color: var(--light-gray-color);
   font-style: italic;
   content: attr(data-placeholder);
   float: left;
@@ -24,6 +32,17 @@
 
 .tiptap.ProseMirror.ProseMirror-focused {
   outline: none !important;
+}
+
+/** Text editor colors **/
+.neutral {
+  background-color: #fbf4e9;
+}
+.purple {
+  background-color: #E8DCF9;
+}
+.red {
+  background-color: #EDCAC0;
 }
 
 /** Editor Marks */
@@ -146,48 +165,5 @@ pre {
   .hljs-strong {
     font-weight: 700;
   }
-}
-
-/** Edition menu */
-.scroll-container {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  gap: 2rem;
-}
-
-.scroll-container > div {
-  flex: 0 0 auto;
-  align-self: center;
-  text-align: center;
-  color: #7f7f7f;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.scroll-container > div > i {
-  font-size: 1.5em;
-}
-
-.scroll-container > div.active {
-  color: var(--main-purple-color);
-}
-
-.scroll-container > div:hover {
-  color: #ffffff;
-}
-
-.scroll-container::-webkit-scrollbar {
-  height: 8px;
-}
-.scroll-container::-webkit-scrollbar-track {
-  display: none;
-}
-.scroll-container::-webkit-scrollbar-thumb {
-  background: var(--light-gray-color);
-  border-radius: 10px;
-}
-.scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #555; 
 }
 

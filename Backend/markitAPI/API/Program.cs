@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using markit.API.Middleware;
 using markit.Infraestructure.Persistence.EF;
 using Serilog;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ builder.Host.UseSerilog((context, configuration) =>
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower));
     });
 
 builder.Services.AddInfraestructureServices(builder.Configuration);
