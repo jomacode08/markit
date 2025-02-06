@@ -9,6 +9,8 @@ namespace markit.Domain.Entities
         public int Cols { get; set; }
         [Required]
         public BackColors Color { get; set; }
+        [MaxLength(255)]
+        public string? Title { get; set; }
         public string? Content { get; set; }
         [Required]
         public int MarkId { get; set; }

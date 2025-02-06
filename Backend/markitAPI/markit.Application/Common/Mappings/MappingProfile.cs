@@ -56,6 +56,7 @@ namespace markit.Application.Mappings
 
                             existingBlock.Cols = block.Cols;
                             existingBlock.Color = block.Color;
+                            existingBlock.Title = block.Title;
                             existingBlock.Content = block.Content;
                         }
                         // Otherwise, add the new block
@@ -65,6 +66,7 @@ namespace markit.Application.Mappings
                             {
                                 Cols = block.Cols,
                                 Color = block.Color,
+                                Title = block.Title,
                                 Content = block.Content,
                             });
                         }

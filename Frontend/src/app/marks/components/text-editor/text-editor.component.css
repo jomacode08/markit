@@ -1,24 +1,32 @@
-/** Options button **/
-.relative .absolute {
-  font-size: 1.3rem;
-  color: #929292;
-  right: 0.5em;
-  top: 0.5em;
+/** Block Panel */
+.p-panel {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
 }
-.relative .absolute i {
-  cursor: pointer;
+.p-panel .p-panel-content {
+  padding: 0;
+  border-radius: 6px;
+  margin-bottom: 0.5em;
 }
-.relative .absolute i:hover {
-  color: var(--main-purple-hover-color);
+.p-panel .p-panel-header {
+  border: none;
+  background-color: var(--main-black-color);
+}
+.p-panel .p-panel-header .p-panel-header-icon {
+  color: var(--light-gray-color);
+}
+.p-panel .p-panel-header .p-panel-header-icon:hover {
+  color: var(--main-purple-color);
   transition: 0.5s;
 }
-
+.p-panel-header div input {
+  font-weight: 400 !important;
+}
 /** Text editor */
 .tiptap {
   color: var(--main-black-color);
-  border-radius: 6px;
   padding: 1.5em;
   min-height: 200px;
+  border-radius: 6px;
 }
 
 .tiptap p.is-editor-empty:first-child::before {
@@ -54,7 +62,7 @@ mark {
 
 ul,ol {
   padding: 0 1rem;
-  margin: 1.25rem 1rem 1.25rem 0.4rem;
+  margin: 1.25rem 0;
 
   li p {
     margin-top: 0.25em;

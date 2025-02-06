@@ -10,6 +10,7 @@ import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SidebarModule } from 'primeng/sidebar';
@@ -30,6 +31,7 @@ import { ToastModule } from 'primeng/toast';
     InputTextModule,
     MenuModule,
     OverlayPanelModule,
+    PanelModule,
     PasswordModule,
     RadioButtonModule,
     SidebarModule,

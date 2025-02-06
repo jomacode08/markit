@@ -402,6 +402,11 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   //* Blocks
+  public onBlockTitleChanged(index: number, title: string ): void {
+    const block = this.currentBlocks.at(index) as FormGroup;
+    block.controls['title'].setValue(title); 
+  }
+  
   public onBlockOptionsButtonClick( index: number ): void {
     this.currentBlockIndex = index;
     this.changeBlockMenuState();
@@ -412,6 +417,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       id      : new FormControl<number>(0),
       cols    : new FormControl<Cols>(cols, Validators.required),
       color   : new FormControl<BackColors>(BackColors.neutral, Validators.required),
+      title   : new FormControl<string>(`New block ${ index + 1 }`, Validators.maxLength(255)),
       content : new FormControl<string>(""),
     });
 

@@ -52,9 +52,19 @@ input.square {
   border-width: 0px 2px 2px 0px !important;
 }
 
+input.transparent {
+  background-color: transparent;
+  color: hsl(0, 0%, 100%);
+  border: 0px;
+}
+
 input:focus {
   box-shadow: 0 0 0 0.2rem var(--light-gray-color);
   border: none;
+}
+
+input.transparent {
+  box-shadow: none !important;
 }
 
 input:hover {

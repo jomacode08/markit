@@ -1,15 +1,37 @@
-<!-- Text editor -->
- <div class="relative">
-    <!-- Menu options button -->
-    <div class="absolute z-1">
-        <i (click)="this.onOptionsButtonClicked.emit()" class="fa fa-shapes"></i>
-    </div>
-     <tiptap-editor
-         id="editor"
-         [editor]="editor"
-         [(ngModel)]="input"
-         (ngModelChange)="onChange($event)"
-         (blur)="onTouched()"
-         (mousedown)="onEditorClick()"
-     />
- </div>
+<p-panel [toggleable]="true" [collapsed]="collapsed">
+
+    <ng-template pTemplate="header">
+        <div>
+            <input
+                [(ngModel)]="title"
+                (ngModelChange)="onTitleChange($event)"
+                placeholder="New Block"
+                pInputText
+                type="text"
+                class="transparent w-full font-fraunces px-0 font-semibold"
+            />
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="icons">
+        <button 
+            type="button"
+            class="p-panel-header-icon p-link mr-2"
+            (click)="this.onOptionsButtonClicked.emit()"
+        >
+            <span class="fa fa-shapes"></span>
+        </button>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+        <tiptap-editor
+            id="editor"
+            [editor]="editor"
+            [(ngModel)]="input"
+            (ngModelChange)="onChange($event)"
+            (blur)="onTouched()"
+            (mousedown)="onEditorClick()"
+        />
+    </ng-template>
+
+</p-panel>
