@@ -16,7 +16,7 @@ import { UserInfo } from './../interfaces/user-info';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   //* === Configuration === *//
-  private tokenKey: string = GeneralConstant.token_storage_key;
+  private tokenKey: string = GeneralConstant.TOKEN_STORAGE_KEY;
   private _token       = signal<string | null>(null);
   private _currentUser = signal<UserInfo | null>(null);
   private _authStatus  = signal<AuthStatus>(AuthStatus.checking);

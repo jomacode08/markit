@@ -5,21 +5,29 @@ import { IsAuthenticatedActivateGuard, IsAuthenticatedMatchGuard } from './auth/
 export const routes: Routes = [
     {
         path: 'auth',
+        loadComponent: () => 
+            import('../app/auth/layout/auth-layout.component').then(c => c.AuthLayoutComponent),
         loadChildren: () =>
             import('./auth/auth.routes').then(r => r.AUTH_ROUTES)
     },
     {
         path: 'dashboard',
+        data: { breadcrumb : 'Dashboard' },
         canActivate: [IsAuthenticatedActivateGuard],
         canMatch: [IsAuthenticatedMatchGuard],
+        loadComponent: () => 
+            import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
         loadChildren: () =>
             import('./dashboard/dashboard.routes').then(r => r.DASHBOARD_ROUTES)
     },
     {
         path: 'mark',
+        data: { breadcrumb : 'Marks' },
         canActivate: [IsAuthenticatedActivateGuard],
         canMatch: [IsAuthenticatedActivateGuard],
-        loadChildren: () => 
+        loadComponent: () => 
+            import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
+        loadChildren: () =>
             import('./marks/mark.routes').then(r => r.MARK_ROUTES)
     },
     {

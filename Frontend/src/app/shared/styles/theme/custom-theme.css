@@ -169,9 +169,9 @@ button {
 .p-button.nav-button {
   background-color: transparent;
   padding: 5px;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.6);
   border-width: 0 0 2px 0;
-  border-color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
   border-radius: 0px;
 }
 .p-button.nav-button:focus {

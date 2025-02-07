@@ -1,36 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CurrentRouteService } from '../../../../shared/services/current-route.service';
+import { BreadCrumb } from '../../../../shared/interfaces/breadcrumb';
+import { GeneralConstant } from '../../../../shared/utils/general-constant';
 
 @Component({
   selector: 'app-bread-crumb',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   templateUrl: './bread-crumb.component.html',
   styleUrl: './bread-crumb.component.css',
 })
-export class BreadCrumbComponent implements OnChanges {
+export class BreadCrumbComponent implements OnInit {
   private router = inject(Router);
-  
-  @Input({ required: true })
-  public url ?: string;  
-  public urlSegments: string[] = [];
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['url']) {
-      this.url = changes['url'].currentValue;
-      this.urlSegments = this.getUrlSegments(this.url);
-    }
-  }
-  
-  public navigate( urlSegmentIndex: number ): void {
-    const route = this.urlSegments.slice(0, urlSegmentIndex + 1).join("/");
-    this.router.navigate([route]);
+  private currentRouteService = inject(CurrentRouteService);
+
+  public breadcrumbs = computed<BreadCrumb[]>(() => []);
+  public homeUrl = GeneralConstant.HOME_URL;
+
+  public ngOnInit(): void {
+    this.breadcrumbs = this.currentRouteService.breadcrumbs;
   }
 
-  private getUrlSegments(url ?: string): string[] {
-    return url?.split("/").filter(s => s != "") ?? [];
+  public navigate(url : string) {
+    this.router.navigate([url]);
   }
 }

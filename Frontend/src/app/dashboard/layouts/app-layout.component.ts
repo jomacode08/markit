@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
+import { Sidebar } from 'primeng/sidebar';
 
 import { PrimengModule } from '../../shared/primeng/primeng.module';
 import { MainBarComponent } from './components/main-bar/main-bar.component';
 import { BreadCrumbComponent } from "./components/bread-crumb/bread-crumb.component";
-import { Sidebar } from 'primeng/sidebar';
 import { AuthService } from '../../auth/services/auth.service';
+import { CurrentRouteService } from '../../shared/services/current-route.service';
+import { GeneralConstant } from '../../shared/utils/general-constant';
 
 @Component({
   selector: 'app-app-layout',
@@ -24,12 +26,13 @@ import { AuthService } from '../../auth/services/auth.service';
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.css',
 })
-export class AppLayoutComponent {
+export class AppLayoutComponent implements OnInit {
   //* Route Configuration
-  public titleComponent ?: string;
-  public activatedUrl   ?: string;
+  public titleComponent  = computed<string>(() => '');
+  public url = computed<string>(() => '');
+  public homeUrl: string = GeneralConstant.HOME_URL; 
 
-  //* Menu Congifuration
+  //* Menu Congiguration
   @ViewChild('sideBar')
   public sideBarRef !: Sidebar;
   public menuItems: MenuItem[] = []
@@ -39,11 +42,13 @@ export class AppLayoutComponent {
   
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-  ) {
-    this.handleRouterEvents();
+    private currentRouteService : CurrentRouteService
+  ) {}
+  
+  ngOnInit(): void {
     this.userName = this.authService.currentUser()?.given_name;
+    this.titleComponent = this.currentRouteService.title;
+    this.url = this.currentRouteService.url;
   }
 
   public showSideBar = ( menuItems: MenuItem[] ) => {
@@ -54,14 +59,5 @@ export class AppLayoutComponent {
 
   public hideSideBar = () => {
     this.sideBarRef.close(new Event('click'));
-  }
-
-  private handleRouterEvents(): void {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.activatedUrl = event.url;
-        this.titleComponent = this.activatedRoute.firstChild?.routeConfig?.title?.toString();
-      }
-    });
   }
 }

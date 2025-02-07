@@ -5,6 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { PrimengModule } from './../../../../shared/primeng/primeng.module';
 
 import { AuthService } from './../../../../auth/services/auth.service';
+import { GeneralConstant } from '../../../../shared/utils/general-constant';
 
 @Component({
   selector: 'app-main-bar',
@@ -21,7 +22,7 @@ export class MainBarComponent {
     {
       label: 'Home',
       icon: 'fa fa-home',
-      command: () => this.navigate('dashboard')
+      command: () => this.navigate(GeneralConstant.HOME_URL)
     },
     {
       label: 'My marks',

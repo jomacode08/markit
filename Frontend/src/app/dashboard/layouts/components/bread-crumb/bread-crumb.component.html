@@ -1,10 +1,17 @@
 <div class="flex align-items-center gap-2">
-    @for( segment of urlSegments; track $index ) {
-        <div (click)="navigate($index)" routerLinkActive="router-link-active"  class="p-2 font-italic text-normal border-round-md cursor-pointer hover:bg-gray-200 hover:text-black-alpha-80">
-          {{ segment | titlecase }}
+    @for( breadcrumb of breadcrumbs(); track $index ) {
+        <!-- Label -->
+        <div (click)="navigate(breadcrumb.url)" [ngClass]="{ 'active' : $index === breadcrumbs().length - 1}" class="label">
+            @if (breadcrumb.url === homeUrl) {
+                <i class="fa fa-home"></i>
+            }
+            @else {
+                {{ breadcrumb.label| titlecase }}
+            }
         </div>
-        <div *ngIf="$index < urlSegments.length - 1" class="mx-2">
-          <i class="fa fa-chevron-right text-main-yellow"></i>
+        <!-- Arrow Icon -->
+        <div *ngIf="$index < breadcrumbs().length - 1" class="mx-2">
+            <i class="fa fa-chevron-right text-main-yellow"></i>
         </div>
     }
 </div>

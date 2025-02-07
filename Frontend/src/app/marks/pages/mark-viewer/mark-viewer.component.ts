@@ -331,7 +331,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   public onCancel(): void {
-    this.router.navigate(['mark/list']);
+    this.router.navigate(['/mark']);
   }
 
   //* Marks

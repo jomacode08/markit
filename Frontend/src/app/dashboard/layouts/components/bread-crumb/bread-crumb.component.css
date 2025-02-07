@@ -1,3 +1,20 @@
 :host {
   display: block;
 }
+
+.active {
+  font-weight:700 !important;
+}
+
+.label {
+  padding: 0.5rem;
+  font-style: italic;
+  font-weight: 300;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.label:hover {
+  color: #ffffff;
+}
