@@ -8,28 +8,30 @@
 >
     <div class="scroll-container">
         <!-- Back button -->
-        <div
-            class="active"
-            *ngIf="isBackButtonVisible"
-            (click)="onBackButtonClick()"
-        >
-            <i class="fa fa-angles-left"></i>
-        </div>
+        <button *ngIf="isBackButtonVisible" type="button" (click)="onBackButtonClick()">
+            <span class="active fa fa-angles-left"></span>
+        </button>
 
         <!-- Edition options -->
         @for (option of currentMenuOptions; track $index) {
-            <div 
-                [ngClass]="{ 'active' : option.isActive ? option.isActive() : false }" 
+            <button 
+                type="button" 
                 (click)="onOptionClick(option)"
+                [disabled]='option.isDisabled ? option.isDisabled() : false'
             >
-                <!-- icon -->
-                <i
-                    [class]="option.icon"
-                    [style]="getColorStyleDeclaration(option.color)"
-                ></i>
-                <!-- Description -->
-                <span class="block">{{ option.label }}</span>
-            </div>
+                <div class="flex flex-column gap-1">
+                    <!-- Icon -->
+                    <span
+                        [class]="option.icon"
+                        [ngClass]="{ 'active' : option.isActive ? option.isActive() : false }"
+                        [style]="getColorStyleDeclaration(option.color)"
+                    ></span>
+                    <!-- Label -->
+                    <span class="text-base">
+                        {{ option.label }}
+                    </span>
+                </div>
+            </button>
         }
     </div>
 </p-sidebar>

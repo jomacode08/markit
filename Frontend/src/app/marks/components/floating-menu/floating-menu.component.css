@@ -1,29 +1,31 @@
 /** Edition menu */
+button {
+  border: 0;
+  padding: 0;
+  color: #7f7f7f;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+button:hover:enabled {
+  span.fa {
+    color: #ffffff;
+  }
+}
+button:disabled {
+  color: #4c4c4c;
+}
+span.fa {
+  transition: 0.5s;
+}
+
 .scroll-container {
   display: flex;
   white-space: nowrap;
   overflow-x: auto;
   gap: 2rem;
 }
-
-.scroll-container > div {
-  align-self: center;
-  text-align: center;
-  color: #7f7f7f;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.scroll-container > div > i {
-  font-size: 1.5em;
-}
-
-.scroll-container > div.active {
+.active {
   color: var(--main-purple-color);
-}
-
-.scroll-container > div:hover {
-  color: #ffffff;
 }
 .scroll-container::-webkit-scrollbar {
   height: 8px;

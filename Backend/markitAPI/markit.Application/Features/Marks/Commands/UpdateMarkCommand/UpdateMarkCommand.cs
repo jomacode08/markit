@@ -37,6 +37,9 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
             // Update the mark
             _unitOfWork.markRepository.UpdateEntity(mark);
+            
+            // Ordening Blocks
+            mark.Blocks = mark.Blocks?.OrderBy(b => b.Order).ToList();
 
             // Complete the transaction
             await _unitOfWork.Complete();

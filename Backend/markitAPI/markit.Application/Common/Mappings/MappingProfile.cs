@@ -43,34 +43,40 @@ namespace markit.Application.Mappings
                 // Mapping blocks mannually
                 .AfterMap((src, dest) =>
                 {
-                    List<Block> blocksToDelete = dest.Blocks != null ? dest.Blocks.ToList() : [];
+                    List<Block> blocksToDelete = dest.Blocks?.ToList() ?? [];
+                    int currentOrder = 1;
 
-                    foreach (var block in src.Blocks)
+                    foreach (var sourceBlock in src.Blocks)
                     {
-                        var existingBlock = dest.Blocks?.FirstOrDefault(b => b.Id == block.Id);
+                        var destinyBlock = dest.Blocks?.FirstOrDefault(b => b.Id > 0 && b.Id == sourceBlock.Id);
 
                         // Update the existent block properties
-                        if (existingBlock != null)
+                        if (destinyBlock != null)
                         {
-                            blocksToDelete.Remove(existingBlock);
+                            blocksToDelete.Remove(destinyBlock);
 
-                            existingBlock.Cols = block.Cols;
-                            existingBlock.Color = block.Color;
-                            existingBlock.Title = block.Title;
-                            existingBlock.Content = block.Content;
+                            destinyBlock.Cols = sourceBlock.Cols;
+                            destinyBlock.Color = sourceBlock.Color;
+                            destinyBlock.Title = sourceBlock.Title;
+                            destinyBlock.Content = sourceBlock.Content;
+                            destinyBlock.Order = currentOrder;
                         }
                         // Otherwise, add the new block
                         else
                         {
                             dest.Blocks?.Add(new Block
                             {
-                                Cols = block.Cols,
-                                Color = block.Color,
-                                Title = block.Title,
-                                Content = block.Content,
+                                Cols = sourceBlock.Cols,
+                                Color = sourceBlock.Color,
+                                Title = sourceBlock.Title,
+                                Content = sourceBlock.Content,
+                                Order = currentOrder
                             });
                         }
+
+                        currentOrder++;
                     }
+
                     // Delete the blocks that aren't in the src object, which means the user deleted them
                     foreach(var blockToDelete in blocksToDelete)
                     {

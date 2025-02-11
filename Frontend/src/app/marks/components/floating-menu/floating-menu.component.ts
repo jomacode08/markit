@@ -17,13 +17,11 @@ import { FloatingMenuOption } from './floating-menu-option';
   styleUrl: './floating-menu.component.css',
 })
 export class FloatingMenuComponent implements OnInit {
-  
   @ViewChild('sidebar')
   public sideBarRef !: Sidebar;
   
   @Input({ required: true })
   menuOptions !: FloatingMenuOption[];
-
   @Input({ required: true })
   visible : boolean = false;
 
@@ -35,7 +33,7 @@ export class FloatingMenuComponent implements OnInit {
   }
 
   public onOptionClick( option: FloatingMenuOption ): void {
-    // If the option has children elements, the current options will change, showing the children options.
+    // If the option has children, show them.
     if (option.children) {
       this.currentMenuOptions = option.children;
       this.isBackButtonVisible = true;

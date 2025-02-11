@@ -1,5 +1,4 @@
 export interface FloatingMenuOption {
-    //* General properties
     /**
      * Text of the option
      */
@@ -8,10 +7,18 @@ export interface FloatingMenuOption {
      * Icon of the option
      */
     icon: string,
-
+    /**
+     * Children options
+     */
     children?: FloatingMenuOption[],
+    /**
+     * Color to display the icon
+     */
     color? : string,
-
+    /**
+     * Determinate if the option is disabled
+     */
+    isDisabled?(): boolean;
     /**
      * Callback to execute when option is clicked
      */

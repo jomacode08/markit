@@ -3,7 +3,7 @@ import { Cols } from "./mark";
 export interface Block {
     id      : number,
     cols    : Cols,
-    color   : BackColors
+    color   : BackColors,
     content ?: string,
 }
 

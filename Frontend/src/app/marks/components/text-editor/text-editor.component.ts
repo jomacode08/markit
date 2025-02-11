@@ -48,7 +48,6 @@ import { BackColors } from '../../interfaces/block';
 })
 export class TextEditorComponent implements OnChanges, OnDestroy, ControlValueAccessor {
   //* Configuration
-  @Input() public collapsed: boolean = false;
   @Input() public color: BackColors = BackColors.neutral;
   @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
@@ -104,16 +103,16 @@ export class TextEditorComponent implements OnChanges, OnDestroy, ControlValueAc
 
   //* Lifecycle
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes === null || changes['color'].currentValue === undefined) return;
-
-    this.color = changes['color'].currentValue;
-    this.editor.setOptions({
-      editorProps: {
-        attributes: {
-          class : this.color
+    if (changes != null && changes['color']) {
+      this.color = changes['color'].currentValue;
+      this.editor.setOptions({
+        editorProps: {
+          attributes: {
+            class : this.color
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   ngOnDestroy(): void {

@@ -25,7 +25,7 @@ namespace markit.Application.Features.Marks.Queries
 
         public async Task<MarkViewModel> Handle(GetMarkByIdQuery request, CancellationToken cancellationToken)
         {
-            Mark? mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Blocks")
+            Mark? mark = await _unitOfWork.markRepository.GetWithOrderedBlocks(request.Id)
                 ?? throw new NotFoundException("Mark", request.Id);
 
             return _mapper.Map<MarkViewModel>(mark);

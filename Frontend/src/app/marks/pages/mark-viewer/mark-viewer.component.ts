@@ -1,7 +1,7 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { delay } from 'rxjs';
 
 import { Editor } from '@tiptap/core';
@@ -45,7 +45,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   public loading ?: boolean;
   public form = new FormGroup({
     id       : new FormControl<number>(0),
-    name     : new FormControl<string>("", [Validators.required, Validators.maxLength(255)]),
+    name     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
     blocks   : new FormArray<FormGroup<any>>([]),
   });
 
@@ -230,28 +230,15 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     {
       label: 'Add block',
       icon: 'fa fa-plus',
-      children: [
-        {
-          label: 'Add below',
-          icon: 'fa fa-arrow-down',
-          command: () => {
-            this.addBlock(this.currentBlockIndex + 1, 12);
-            this.changeBlockMenuState();
-          }
-        },
-        {
-          label: 'Add to right',
-          icon: 'fa fa-arrow-right',
-          command: () => {
-            this.addBlock(this.currentBlockIndex + 1, 6);
-            this.changeBlockMenuState();
-          }
-        },
-      ]
+      command: () => {
+        this.addBlock(this.currentBlockIndex + 1, 12);
+        this.changeBlockMenuState();
+      }
     },
     {
       label: 'Remove',
       icon: 'fa fa-trash',
+      isDisabled: () => this.currentBlocks.length === 1,
       command: () => {
         this.removeBlock(this.currentBlockIndex);
         this.changeBlockMenuState();
@@ -413,31 +400,27 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   private  addBlock(index : number, cols: Cols): void {
-    const blockForm = new FormGroup({
-      id      : new FormControl<number>(0),
-      cols    : new FormControl<Cols>(cols, Validators.required),
-      color   : new FormControl<BackColors>(BackColors.neutral, Validators.required),
-      title   : new FormControl<string>(`New block ${ index + 1 }`, Validators.maxLength(255)),
-      content : new FormControl<string>(""),
+    const newBlock = this.fb.group({
+      id      : 0,
+      title   : "",
+      content : "",
+      cols    : [cols, Validators.required],
+      color   : [BackColors.neutral, Validators.required]
     });
-
-    if (cols === 6 && index > 0) {
-      const previousBlock = this.currentBlocks.at(index - 1) as FormGroup;
-      previousBlock.controls['cols'].setValue("6");
-    }
-
-    this.currentBlocks.insert(index ,blockForm);
+    
+    this.currentBlocks.insert(index ,newBlock);
   }
 
   private removeBlock(index : number): void {
-    if (index === 0) return;
-    
+    // Preservate the existency of minimum one block
+    if (this.currentBlocks.length === 1) return;
+
     const block = this.currentBlocks.at(index) as FormGroup;
+    const content = block.controls['content'].value as string;
 
-    if (block.controls['content'].value === "")
-    return this.currentBlocks.removeAt(index);
-
-    // If the block has any content, show a warning to the user
+    // The content of the block is empty so it can be deleted
+    if (content.length === 0) return this.currentBlocks.removeAt(index);
+    // Otherwise the block has any content, show a warning to the user
     this.messageService.showConfirmationDialog({
       message: "Do you want to delete this block?. You won't be able to get it back later. ",
       header: 'Delete block',
