@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     baseApiUrl: ''
-    // baseApiUrl: 'http://localhost:42472/api'
+    // baseApiUrl: 'http://localhost:port/api'
     // baseApiUrl: 'https://your-domain/api'
 }
 
