@@ -1,14 +1,14 @@
-<p-panel [toggleable]="true">
+<p-panel [styleClass]="color" [toggleable]="true">
 
     <ng-template pTemplate="header">
-        <div>
+        <div class="title w-full">
             <input
                 [(ngModel)]="title"
                 (ngModelChange)="onTitleChange($event)"
                 placeholder="New Block"
                 pInputText
                 type="text"
-                class="transparent w-full font-fraunces px-0 font-semibold"
+                class="transparent w-full p-0 font-semibold"
             />
         </div>
     </ng-template>

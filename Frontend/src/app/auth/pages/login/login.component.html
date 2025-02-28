@@ -9,7 +9,7 @@
             <!-- Sign in Button -->
             <div *ngIf="!showLoginForm" class="w-full mb-3 mx-auto">
                 <shared-general-button
-                    type="primary"
+                    severity="primary"
                     label="Sign in"
                     (click)="onSignIn()"
                 ></shared-general-button>
@@ -62,7 +62,7 @@
                     <!-- Login submit -->
                     <div>
                         <shared-general-button
-                            type="primary"
+                            severity="primary"
                             label="Login"
                             [disabled]="submit"
                             [submit]="true"
@@ -74,7 +74,7 @@
              <!-- Google Button -->
             <div class="w-full mx-auto">
                 <shared-general-button
-                    type="terceary"
+                    severity="terceary"
                     label="Sign in with google"
                     icon="fa-brands fa-google"
                     [disabled]="submit"

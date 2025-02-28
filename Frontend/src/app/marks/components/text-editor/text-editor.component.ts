@@ -56,11 +56,6 @@ export class TextEditorComponent implements OnChanges, OnDestroy, ControlValueAc
 
   public input: string = "";
   public editor = new Editor({
-    editorProps: {
-      attributes: {
-        class : this.color
-      }
-    },
     extensions: [
       StarterKit.configure({
         codeBlock: false,
@@ -105,13 +100,6 @@ export class TextEditorComponent implements OnChanges, OnDestroy, ControlValueAc
   ngOnChanges(changes: SimpleChanges): void {
     if (changes != null && changes['color']) {
       this.color = changes['color'].currentValue;
-      this.editor.setOptions({
-        editorProps: {
-          attributes: {
-            class : this.color
-          }
-        }
-      });
     }
   }
 

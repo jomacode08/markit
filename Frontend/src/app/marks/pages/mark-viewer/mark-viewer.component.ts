@@ -16,7 +16,7 @@ import { NodeMark } from '../../interfaces/node-mark';
 import { SharedModule } from '../../../shared/shared.module';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { BackColors, Block } from '../../interfaces/block';
+import { BackColors } from '../../interfaces/block';
 
 @Component({
   standalone: true,
@@ -238,7 +238,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     {
       label: 'Remove',
       icon: 'fa fa-trash',
-      isDisabled: () => this.currentBlocks.length === 1,
       command: () => {
         this.removeBlock(this.currentBlockIndex);
         this.changeBlockMenuState();
@@ -290,10 +289,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       if (markId == null || isNaN(Number(markId))) return this.onCancel();
       // get the mark and set it in the form
       this.setMark(Number(markId));
-    }
-    // Otherwise, is to add a mark
-    else {
-      this.addBlock(0, 12); // Create the initial block
     }
   }
 
@@ -399,7 +394,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     this.changeBlockMenuState();
   }
 
-  private  addBlock(index : number, cols: Cols): void {
+  public  addBlock(index : number, cols: Cols): void {
     const newBlock = this.fb.group({
       id      : 0,
       title   : "",
@@ -412,9 +407,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   private removeBlock(index : number): void {
-    // Preservate the existency of minimum one block
-    if (this.currentBlocks.length === 1) return;
-
     const block = this.currentBlocks.at(index) as FormGroup;
     const content = block.controls['content'].value as string;
 

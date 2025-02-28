@@ -4,3 +4,19 @@
   z-index: 1;
 }
 
+.add-block {
+  width: 100%;
+  padding: 1.5em;
+  border: 2px dashed var(--light-gray-color);
+  border-radius: 6px;
+  color: var(--light-gray-color);
+  font-style: italic;
+  text-align: center;
+  font-weight: 700;
+  transition: 0.5s;
+  cursor: pointer;
+}
+.add-block:hover {
+  color: var(--main-purple-color);
+}
+

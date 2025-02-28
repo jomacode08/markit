@@ -1,32 +1,34 @@
 /** Block Panel */
 .p-panel {
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
-}
-.p-panel .p-panel-content {
-  padding: 0;
   border-radius: 6px;
-  margin-bottom: 0.5em;
+  padding: 1.25rem;
 }
-.p-panel .p-panel-header {
+.p-panel-header, .p-panel-content {
+  background-color: transparent;
   border: none;
-  background-color: var(--main-black-color);
+  padding: 0;
+}
+.p-panel-content {
+  border-top: 1px solid var(--light-gray-color);
 }
 .p-panel .p-panel-header .p-panel-header-icon {
   color: var(--light-gray-color);
 }
-.p-panel .p-panel-header .p-panel-header-icon:hover {
-  color: var(--main-purple-color);
-  transition: 0.5s;
+.p-panel-icons {
+  min-width: 72px;
+  margin-left: 0.5em;
 }
-.p-panel-header div input {
-  font-weight: 400 !important;
+.p-panel-header .title input {
+  font-weight: bold !important;
+  color: rgba(0, 0, 0, 0.8);
+}
+.p-panel-header .title input::placeholder {
+  color: rgba(0, 0, 0, 0.6);
 }
 /** Text editor */
 .tiptap {
   color: var(--main-black-color);
-  padding: 1.5em;
   min-height: 200px;
-  border-radius: 6px;
 }
 
 .tiptap p.is-editor-empty:first-child::before {

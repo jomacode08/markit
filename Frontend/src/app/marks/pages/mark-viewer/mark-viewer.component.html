@@ -7,7 +7,7 @@
         autocomplete="off"
     >
         <!-- Name -->
-        <div class="my-5">
+        <div class="my-6">
             <input
                 id="name"
                 placeholder="New Mark"
@@ -15,7 +15,7 @@
                 pInputText
                 formControlName="name"
                 type="text"
-                class="transparent w-full px-0 text-2xl font-fraunces font-semibold"
+                class="transparent w-full p-0 text-2xl font-fraunces font-semibold"
             />
             <shared-error-field
                 *ngIf="isInvalidField('name')"
@@ -25,10 +25,10 @@
 
         <!-- Blocks -->
         <ng-container formArrayName="blocks">
-            <div class="grid">
+            <div class="grid m-0">
                 @for (blockForm of currentBlocks.controls; track $index; let i = $index;) {
                     <div 
-                        [class]="'col-12 md:col-' + blockForm.value['cols']"
+                        [class]="'p-0 mb-3 col-12 md:col-' + blockForm.value['cols']"
                         [formGroup]="castAbstractControlToFormGroup(blockForm)"
                     >
                         <!-- Text editor -->
@@ -42,6 +42,18 @@
                         />
                     </div>
                 }
+                <!-- New block button template -->
+                <div class="col-12 p-0">                    
+                    <button 
+                        type="button"
+                        class="add-block"
+                        (click)="this.addBlock(this.currentBlocks.length - 1, 12)"
+                    >
+                        <span class="fa fa-plus mr-2 text-lg"></span>
+                        <span class="fa fa-cube mr-2 text-lg"></span>
+                        <span class="text-sm">Add new block</span>
+                    </button>
+                </div>
             </div>
         </ng-container>
 
@@ -49,7 +61,7 @@
         <div class="grid mt-5">
             <div class="col-12 md:col-6">
                 <shared-general-button
-                    type="primary"
+                    severity="primary"
                     label="Save"
                     icon="fa fa-floppy-disk"
                     [submit]="true"
@@ -58,7 +70,7 @@
             </div>
             <div class="col-12 md:col-6">
                 <shared-general-button
-                    type="cancel"
+                    severity="cancel"
                     label="Cancel"
                     icon="fa-solid fa-angles-left"
                     [disabled]="submit"
