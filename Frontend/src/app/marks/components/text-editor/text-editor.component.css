@@ -1,15 +1,18 @@
 /** Block Panel */
 .p-panel {
   border-radius: 6px;
-  padding: 1.25rem;
+  padding: 0 1.25rem;
 }
 .p-panel-header, .p-panel-content {
   background-color: transparent;
   border: none;
   padding: 0;
 }
+.p-panel-header {
+  padding: 1rem 0;
+}
 .p-panel-content {
-  border-top: 1px solid var(--light-gray-color);
+  border-top: 1px solid rgb(108, 108, 108, 0.6);
 }
 .p-panel .p-panel-header .p-panel-header-icon {
   color: var(--light-gray-color);
@@ -20,6 +23,7 @@
 }
 .p-panel-header .title input {
   font-weight: bold !important;
+  font-size: 1.12rem;
   color: rgba(0, 0, 0, 0.8);
 }
 .p-panel-header .title input::placeholder {
