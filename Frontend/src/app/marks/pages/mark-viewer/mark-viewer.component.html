@@ -31,8 +31,7 @@
                         [class]="'p-0 mb-3 col-12 md:col-' + blockForm.value['cols']"
                         [formGroup]="castAbstractControlToFormGroup(blockForm)"
                     >
-                        <!-- Text editor -->
-                        <marks-text-editor
+                        <marks-block
                             [title]="blockForm.value['title']"
                             [color]="blockForm.value['color']"
                             (onEditorSelected)="onEditorSelected($event)"

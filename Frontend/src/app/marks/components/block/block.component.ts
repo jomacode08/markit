@@ -27,7 +27,7 @@ import { PrimengModule } from '../../../shared/primeng/primeng.module';
 import { BackColors } from '../../interfaces/block';
 
 @Component({
-  selector: 'marks-text-editor',
+  selector: 'marks-block',
   standalone: true,
   imports: [
     PrimengModule,
@@ -35,18 +35,18 @@ import { BackColors } from '../../interfaces/block';
     NgxTiptapModule,
     FormsModule
   ],
-  templateUrl: './text-editor.component.html',
-  styleUrl: './text-editor.component.css',
+  templateUrl: './block.component.html',
+  styleUrl: './block.component.css',
   encapsulation: ViewEncapsulation.None,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TextEditorComponent),
+      useExisting: forwardRef(() => BlockComponent),
       multi: true
     }
   ]
 })
-export class TextEditorComponent implements OnChanges, OnDestroy, ControlValueAccessor {
+export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccessor {
   //* Configuration
   @Input() public color: BackColors = BackColors.neutral;
   @Input() public title: string = "";

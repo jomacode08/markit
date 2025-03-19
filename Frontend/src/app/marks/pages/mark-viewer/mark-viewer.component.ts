@@ -14,9 +14,9 @@ import { Cols, Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { NodeMark } from '../../interfaces/node-mark';
 import { SharedModule } from '../../../shared/shared.module';
-import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { BackColors } from '../../interfaces/block';
+import { BlockComponent } from '../../components/block/block.component';
 
 @Component({
   standalone: true,
@@ -26,7 +26,7 @@ import { BackColors } from '../../interfaces/block';
     PrimengModule,
     ReactiveFormsModule,
     SharedModule,
-    TextEditorComponent,
+    BlockComponent
   ],
   templateUrl: './mark-viewer.component.html',
   styleUrl: './mark-viewer.component.css',
