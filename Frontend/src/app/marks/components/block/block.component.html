@@ -1,6 +1,6 @@
-<p-panel [styleClass]="color" [toggleable]="true">
+<p-panel [styleClass]="color" [toggleable]="toggeable" [collapsed]="collapsed">
 
-    <ng-template pTemplate="header">
+    <ng-template *ngIf="toggeable" pTemplate="header">
         <div class="title w-full">
             <input
                 [(ngModel)]="title"
@@ -13,7 +13,7 @@
         </div>
     </ng-template>
 
-    <ng-template pTemplate="icons">
+    <ng-template *ngIf="toggeable" pTemplate="icons">
         <button 
             type="button"
             class="p-panel-header-icon p-link mr-2"
@@ -32,6 +32,13 @@
             (blur)="onTouched()"
             (mousedown)="onEditorClick()"
         />
+
+        @if (this.editor.isEmpty) {
+            <p-skeleton styleClass="mb-1" animation="none" height="1rem"/>
+            <p-skeleton styleClass="mb-1" animation="none" height="1rem" width="20rem"/>
+            <p-skeleton styleClass="mb-1" animation="none" height="1rem" width="10rem"/>
+        }
+
     </ng-template>
 
 </p-panel>

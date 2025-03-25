@@ -1,18 +1,13 @@
 /** Block Panel */
 .p-panel {
   border-radius: 6px;
-  padding: 0 1.25rem;
+  padding: 1.25rem;
+  color: var(--main-black-color);
 }
 .p-panel-header, .p-panel-content {
   background-color: transparent;
   border: none;
   padding: 0;
-}
-.p-panel-header {
-  padding: 1rem 0;
-}
-.p-panel-content {
-  border-top: 1px solid rgb(108, 108, 108, 0.6);
 }
 .p-panel .p-panel-header .p-panel-header-icon {
   color: var(--light-gray-color);
@@ -23,18 +18,16 @@
 }
 .p-panel-header .title input {
   font-weight: bold !important;
+  color: rgba(0, 0, 0, 0.8) !important;
   font-size: 1.12rem;
-  color: rgba(0, 0, 0, 0.8);
 }
 .p-panel-header .title input::placeholder {
   color: rgba(0, 0, 0, 0.6);
 }
 /** Text editor */
 .tiptap {
-  color: var(--main-black-color);
-  min-height: 200px;
+  font-size: 16px;
 }
-
 .tiptap p.is-editor-empty:first-child::before {
   color: var(--light-gray-color);
   font-style: italic;
@@ -48,9 +41,9 @@
   outline: none !important;
 }
 
-/** Text editor colors **/
+/** Background block colors **/
 .neutral {
-  background-color: #fbf4e9;
+  background-color: #ffffff;
 }
 .purple {
   background-color: #E8DCF9;
@@ -58,12 +51,27 @@
 .red {
   background-color: #EDCAC0;
 }
+.transparent {
+  background-color: transparent;
+  color: #ffffff !important;
+  padding: 0;
+}
+
+.neutral, .purple, .red {
+  .p-skeleton {
+    background-color: var(--light-gray-color) !important;
+  }
+}
 
 /** Editor Marks */
 mark {
   border-radius: 0.4rem;
   box-decoration-break: clone;
   padding: 0.1rem 0.3rem;
+}
+
+.transparent mark {
+  color: var(--main-black-color) !important;
 }
 
 ul,ol {

@@ -23,11 +23,14 @@
                     <!-- Icon -->
                     <span
                         [class]="option.icon"
-                        [ngClass]="{ 'active' : option.isActive ? option.isActive() : false }"
+                        [ngClass]="{ 'active' : option.isActive?.() ?? false }"
                         [style]="getColorStyleDeclaration(option.color)"
                     ></span>
                     <!-- Label -->
-                    <span class="text-base">
+                    <span 
+                        class="text-base"
+                        [ngClass]="{'font-semibold' : option.isActive?.() ?? false }"
+                    >
                         {{ option.label }}
                     </span>
                 </div>

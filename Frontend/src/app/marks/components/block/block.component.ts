@@ -24,7 +24,7 @@ import ts from 'highlight.js/lib/languages/typescript'
 const lowlight = createLowlight({ html, css, js, ts, csharp });
 
 import { PrimengModule } from '../../../shared/primeng/primeng.module';
-import { BackColors } from '../../interfaces/block';
+import { BlockColors } from '../../interfaces/block';
 
 @Component({
   selector: 'marks-block',
@@ -48,7 +48,9 @@ import { BackColors } from '../../interfaces/block';
 })
 export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccessor {
   //* Configuration
-  @Input() public color: BackColors = BackColors.neutral;
+  @Input({ required: true }) public toggeable ?: boolean;
+  @Input({ required: true }) public collapsed ?: boolean;
+  @Input() public color: BlockColors = BlockColors.neutral;
   @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
   @Output() public onOptionsButtonClicked = new EventEmitter<void>();

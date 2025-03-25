@@ -24,6 +24,7 @@ namespace markit.Domain.Entities
     {
         Neutral = 1,
         Purple = 2,
-        Red = 3
+        Red = 3,
+        Transparent = 4
     }
 }

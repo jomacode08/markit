@@ -15,7 +15,7 @@
                 pInputText
                 formControlName="name"
                 type="text"
-                class="transparent w-full p-0 text-2xl font-fraunces font-semibold"
+                class="transparent w-full p-0 text-3xl font-fraunces font-semibold"
             />
             <shared-error-field
                 *ngIf="isInvalidField('name')"
@@ -28,10 +28,13 @@
             <div class="grid m-0">
                 @for (blockForm of currentBlocks.controls; track $index; let i = $index;) {
                     <div 
-                        [class]="'p-0 mb-3 col-12 md:col-' + blockForm.value['cols']"
+                        class="p-0 col-12"
+                        [ngClass]="{'mb-3': i > 0, 'mb-6': i === 0}"
                         [formGroup]="castAbstractControlToFormGroup(blockForm)"
                     >
                         <marks-block
+                            [toggeable]="i > 0"
+                            [collapsed]="this.currentMark.id > 0 && i > 0"       
                             [title]="blockForm.value['title']"
                             [color]="blockForm.value['color']"
                             (onEditorSelected)="onEditorSelected($event)"

@@ -15,7 +15,7 @@ import { MarkService } from '../../services/mark.service';
 import { NodeMark } from '../../interfaces/node-mark';
 import { SharedModule } from '../../../shared/shared.module';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { BackColors } from '../../interfaces/block';
+import { BlockColors } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 
 @Component({
@@ -251,19 +251,19 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
           label: 'Neutral',
           icon: 'fa fa-circle',
           color: '#fbf4e9',
-          command: () => this.changeColor(this.currentBlockIndex, BackColors.neutral)
+          command: () => this.changeColor(this.currentBlockIndex, BlockColors.neutral)
         },
         {
           label: 'Purple',
           icon: 'fa fa-circle',
           color: '#E8DCF9',
-          command: () => this.changeColor(this.currentBlockIndex, BackColors.purple)
+          command: () => this.changeColor(this.currentBlockIndex, BlockColors.purple)
         },
         {
           label: 'Red',
           icon: 'fa fa-circle',
           color: '#EDCAC0',
-          command: () => this.changeColor(this.currentBlockIndex, BackColors.red)
+          command: () => this.changeColor(this.currentBlockIndex, BlockColors.red)
         },
       ]
     },
@@ -278,7 +278,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     return this.form.controls["blocks"] as FormArray;
   }
 
-  //* Lyfecycke
+  //* Lyfecycle
   public ngOnInit(): void {
     // check if the route is to see a mark
     if (this.router.url.includes('see')) {
@@ -289,7 +289,11 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       if (markId == null || isNaN(Number(markId))) return this.onCancel();
       // get the mark and set it in the form
       this.setMark(Number(markId));
+      return;
     }
+
+    // Otherwise, the action is 'add a new mark' so we need to add the default block 
+    this.addBlock(0, 12);
   }
 
   public ngAfterViewInit(): void {
@@ -395,12 +399,16 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   public  addBlock(index : number, cols: Cols): void {
+    const color: BlockColors = index > 0
+    ? BlockColors.neutral
+    : BlockColors.transparent;
+
     const newBlock = this.fb.group({
       id      : 0,
       title   : "",
       content : "",
       cols    : [cols, Validators.required],
-      color   : [BackColors.neutral, Validators.required]
+      color   : [color, Validators.required]
     });
     
     this.currentBlocks.insert(index ,newBlock);
@@ -421,7 +429,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     });
   }
 
-  private changeColor(index : number, color: BackColors): void {
+  private changeColor(index : number, color: BlockColors): void {
     const block = this.currentBlocks.at(index) as FormGroup;
     block.controls['color'].setValue(color);
   }
