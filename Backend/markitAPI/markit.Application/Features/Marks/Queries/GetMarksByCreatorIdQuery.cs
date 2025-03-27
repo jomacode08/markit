@@ -30,7 +30,8 @@ namespace markit.Application.Features.Marks.Queries
                 ?? throw new NotFoundException("Creator", request.CreatorId);
 
             // Get the marks by the creator
-            var marks = await _unitOfWork.markRepository.GetAsync(m => m.CreatorId == request.CreatorId);
+            var marks = await _unitOfWork.markRepository
+                .GetAsync(m => m.Collection != null && m.Collection.CreatorId.Equals(request.CreatorId));
 
             return _mapper.Map<List<MarkViewModel>>(marks);
         }

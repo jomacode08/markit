@@ -25,8 +25,7 @@ namespace markit.Domain.Entities
             }
         }
 
-        public virtual ICollection<Mark>? Marks { get; set; }
-
+        public virtual ICollection<Collection>? Collections { get; set; }
     }
 
     public enum Gender

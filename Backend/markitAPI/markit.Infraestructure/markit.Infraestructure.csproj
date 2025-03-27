@@ -24,8 +24,4 @@
     <ProjectReference Include="..\markit.Application\markit.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\EF\Configurations\" />
-  </ItemGroup>
-
 </Project>

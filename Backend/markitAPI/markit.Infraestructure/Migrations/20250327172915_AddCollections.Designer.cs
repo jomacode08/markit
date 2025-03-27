@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using markit.Infraestructure.Persistence.EF;
 
@@ -11,9 +12,11 @@ using markit.Infraestructure.Persistence.EF;
 namespace markit.Infraestructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    partial class MarkitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250327172915_AddCollections")]
+    partial class AddCollections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,19 +268,19 @@ namespace markit.Infraestructure.Migrations
                             Id = "89063556-7135-4382-a532-66f364e26b85",
                             AccessFailedCount = 0,
                             AccessType = 1,
-                            ConcurrencyStamp = "5dcb4166-fe16-4afe-947c-532ba5559ea2",
-                            CreatedDate = new DateTime(2025, 3, 27, 18, 9, 22, 770, DateTimeKind.Utc).AddTicks(8907),
+                            ConcurrencyStamp = "04a7a91d-3bde-4827-9f8d-1ac6a68b9f20",
+                            CreatedDate = new DateTime(2025, 3, 27, 17, 29, 14, 884, DateTimeKind.Utc).AddTicks(1358),
                             Email = "jomacode8@gmail.com",
                             EmailConfirmed = true,
                             GivenName = "Markit Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "JOMACODE8@GMAIL.COM",
                             NormalizedUserName = "JOMACODE8@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENrgfnOZbmKS0+MrCaNpI72NF/dPygwI6NZhVWp7V/0m4w7EbdVPVcBOz/dl1eC+8A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIlo92gvm280xOOW6zbzI0SpveOaZwFPtUxo1J00nOPq3r6ZBJLHEm1GZeCjo4Nflw==",
                             PhoneNumber = "0000000000",
                             PhoneNumberConfirmed = true,
                             RegistrationConfirmed = false,
-                            SecurityStamp = "9bfa337d-8beb-4ae5-a839-1f0075987fd6",
+                            SecurityStamp = "6fa004c4-8432-4a7c-98e9-e6e51e5bc9fa",
                             TwoFactorEnabled = false,
                             UserName = "jomacode8@gmail.com"
                         });
@@ -493,6 +496,9 @@ namespace markit.Infraestructure.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Enable")
                         .HasColumnType("bit");
 
@@ -510,6 +516,8 @@ namespace markit.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CollectionId");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Marks");
                 });
@@ -610,10 +618,18 @@ namespace markit.Infraestructure.Migrations
                     b.HasOne("markit.Domain.Entities.Collection", "Collection")
                         .WithMany("Marks")
                         .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("markit.Domain.Entities.Creator", "Creator")
+                        .WithMany("Marks")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Collection");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
@@ -626,6 +642,8 @@ namespace markit.Infraestructure.Migrations
             modelBuilder.Entity("markit.Domain.Entities.Creator", b =>
                 {
                     b.Navigation("Collections");
+
+                    b.Navigation("Marks");
                 });
 
             modelBuilder.Entity("markit.Domain.Entities.Mark", b =>

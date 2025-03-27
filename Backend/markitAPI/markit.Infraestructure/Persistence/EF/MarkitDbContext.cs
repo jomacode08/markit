@@ -2,6 +2,7 @@
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Common;
 using markit.Domain.Entities;
+using markit.Infraestructure.Persistence.EF.Configurations;
 using markit.Infraestructure.Security.Configurations;
 using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,7 @@ namespace markit.Infraestructure.Persistence.EF
             builder.ApplyConfiguration(new UserConfiguration(_userDefaultSettings));
             builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new UserRoleConfiguration(_userDefaultSettings));
+            builder.ApplyConfiguration(new CollectionConfiguration());
 
             ChangeNameSchemas(builder);
             AddQueryFilters(builder);
@@ -95,6 +97,7 @@ namespace markit.Infraestructure.Persistence.EF
             builder.Entity<Mark>().HasQueryFilter(m => m.Enable);
             builder.Entity<Link>().HasQueryFilter(m => m.Enable);
             builder.Entity<Block>().HasQueryFilter(m => m.Enable);
+            builder.Entity<Collection>().HasQueryFilter(m => m.Enable);
         }
     }
 }
