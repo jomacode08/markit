@@ -29,10 +29,11 @@ namespace markit.Infraestructure.Persistence.EF
         }
 
         public DbSet<AppUser> User { get; set; }
-        public DbSet<Creator> Creators { get; set; }
-        public DbSet<Mark> Marks { get; set; }
-        public DbSet<Link> Links { get; set; }
+        public DbSet<Collection> Collections { get; set; }
         public DbSet<Block> Blocks { get; set; }
+        public DbSet<Creator> Creators { get; set; }
+        public DbSet<Link> Links { get; set; }
+        public DbSet<Mark> Marks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

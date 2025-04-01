@@ -46,6 +46,18 @@ namespace markit.Infraestructure.Persistence.EF
             context.Creators.Update(creator);
             await context.SaveChangesAsync();
 
+            // Create main collection
+            Collection collection = new()
+            {
+                Name = "My marks",
+                Path = "/My marks",
+                IsMain = true,
+                CreatorId = creator.Id,
+            };
+
+            context.Collections.Add(collection);
+            await context.SaveChangesAsync();
+
             scope.Complete();
         }
     }
