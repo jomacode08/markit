@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using markit.Application.Features.Blocks.Queries.ViewModels;
+using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
+using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries.ViewModels;
@@ -15,7 +17,11 @@ namespace markit.Application.Mappings
     {
         public MappingProfile()
         {
-            // Creator
+            // Collections
+            CreateMap<CreateCollectionCommand, Collection>();
+            CreateMap<Collection, CollectionViewModel>();
+
+            // Creators
             CreateMap<CreateCreatorCommand, Creator>();
             CreateMap<CreateAppUserRequest, CreateCreatorCommand>();
 
@@ -30,6 +36,10 @@ namespace markit.Application.Mappings
                     dest => dest.BirthDate,
                     opt  => opt.MapFrom(src => src.BirthDate.ToString())
                 );
+
+            // Blocks
+            CreateMap<BlockViewModel, Block>();
+            CreateMap<Block, BlockViewModel>();
 
             // Marks
             CreateMap<CreateMarkCommand, Mark>()
@@ -88,9 +98,6 @@ namespace markit.Application.Mappings
                 .ForMember(dest => dest.Blocks, opt =>
                     opt.MapFrom(src => src.Blocks));
 
-            // Blocks
-            CreateMap<BlockViewModel, Block>();
-            CreateMap<Block, BlockViewModel>();
         }
     }
 }

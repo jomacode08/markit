@@ -6,6 +6,7 @@ namespace markit.Application.Contracts.Persistence.Common
 {
     public interface IUnitOfWork : IDisposable
     {
+        ICollectionRepository collectionRepository { get; }
         ICreatorRepository creatorRepository { get; }
         IMarkRepository markRepository { get; }
 
