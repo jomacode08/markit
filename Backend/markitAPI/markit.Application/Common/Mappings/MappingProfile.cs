@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
+using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Features.Creators.Commands.UpdateCreator;
@@ -19,6 +20,7 @@ namespace markit.Application.Mappings
         {
             // Collections
             CreateMap<CreateCollectionCommand, Collection>();
+            CreateMap<UpdateCollectionCommand, Collection>();
             CreateMap<Collection, CollectionViewModel>();
 
             // Creators

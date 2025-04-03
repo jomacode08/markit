@@ -1,4 +1,5 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
+using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Infraestructure.Security.Services;
 using MediatR;
@@ -28,5 +29,9 @@ namespace markit.API.Controllers.Operation
             command.CreatorId = _sessionService.GetCreatorId();
             return await _mediator.Send(command);
         }
+
+        [HttpPatch]
+        [Route("update")]
+        public async Task<CollectionViewModel> Update([FromBody] UpdateCollectionCommand command) => await _mediator.Send(command);
     }
 }

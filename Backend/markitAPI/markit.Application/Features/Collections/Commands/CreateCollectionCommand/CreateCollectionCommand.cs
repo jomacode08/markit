@@ -30,9 +30,9 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         public async Task<CollectionViewModel> Handle(CreateCollectionCommand request, CancellationToken cancellationToken)
         {
             // Validations
-            ValidateCreatorExistency(request.CreatorId);
-            ValidateNameDuplicates(request.Name, request.ParentId);
-            if (request.IsMain) ValidateMainCollectionDuplicate(request.CreatorId);
+            await ValidateCreatorExistency(request.CreatorId);
+            await ValidateNameDuplicates(request.Name, request.ParentId);
+            if (request.IsMain) await ValidateMainCollectionDuplicate(request.CreatorId);
 
             // Create path
             if (request.ParentId.HasValue)
@@ -50,30 +50,36 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             }
 
             // Create collection
-            var collection = CreateCollection(request);
+            var collection = await CreateCollection(request);
             return _mapper.Map<CollectionViewModel>(collection);
         }
 
-        private async void ValidateCreatorExistency(int creatorId)
+        private async Task<Unit> ValidateCreatorExistency(int creatorId)
         {
             var creator = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
             ?? throw new NotFoundException("Creator", creatorId);
+
+            return Unit.Value;
         }
 
-        private async void ValidateMainCollectionDuplicate(int creatorId)
+        private async Task<Unit> ValidateMainCollectionDuplicate(int creatorId)
         {
             var mainCollection = await _unitOfWork.collectionRepository
                 .GetAsync(c => c.CreatorId.Equals(creatorId) && c.IsMain.Equals(true));
 
             if (mainCollection.Any()) throw new CustomValidationException("A main collection is already configured for the user");
+
+            return Unit.Value;
         }
 
-        private async void ValidateNameDuplicates(string name, int? parentId)
+        private async Task<Unit> ValidateNameDuplicates(string name, int? parentId)
         {
             var duplicates = await _unitOfWork.collectionRepository
                 .GetAsync(c => c.ParentId.Equals(parentId) && c.Name.Equals(name));
 
             if (duplicates.Any()) throw new CustomValidationException(@$"There's already a collection with the name: { name }");
+
+            return Unit.Value;
         }
 
         private async Task<Collection> CreateCollection(CreateCollectionCommand request)
