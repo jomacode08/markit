@@ -1,4 +1,5 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
+using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Infraestructure.Security.Services;
@@ -33,5 +34,9 @@ namespace markit.API.Controllers.Operation
         [HttpPatch]
         [Route("update")]
         public async Task<CollectionViewModel> Update([FromBody] UpdateCollectionCommand command) => await _mediator.Send(command);
+
+        [HttpDelete]
+        [Route("softDelete/{CollectionId}")]
+        public async Task<bool> SoftDelete([FromRoute] SoftDeleteCollectionCommand command) => await _mediator.Send(command);
     }
 }

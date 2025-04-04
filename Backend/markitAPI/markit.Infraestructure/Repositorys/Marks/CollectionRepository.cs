@@ -13,26 +13,26 @@ namespace markit.Infraestructure.Repositorys.Marks
 
         public async Task<List<Collection>> GetHierarchyRecursively(int rootCollectionId)
         {
-            var collections = context
-                .Collections
-                .FromSql($@"
-                    WITH CollectionHierarchy AS (
-	                    SELECT 
-	                        Id, Name, Path, IsMain, ParentId, CreatorId,
-	                        CreatedDate, CreatedBy, UpdatedDate, UpdatedBy, Enable
-	                    FROM Collections
-	                    WHERE Id = { rootCollectionId } AND Enable = 1
+			var collections = context
+				.Collections
+				.FromSql($@"
+					WITH CollectionHierarchy AS (
+						SELECT 
+							c1.Id, c1.Name, c1.Path, c1.IsMain, c1.ParentId, c1.CreatorId,
+							c1.CreatedDate, c1.CreatedBy, c1.UpdatedDate, c1.UpdatedBy, c1.Enable
+						FROM Collections as c1
+						WHERE c1.Id = { rootCollectionId } AND Enable = 1
 
-	                    UNION ALL
+						UNION ALL
 
-	                    SELECT
-	                        c.Id, c.Name, c.Path, c.IsMain, c.ParentId, c.CreatorId,
-	                        c.CreatedDate, c.CreatedBy, c.UpdatedDate, c.UpdatedBy, c.Enable
-	                    FROM Collections AS c
-	                    INNER JOIN CollectionHierarchy ch ON c.ParentId = ch.Id
-	                    WHERE c.Enable = 1
-                    )
-                    SELECT * FROM CollectionHierarchy;
+						SELECT
+							c2.Id, c2.Name, c2.Path, c2.IsMain, c2.ParentId, c2.CreatorId,
+							c2.CreatedDate, c2.CreatedBy, c2.UpdatedDate, c2.UpdatedBy, c2.Enable
+						FROM Collections AS c2
+						INNER JOIN CollectionHierarchy ch ON c2.ParentId = ch.Id
+						WHERE c2.Enable = 1
+					)
+					SELECT * FROM CollectionHierarchy;
                 ").IgnoreQueryFilters();
 
             return await collections.ToListAsync();
