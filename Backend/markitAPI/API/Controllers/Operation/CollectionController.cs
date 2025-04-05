@@ -1,7 +1,9 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
+using markit.Application.Features.Collections.Queries.GetCollectionsByParentIdQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Features.Marks.Queries;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +24,10 @@ namespace markit.API.Controllers.Operation
             _mediator = mediator;
             _sessionService = sessionService;
         }
+
+        [HttpGet]
+        [Route("getByParentId/{ParentId}")]
+        public async Task<List<CollectionViewModel>> GetByParentId([FromRoute] GetCollectionsByParentIdQuery query) => await _mediator.Send(query);
 
         [HttpPost]
         [Route("create")]
