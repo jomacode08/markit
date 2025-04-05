@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
@@ -26,12 +27,14 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppUserService _appUserService;
+        private readonly IMediator _mediator;
 
-        public CreateCreatorCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserService appUserService)
+        public CreateCreatorCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserService appUserService, IMediator mediator)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _appUserService = appUserService;
+            _mediator = mediator;
         }
 
         public async Task<Unit> Handle(CreateCreatorCommand request, CancellationToken cancellationToken)
@@ -41,6 +44,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
             Creator creator = _mapper.Map<Creator>(request);
             await AddCreator(creator);
             await AddSystemAccess(request, creator.Id);
+            await AddMainCollection(creator.Id);
 
             scope.Complete();
             return Unit.Value;
@@ -63,6 +67,18 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
             );
 
             await _appUserService.CreateIdentityUser(user, creatorId);
+        }
+
+        private async Task AddMainCollection(int creatorId)
+        {
+            CreateCollectionCommand createCollectionCommand = new()
+            {
+                Name = "My marks",
+                IsMain = true,
+                CreatorId = creatorId
+            };
+
+            await _mediator.Send(createCollectionCommand);
         }
     }
 }
