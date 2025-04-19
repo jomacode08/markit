@@ -21,7 +21,7 @@ export const routes: Routes = [
             import('./dashboard/dashboard.routes').then(r => r.DASHBOARD_ROUTES)
     },
     {
-        path: 'mark',
+        path: 'marks',
         data: { breadcrumb : 'Marks' },
         canActivate: [IsAuthenticatedActivateGuard],
         canMatch: [IsAuthenticatedActivateGuard],
@@ -29,6 +29,16 @@ export const routes: Routes = [
             import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
         loadChildren: () =>
             import('./marks/mark.routes').then(r => r.MARK_ROUTES)
+    },
+    {
+        path: 'collections',
+        data: { breadcrumb : 'Collections' },
+        canActivate: [IsAuthenticatedActivateGuard],
+        canMatch: [IsAuthenticatedActivateGuard],
+        loadComponent: () => 
+            import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
+        loadChildren: () =>
+            import('./collections/collections.routes').then(r => r.COLLECTIONS_ROUTES)
     },
     {
         path: 'not-found',

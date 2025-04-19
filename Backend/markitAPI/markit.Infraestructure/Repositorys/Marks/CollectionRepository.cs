@@ -1,4 +1,5 @@
 ﻿using markit.Application.Contracts.Persistence.Marks;
+using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,45 @@ namespace markit.Infraestructure.Repositorys.Marks
                 ").IgnoreQueryFilters();
 
             return await collections.ToListAsync();
+        }
+
+        // Get child collections and marks of a specific collection.
+        public async Task<List<CollectionItem>> GetCollectionItems(int collectionId)
+        {
+            var collections = await context
+                .Collections
+                .Include(c => c.Marks)
+                .Where(c => c.ParentId == collectionId)
+                .Select(c => new CollectionItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = c.Name,
+                    CollectionId = collectionId,
+                    Type = CollectionItemType.Collection,
+                    TypeId = c.Id,
+                    Preview = c.Marks != null
+                        ? $"{c.Marks.Count} marks"
+                        : "0 marks",
+                })
+                .ToListAsync();
+
+
+            var marks = await context
+                .Marks
+                .Where(m => m.CollectionId == collectionId)
+                .Select(m => new CollectionItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = m.Name,
+                    CollectionId = collectionId,
+                    Type = CollectionItemType.Mark,
+                    TypeId = m.Id,
+                    UpdateDate = m.UpdatedDate ?? (DateTime)m.CreatedDate!,
+                    Preview = "This is a preview...",
+                })
+                .ToListAsync();
+
+            return [.. collections, .. marks];
         }
     }
 }

@@ -12,6 +12,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
     {
         public string Name { get; set; } = string.Empty;
         public int CreatorId { get; set; }
+        public int CollectionId { get; set; }
         public List<BlockViewModel> Blocks { get; set; } = new();
     }
 
@@ -28,19 +29,47 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
         public async Task<MarkViewModel> Handle(CreateMarkCommand request, CancellationToken cancellationToken)
         {
-            // Validate the existence of the creator
-            Creator? creator = await _unitOfWork.creatorRepository.GetByIdAsync(request.CreatorId);
-            if (creator == null) throw new NotFoundException("Creator", request.CreatorId);
+            await ValidateCreatorExistency(request.CreatorId);
+            
+            // Assign main collectionId if empty
+            if (request.CollectionId.Equals(0))
+            {
+                request.CollectionId = (await GetMainCollection(request.CreatorId)).Id;
+            }
 
-            // Map the request to a mark entity
-            Mark mark = _mapper.Map<Mark>(request);
+            await ValidateCollection(request.CollectionId);
+
             // Create the mark
+            Mark mark = _mapper.Map<Mark>(request);
             _unitOfWork.markRepository.AddEntity(mark);
 
             // Complete the transaction
             await _unitOfWork.Complete();
-            
             return _mapper.Map<MarkViewModel>(mark);
+        }
+
+        private async Task ValidateCreatorExistency(int creatorId)
+        {
+           _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+                ?? throw new NotFoundException("Creator", creatorId);
+        }
+
+        private async Task ValidateCollection(int collectionId)
+        {
+            _ = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+                ?? throw new NotFoundException("Collection", collectionId);
+        }
+
+        private async Task<Collection> GetMainCollection(int creatorId)
+        {
+            var mainCollection = await _unitOfWork.collectionRepository
+                .GetAsync(c =>
+                    c.IsMain.Equals(true)
+                    && c.CreatorId.Equals(creatorId)
+                );
+
+            return mainCollection.FirstOrDefault()
+                ?? throw new CustomValidationException($"The main collection of the creator with id:{creatorId} is not configured.");
         }
     }
 }

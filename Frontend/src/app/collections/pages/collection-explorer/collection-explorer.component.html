@@ -1,0 +1,76 @@
+<ng-container class="" *ngIf=" this.collection$ | async as collection">
+    <!-- Title -->
+    <p class="font-fraunces font-semibold text-2xl">{{ collection.name | titlecase }}</p>
+    <!-- Data Grid -->
+    <p-dataView
+        [value]="collection.collectionItems"
+        emptyMessage=" "
+        [loading]="this.loading()"
+    >
+        <ng-template pTemplate="list" let-items>
+    
+            <!-- List template -->
+            @for ( item of items; track $index) {
+                <!-- Columns -->
+                <div class="item mb-2">
+                    <!-- Collection Item Information -->
+                    <div (click)="onCollectionItemClick(item)" class="grid grid-nogutter py-3 w-full cursor-pointer">
+                        <!-- Name -->
+                        <div class="col-12 mb-3 md:col-4 md:m-0">
+                            <span class="item-icon fa-xl">
+                                <i [class]="(item.type | collectionItemIcon)"></i>
+                            </span>
+                            <span class="w-full font-semibold">
+                                {{ item.name }}
+                            </span>
+                        </div>
+                        <!-- Description -->
+                        <div [ngClass]="{ 'mb-1' : item.type === CollectionItemType.Mark }" class="col-12 md:col-4 md:m-0 text-white-alpha-60">
+                            {{ item.preview }}
+                        </div>
+                        <!-- Date -->
+                        <div *ngIf="item.type === CollectionItemType.Mark" class="col-12 md:col-4 text-white-alpha-60">
+                            {{ item.updateDate | date: 'mediumDate' }}
+                        </div>
+                    </div>
+                    <!-- General actions -->
+                    <div class="actions-container py-3 flex-column just md:flex-row">
+                        <button type="button">
+                            <span class="fa fa-regular fa-star text-lg text-white-alpha-60"></span>
+                        </button>
+                        <button (click)="onItemActionsButtonClick(item)" type="button">
+                            <span class="fa fa-ellipsis text-lg text-white-alpha-60"></span>
+                        </button>
+                    </div>
+                </div>
+            }
+    
+            <!-- No results template -->
+            <div *ngIf="items?.length === 0" class="flex flex-column align-items-center justify-content-center">
+                <img
+                    src="img/no-results.webp"
+                    alt="No items found"
+                    class="h-25rem"
+                />
+            </div>
+    
+        </ng-template>
+    </p-dataView>
+</ng-container>
+
+<!-- Floating action button -->
+<p-button
+    *ngIf="!loading()"
+    styleClass="floating-button"
+    icon="fa fa-pen-to-square"
+    size="large"
+    [rounded]="true"
+    [raised]="true"
+    (onClick)="onFloatingButtonClick()"
+/>
+
+<!-- Floating menu -->
+<shared-floating-menu
+    [options]="floatingMenuOptions"
+    [visible]="isFloatingMenuVisible()"
+/>

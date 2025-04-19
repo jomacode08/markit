@@ -11,6 +11,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public int CreatorId { get; set; }
     }
 
     public class UpdateCollectionCommandHandler : IRequestHandler<UpdateCollectionCommand, CollectionViewModel>
@@ -27,7 +28,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
         public async Task<CollectionViewModel> Handle(UpdateCollectionCommand request, CancellationToken cancellationToken)
         {
             // Validate existency and name duplicates
-            Collection collection = await GetCollection(request.Id) ?? throw new NotFoundException("Collection", request.Id);
+            Collection collection = await ValidateCollection(request.Id, request.CreatorId);
             await ValidateNameDuplicates(request.Name, request.Id, collection.ParentId);
 
             int level = GetCollectionLevel(collection.Path);
@@ -51,7 +52,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
             return _mapper.Map<CollectionViewModel>(collection);
         }
 
-        private async Task<Unit> ValidateNameDuplicates(string name, int collectionId, int? parentId)
+        private async Task ValidateNameDuplicates(string name, int collectionId, int? parentId)
         {
             var duplicates = await _unitOfWork.collectionRepository
                 .GetAsync(c => 
@@ -61,13 +62,16 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
                 );
 
             if (duplicates.Any()) throw new CustomValidationException(@$"There's already a collection with the name: {name}");
-
-            return Unit.Value;
         }
 
-        private async Task<Collection?> GetCollection(int collectionId)
+        private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
         {
-            return await _unitOfWork.collectionRepository.GetByIdAsync(collectionId);
+            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+                ?? throw new NotFoundException("Collection", collectionId);
+
+            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
+
+            return collection;
         }
 
         private async Task<List<Collection>> GetHierarchy(int collectionId)

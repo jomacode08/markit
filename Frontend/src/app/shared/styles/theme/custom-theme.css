@@ -4,6 +4,7 @@
     --main-purple-color: #dcc1ff;
     --main-yellow-color: #f5f378;
     --main-orange-color: #ec704b;
+    --main-blue-color: #6CCEF0;
     
     --neutral-background-color: #E8EAED;
     --light-gray-color: #6c6c6c;
@@ -55,7 +56,7 @@ input.square {
 input.transparent {
   background-color: transparent;
   color: hsl(0, 0%, 100%);
-  border: 0px;
+  border: none;
 }
 
 input:focus {
@@ -95,6 +96,9 @@ input:hover {
 .text-main-gray {
   color: var(--main-gray-color);
 }
+.text-light-gray {
+  color: var(--light-gray-color);
+}
 .text-main-purple {
   color: var(--main-purple-color);
 }
@@ -103,6 +107,9 @@ input:hover {
 }
 .text-main-orange {
   color: var(--main-orange-color);
+}
+.text-main-blue {
+  color: var(--main-blue-color);
 }
 
 /** Button */
@@ -180,10 +187,15 @@ button {
   box-shadow: none;
 }
 
+.floating-button {
+  position: fixed;
+  z-index: 1;
+}
+
 .p-button.floating-button {
   background-color: var(--light-gray-color);
   border: none;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 .p-button.floating-button:focus {
   box-shadow: none;
@@ -282,6 +294,26 @@ button {
     margin-right: 15px;
 }
 
+/** Dialogs */
+.collection-item-dialog {
+  border: 1px solid var(--main-gray-color);
+  border-radius: 0.5rem;
+  .p-dialog-header, .p-dialog-content {
+    background-color: #181818;
+  }
+
+  .p-dialog-header {
+    color: #ffffff;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+
+  .p-dialog-content {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+}
+
 /** Divider */
 .p-divider-content {
   background-color: var(--main-black-color);
@@ -315,7 +347,16 @@ button {
 .p-skeleton {
   background-color: var(--main-gray-color);
 }
+.p-skeleton:after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+}
 
+/** Data view */
+.p-dataview .p-dataview-content {
+  color: #ffffff;
+  border: 0 none;
+  padding: 0;
+}
 
 /** Utils */
 .h-50 {

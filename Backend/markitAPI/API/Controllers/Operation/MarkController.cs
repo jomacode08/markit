@@ -1,5 +1,6 @@
 ﻿using markit.Application.Features.Marks.Commands.CreateMarkCommand;
 using markit.Application.Features.Marks.Commands.DeleteMarkCommand;
+using markit.Application.Features.Marks.Commands.RenameMarkCommand;
 using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries;
 using markit.Application.Features.Marks.Queries.ViewModels;
@@ -56,9 +57,17 @@ namespace markit.API.Controllers.Operation
             return await _mediator.Send(command);
         }
 
+        [HttpPatch]
+        [Route("rename")]
+        public async Task<MarkViewModel> Rename([FromBody] RenameMarkCommand command)
+        {
+            command.CreatorId = _sessionService.GetCreatorId();
+            return await _mediator.Send(command);
+        }
+
         [HttpDelete]
-        [Route("delete/{Id}")]
-        public async Task<bool> Delete([FromRoute] DeleteMarkCommand command)
+        [Route("softDelete/{Id}")]
+        public async Task<bool> SoftDelete([FromRoute] SoftDeleteMarkCommand command)
         {
             return await _mediator.Send(command);
         }

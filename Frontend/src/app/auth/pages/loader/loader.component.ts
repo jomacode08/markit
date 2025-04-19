@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-status',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './loader.component.html'

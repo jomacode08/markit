@@ -2,7 +2,7 @@
     #sidebar
     id="floating-menu"
     position="bottom"
-    [visible]="visible"
+    [visible]="isSidebarDisplayed()"
     [modal]="false"
     [dismissible]="false"
 >
@@ -13,7 +13,7 @@
         </button>
 
         <!-- Edition options -->
-        @for (option of currentMenuOptions; track $index) {
+        @for (option of currentOptions()(); track $index) {
             <button 
                 type="button" 
                 (click)="onOptionClick(option)"

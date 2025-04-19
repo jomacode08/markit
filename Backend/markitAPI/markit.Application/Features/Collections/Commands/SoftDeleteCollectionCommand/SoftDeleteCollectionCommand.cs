@@ -8,6 +8,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
     public class SoftDeleteCollectionCommand : IRequest<bool>
     {
         public int CollectionId { get; set; }
+        public int CreatorId { get; set; }
     }
 
     public class DeleteCollectionCommandHandler : IRequestHandler<SoftDeleteCollectionCommand, bool>
@@ -21,7 +22,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
         public async Task<bool> Handle(SoftDeleteCollectionCommand request, CancellationToken cancellationToken)
         {
-            await ValidateCollectionExistency(request.CollectionId);
+            await ValidateCollectionExistency(request.CollectionId, request.CreatorId);
 
             List<Collection> hierarchy = await GetHierarchy(collectionId: request.CollectionId);
             await SoftDeleteOnCascade(hierarchy);
@@ -30,12 +31,12 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
             return true;
         }
 
-        private async Task<Unit> ValidateCollectionExistency(int collectionId)
+        private async Task ValidateCollectionExistency(int collectionId, int creatorId)
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
 
-            return Unit.Value;
+            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
         }
 
         private async Task<List<Collection>> GetHierarchy(int collectionId)

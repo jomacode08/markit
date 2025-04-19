@@ -26,8 +26,13 @@ export class MainBarComponent {
     },
     {
       label: 'My marks',
-      icon: 'fa fa-bookmark',
-      command: () => this.navigate('mark')
+      icon: 'fa fa-file',
+      command: () => this.navigate('marks')
+    },
+    {
+      label: 'My collections',
+      icon: 'fa fa-folder',
+      command: () => this.navigate('collections')
     },
   ];
 

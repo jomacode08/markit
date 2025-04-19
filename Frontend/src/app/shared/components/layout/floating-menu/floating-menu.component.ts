@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, input, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
+import { PrimengModule } from '../../../primeng/primeng.module';
 import { Sidebar } from 'primeng/sidebar';
 
 import { FloatingMenuOption } from './floating-menu-option';
 
 @Component({
-  selector: 'marks-floating-menu',
+  selector: 'shared-floating-menu',
   standalone: true,
   imports: [
     CommonModule,
@@ -16,36 +16,32 @@ import { FloatingMenuOption } from './floating-menu-option';
   templateUrl: './floating-menu.component.html',
   styleUrl: './floating-menu.component.css',
 })
-export class FloatingMenuComponent implements OnInit {
+export class FloatingMenuComponent {
   @ViewChild('sidebar')
   public sideBarRef !: Sidebar;
-  
-  @Input({ required: true })
-  menuOptions !: FloatingMenuOption[];
-  @Input({ required: true })
-  visible : boolean = false;
 
-  public currentMenuOptions: FloatingMenuOption[] = [];
+  //* Reactive Inputs
+  public options = input.required<FloatingMenuOption[]>();
+  public isSidebarDisplayed = input.required<boolean>({ alias: 'visible' });
+
+  //* Configuration 
   public isBackButtonVisible: boolean = false;
-
-  public ngOnInit(): void {
-    this.currentMenuOptions = this.menuOptions;
-  }
+  public currentOptions = computed(() => signal(this.options()));
 
   public onOptionClick( option: FloatingMenuOption ): void {
     // If the option has children, show them.
     if (option.children) {
-      this.currentMenuOptions = option.children;
+      this.currentOptions().set(option.children);
       this.isBackButtonVisible = true;
       return;
     }
-    // Otherwise the command option will be executed
+    // Otherwise execute the option command
     if (option.command) option.command();
   }
 
   public onBackButtonClick(): void {
     // Set the default state to the current options 
-    this.currentMenuOptions = this.menuOptions
+    this.currentOptions().set(this.options());
     this.isBackButtonVisible = false;
   }
 

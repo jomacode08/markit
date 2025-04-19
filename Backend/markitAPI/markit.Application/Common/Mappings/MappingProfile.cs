@@ -21,7 +21,36 @@ namespace markit.Application.Mappings
             // Collections
             CreateMap<CreateCollectionCommand, Collection>();
             CreateMap<UpdateCollectionCommand, Collection>();
-            CreateMap<Collection, CollectionViewModel>();
+            CreateMap<Collection, CollectionViewModel>()
+                .ForMember(dest => dest.CollectionItems, opt => opt.Ignore());
+
+            CreateMap<Collection, CollectionItem>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => Guid.NewGuid().ToString())
+                )
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name)
+                )
+                .ForMember(
+                    dest => dest.CollectionId,
+                    opt => opt.MapFrom(src => src.ParentId)
+                )
+                .ForMember(
+                    dest => dest.Type,
+                    opt => opt.MapFrom(src => CollectionItemType.Collection)
+                )
+                .ForMember(
+                    dest => dest.TypeId,
+                    opt => opt.MapFrom(src => src.Id)
+                )
+                .ForMember(
+                    dest => dest.Preview,
+                    opt => opt.MapFrom(src => src.Marks != null 
+                    ? $"{ src.Marks.Count } marks" 
+                    : "0 marks")
+                );
 
             // Creators
             CreateMap<CreateCreatorCommand, Creator>();

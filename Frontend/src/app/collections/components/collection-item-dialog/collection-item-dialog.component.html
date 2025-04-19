@@ -1,0 +1,44 @@
+<form
+    [formGroup]="form"
+    (submit)="onSubmit()"
+    autocomplete="off"
+>
+    <div class="flex align-items-center gap-3">
+        <!-- Icon -->
+        <div class="text-2xl">
+            <i [class]="(this.currentCollectionItem.type | collectionItemIcon)"></i>
+        </div>
+        <!-- Name Input -->
+        <div class="w-full font-semibold">
+            <input
+                id="name"
+                formControlName="name"
+                maxlength="255"
+                pInputText
+                type="text"
+                class="transparent w-full px-2 py-1 bg-black-alpha-30 text-white-alpha-60"
+            />
+        </div>
+        <!-- Submit button -->
+        <div class="flex justify-content-center">
+            <button *ngIf="!submit else spinnerTemplate" type="submit">
+                <span class="fa-solid fa-check text-green-400 text-lg"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Validation name error message -->
+    <div *ngIf="isInvalidField('name')" class="mt-2">
+        <shared-error-field [validationField]="getValidationField('name', 'masc', 'name title')" />
+    </div>
+</form>
+
+<!-- Loading spinner template -->
+<ng-template #spinnerTemplate>
+    <div class="flex justify-content-center">
+        <p-progressSpinner
+            [style]="{ width: '1.5rem', height: '1.5rem' }"
+            strokeWidth="4"
+        ></p-progressSpinner>
+    </div>
+</ng-template>

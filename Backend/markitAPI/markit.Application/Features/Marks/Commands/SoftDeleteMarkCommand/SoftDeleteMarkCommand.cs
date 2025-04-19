@@ -5,21 +5,21 @@ using MediatR;
 
 namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 {
-    public class DeleteMarkCommand : IRequest<bool>
+    public class SoftDeleteMarkCommand : IRequest<bool>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteMarkCommandHandler : IRequestHandler<DeleteMarkCommand, bool>
+    public class SoftDeleteMarkCommandHandler : IRequestHandler<SoftDeleteMarkCommand, bool>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteMarkCommandHandler(IUnitOfWork unitOfWork)
+        public SoftDeleteMarkCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
         
-        public async Task<bool> Handle(DeleteMarkCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SoftDeleteMarkCommand request, CancellationToken cancellationToken)
         {
             // Validate the existence of the mark
             Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Links")

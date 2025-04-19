@@ -1,9 +1,9 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
-using markit.Application.Features.Collections.Queries.GetCollectionsByParentIdQuery;
+using markit.Application.Features.Collections.Queries.GetCollectionItemsForGridQuery;
+using markit.Application.Features.Collections.Queries.Grid;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Features.Marks.Queries;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,8 +26,30 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpGet]
-        [Route("getByParentId/{ParentId}")]
-        public async Task<List<CollectionViewModel>> GetByParentId([FromRoute] GetCollectionsByParentIdQuery query) => await _mediator.Send(query);
+        [Route("getCollectionById/{CollectionId}")]
+        public async Task<CollectionViewModel> GetCollectionById(int CollectionId)
+        {
+            var query = new GetCollectionByIdQuery
+            {
+                CollectionId = CollectionId,
+                CreatorId = _sessionService.GetCreatorId(),
+                IncludeCollectionITems = true
+            };
+
+            return await _mediator.Send(query);
+        }
+
+        [HttpGet]
+        [Route("getRootCollectionsForGrid")]
+        public async Task<List<CollectionItem>> GetRootItemsForGrid()
+        {
+            var query = new GetRootCollectionsForGridQuery
+            {
+                CreatorId = _sessionService.GetCreatorId(),
+            };
+
+            return await _mediator.Send(query);
+        }
 
         [HttpPost]
         [Route("create")]
@@ -38,11 +60,24 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpPatch]
-        [Route("update")]
-        public async Task<CollectionViewModel> Update([FromBody] UpdateCollectionCommand command) => await _mediator.Send(command);
+        [Route("rename")]
+        public async Task<CollectionViewModel> Rename([FromBody] UpdateCollectionCommand command)
+        {
+            command.CreatorId = _sessionService.GetCreatorId();
+           return await _mediator.Send(command);
+        }
 
         [HttpDelete]
         [Route("softDelete/{CollectionId}")]
-        public async Task<bool> SoftDelete([FromRoute] SoftDeleteCollectionCommand command) => await _mediator.Send(command);
+        public async Task<bool> SoftDelete(int CollectionId)
+        {
+            var command = new SoftDeleteCollectionCommand()
+            {
+                CollectionId = CollectionId,
+                CreatorId = _sessionService.GetCreatorId()
+            };
+
+            return await _mediator.Send(command);
+        }
     }
 }

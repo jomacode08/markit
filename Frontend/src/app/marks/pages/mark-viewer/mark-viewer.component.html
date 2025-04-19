@@ -90,19 +90,13 @@
     size="large"
     [rounded]="true"
     [raised]="true"
-    (onClick)="changeMarkMenuState()"
+    (onClick)="onFontOptionsButtonClick()"
 />
 
-<!-- Mark menu -->
-<marks-floating-menu
-    [menuOptions]="fontOptions()"
-    [visible]="isMarkMenuVisible"
-/>
-
-<!-- Block menu -->
-<marks-floating-menu
-    [menuOptions]="blockOptions()"
-    [visible]="isBlockMenuVisible"
+<!-- Floating menu -->
+<shared-floating-menu
+    [options]="floatingMenuOptions"
+    [visible]="isFloatingMenuVisible"
 />
 
 <!-- Loading skeleton template -->

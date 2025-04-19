@@ -24,9 +24,9 @@ export class MarkListComponent implements OnInit {
     this.markList = await this.getMarks();
   }
 
-  public onAddButtonClick = () => this.router.navigate(['mark/new']);
+  public onAddButtonClick = () => this.router.navigate(['marks/new']);
 
-  public onSeeButtonClick = (id: number) => this.router.navigate(['mark/see', id]);
+  public onSeeButtonClick = (id: number) => this.router.navigate(['marks/see', id]);
 
   private getMarks(): Promise<Mark[]> {
     return firstValueFrom(this.markService.getByCurrentSession());

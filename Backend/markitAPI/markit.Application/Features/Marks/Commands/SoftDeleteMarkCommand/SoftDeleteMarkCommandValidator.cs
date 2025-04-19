@@ -2,9 +2,9 @@
 
 namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 {
-    public class DeleteMarkCommandValidator : AbstractValidator<DeleteMarkCommand>
+    public class SoftDeleteMarkCommandValidator : AbstractValidator<SoftDeleteMarkCommand>
     {
-        public DeleteMarkCommandValidator()
+        public SoftDeleteMarkCommandValidator()
         {
             RuleFor(c => c.Id).NotEmpty().WithMessage("The id is required");
         }

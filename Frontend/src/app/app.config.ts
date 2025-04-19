@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, TitleStrategy, withViewTransitions } from '@angular/router';
+import { provideRouter, TitleStrategy, withRouterConfig, withViewTransitions } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
@@ -13,7 +13,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimations(),
-    provideRouter(routes, withViewTransitions()),
+    provideRouter(
+      routes,
+      withRouterConfig({ onSameUrlNavigation: 'reload' }),
+      withViewTransitions()
+    ),
     provideHttpClient(
       withInterceptorsFromDi()
     ),

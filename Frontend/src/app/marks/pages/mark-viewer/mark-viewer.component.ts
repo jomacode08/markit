@@ -1,15 +1,15 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { delay } from 'rxjs';
 
 import { Editor } from '@tiptap/core';
 import { PrimengModule } from '../../../shared/primeng/primeng.module';
 
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
-import { FloatingMenuComponent } from '../../components/floating-menu/floating-menu.component';
-import { FloatingMenuOption } from '../../components/floating-menu/floating-menu-option';
+import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
+import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { Cols, Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { NodeMark } from '../../interfaces/node-mark';
@@ -17,6 +17,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { BlockColors } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
+import { CurrentRouteService } from '../../../shared/services/current-route.service';
 
 @Component({
   standalone: true,
@@ -34,11 +35,13 @@ import { BlockComponent } from '../../components/block/block.component';
 })
 export class MarkViewerComponent extends ValidatorErrorField implements OnInit, AfterViewInit {
   //* Services
-  private fb              : FormBuilder = inject(FormBuilder);
-  private router          : Router = inject(Router);
-  private activatedRoute  : ActivatedRoute = inject(ActivatedRoute);
   private markService     : MarkService = inject(MarkService);
   private messageService  : CustomMessageService = inject(CustomMessageService);
+
+  //* Configuration
+  private previousUrl : string | null = null;
+  public floatingMenuOptions : FloatingMenuOption[] = []
+  public isFloatingMenuVisible : boolean = false;
 
   //* Form
   public submit   : boolean = false;
@@ -50,9 +53,8 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   });
 
   //* Mark Menu
-  public isMarkMenuVisible: boolean = false;
   public editor ?: Editor;
-  public fontOptions = computed<FloatingMenuOption[]>(() => [
+  public fontOptions : FloatingMenuOption[] = [
     {
       label: 'Bold',
       icon: 'fa fa-bold',
@@ -162,7 +164,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     },
     {
       label: 'Highlight',
-      name: 'highlight',
       icon: 'fa fa-highlighter',
       children: [
         {
@@ -221,18 +222,17 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       command: () => this.editor?.chain().focus().toggleTaskList().run(),
       isActive: () => this.isNodeMarkActive({ name: 'taskList' }),
     },
-  ]);
+  ];
 
   //* Block Menu
-  public isBlockMenuVisible : boolean = false;
   public currentBlockIndex  : number = 0;
-  public blockOptions = computed<FloatingMenuOption[]>(() => [
+  public blockOptions : FloatingMenuOption[] = [
     {
       label: 'Add block',
       icon: 'fa fa-plus',
       command: () => {
         this.addBlock(this.currentBlockIndex + 1, 12);
-        this.changeBlockMenuState();
+        this.changeFloatingMenuState();
       }
     },
     {
@@ -240,7 +240,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       icon: 'fa fa-trash',
       command: () => {
         this.removeBlock(this.currentBlockIndex);
-        this.changeBlockMenuState();
+        this.changeFloatingMenuState();
       }
     },
     {
@@ -251,23 +251,23 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
           label: 'Neutral',
           icon: 'fa fa-circle',
           color: '#fbf4e9',
-          command: () => this.changeColor(this.currentBlockIndex, BlockColors.neutral)
+          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.neutral)
         },
         {
           label: 'Purple',
           icon: 'fa fa-circle',
           color: '#E8DCF9',
-          command: () => this.changeColor(this.currentBlockIndex, BlockColors.purple)
+          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.purple)
         },
         {
           label: 'Red',
           icon: 'fa fa-circle',
           color: '#EDCAC0',
-          command: () => this.changeColor(this.currentBlockIndex, BlockColors.red)
+          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.red)
         },
       ]
     },
-  ]);
+  ];
 
   //* Getters
   get currentMark(): Mark {
@@ -279,6 +279,16 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   //* Lyfecycle
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private currentRouteService: CurrentRouteService
+  ) {
+    super();
+    this.previousUrl = this.currentRouteService.previousSuccessfulUrl();
+  }
+
   public ngOnInit(): void {
     // check if the route is to see a mark
     if (this.router.url.includes('see')) {
@@ -286,7 +296,8 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       this.loading = true;
       // get the mark id from the route
       const markId = this.activatedRoute.snapshot.paramMap.get('id');
-      if (markId == null || isNaN(Number(markId))) return this.onCancel();
+      if (markId == null || isNaN(Number(markId)))
+        return this.redirectToUrl(this.previousUrl ?? 'marks');
       // get the mark and set it in the form
       this.setMark(Number(markId));
       return;
@@ -317,7 +328,21 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   public onCancel(): void {
-    this.router.navigate(['/mark']);
+    this.redirectToUrl(this.previousUrl ?? 'marks');
+  }
+
+  public onBlockTitleChanged(index: number, title: string ): void {
+    const block = this.currentBlocks.at(index) as FormGroup;
+    block.controls['title'].setValue(title); 
+  }
+
+  public onBlockOptionsButtonClick( index: number ): void {
+    this.currentBlockIndex = index;
+    this.changeFloatingMenuState(this.blockOptions);
+  }
+
+  public onFontOptionsButtonClick( ): void {
+    this.changeFloatingMenuState(this.fontOptions);
   }
 
   //* Marks
@@ -328,7 +353,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     )
     .subscribe(
       {
-        error: (error) => this.onCancel(),
+        error: (error) => this.redirectToUrl(this.previousUrl ?? 'marks'),
         next : (mark)  => {
           // Construct the blocks
           const blockControls = mark.blocks.map(block => this.fb.group(block));
@@ -388,16 +413,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   //* Blocks
-  public onBlockTitleChanged(index: number, title: string ): void {
-    const block = this.currentBlocks.at(index) as FormGroup;
-    block.controls['title'].setValue(title); 
-  }
-  
-  public onBlockOptionsButtonClick( index: number ): void {
-    this.currentBlockIndex = index;
-    this.changeBlockMenuState();
-  }
-
   public  addBlock(index : number, cols: Cols): void {
     const color: BlockColors = index > 0
     ? BlockColors.neutral
@@ -429,23 +444,23 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     });
   }
 
-  private changeColor(index : number, color: BlockColors): void {
+  private changeBlockColor(index : number, color: BlockColors): void {
     const block = this.currentBlocks.at(index) as FormGroup;
     block.controls['color'].setValue(color);
   }
-
 
   //* UTILS
   private setSubmit(value: boolean): void {
     this.submit = value;
   }
-  public changeMarkMenuState(): void {
-    this.isMarkMenuVisible = !this.isMarkMenuVisible;
-  }
-  public changeBlockMenuState(): void {
-    this.isBlockMenuVisible = !this.isBlockMenuVisible;
+  public changeFloatingMenuState( menuOptions ?: FloatingMenuOption[] ): void {
+    if (menuOptions) this.floatingMenuOptions = menuOptions;
+    this.isFloatingMenuVisible = !this.isFloatingMenuVisible;
   }
   public castAbstractControlToFormGroup(control: AbstractControl) {
     return control as FormGroup;
+  }
+  private redirectToUrl(url: string): void {
+    this.router.navigate([url]);
   }
 }

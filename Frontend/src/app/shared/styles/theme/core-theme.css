@@ -1310,10 +1310,8 @@
       font-family: var(--font-family);
       font-feature-settings: var(--font-feature-settings, normal);
       font-size: 1rem;
-      color: #4b5563;
       background: #ffffff;
       padding: 0.75rem 0.75rem;
-      border: 1px solid #d1d5db;
       transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
       appearance: none;
       border-radius: 6px;
@@ -3012,12 +3010,6 @@
       border-width: 1px 0 1px 0;
       padding: 1rem 1rem;
       font-weight: 700;
-    }
-    .p-dataview .p-dataview-content {
-      background: #ffffff;
-      color: #4b5563;
-      border: 0 none;
-      padding: 0;
     }
     .p-dataview .p-dataview-footer {
       background: #f9fafb;
@@ -6391,11 +6383,7 @@
     }
   
     .p-skeleton {
-      background-color: #e5e7eb;
       border-radius: 6px;
-    }
-    .p-skeleton:after {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
     }
   
     .p-tag {

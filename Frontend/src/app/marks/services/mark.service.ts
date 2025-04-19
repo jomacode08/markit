@@ -26,7 +26,15 @@ export class MarkService {
         return this.http.patch<Mark>(`${ this.baseUrl }/update`, mark);
     }
 
-    public delete(id: number): Observable<boolean> {
-        return this.http.delete<boolean>(`${ this.baseUrl }/delete/${ id }`);
+    public rename(id: number, newName: string): Observable<Mark> {
+        const bodyRequest = {
+            Id: id,
+            Name: newName
+        };
+        return this.http.patch<Mark>(`${ this.baseUrl }/rename`, bodyRequest);
+    }
+
+    public softDelete(id: number): Observable<boolean> {
+        return this.http.delete<boolean>(`${ this.baseUrl }/softDelete/${ id }`);
     }
 }

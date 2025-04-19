@@ -8,6 +8,7 @@ import { ErrorFieldComponent } from './components/layout/error-field/error-field
 import { ErrorFieldMessagePipe } from './pipes/error-field-message.pipe';
 import { GeneralButtonComponent } from './components/ui/buttons/general-button.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { LoaderSpinnerComponent } from './components/layout/loader-spinner/loader-spinner.component';
 
 
 @NgModule({
@@ -16,18 +17,20 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
         PrimengModule,
     ],
     declarations: [
-        NotFoundComponent,
-        GeneralButtonComponent,
         AlertMessageComponent,
         ErrorFieldComponent,
-        ErrorFieldMessagePipe
+        ErrorFieldMessagePipe,
+        GeneralButtonComponent,
+        LoaderSpinnerComponent,
+        NotFoundComponent,
     ],
     exports: [
-        NotFoundComponent,
-        GeneralButtonComponent,
         AlertMessageComponent,
         ErrorFieldComponent,
-        ErrorFieldMessagePipe
+        ErrorFieldMessagePipe,
+        GeneralButtonComponent,
+        LoaderSpinnerComponent,
+        NotFoundComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

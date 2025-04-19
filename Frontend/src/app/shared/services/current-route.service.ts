@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { BreadCrumb } from '../interfaces/breadcrumb';
 import { GeneralConstant } from '../utils/general-constant';
@@ -16,10 +16,12 @@ export class CurrentRouteService {
     public breadcrumbs = computed(() => this._breadcrumbs());
     public title = computed(() => this._title());
     public url = computed(() => this._url());
+    public previousSuccessfulUrl = computed(() => this._previousSuccessfulUrl());
 
     private _breadcrumbs = signal<BreadCrumb[]>([]);
     private _title = signal<string>("");
     private _url = signal<string>("");
+    private _previousSuccessfulUrl = signal<string | null>(null);
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -32,7 +34,7 @@ export class CurrentRouteService {
     private handleRouterEvents(): void {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
-        ).subscribe(() => {
+        ).subscribe((event) => {
             // Get the breadcrumbs elements from the route tree
             let breadcrumbs = this.createBreadCrumbs(this.activatedRoute.root);
             // Check if the home route isn't included in the breadcrumbs array
@@ -47,7 +49,8 @@ export class CurrentRouteService {
                 ];
             }
             this._breadcrumbs.set(breadcrumbs);
-            this._url.set(this.router.url);
+            this._previousSuccessfulUrl.set(this.url());
+            this._url.set(event.url);
         });
     }
 
