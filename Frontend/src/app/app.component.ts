@@ -3,14 +3,15 @@ import { RouterOutlet } from '@angular/router';
 
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
-import { SharedModule } from "./shared/shared.module";
+
+import { AlertMessageComponent } from './shared/components/layout/alert-message/alert-message.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    AlertMessageComponent,
     RouterOutlet,
-    SharedModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

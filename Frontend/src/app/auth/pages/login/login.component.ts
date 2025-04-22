@@ -2,25 +2,28 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { delay, switchMap } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PrimengModule } from './../../../shared/primeng/primeng.module';
 import { Router } from '@angular/router';
+
+import { PasswordModule } from 'primeng/password';
 
 import { AuthRequest } from '../../interfaces/auth-request';
 import { AuthService } from '../../services/auth.service';
 import { GoogleOAuthService } from './../../services/googleOAuth.service';
-import { SharedModule } from "../../../shared/shared.module";
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
-    SharedModule,
-    PrimengModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GeneralButtonComponent,
+    ErrorFieldComponent,
+    PasswordModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login.component.html',

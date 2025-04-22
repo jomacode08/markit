@@ -5,7 +5,8 @@ import { AfterViewInit, Component, inject, OnInit, ViewEncapsulation } from '@an
 import { delay } from 'rxjs';
 
 import { Editor } from '@tiptap/core';
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
+import { ButtonModule } from 'primeng/button';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
@@ -13,21 +14,24 @@ import { FloatingMenuOption } from '../../../shared/components/layout/floating-m
 import { Cols, Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { NodeMark } from '../../interfaces/node-mark';
-import { SharedModule } from '../../../shared/shared.module';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { BlockColors } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 import { CurrentRouteService } from '../../../shared/services/current-route.service';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
+import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 
 @Component({
   standalone: true,
   imports: [
+    BlockComponent,
+    ButtonModule,
     CommonModule,
+    ErrorFieldComponent,
     FloatingMenuComponent,
-    PrimengModule,
+    GeneralButtonComponent,
     ReactiveFormsModule,
-    SharedModule,
-    BlockComponent
+    SkeletonModule,
   ],
   templateUrl: './mark-viewer.component.html',
   styleUrl: './mark-viewer.component.css',

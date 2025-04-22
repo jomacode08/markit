@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'shared-loader-spinner',
-  standalone: false,
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
     <div class="w-full flex justify-content-center align-items-center">
         <lord-icon 

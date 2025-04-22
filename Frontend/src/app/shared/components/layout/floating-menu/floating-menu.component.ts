@@ -1,8 +1,7 @@
 import { Component, computed, input, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PrimengModule } from '../../../primeng/primeng.module';
-import { Sidebar } from 'primeng/sidebar';
+import { Sidebar,SidebarModule } from 'primeng/sidebar';
 
 import { FloatingMenuOption } from './floating-menu-option';
 
@@ -11,7 +10,7 @@ import { FloatingMenuOption } from './floating-menu-option';
   standalone: true,
   imports: [
     CommonModule,
-    PrimengModule
+    SidebarModule
   ],
   templateUrl: './floating-menu.component.html',
   styleUrl: './floating-menu.component.css',

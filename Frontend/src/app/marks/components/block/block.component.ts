@@ -23,17 +23,20 @@ import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 const lowlight = createLowlight({ html, css, js, ts, csharp });
 
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
+import { Panel, PanelModule } from 'primeng/panel';
+import { SkeletonModule } from 'primeng/skeleton';
+
 import { BlockColors } from '../../interfaces/block';
 
 @Component({
   selector: 'marks-block',
   standalone: true,
   imports: [
-    PrimengModule,
     CommonModule,
+    FormsModule,
     NgxTiptapModule,
-    FormsModule
+    PanelModule,
+    SkeletonModule,
   ],
   templateUrl: './block.component.html',
   styleUrl: './block.component.css',

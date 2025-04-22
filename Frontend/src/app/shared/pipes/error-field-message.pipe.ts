@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ValidationField } from '../interfaces/form/validation-field.interface';
 
 @Pipe({
+    standalone: true,
     name: 'errorFieldMessage'
 })
 
@@ -30,6 +31,5 @@ export class ErrorFieldMessagePipe implements PipeTransform {
             default:
                 return '';
         }
-
     }
 }

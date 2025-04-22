@@ -1,30 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Collection } from '../../interfaces/collection';
 import { CollectionItem, CollectionItemAction, CollectionItemType } from './../../interfaces/collection-item';
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
 import { CollectionService } from '../../services/collection.service';
-import { SharedModule } from '../../../shared/shared.module';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { MarkService } from '../../../marks/services/mark.service';
 import { Mark } from '../../../marks/interfaces/mark';
 import { BlockColors } from '../../../marks/interfaces/block';
-import { share } from 'rxjs';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 
 @Component({
   selector: 'app-collection-item-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    PrimengModule,
     CollectionItemIconPipe,
+    ErrorFieldComponent,
     ReactiveFormsModule,
-    SharedModule
+    ProgressSpinnerModule
   ],
   templateUrl: './collection-item-dialog.component.html',
   styleUrl: './collection-item-dialog.component.css',

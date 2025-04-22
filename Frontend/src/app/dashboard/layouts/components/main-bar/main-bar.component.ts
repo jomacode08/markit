@@ -1,8 +1,8 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
-import { PrimengModule } from './../../../../shared/primeng/primeng.module';
 
 import { AuthService } from './../../../../auth/services/auth.service';
 import { GeneralConstant } from '../../../../shared/utils/general-constant';
@@ -12,7 +12,7 @@ import { GeneralConstant } from '../../../../shared/utils/general-constant';
   templateUrl: './main-bar.component.html',
   standalone: true,
   imports: [
-    PrimengModule
+    ButtonModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   styleUrl: './main-bar.component.css'

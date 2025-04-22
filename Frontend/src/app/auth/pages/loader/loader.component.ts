@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { SharedModule } from "../../../shared/shared.module";
+
+import { LoaderSpinnerComponent } from '../../../shared/components/layout/loader-spinner/loader-spinner.component';
 
 @Component({
   selector: 'app-status',
   standalone: true,
   imports: [
     CommonModule,
-    SharedModule
+    LoaderSpinnerComponent,
 ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './loader.component.html'
 })
 export class LoaderComponent implements OnInit {

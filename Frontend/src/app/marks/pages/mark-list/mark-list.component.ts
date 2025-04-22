@@ -2,15 +2,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { SharedModule } from '../../../shared/shared.module';
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { CommonModule } from '@angular/common';
+import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 
 @Component({
   selector: 'app-mark-list',
   standalone: true,
-  imports: [SharedModule, CommonModule],
+  imports: [ 
+    CommonModule,
+    GeneralButtonComponent,
+  ],
   templateUrl: './mark-list.component.html',
   styleUrl: './mark-list.component.css',
 })

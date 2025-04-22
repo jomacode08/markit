@@ -1,11 +1,12 @@
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, map, Observable, of, startWith, Subject, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
 
 import { Collection } from '../../interfaces/collection';
 import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
@@ -17,17 +18,16 @@ import { FloatingMenuComponent } from "../../../shared/components/layout/floatin
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { MarkService } from '../../../marks/services/mark.service';
 import { ROUTES } from '../../../shared/interfaces/constant';
-import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   standalone: true,
   imports: [
+    ButtonModule,
     CollectionItemIconPipe,
     CommonModule,
+    DataViewModule,
     FloatingMenuComponent,
     FormsModule,
-    PrimengModule,
-    SharedModule,
   ],
   providers: [DialogService],
   templateUrl: './collection-explorer.component.html',

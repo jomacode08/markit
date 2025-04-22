@@ -3,21 +3,28 @@ import { Component, inject, type OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { CalendarModule } from 'primeng/calendar';
+import { DividerModule } from 'primeng/divider';
+import { RadioButtonModule } from 'primeng/radiobutton';
+
 import { Creator, Gender } from './../../interfaces/creator';
 import { CreatorService } from '../../services/creator.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { PrimengModule } from '../../../shared/primeng/primeng.module';
-import { SharedModule } from '../../../shared/shared.module';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
+import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
+    CalendarModule,
     CommonModule,
-    PrimengModule,
+    DividerModule,
+    ErrorFieldComponent,
+    GeneralButtonComponent,
+    RadioButtonModule,
     ReactiveFormsModule,
-    SharedModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',

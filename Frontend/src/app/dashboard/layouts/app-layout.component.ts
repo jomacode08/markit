@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
-import { Sidebar } from 'primeng/sidebar';
+import { MenuModule } from 'primeng/menu';
+import { SidebarModule, Sidebar } from 'primeng/sidebar';
 
-import { PrimengModule } from '../../shared/primeng/primeng.module';
 import { MainBarComponent } from './components/main-bar/main-bar.component';
-import { BreadCrumbComponent } from "./components/bread-crumb/bread-crumb.component";
 import { AuthService } from '../../auth/services/auth.service';
 import { CurrentRouteService } from '../../shared/services/current-route.service';
 import { GeneralConstant } from '../../shared/utils/general-constant';
@@ -18,11 +17,10 @@ import { GeneralConstant } from '../../shared/utils/general-constant';
   imports: [
     CommonModule,
     RouterModule,
-    PrimengModule,
     MainBarComponent,
-    BreadCrumbComponent
-],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    MenuModule,
+    SidebarModule
+  ],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.css',
 })
