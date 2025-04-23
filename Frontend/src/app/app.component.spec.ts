@@ -1,25 +1,45 @@
-import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+
 import { AppComponent } from './app.component';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { AlertMessageComponent } from './shared/components/layout/alert-message/alert-message.component';
+
+@Component({
+  selector: 'shared-alert-message',
+  standalone: true,
+  template: ''
+})
+class MockedAlertMessageComponent {};
 
 describe('AppComponent', () => {
+  let fixture : ComponentFixture<AppComponent>;
+  let component : AppComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [MessageService, ConfirmationService]
-    }).compileComponents();
+    })
+    .overrideComponent(AppComponent, {
+      remove: { imports: [AlertMessageComponent] },
+      add: { imports: [MockedAlertMessageComponent] }
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it(`should have the 'markit-app' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('markit-app');
+    expect(component.title).toEqual('markit-app');
   });
+
+  it('should render the AlertMessageComponent', () => {
+    const childDebugElement = fixture.debugElement.query(By.directive(MockedAlertMessageComponent));
+    expect(childDebugElement).toBeTruthy();
+  })
 });

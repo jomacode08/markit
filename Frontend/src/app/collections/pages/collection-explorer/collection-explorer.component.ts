@@ -61,7 +61,6 @@ export class CollectionExplorerComponent implements OnDestroy {
     catchError((error) => {
       this.setLoading(false);
       this.redirect();
-      console.error('Error loading collection: ', error);
       return of(null);
     })
   );
@@ -261,7 +260,7 @@ export class CollectionExplorerComponent implements OnDestroy {
   }
 
   //* Utils
-  public changeFloatingMenuState(): void {
+  private changeFloatingMenuState(): void {
     this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible());
   }
   private redirect(): void {
