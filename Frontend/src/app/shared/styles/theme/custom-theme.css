@@ -16,7 +16,6 @@
 }
 
 body {
-  font-family: "Nunito";
   color: #ffff;
   background-color: var(--main-black-color);
 }
@@ -317,7 +316,6 @@ button {
 /** Divider */
 .p-divider-content {
   background-color: var(--main-black-color);
-  font-family: Fraunces;
   font-weight: 500;
   padding: 0.5em;
   z-index: 0;
@@ -333,7 +331,6 @@ button {
 }
 .p-editor-content {
   margin-top: 1em !important;
-  font-family: 'Nunito' !important;
   font-size: 1rem !important;
 }
 .p-editor-content, .ql-editor{

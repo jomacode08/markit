@@ -1,4 +1,5 @@
 /* Global custom styles */
+@import '../src/app/shared/styles/layout/typography.css';
 @import '../src/app/shared/styles/layout/layout.css';
 @import '../src/app/shared/styles/theme/custom-theme.css';
 

@@ -24,30 +24,30 @@
 
     <!-- General Information Section -->
     <p-divider align="left" type="solid">
-        <span class="text-xl">General information</span>
+        <span class="text-xl font-playfair">General information</span>
     </p-divider>
     <div class="grid" *ngIf="!showForm">
         <div class="col-12 pb-0 md:col-6 md:p-2">
             <p>
                 <i class="fa-solid fa-user mr-2"></i>
-                <span class="font-semibold font-fraunces mr-3">Name: </span>
+                <span class="font-semibold mr-3">Name: </span>
                 {{ creatorInSession?.firstName }} {{ creatorInSession?.lastName }}
             </p>
             <p class="mb-0 md:my-3">
                 <i class="fa-solid fa-calendar mr-2"></i>
-                <span class="font-semibold font-fraunces mr-3">Birth Date:</span>
+                <span class="font-semibold mr-3">Birth Date:</span>
                 {{ birthDate | date}}
             </p>
         </div>
         <div class="col-12 pt-0 md:col-6 md:p-2">
             <p>
                 <i class="fa-solid fa-envelope mr-2"></i>
-                <span class="font-semibold font-fraunces mr-3">Email:</span>
+                <span class="font-semibold mr-3">Email:</span>
                 {{ creatorInSession?.email }}
             </p>
             <p>
                 <i class="fa-solid fa-thumbtack mr-2"></i>
-                <span class="font-semibold font-fraunces mr-3">Member since:</span>
+                <span class="font-semibold mr-3">Member since:</span>
                 {{ creatorInSession?.createdDate | date }}
             </p>
         </div>
