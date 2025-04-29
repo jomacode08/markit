@@ -96,6 +96,9 @@ button {
     font-family: 'DMSans' !important;
 }
 
+.font-worksans {
+    font-family: 'WorkSans';
+}
 .font-inter {
     font-family: 'Inter';
 }

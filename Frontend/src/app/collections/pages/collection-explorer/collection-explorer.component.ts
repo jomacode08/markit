@@ -41,7 +41,7 @@ export class CollectionExplorerComponent implements OnDestroy {
   private readonly ICONS = {
     WARNING: 'fa fa-warning',
     FOLDER: 'fa fa-folder',
-    FILE: 'fa fa-file',
+    NOTE: 'fa fa-note-sticky',
   };
 
   //* State Management
@@ -92,7 +92,7 @@ export class CollectionExplorerComponent implements OnDestroy {
     },
     {
       label: 'Add mark',
-      icon: this.ICONS.FILE,
+      icon: this.ICONS.NOTE,
       command: () => {
         if (this.collectionId())
           this.addNewCollectionItem(CollectionItemType.Mark);

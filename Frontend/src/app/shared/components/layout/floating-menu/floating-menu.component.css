@@ -2,7 +2,6 @@
 button {
   border: 0;
   padding: 0;
-  color: #7f7f7f;
   font-size: 1.5em;
   cursor: pointer;
 }
@@ -15,18 +14,27 @@ button:disabled {
   color: #4c4c4c;
 }
 span.fa {
+  color: rgb(255, 255, 255, 0.6);
   transition: 0.5s;
+}
+span.label {
+  font-family: 'WorkSans';
+  font-size: 1rem;
+  color: #7f7f7f;
+  margin-top: 0.25rem;
 }
 
 .scroll-container {
   display: flex;
   white-space: nowrap;
   overflow-x: auto;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 .active {
-  color: var(--main-purple-color);
+  color: var(--main-purple-color) !important;
 }
 .scroll-container::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--main-gray-800);
 }

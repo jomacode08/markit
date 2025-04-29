@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 
 import { AuthService } from './../../../../auth/services/auth.service';
 import { GeneralConstant } from '../../../../shared/utils/general-constant';
+import { ROUTES } from '../../../../shared/interfaces/constant';
 
 @Component({
   selector: 'app-main-bar',
@@ -18,6 +19,8 @@ import { GeneralConstant } from '../../../../shared/utils/general-constant';
   styleUrl: './main-bar.component.css'
 })
 export class MainBarComponent {
+  public readonly MAIN_BAR_BRAND_TITLE: string = "Mark it";
+  
   public navigationRutes : MenuItem[] = [
     {
       label: 'Home',
@@ -60,11 +63,10 @@ export class MainBarComponent {
 
   @Output()
   public onShowSideBar = new EventEmitter<MenuItem[]>();
-  @Output()
-  public onHideSideBar = new EventEmitter<boolean>();
+
+  public onNewMarkButtonClick = () => this.navigate(ROUTES.MARKS_NEW);
 
   private navigate( path: string ): void {
     this.router.navigate([path]);
-    this.onHideSideBar.emit(true);
   }
 }

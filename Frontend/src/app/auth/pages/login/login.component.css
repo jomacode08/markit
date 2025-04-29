@@ -64,7 +64,7 @@
   left: 8px;
   transform: translateZ(-10px);
   border: solid 1px #ffffff;
-  background-color: var(--main-gray-color);
+  background-color: var(--main-gray-700);
 }
   
 /** Typing animation */

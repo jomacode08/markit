@@ -17,7 +17,7 @@
     .confirm-dialog-icon {
         display: flex;
         justify-content: center;
-        color: var(--main-gray-color);
+        color: var(--main-gray-700);
         font-size: 4rem;
         margin-bottom: 1.5rem;
     }
@@ -37,13 +37,13 @@
     }
     .confirm-dialog-footer > .p-button:first-child {
         color: var(--main-purple-color);
-        background-color: var(--main-gray-color);
+        background-color: var(--main-gray-700);
     }
     .confirm-dialog-footer > .p-button:last-child {
-        color: var(--main-gray-color);
+        color: var(--main-gray-700);
     }
     .p-dialog .confirm-dialog-footer .p-button {
-        border: solid 1px var(--main-gray-color);
+        border: solid 1px var(--main-gray-700);
         border-radius: 1.5rem;
         padding: 0.5rem;
         width: 45%;
@@ -58,15 +58,15 @@
     
     //** Toast **/
     .p-toast .p-toast-message {
-        background-color: #F8FAFC;
+        background-color: var(--main-gray-800);
         border-left: solid 10px;
-        color: #3B1650;
+        color: #ffffff;
     }
     .p-toast .p-toast-message.p-toast-message-error {
         border-left-color: #ff5757;
     }
     .p-toast .p-toast-message.p-toast-message-info {
-        border-left-color: #3b82f6;
+        border-left-color: var(--main-purple-color);
     }
     .p-toast .p-toast-message.p-toast-message-success {
         border-left-color: #1ea97c;
@@ -75,6 +75,12 @@
         border-left-color: #cc8925;
     }
     .p-toast-icon-close {
-        color: var(--main-black-color);
+        color: #FFFFFF;
+    }
+    .p-toast-summary {
+        font-weight: 600;
+    }
+    .p-toast-detail {
+        color: rgb(255, 255, 255, 0.6);
     }
 }

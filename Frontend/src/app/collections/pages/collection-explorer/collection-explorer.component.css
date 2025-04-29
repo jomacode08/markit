@@ -5,8 +5,8 @@ button {
 
 .item {
   display: flex;
-  background-color: #181818;
-  border: 1px solid var(--main-gray-color);
+  background-color: var(--main-gray-900);
+  border: 1px solid var(--main-gray-700);
   border-radius: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -14,7 +14,7 @@ button {
 }
 
 .item:hover {
-  background-color: #1f1f1f;
+  background-color: var(--main-gray-800);
 }
 
 .grid > div {
@@ -25,16 +25,6 @@ button {
 .actions-container {
   display: flex;
   justify-content:space-around;
-}
-
-.bg-lined {
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 5px,
-    var(--main-gray-color) 5px,
-    var(--main-gray-color) 6px
-  );
 }
 
 .item-icon {

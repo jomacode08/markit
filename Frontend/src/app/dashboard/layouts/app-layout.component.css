@@ -1,13 +1,12 @@
-#top-bar {
-  height: 5rem;
-}
-
 #main-container {
-  padding-top: 7.50rem;
+  margin-top: 3rem;
+  width: 100%;
+  flex: 1 1 auto;
+  padding: 2rem;
 }
 
-@media only screen and (min-width: 640px) {
-  #top-bar {
-    max-width: 640px;
-  }
+footer {
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid var(--main-gray-700);
 }

@@ -43,9 +43,9 @@ a {
         }
         .p-sidebar-content {
             max-width: 640px;
-            border-radius: 50px;
-            padding-left:  5rem !important;
-            padding-right: 5rem !important;
+            border-radius: 16px;
+            padding-left:  3rem !important;
+            padding-right: 3rem !important;
         }
     }
     .card {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
@@ -34,7 +34,7 @@ export class AppLayoutComponent implements OnInit {
   @ViewChild('sideBar')
   public sideBarRef !: Sidebar;
   public menuItems: MenuItem[] = []
-  public isSideBarVisible : boolean = false;
+  public isSideBarVisible = signal(false);
   public width : number = window.innerWidth;
   public userName ?: string;
   
@@ -52,10 +52,8 @@ export class AppLayoutComponent implements OnInit {
   public showSideBar = ( menuItems: MenuItem[] ) => {
     this.width = window.innerWidth;
     this.menuItems = menuItems;
-    this.isSideBarVisible = true;
+    this.changeSideBarState();
   }
 
-  public hideSideBar = () => {
-    this.sideBarRef.close(new Event('click'));
-  }
+  private changeSideBarState = () => this.isSideBarVisible.set(!this.isSideBarVisible()); 
 }

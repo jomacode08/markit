@@ -11,7 +11,7 @@
 }
 
 #edit-icon:hover {
-  background-color: var(--main-gray-color);
+  background-color: var(--main-gray-700);
 }
 
 .p-avatar {
