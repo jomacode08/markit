@@ -1,32 +1,7 @@
-/** Block Panel */
-.p-panel {
-  border-radius: 6px;
-  padding: 1.25rem;
-  color: var(--main-black-color);
-}
-.p-panel-header, .p-panel-content {
-  background-color: transparent;
-  border: none;
-  padding: 0;
-}
-.p-panel .p-panel-header .p-panel-header-icon {
-  color: var(--light-gray-color);
-}
-.p-panel-icons {
-  min-width: 72px;
-  margin-left: 0.5em;
-}
-.p-panel-header .title input {
-  font-weight: bold !important;
-  color: rgba(0, 0, 0, 0.8) !important;
-  font-size: 1.12rem;
-}
-.p-panel-header .title input::placeholder {
-  color: rgba(0, 0, 0, 0.6);
-}
 /** Text editor */
 .tiptap {
   font-size: 16px;
+  padding-left: 0.5px;
 }
 .tiptap p.is-editor-empty:first-child::before {
   color: var(--light-gray-color);
@@ -43,7 +18,7 @@
 
 /** Background block colors **/
 .neutral {
-  background-color: #ffffff;
+  background-color: var(--main-gray-800);
 }
 .purple {
   background-color: #E8DCF9;
@@ -53,7 +28,7 @@
 }
 .transparent {
   background-color: transparent;
-  color: #ffffff !important;
+  color: #ffffff;
   padding: 0;
 }
 
@@ -64,128 +39,178 @@
 }
 
 /** Editor Marks */
-mark {
-  border-radius: 0.4rem;
-  box-decoration-break: clone;
-  padding: 0.1rem 0.3rem;
-}
-
-.transparent mark {
-  color: var(--main-black-color) !important;
-}
-
-ul,ol {
-  padding: 0 1rem;
-  margin: 1.25rem 0;
-
-  li p {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
+.tiptap {
+  h1,h2,h3 {
+    border: 1px solid var(--main-gray-700);
+    padding: 0.5rem 1rem;
+    font-family: 'PlayfairDisplay';
   }
-}
 
-ul[data-type="taskList"] {
-  list-style: none;
-  margin-left: 0;
-  padding: 0;
+  hr {
+    border: none;
+    border-top: 1px solid var(--main-gray-700);
+    margin: 2rem 0;
+  }
 
-  li {
-    display: flex;
-    align-items: center;
+  mark {
+    border-radius: 0.4rem;
+    box-decoration-break: clone;
+    padding: 0.1rem 0.3rem;
+    color: var(--main-black-color) !important;
+  }
 
-    > label {
-      margin-right: 0.5rem;
-      display: flex;
-      user-select: none;
-    }
+  ul,ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
 
-    > div {
-      flex: 1 1 auto;
+    li p {
+      margin-top: 0.15em;
+      margin-bottom: 1em;
     }
   }
-
-  input[type="checkbox"] {
-    margin: 0;
-    cursor: pointer;
-  }
-
   ul[data-type="taskList"] {
-    margin: 0;
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+
+    li {
+      align-items: flex-start;
+      display: flex;
+
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      height: 1.5rem;
+      width:  1.5rem;
+      background-color: transparent;
+      appearance: none;
+      border: 1px solid var(--main-gray-700);
+    }
+
+    input[type="checkbox"]:checked {
+      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    }
+
+    ul[data-type="taskList"] {
+      margin: 0;
+    }
   }
 }
 
-hr {
-  border: none;
-  border-top: 1px solid #c7c2b9;
-  cursor: pointer;
-  margin: 2rem 0;
-}
-
-/** Code styling */
+/** Code Styling */
+/* Base styles */
 pre {
-  background: #2e2b29;
-  border-radius: 0.5rem;
-  color: #e9e9e8;
-  font-family: 'JetBrainsMono', monospace;
-  margin: 1.5rem 0;
-  padding: 0.75rem 1rem;
+  background: #1f1f1f;
+  color: #f5f5f5;
+  /* font-family: 'JetBrainsMono', monospace; */
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 1em;
+  border: 1px solid var(--main-gray-700);
+  overflow-x: auto;
 
   code {
     background: none;
     color: inherit;
-    font-size: 0.8rem;
-    padding: 0;
   }
 
+  /* Comments */
   .hljs-comment,
   .hljs-quote {
-    color: #616161;
-  }
-
-  .hljs-variable,
-  .hljs-template-variable,
-  .hljs-attribute,
-  .hljs-tag,
-  .hljs-regexp,
-  .hljs-link,
-  .hljs-name,
-  .hljs-selector-id,
-  .hljs-selector-class {
-    color: #f98181;
-  }
-
-  .hljs-number,
-  .hljs-meta,
-  .hljs-built_in,
-  .hljs-builtin-name,
-  .hljs-literal,
-  .hljs-type,
-  .hljs-params {
-    color: #fbbc88;
-  }
-
-  .hljs-string,
-  .hljs-symbol,
-  .hljs-bullet {
-    color: #b9f18d;
-  }
-
-  .hljs-title,
-  .hljs-section {
-    color: #faf594;
-  }
-
-  .hljs-keyword,
-  .hljs-selector-tag {
-    color: #70cff8;
-  }
-
-  .hljs-emphasis {
+    color: #6c6c6c;
     font-style: italic;
   }
 
+  /* Keywords, tags */
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-literal {
+    color: #dcc1ff;
+    font-weight: bold;
+  }
+
+  /* Strings */
+  .hljs-string,
+  .hljs-template-tag,
+  .hljs-template-variable {
+    color: #ab93e0; /* Lavender accent */
+  }
+
+  /* Numbers, booleans, symbols */
+  .hljs-number,
+  .hljs-symbol,
+  .hljs-bullet {
+    color: #c49fff; /* Muted purple */
+  }
+
+  /* Titles, names (functions, classes) */
+  .hljs-title,
+  .hljs-section,
+  .hljs-name {
+    color: #8affc1;
+    font-weight: bold;
+  }
+
+  .hljs-property {
+    color: #ab93e0;
+  }
+
+  /* Meta data (e.g., decorators, annotations) */
+  .hljs-meta {
+    color: #ab93e0;
+    font-style: italic;
+  }
+
+  /* Attributes (in tags or functions) */
+  .hljs-attr,
+  .hljs-attribute {
+    color: #f0c0ff;
+  }
+
+  /* Variables */
+  .hljs-variable,
+  .hljs-languaje_,
+  .hljs-built_in,
+  .hljs-function.hljs-params {
+    color: #ffd580; /* Soft amber for clarity */
+  }
+
+  /* Operators and punctuation */
+  .hljs-operator,
+  .hljs-punctuation {
+    color: #e0e0e0;
+  }
+
+  /* Diff additions and deletions */
+  .hljs-addition {
+    background-color: #223322;
+    color: #bbffbb;
+  }
+  .hljs-deletion {
+    background-color: #332222;
+    color: #ffbbbb;
+  }
+
+  /* Strong and emphasis */
   .hljs-strong {
-    font-weight: 700;
+    font-weight: bold;
+  }
+  .hljs-emphasis {
+    font-style: italic;
   }
 }
 

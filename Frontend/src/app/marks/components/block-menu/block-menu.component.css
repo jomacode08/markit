@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.block-list {
+  border: 1px solid var(--main-gray-700);
+  border-radius: 8px;
+  background-color: var(--main-gray-800);
+}
+
+.block-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.block-item:not(:first-child) {
+  border-top: solid 1px var(--main-gray-700);
+}
+
+.block-name {
+  color: rgb(255, 255, 255, 0.8);
+  width: 100%;
+}
+
+.block-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.block-name input.transparent {
+  width: 100%;
+  padding: 0.5rem !important;
+  background-color: var(--main-black-color);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.block-name input.transparent:disabled {
+  background-color: var(--main-gray-800);
+}

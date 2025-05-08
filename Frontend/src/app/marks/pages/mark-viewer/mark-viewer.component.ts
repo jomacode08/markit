@@ -1,50 +1,64 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild, signal } from '@angular/core';
 import { delay } from 'rxjs';
 
-import { Editor } from '@tiptap/core';
 import { ButtonModule } from 'primeng/button';
+import { Carousel, CarouselModule, CarouselPageEvent } from 'primeng/carousel';
+import { ChipModule } from 'primeng/chip';
+import { Editor } from '@tiptap/core';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
-import { Cols, Mark } from '../../interfaces/mark';
+import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { NodeMark } from '../../interfaces/node-mark';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { BlockColors } from '../../interfaces/block';
+import { Block, BlockColors } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 import { CurrentRouteService } from '../../../shared/services/current-route.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
+import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
 
 @Component({
   standalone: true,
   imports: [
     BlockComponent,
     ButtonModule,
+    CarouselModule,
     CommonModule,
+    ChipModule,
     ErrorFieldComponent,
     FloatingMenuComponent,
     GeneralButtonComponent,
     ReactiveFormsModule,
     SkeletonModule,
+    TooltipModule
   ],
+  providers: [DialogService],
   templateUrl: './mark-viewer.component.html',
-  styleUrl: './mark-viewer.component.css',
-  encapsulation: ViewEncapsulation.None
+  styleUrl: './mark-viewer.component.css'
 })
 export class MarkViewerComponent extends ValidatorErrorField implements OnInit, AfterViewInit {
+  //* Block carousel
+  @ViewChild('blockCarousel')
+  private carousel !: Carousel;
+  public currentBlockIndex = signal<number>(0);
+
   //* Services
   private markService     : MarkService = inject(MarkService);
   private messageService  : CustomMessageService = inject(CustomMessageService);
 
   //* Configuration
   private previousUrl : string | null = null;
-  public floatingMenuOptions : FloatingMenuOption[] = []
+  public floatingMenuOptions : FloatingMenuOption[] = [];
   public isFloatingMenuVisible : boolean = false;
 
   //* Form
@@ -53,8 +67,14 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   public form = new FormGroup({
     id       : new FormControl<number>(0),
     name     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
-    blocks   : new FormArray<FormGroup<any>>([]),
+    blocks   : new FormArray<FormGroup>([]),
   });
+  get currentMark(): Mark {
+    return this.form.value as Mark;
+  }
+  get currentBlocks() {
+    return this.form.get('blocks') as FormArray;
+  }
 
   //* Mark Menu
   public editor ?: Editor;
@@ -229,61 +249,11 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   ];
 
   //* Block Menu
-  public currentBlockIndex  : number = 0;
-  public blockOptions : FloatingMenuOption[] = [
-    {
-      label: 'Add block',
-      icon: 'fa fa-plus',
-      command: () => {
-        this.addBlock(this.currentBlockIndex + 1, 12);
-        this.changeFloatingMenuState();
-      }
-    },
-    {
-      label: 'Remove',
-      icon: 'fa fa-trash',
-      command: () => {
-        this.removeBlock(this.currentBlockIndex);
-        this.changeFloatingMenuState();
-      }
-    },
-    {
-      label: 'Color',
-      icon: 'fa fa-palette',
-      children: [
-        {
-          label: 'Neutral',
-          icon: 'fa fa-circle',
-          color: '#fbf4e9',
-          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.neutral)
-        },
-        {
-          label: 'Purple',
-          icon: 'fa fa-circle',
-          color: '#E8DCF9',
-          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.purple)
-        },
-        {
-          label: 'Red',
-          icon: 'fa fa-circle',
-          color: '#EDCAC0',
-          command: () => this.changeBlockColor(this.currentBlockIndex, BlockColors.red)
-        },
-      ]
-    },
-  ];
-
-  //* Getters
-  get currentMark(): Mark {
-    return this.form.value as Mark;
-  }
-
-  get currentBlocks() {
-    return this.form.controls["blocks"] as FormArray;
-  }
+  private blockMenuDialogRef: DynamicDialogRef | undefined;
 
   //* Lyfecycle
   constructor(
+    private dialogService: DialogService,
     private fb: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -308,7 +278,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     }
 
     // Otherwise, the action is 'add a new mark' so we need to add the default block 
-    this.addBlock(0, 12);
+    this.addBlock(0);
   }
 
   public ngAfterViewInit(): void {
@@ -335,18 +305,40 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     this.redirectToUrl(this.previousUrl ?? 'marks');
   }
 
-  public onBlockTitleChanged(index: number, title: string ): void {
-    const block = this.currentBlocks.at(index) as FormGroup;
-    block.controls['title'].setValue(title); 
-  }
-
-  public onBlockOptionsButtonClick( index: number ): void {
-    this.currentBlockIndex = index;
-    this.changeFloatingMenuState(this.blockOptions);
-  }
-
   public onFontOptionsButtonClick( ): void {
     this.changeFloatingMenuState(this.fontOptions);
+  }
+
+  public onCarouselScroll( event: CarouselPageEvent ): void {
+    if (event.page != null) this.currentBlockIndex.set(event.page);
+  }
+
+  public onCarouselIndicatorBtnClick(index: number): void {
+    index > this.currentBlockIndex()
+      ? this.carousel.navForward(new MouseEvent('click'), index)
+      : this.carousel.navBackward(new MouseEvent('click'), index);  
+    this.currentBlockIndex.set(index);
+  }
+
+  public openBlockMenuDialog( blocks : Block[] ): void {
+    this.blockMenuDialogRef = this.dialogService.open(BlockMenuComponent, {
+      header: 'Blocks',
+      width : '30rem',
+      modal : true,
+      closable : false,
+      dismissableMask : true,
+      styleClass : 'custom-dialog',
+      data: {
+        blocks : structuredClone(blocks)
+      }
+    });
+
+    this.blockMenuDialogRef.onClose.subscribe(( blocks ?: Block[] ) => {
+      this.blockMenuDialogRef = undefined;
+      if (blocks) {
+        this.setBlocks(blocks);
+      }
+    });
   }
 
   //* Marks
@@ -359,12 +351,8 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       {
         error: (error) => this.redirectToUrl(this.previousUrl ?? 'marks'),
         next : (mark)  => {
-          // Construct the blocks
-          const blockControls = mark.blocks.map(block => this.fb.group(block));
-          blockControls.forEach(control => this.currentBlocks.push(control));
-
-          // Reset the form
           this.form.reset(mark);
+          this.setBlocks(mark.blocks);
           this.loading = false;
         }
       }
@@ -417,52 +405,46 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   }
 
   //* Blocks
-  public  addBlock(index : number, cols: Cols): void {
-    const color: BlockColors = index > 0
-    ? BlockColors.neutral
-    : BlockColors.transparent;
+  private setBlocks(blocks: Block[]): void {
+    const blockControls = blocks.map(block =>
+      this.fb.group({
+        id: [block.id, Validators.required],
+        content: [block.content, Validators.required],
+        title: [block.title, Validators.required],
+        cols: [block.cols],
+        color: [block.color]
+      })
+    );
+
+    this.currentBlocks.clear();
+    blockControls.forEach(c => this.currentBlocks.push(c));
+  }
+
+  private addBlock(index : number): void {
+    const color: BlockColors = BlockColors.transparent;
+    const title = DEFAULT_BLOCK_NAME;
 
     const newBlock = this.fb.group({
       id      : 0,
-      title   : "",
       content : "",
-      cols    : [cols, Validators.required],
+      title   : [title, Validators.required],
+      cols    : [12, Validators.required],
       color   : [color, Validators.required]
     });
     
-    this.currentBlocks.insert(index ,newBlock);
-  }
-
-  private removeBlock(index : number): void {
-    const block = this.currentBlocks.at(index) as FormGroup;
-    const content = block.controls['content'].value as string;
-
-    // The content of the block is empty so it can be deleted
-    if (content.length === 0) return this.currentBlocks.removeAt(index);
-    // Otherwise the block has any content, show a warning to the user
-    this.messageService.showConfirmationDialog({
-      message: "Do you want to delete this block?. You won't be able to get it back later. ",
-      header: 'Delete block',
-      icon: 'fa fa-warning',
-      accept: () => this.currentBlocks.removeAt(index)
-    });
-  }
-
-  private changeBlockColor(index : number, color: BlockColors): void {
-    const block = this.currentBlocks.at(index) as FormGroup;
-    block.controls['color'].setValue(color);
+    this.form.controls.blocks.insert(index, newBlock);
   }
 
   //* UTILS
+  public castAbstractControlToFormGroup(control: AbstractControl) {
+    return control as FormGroup;
+  }
   private setSubmit(value: boolean): void {
     this.submit = value;
   }
-  public changeFloatingMenuState( menuOptions ?: FloatingMenuOption[] ): void {
+  private changeFloatingMenuState( menuOptions ?: FloatingMenuOption[] ): void {
     if (menuOptions) this.floatingMenuOptions = menuOptions;
     this.isFloatingMenuVisible = !this.isFloatingMenuVisible;
-  }
-  public castAbstractControlToFormGroup(control: AbstractControl) {
-    return control as FormGroup;
   }
   private redirectToUrl(url: string): void {
     this.router.navigate([url]);

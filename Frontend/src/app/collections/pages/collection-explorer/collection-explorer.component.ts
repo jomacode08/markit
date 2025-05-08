@@ -187,7 +187,7 @@ export class CollectionExplorerComponent implements OnDestroy {
       modal  : true,
       closable: false,
       dismissableMask: true,
-      styleClass : 'collection-item-dialog',
+      styleClass : 'custom-dialog',
       data : {
         collectionItem,
         action

@@ -1,0 +1,47 @@
+<div class="block-list">
+    @for (block of blocks(); track $index) {
+        <div class="block-item">
+            <div class="block-name">
+                <input
+                    id="{{ 'title' + $index }}"
+                    maxlength="255"
+                    class="transparent"
+                    type="text"
+                    [disabled]="!block.editable"
+                    [(ngModel)]="block.title"
+                />
+            </div>
+            <div class="block-buttons">
+                <p-button
+                    styleClass="w-2rem p-0 border-none text-white-alpha-80"
+                    pTooltip="Update"
+                    [icon]="block.editable ? 'fa fa-check' : 'fa fa-pencil'"
+                    (onClick)="onUpdateBlockButtonClick($index)"
+                    />
+                    <p-button
+                    styleClass="w-2rem p-0 border-none text-white-alpha-80"
+                    icon="fa fa-trash"
+                    pTooltip="Delete"
+                    [disabled]="$index === 0"
+                    (onClick)="onDeleteBlockButtonClick($index)"
+                />
+            </div>
+        </div>
+    }
+</div>
+
+<div class="flex justify-content-end gap-5 mt-4">
+    <p-button
+        label="Add block"
+        styleClass="py-2 px-3 border-white-alpha-20"
+        icon="fa fa-plus"
+        (onClick)="onAddBlockButtonClick()"
+    />
+    <p-button
+        label="Save changes"
+        styleClass="py-2 px-3 border-white-alpha-20 bg-white-alpha-90 text-black-alpha-90"
+        icon="fa fa-save"
+        [disabled]="!canSaveChanges()"
+        (onClick)="onSaveChangesButtonClick()"
+    />
+</div>

@@ -22,6 +22,20 @@ body {
   background-color: var(--main-black-color);
 }
 
+footer {
+  height: 3rem;
+}
+
+h1 {
+  font-size: 2.25rem !important;
+}
+h2 {
+  font-size: 1.5rem !important;
+}
+h3 {
+  font-size: 1.25rem !important;
+}
+
 ::-webkit-scrollbar-thumb {
   background: var(--light-gray-color);
   border-radius: 10px;
@@ -58,6 +72,7 @@ input.transparent {
   background-color: transparent;
   color: hsl(0, 0%, 100%);
   border: none;
+  box-shadow: none !important;
 }
 
 input:focus {
@@ -65,12 +80,12 @@ input:focus {
   border: none;
 }
 
-input.transparent {
-  box-shadow: none !important;
-}
-
 input:hover {
   border-color: var(--main-gray-700);
+}
+
+input.transparent::placeholder {
+  color: var(--main-gray-700);
 }
 
 /** Backgrounds */
@@ -196,7 +211,7 @@ button {
 .p-button.floating-button {
   background-color: var(--light-gray-color);
   border: none;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 .p-button.floating-button:focus {
   box-shadow: none;
@@ -205,6 +220,10 @@ button {
   background-color: var(--main-purple-hover-color);
   opacity: 1;
 }
+.p-button:focus {
+  box-shadow: none;
+}
+
 
 /** Radio Button */
 .p-radiobutton-icon, .p-radiobutton .p-radiobutton-box {
@@ -276,7 +295,7 @@ button {
     border: 1px solid var(--main-gray-700);
     padding: 0.5rem 2rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
   }
   .p-sidebar-header {
     display: none;
@@ -312,7 +331,7 @@ button {
 }
 
 /** Dialogs */
-.collection-item-dialog {
+.custom-dialog {
   border: 1px solid var(--main-gray-700);
   border-radius: 0.5rem;
   .p-dialog-header, .p-dialog-content {
@@ -361,6 +380,7 @@ button {
 /** Skeleton */
 .p-skeleton {
   background-color: var(--main-gray-700);
+  border-radius: 0px;
 }
 .p-skeleton:after {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
@@ -371,6 +391,51 @@ button {
   color: #ffffff;
   border: 0 none;
   padding: 0;
+}
+
+/** Chips */
+.p-chip {
+  font-family: 'Inter';
+  font-size: 0.8rem;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--main-gray-700);
+  border-radius: 0px;
+}
+
+/** Carousel */
+.p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  border-radius: 100%;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--main-gray-700);
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  background-color: var(--main-purple-color) !important;
+  border: none !important;
+}
+
+/** ToolTip */
+.p-tooltip .p-tooltip-text {
+  background: var(--main-purple-color);
+  color: var(--main-gray-800);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.75rem 0.75rem;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+.p-tooltip.p-tooltip-right .p-tooltip-arrow {
+  border-right-color: var(--main-purple-color);
+}
+.p-tooltip.p-tooltip-left .p-tooltip-arrow {
+  border-left-color: var(--main-purple-color);
+}
+.p-tooltip.p-tooltip-top .p-tooltip-arrow {
+  border-top-color: var(--main-purple-color);
+}
+.p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
+  border-bottom-color: var(--main-purple-color);
 }
 
 /** Utils */

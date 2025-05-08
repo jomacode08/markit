@@ -8,7 +8,3 @@
 @import "../node_modules/primeflex/primeflex.css";
 @import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 @import "../node_modules/primeng/resources/primeng.min.css";
-
-/* Quill styles */
-@import "../node_modules/quill/dist/quill.core.css";
-@import "../node_modules/quill/dist/quill.snow.css";

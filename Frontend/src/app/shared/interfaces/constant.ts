@@ -4,3 +4,5 @@ export const ROUTES = {
     MARKS_SEE: (id: number) => `marks/see/${ id }`,
     COLLECTIONS_SEE: (id: number) => `collections/${ id }`,
 };
+
+export const DEFAULT_BLOCK_NAME : string = 'Main block';

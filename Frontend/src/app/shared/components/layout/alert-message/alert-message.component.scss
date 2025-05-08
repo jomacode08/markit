@@ -17,7 +17,7 @@
     .confirm-dialog-icon {
         display: flex;
         justify-content: center;
-        color: var(--main-gray-700);
+        color: var(--main-gray-800);
         font-size: 4rem;
         margin-bottom: 1.5rem;
     }
@@ -37,13 +37,13 @@
     }
     .confirm-dialog-footer > .p-button:first-child {
         color: var(--main-purple-color);
-        background-color: var(--main-gray-700);
+        background-color: var(--main-gray-800);
     }
     .confirm-dialog-footer > .p-button:last-child {
-        color: var(--main-gray-700);
+        color: var(--main-gray-800);
     }
     .p-dialog .confirm-dialog-footer .p-button {
-        border: solid 1px var(--main-gray-700);
+        border: solid 1px var(--main-gray-800);
         border-radius: 1.5rem;
         padding: 0.5rem;
         width: 45%;

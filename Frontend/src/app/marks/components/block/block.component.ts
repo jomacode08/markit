@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 //* Tiptap Extensions
@@ -15,18 +15,9 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 
 //* Lowlight Code block dependency
-import { createLowlight } from 'lowlight'
-import csharp from 'highlight.js/lib/languages/csharp'
-import css from 'highlight.js/lib/languages/css'
-import html from 'highlight.js/lib/languages/xml'
-import js from 'highlight.js/lib/languages/javascript'
-import ts from 'highlight.js/lib/languages/typescript'
-const lowlight = createLowlight({ html, css, js, ts, csharp });
+import { common, createLowlight } from 'lowlight'
 
-import { Panel, PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
-
-import { BlockColors } from '../../interfaces/block';
 
 @Component({
   selector: 'marks-block',
@@ -35,7 +26,6 @@ import { BlockColors } from '../../interfaces/block';
     CommonModule,
     FormsModule,
     NgxTiptapModule,
-    PanelModule,
     SkeletonModule,
   ],
   templateUrl: './block.component.html',
@@ -49,15 +39,10 @@ import { BlockColors } from '../../interfaces/block';
     }
   ]
 })
-export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccessor {
+export class BlockComponent implements ControlValueAccessor {
   //* Configuration
-  @Input({ required: true }) public toggeable ?: boolean;
-  @Input({ required: true }) public collapsed ?: boolean;
-  @Input() public color: BlockColors = BlockColors.neutral;
   @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
-  @Output() public onOptionsButtonClicked = new EventEmitter<void>();
-  @Output() public onTitleChanged = new EventEmitter<string>();
 
   public input: string = "";
   public editor = new Editor({
@@ -66,7 +51,7 @@ export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccesso
         codeBlock: false,
       }),
       CodeBlockLowlight.configure({
-        lowlight,
+        lowlight : createLowlight(common),
       }),
       Highlighter.configure({
         multicolor: true,
@@ -75,13 +60,13 @@ export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccesso
         types: ['heading', 'paragraph'],
       }),      
       Placeholder.configure({
-        placeholder: 'Type something here...'
+        placeholder: 'Type something here'
       }),
+      TaskList,
       TaskItem.configure({
         nested: true,
       }),
-      TaskList,
-      Underline,
+      Underline
     ]
   });
 
@@ -101,18 +86,10 @@ export class BlockComponent implements OnChanges, OnDestroy, ControlValueAccesso
     this.onTouched = fn;
   }
 
-  //* Lifecycle
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes != null && changes['color']) {
-      this.color = changes['color'].currentValue;
-    }
-  }
-
   ngOnDestroy(): void {
     this.editor.destroy();
   }
 
   //* Methods
   onEditorClick = (): void => this.onEditorSelected.emit(this.editor);
-  onTitleChange = (title: string): void => this.onTitleChanged.emit(title);
 }
