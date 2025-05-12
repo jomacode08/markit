@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 
-import { Block, BlockColors } from './../../interfaces/block';
+import { Block } from './../../interfaces/block';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -50,8 +50,6 @@ export class BlockMenuComponent implements OnInit {
     const newBlock : EditableBlock = {
       id : 0,
       title : 'My new block',
-      cols: 12,
-      color: BlockColors.transparent,
       editable : true,
     };
     

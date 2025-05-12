@@ -12,9 +12,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
             RuleFor(c => c.Blocks).NotEmpty().WithMessage("Blocks are required");
 
             RuleForEach(c => c.Blocks).ChildRules(b => {
-                b.RuleFor(b => b.Cols).NotEmpty();
-                b.RuleFor(b => b.Cols).Must( col => col.Equals(6) || col.Equals(12) );
-                b.RuleFor(b => b.Color).NotEmpty();
+                b.RuleFor(b => b.Title).NotEmpty();
             });
         }
     }

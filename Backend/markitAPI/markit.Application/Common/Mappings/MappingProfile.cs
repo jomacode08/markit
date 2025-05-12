@@ -96,8 +96,6 @@ namespace markit.Application.Mappings
                         {
                             blocksToDelete.Remove(destinyBlock);
 
-                            destinyBlock.Cols = sourceBlock.Cols;
-                            destinyBlock.Color = sourceBlock.Color;
                             destinyBlock.Title = sourceBlock.Title;
                             destinyBlock.Content = sourceBlock.Content;
                             destinyBlock.Order = currentOrder;
@@ -107,8 +105,6 @@ namespace markit.Application.Mappings
                         {
                             dest.Blocks?.Add(new Block
                             {
-                                Cols = sourceBlock.Cols,
-                                Color = sourceBlock.Color,
                                 Title = sourceBlock.Title,
                                 Content = sourceBlock.Content,
                                 Order = currentOrder

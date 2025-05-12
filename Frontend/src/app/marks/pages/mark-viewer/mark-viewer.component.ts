@@ -18,7 +18,7 @@ import { FloatingMenuOption } from '../../../shared/components/layout/floating-m
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { Block, BlockColors } from '../../interfaces/block';
+import { Block } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 import { CurrentRouteService } from '../../../shared/services/current-route.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
@@ -214,8 +214,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
         {
           id : 0,
           title : DEFAULT_BLOCK_NAME,
-          cols: 12,
-          color: BlockColors.transparent,
           content: ''
         }
       ]
@@ -242,8 +240,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
         id: [block.id, Validators.required],
         content: [block.content, Validators.required],
         title: [block.title, Validators.required],
-        cols: [block.cols],
-        color: [block.color]
       })
     );
 

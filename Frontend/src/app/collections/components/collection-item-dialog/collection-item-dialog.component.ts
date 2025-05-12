@@ -12,7 +12,6 @@ import { CollectionService } from '../../services/collection.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { MarkService } from '../../../marks/services/mark.service';
 import { Mark } from '../../../marks/interfaces/mark';
-import { BlockColors } from '../../../marks/interfaces/block';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
 
@@ -126,8 +125,6 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
         {
           id : 0,
           title : DEFAULT_BLOCK_NAME,
-          cols: 12,
-          color: BlockColors.transparent,
           content: ''
         }
       ]
