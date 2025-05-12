@@ -15,6 +15,7 @@ namespace markit.Infraestructure.Repositorys.Marks
         {
             var mark = await context.Marks
                 .Include(m => m.Blocks)
+                .Include(m => m.Collection)
                 .Where(m => m.Id.Equals(id))
                 .FirstOrDefaultAsync();
 

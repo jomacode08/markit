@@ -122,8 +122,17 @@ namespace markit.Application.Mappings
                 });
 
             CreateMap<Mark, MarkViewModel>()
-                .ForMember(dest => dest.Blocks, opt =>
-                    opt.MapFrom(src => src.Blocks));
+                .ForMember(
+                    dest => dest.Blocks,
+                    opt => opt.MapFrom(src => src.Blocks)
+                )
+                .ForMember(
+                    dest => dest.CollectionName,
+                    opt => opt.MapFrom(src => src.Collection != null
+                        ? src.Collection.Name
+                        : "Not found"
+                    )
+                );
 
         }
     }

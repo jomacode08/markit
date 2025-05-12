@@ -71,6 +71,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   //* Form
   public markLoader$ = new Observable<Mark | null>();
   public creatorName ?: string;
+  public collectionName ?: string;
   public submit   : boolean = false;
   public form = new FormGroup({
     id       : new FormControl<number>(0),
@@ -171,6 +172,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   private initializeForm(mark: Mark): void {
     this.setBlocks(mark.blocks);
     this.form.reset(mark);
+    this.collectionName = mark.collectionName;
   }
 
   private handleError(error: Error): Observable<null> {

@@ -5,7 +5,9 @@ export interface Mark {
     id        : number;
     name      : string;
     creatorId : number;
-    collectionId : number
+    collectionId : number;
     links     ?: Link[];
     blocks    : Block[];
+    
+    collectionName ?: string;
 }

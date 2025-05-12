@@ -8,6 +8,7 @@ namespace markit.Application.Features.Marks.Queries.ViewModels
         public string Name { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public int CreatorId { get; set; }
+        public string CollectionName {  get; set; } = string.Empty;
 
         public List<BlockViewModel> Blocks { get; set; } = new();
     }
