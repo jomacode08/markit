@@ -27,6 +27,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
 import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
 import { createTextFormattingOptions } from '../../interfaces/text-formatting-options';
+import { CreatorService } from '../../../dashboard/services/creator.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   standalone: true,
@@ -57,7 +59,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   private readonly SEE_MARK_ROUTE : string = 'marks/see';
   // Routing
   private previousUrl : string | null = null;
-  private currentUrl : string | null = null;
+  private currentUrl : string  | null = null;
   // Floating menu
   public floatingMenuOptions : FloatingMenuOption[] = [];
   public isFloatingMenuVisible : boolean = false;
@@ -65,9 +67,10 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   // Block carousel  
   @ViewChild('blockCarousel') private carousel !: Carousel;
   public currentBlockIndex = signal<number>(0);
-
+  
   //* Form
   public markLoader$ = new Observable<Mark | null>();
+  public creatorName ?: string;
   public submit   : boolean = false;
   public form = new FormGroup({
     id       : new FormControl<number>(0),
@@ -91,12 +94,14 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     private messageService: CustomMessageService,
     private dialogService: DialogService,
     private fb: FormBuilder,
-    private currentRouteService: CurrentRouteService
+    private currentRouteService: CurrentRouteService,
+    private authService: AuthService
   ) {
     super();
     this.previousUrl = this.currentRouteService.previousSuccessfulUrl();
     this.currentUrl = this.currentRouteService.url();
     this.textFormattingOptions = createTextFormattingOptions(this.editor);
+    this.creatorName = this.authService.currentUser()?.given_name;
   }
 
   public ngOnInit(): void {
@@ -196,7 +201,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
 
   private getMarkById( id: number ): Observable<Mark> {
     return this.markService.getById(id)
-    .pipe(delay(1000));
+    .pipe(delay(500));
   }
 
   private createEmptyMark(): Observable<Mark> {
