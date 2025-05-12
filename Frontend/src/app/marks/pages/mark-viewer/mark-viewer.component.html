@@ -1,146 +1,149 @@
-<!-- Form -->
-<section class="container relative">
-    <form
-        *ngIf="!loading; else skeleton"
-        [formGroup]="form"
-        (submit)="onSubmit()"
-        autocomplete="off"
-    >
-        <!-- Header -->
-        <div class="header mb-5">
-            <!-- Mark Name -->
-            <div class="title">
-                <input
-                    id="name"
-                    placeholder="New Mark"
-                    maxlength="255"
-                    pInputText
-                    formControlName="name"
-                    type="text"
-                    class="transparent w-full p-0 text-3xl font-playfair font-semibold"
-                />
-                <shared-error-field
-                    *ngIf="isInvalidField('name')"
-                    [validationField]="getValidationField('name', 'masc', 'name title')">
-                </shared-error-field>  
-            </div>
+<ng-container *ngIf="markLoader$ | async else skeleton">
+    <!-- Form -->
+    <section class="container">
+         <form
+             [formGroup]="form"
+             (submit)="onSubmit()"
+             autocomplete="off"
+         >
+             <!-- Header -->
+             <div class="header mb-5">
+                 <!-- Mark Name -->
+                 <div class="title">
+                     <input
+                         id="name"
+                         placeholder="New Mark"
+                         maxlength="255"
+                         pInputText
+                         formControlName="name"
+                         type="text"
+                         class="transparent w-full p-0 text-3xl font-playfair font-semibold"
+                     />
+                     <shared-error-field
+                         *ngIf="isInvalidField('name')"
+                         [validationField]="getValidationField('name', 'masc', 'name title')">
+                     </shared-error-field>  
+                 </div>
+     
+                 <div class="divider lined-background">&nbsp;</div>
+     
+                 <!-- Related mark information -->
+                 <div class="chips">
+                     <p-chip label="My marks" icon="fa fa-folder"></p-chip>
+                     <p-chip label="Markit admin" icon="fa fa-glasses"></p-chip>
+                 </div>
+             </div>
+     
+             <!-- Blocks -->
+             <ng-container formArrayName="blocks">
+                <p-carousel
+                    #blockCarousel
+                    [value]="currentBlocks.controls"
+                    [numVisible]="1"
+                    [numScroll]="1"
+                    [circular]="false"
+                    [showNavigators]="false"
+                    [showIndicators]="false"
+                    (onPage)="onCarouselScroll($event)"
+                >
+                    <ng-template let-block pTemplate="item">
+                        <div [formGroup]="castAbstractControlToFormGroup(block)">
+                            <marks-block     
+                                formControlName="content"
+                                [title]="block.value['title']"
+                                (onEditorSelected)="onEditorSelected($event)"
+                            />
+                        </div>
+                    </ng-template>            
+                </p-carousel>
+             </ng-container>
+     
+             <!-- Temporary Submit button -->
+             <div class="grid mt-5">
+                 <div class="col-12 md:col-6">
+                     <shared-general-button
+                         severity="primary"
+                         label="Save"
+                         icon="fa fa-floppy-disk"
+                         [submit]="true"
+                         [disabled]="submit"
+                     ></shared-general-button>
+                 </div>
+                 <div class="col-12 md:col-6">
+                     <shared-general-button
+                         severity="cancel"
+                         label="Cancel"
+                         icon="fa-solid fa-angles-left"
+                         [disabled]="submit"
+                         (click)="onCancel()"
+                     ></shared-general-button>
+                 </div>
+             </div>
+         </form>
+     </section>
 
-            <div class="divider lined-background">&nbsp;</div>
+     <footer>
+         <!-- Block indicators -->
+         <div class="indicators flex justify-content-center gap-2 flex-wrap">
+             <!-- Button indicators -->
+             @for (block of currentBlocks.controls; track $index) {
+                 <p-button
+                     styleClass="indicator p-0 border-none w-1rem"
+                     pTooltip="{{ block.value.title }}"
+                     tooltipPosition="top"
+                     [icon]="'fa-circle ' + ($index === currentBlockIndex() ? 'fa-solid' : 'fa-regular')"
+                     (onClick)="onCarouselIndicatorBtnClick($index)"
+                 />
+             }
+             <!-- New block button -->
+             <button
+                 class="p-0 border-none cursor-pointer" 
+                 type="button"
+                 pTooltip="Block options"
+                 tooltipPosition="top"
+                 (click)="openBlockMenuDialog(this.currentBlocks.value)"
+             >
+                 <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                     <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
+                     <path d="m3.528 7.294l8.18 4.544a.6.6 0 0 0 .583 0l8.209-4.56M12 21v-9"/></g>
+                 </svg>
+             </button>
+         </div>
+     </footer>
 
-            <!-- Related mark information -->
-            <div class="chips">
-                <p-chip label="My marks" icon="fa fa-folder"></p-chip>
-                <p-chip label="Markit admin" icon="fa fa-glasses"></p-chip>
-            </div>
-        </div>
-
-        <!-- Blocks -->
-        <ng-container formArrayName="blocks">
-            <p-carousel
-                #blockCarousel
-                [value]="currentBlocks.controls"
-                [numVisible]="1"
-                [numScroll]="1"
-                [circular]="false"
-                [showNavigators]="false"
-                [showIndicators]="false"
-                (onPage)="onCarouselScroll($event)"
-            >
-                <ng-template let-block pTemplate="item">
-                    <div [formGroup]="castAbstractControlToFormGroup(block)">
-                        <marks-block     
-                            formControlName="content"
-                            [title]="block.value['title']"
-                            (onEditorSelected)="onEditorSelected($event)"
-                        />
-                    </div>
-                </ng-template>            
-            </p-carousel>
-        </ng-container>
-
-        <!-- Temporary Submit button -->
-        <div class="grid mt-5">
-            <div class="col-12 md:col-6">
-                <shared-general-button
-                    severity="primary"
-                    label="Save"
-                    icon="fa fa-floppy-disk"
-                    [submit]="true"
-                    [disabled]="submit"
-                ></shared-general-button>
-            </div>
-            <div class="col-12 md:col-6">
-                <shared-general-button
-                    severity="cancel"
-                    label="Cancel"
-                    icon="fa-solid fa-angles-left"
-                    [disabled]="submit"
-                    (click)="onCancel()"
-                ></shared-general-button>
-            </div>
-        </div>
-    </form>
-</section>
-
-<footer>
-    <!-- Block indicators -->
-    <div class="indicators flex justify-content-center gap-2 flex-wrap">
-        <!-- Button indicators -->
-        @for (block of currentBlocks.controls; track $index) {
-            <p-button
-                styleClass="indicator p-0 border-none w-1rem"
-                pTooltip="{{ block.value.title }}"
-                tooltipPosition="top"
-                [icon]="'fa-circle ' + ($index === currentBlockIndex() ? 'fa-solid' : 'fa-regular')"
-                (onClick)="onCarouselIndicatorBtnClick($index)"
-            />
-        }
-        <!-- New block button -->
-        <button
-            class="p-0 border-none cursor-pointer" 
-            type="button"
-            pTooltip="Block options"
-            tooltipPosition="top"
-            (click)="openBlockMenuDialog(this.currentBlocks.value)"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
-                <path d="m3.528 7.294l8.18 4.544a.6.6 0 0 0 .583 0l8.209-4.56M12 21v-9"/></g>
-            </svg>
-        </button>
-    </div>
-</footer>
-
-<!-- Floating font menu button -->
-<p-button
-    styleClass="floating-button"
-    icon="fa fa-font"
-    size="large"
-    [rounded]="true"
-    [raised]="true"
-    (onClick)="onFontOptionsButtonClick()"
-/>
-
-<!-- Floating menu -->
-<shared-floating-menu
-    [options]="floatingMenuOptions"
-    [visible]="isFloatingMenuVisible"
-/>
+     <!-- Floating font menu button -->
+     <p-button
+         styleClass="floating-button"
+         icon="fa fa-font"
+         size="large"
+         [rounded]="true"
+         [raised]="true"
+         (onClick)="onTextFormattingButtonClick()"
+     />
+     
+     <!-- Floating menu -->
+     <shared-floating-menu
+         [options]="floatingMenuOptions"
+         [visible]="isFloatingMenuVisible"
+     />
+</ng-container>
 
 <!-- Loading skeleton template -->
 <ng-template #skeleton>
-    <div class="w-full mb-5">
-        <p-skeleton height="3rem"/>
-    </div>
-    <div class="w-full mb-5">
-        <p-skeleton height="200px"/>
-    </div>
-    <div class="grid">
-        <div class="col-12 md:col-6">
-            <p-skeleton height="2.5rem"/>
+    <div class="container">
+        <div class="w-full mb-5">
+            <p-skeleton height="3rem"/>
         </div>
-        <div class="col-12 md:col-6">
-            <p-skeleton height="2.5rem"/>
+        <div class="w-full mb-5">
+            <p-skeleton height="200px"/>
+        </div>
+        <div class="grid">
+            <div class="col-12 md:col-6">
+                <p-skeleton height="2.5rem"/>
+            </div>
+            <div class="col-12 md:col-6">
+                <p-skeleton height="2.5rem"/>
+            </div>
         </div>
     </div>
 </ng-template>

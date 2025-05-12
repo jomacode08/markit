@@ -105,7 +105,8 @@ describe('CollectionExplorerComponent', () => {
             {
                 id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
                 name: 'Main Collection',
-                type: CollectionItemType.Collection
+                type: CollectionItemType.Collection,
+                typeId: 1
             }
         ];
         const mockRootCollection : Collection = {

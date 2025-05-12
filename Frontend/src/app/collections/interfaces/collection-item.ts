@@ -2,7 +2,7 @@ export interface CollectionItem {
     id: string;
     name: string;
     type: CollectionItemType;
-    typeId?: number;
+    typeId : number;
     collectionId ?: number;
     preview?: string;
     updateDate?: Date;

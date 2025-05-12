@@ -1,6 +1,6 @@
 <ng-container *ngIf="this.collection$ | async as collection">
     <!-- Title -->
-    <p class="font-playfair font-semibold text-2xl">{{ collection.name | titlecase }}</p>
+    <p class="font-playfair font-semibold text-2xl">{{ collection.name }}</p>
     <!-- Data Grid -->
     <p-dataView
         [value]="collection.collectionItems"

@@ -43,7 +43,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   public action = signal<CollectionItemAction | null>(null);
 
   get currentCollectionItem(): CollectionItem {
-    return this.form.value as CollectionItem;
+    return this.form.getRawValue() as CollectionItem;
   }
 
   constructor(
@@ -65,6 +65,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
     if (this.form.invalid) return this.form.markAllAsTouched();
 
     this.setSubmit(true);
+    this.form.get('name')?.disable();
 
     if (this.action() === CollectionItemAction.Add)
       this.addItem(this.currentCollectionItem);
@@ -104,7 +105,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
 
     this.collectionService.create(newCollection).subscribe({
       next: (collection) => {
-        this.ref.close(true);
+        this.ref.close(collection.id);
       },
       error: (error) => {
         this.setSubmit(false);
@@ -116,13 +117,10 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   private addMark( collectionItem: CollectionItem ): void {
     const { name, collectionId } = collectionItem;
 
-    if ( !collectionId )
-    throw new Error("The 'collectionId' property is required.");
-
     const newMark : Mark = {
       id : 0,
-      name,
-      collectionId,
+      name: name,
+      collectionId: collectionId ?? 0,
       creatorId : 0,
       blocks: [
         {
@@ -137,7 +135,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
 
     this.markService.create(newMark).subscribe({
       next: (mark) => {
-        this.ref.close(true);
+        this.ref.close(mark.id);
       },
       error: (error) => {
         this.setSubmit(false);
@@ -148,11 +146,10 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
 
   private renameCollection( collectionItem: CollectionItem ): void {
     const { typeId, name } = collectionItem;
-    if (!typeId) throw new Error("The 'typeId' property is required.");
 
     this.collectionService.rename(typeId, name).subscribe({
       next: (collection) => {
-        this.ref.close(true);
+        this.ref.close(collection.id);
       },
       error: (error) => {
         this.setSubmit(false);
@@ -163,11 +160,10 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
 
   private renameMark(collectionItem: CollectionItem): void {
     const { typeId, name } = collectionItem;
-    if (!typeId) throw new Error("The 'typeId' property is required.");
 
     this.markService.rename(typeId, name).subscribe({
       next: (collection) => {
-        this.ref.close(true);
+        this.ref.close(collection.id);
       },
       error: (error) => {
         this.setSubmit(false);

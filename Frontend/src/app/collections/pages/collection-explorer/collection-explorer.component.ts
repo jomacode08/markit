@@ -93,12 +93,7 @@ export class CollectionExplorerComponent implements OnDestroy {
     {
       label: 'Add mark',
       icon: this.ICONS.NOTE,
-      command: () => {
-        if (this.collectionId())
-          this.addNewCollectionItem(CollectionItemType.Mark);
-        else
-          this.router.navigate([ROUTES.MARKS_NEW]);
-      }
+      command: () => this.addNewCollectionItem(CollectionItemType.Mark)
     },
   ];
 
@@ -177,6 +172,18 @@ export class CollectionExplorerComponent implements OnDestroy {
     return this.collectionService.getCollectionById(id);
   }
 
+  private handleSuccessfulCollectionAction(collectionItem: CollectionItem, action: CollectionItemAction): void {
+    // Close floating menu
+    this.changeFloatingMenuState();
+    // Navigate to mark viewer after the success of adding a mark.
+    if (action === CollectionItemAction.Add && collectionItem.type === CollectionItemType.Mark) {
+      this.router.navigate([ROUTES.MARKS_SEE(collectionItem.typeId)]);
+      return;
+    }
+    // Otherwise, re-load the collection data of the explorer to see new changes.
+    this.loadCollectionTrigger$.next();
+  }
+
   private openActionDialog( collectionItem: CollectionItem, action: CollectionItemAction ) {
     const header = (`${ action } ${ collectionItem.type }`);
 
@@ -195,13 +202,14 @@ export class CollectionExplorerComponent implements OnDestroy {
     });
     
     // Subscribe to the onClose event of the dialog
-    // to reload the collection when the dialog is closed
-    this.ref.onClose.subscribe(async (success: boolean) => {
+    this.ref.onClose.subscribe(async (collectionItemTypeId: number) => {
       this.ref = undefined;
-      if (success) {
-        this.loadCollectionTrigger$.next();
-        this.changeFloatingMenuState();
+
+      if (collectionItemTypeId > 0){
+        collectionItem.typeId = collectionItemTypeId;
+        this.handleSuccessfulCollectionAction(collectionItem, action);
       }
+
     });
   }
 
