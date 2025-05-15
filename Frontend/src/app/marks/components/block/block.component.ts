@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewEncapsulation, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 //* Tiptap Extensions
@@ -18,6 +18,7 @@ import Underline from '@tiptap/extension-underline';
 import { common, createLowlight } from 'lowlight'
 
 import { SkeletonModule } from 'primeng/skeleton';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'marks-block',
@@ -39,11 +40,13 @@ import { SkeletonModule } from 'primeng/skeleton';
     }
   ]
 })
-export class BlockComponent implements ControlValueAccessor {
+export class BlockComponent implements OnInit, ControlValueAccessor {
   //* Configuration
   @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
-
+  @Output() public onValueChange = new EventEmitter<string>();
+  
+  private debouncer = new Subject<string>();
   public input: string = "";
   public editor = new Editor({
     extensions: [
@@ -70,6 +73,18 @@ export class BlockComponent implements ControlValueAccessor {
     ]
   });
 
+  //* Lyfecycle hooks
+  ngOnInit(): void {
+    this.debouncer.pipe(
+      debounceTime(1000)
+    ).subscribe((value) => this.onValueChange.emit(value));
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
+    this.debouncer.unsubscribe();
+  }
+
   //* ControlValueAccessor implementation
   onChange: (value: any) => void = () => {};
   onTouched: () => void = () => {};
@@ -86,10 +101,11 @@ export class BlockComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  ngOnDestroy(): void {
-    this.editor.destroy();
-  }
-
   //* Methods
   onEditorClick = (): void => this.onEditorSelected.emit(this.editor);
+  onEditorInputChange(value: string): void {
+    this.input = value;
+    this.onChange(value);
+    this.debouncer.next(value);
+  }
 }

@@ -40,7 +40,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
         // Show error in console for develop environment
         if (!environment.production) {
-          console.log(error);
+          console.log(httpError);
         }
 
         switch (statusCode) {

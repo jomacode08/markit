@@ -9,6 +9,7 @@ namespace markit.Application.Contracts.Persistence.Common
         ICollectionRepository collectionRepository { get; }
         ICreatorRepository creatorRepository { get; }
         IMarkRepository markRepository { get; }
+        IBlockRepository blockRepository { get; }
 
         IAsyncRepository<TEntity> Repository<TEntity>() where TEntity : BaseModel;
         Task<int> Complete();

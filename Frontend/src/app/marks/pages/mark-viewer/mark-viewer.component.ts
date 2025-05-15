@@ -1,34 +1,43 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AfterViewInit, Component, ViewChild, signal, OnInit } from '@angular/core';
+import { delay, Observable, of, retry, RetryConfig, Subject, throwError, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { catchError, delay, Observable, of, tap, throwError } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { Carousel, CarouselModule, CarouselPageEvent } from 'primeng/carousel';
 import { ChipModule } from 'primeng/chip';
 import { Editor } from '@tiptap/core';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
 
+import { AuthService } from '../../../auth/services/auth.service';
+import { Block } from '../../interfaces/block';
+import { BlockComponent } from '../../components/block/block.component';
+import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
+import { BlockService } from '../../services/block.service';
+import { createTextFormattingOptions } from '../../interfaces/text-formatting-options';
+import { CurrentRouteService } from '../../../shared/services/current-route.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
 import { DEFAULT_MARK_NAME, ROUTES } from './../../../shared/interfaces/constant';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { Block } from '../../interfaces/block';
-import { BlockComponent } from '../../components/block/block.component';
-import { CurrentRouteService } from '../../../shared/services/current-route.service';
-import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
-import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
-import { createTextFormattingOptions } from '../../interfaces/text-formatting-options';
-import { CreatorService } from '../../../dashboard/services/creator.service';
-import { AuthService } from '../../../auth/services/auth.service';
+import { CanComponentDeactivate, CanDeactivateType } from '../../../auth/guards/can-deactivate/can-component-deactivate';
+
+enum SaveState {
+  idle,
+  saving,
+  saved,
+  error
+}
 
 @Component({
   standalone: true,
@@ -36,27 +45,30 @@ import { AuthService } from '../../../auth/services/auth.service';
     BlockComponent,
     ButtonModule,
     CarouselModule,
-    CommonModule,
     ChipModule,
+    CommonModule,
     ErrorFieldComponent,
     FloatingMenuComponent,
-    GeneralButtonComponent,
+    ProgressSpinnerModule,
     ReactiveFormsModule,
     SkeletonModule,
-    TooltipModule
+    TooltipModule,
   ],
   providers: [DialogService],
   templateUrl: './mark-viewer.component.html',
   styleUrl: './mark-viewer.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkViewerComponent extends ValidatorErrorField implements OnInit, AfterViewInit {
+export class MarkViewerComponent extends ValidatorErrorField implements OnInit, AfterViewInit, CanComponentDeactivate {
   //* Configuration
-  private editor = signal<Editor | undefined>(undefined);
   private blockMenuDialogRef: DynamicDialogRef | undefined;
+  private editor = signal<Editor | undefined>(undefined);
   // Constants
   private readonly MARKID_PARAM_NAME : string = 'id';
   private readonly SEE_MARK_ROUTE : string = 'marks/see';
+  private readonly ERROR_RETRY_SETTINGS = {
+    maxEntries: 3,
+    delayInMs: 1000
+  }
   // Routing
   private previousUrl : string | null = null;
   private currentUrl : string  | null = null;
@@ -69,14 +81,14 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   public currentBlockIndex = signal<number>(0);
   
   //* Form
-  public markLoader$ = new Observable<Mark | null>();
+  public saveState  = signal<SaveState>(SaveState.idle);
   public creatorName ?: string;
-  public collectionName ?: string;
-  public submit   : boolean = false;
   public form = new FormGroup({
     id       : new FormControl<number>(0),
     name     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
     blocks   : new FormArray<FormGroup>([]),
+    collectionName : new FormControl<string>(''),
+    requiresSync : new FormControl<boolean>(false),
   });
 
   //* Getters
@@ -86,17 +98,22 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   get currentBlocks() {
     return this.form.get('blocks') as FormArray;
   }
+  get saveStateType(): typeof SaveState {
+    return SaveState;
+  }
 
   //* Lyfecycle
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
-    private markService: MarkService,
-    private messageService: CustomMessageService,
+    private authService: AuthService,
+    private blockService: BlockService,
+    private currentRouteService: CurrentRouteService,
     private dialogService: DialogService,
     private fb: FormBuilder,
-    private currentRouteService: CurrentRouteService,
-    private authService: AuthService
+    private markService: MarkService,
+    private messageService: CustomMessageService,
+    private router: Router,
+    private toastService: MessageService,
   ) {
     super();
     this.previousUrl = this.currentRouteService.previousSuccessfulUrl();
@@ -105,11 +122,14 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     this.creatorName = this.authService.currentUser()?.given_name;
   }
 
-  public ngOnInit(): void {
-    this.markLoader$ = this.fetchMark(this.currentUrl ?? '').pipe(
-      tap((mark) => this.initializeForm(mark)),
-      catchError((error) => this.handleError(error))
-    );
+  public async ngOnInit(): Promise<void> {
+    this.fetchMark(this.currentUrl ?? '').subscribe({
+      next: (mark) => {
+        this.initializeForm(mark);
+        if (mark.requiresSync) this.updateMarkWithRetry(mark);
+      },
+      error: (error) => this.handleError(error)
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -118,14 +138,25 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     if (inputElement) inputElement.focus();
   }
 
+  public canDeactivate(): CanDeactivateType {
+    if (this.saveState() === SaveState.saving) {
+      const deactivateSubject = new Subject<boolean>();
+
+      this.openUnsavedChangesDialog(() => {
+        deactivateSubject.next(true);
+        deactivateSubject.complete();
+      });
+      return deactivateSubject;
+    }
+    return true;
+  }
+
   //* Events
   public onEditorSelected = (editor : Editor) => this.editor.set(editor);
 
-  public onSubmit(): void {
-    if (this.form.invalid) return this.form.markAllAsTouched();
-    this.setSubmit(true);
-
-    this.updateMark(this.currentMark);
+  public onEditorValueChanged(content: string) {
+    const { id } = this.currentBlocks.at(this.currentBlockIndex()).value as Block;
+    this.updateBlockContentWithRetry(id, content);
   }
 
   public onCancel(): void {
@@ -140,14 +171,18 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     if (event.page != null) this.currentBlockIndex.set(event.page);
   }
 
-  public onCarouselIndicatorBtnClick(index: number): void {
+  public onCarouselIndicatorButtonClick(index: number): void {
     index > this.currentBlockIndex()
       ? this.carousel.navForward(new MouseEvent('click'), index)
       : this.carousel.navBackward(new MouseEvent('click'), index);  
     this.currentBlockIndex.set(index);
   }
 
-  public openBlockMenuDialog( blocks : Block[] ): void {
+  public onErrorSavingButtonClick(): void {
+    this.updateMarkWithRetry(this.currentMark);
+  }
+
+  public openBlockMenuDialog( blocks : Block[] ) {
     this.blockMenuDialogRef = this.dialogService.open(BlockMenuComponent, {
       header: 'Blocks',
       width : '30rem',
@@ -160,11 +195,21 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       }
     });
 
-    this.blockMenuDialogRef.onClose.subscribe(( blocks ?: Block[] ) => {
+    this.blockMenuDialogRef.onClose.subscribe(async ( blocks ?: Block[] ) => {
       this.blockMenuDialogRef = undefined;
       if (blocks) {
-        this.setBlocks(blocks);
+        await this.setBlocks(blocks);
+        this.updateMarkWithRetry(this.currentMark);
       }
+    });
+  }
+
+  public openUnsavedChangesDialog( accept: () => void ): void {
+    this.messageService.showConfirmationDialog({
+      message: 'Are you sure you want to leave? Some data may be lost.',
+      header: 'Unsaved changes',
+      icon: 'fa fa-warning',
+      accept
     });
   }
 
@@ -172,14 +217,17 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
   private initializeForm(mark: Mark): void {
     this.setBlocks(mark.blocks);
     this.form.reset(mark);
-    this.collectionName = mark.collectionName;
   }
 
   private handleError(error: Error): Observable<null> {
     this.redirectToUrl(this.previousUrl ?? ROUTES.COLLECTION_EXPLORER);
-    this.messageService.showGeneralError(error.message);
+
+    if (error.message.length > 0)
+      this.messageService.showGeneralError(error.message);
+
     return of(null);
   }
+
 
   //* Marks
   private fetchMark( url: string ): Observable<Mark> {
@@ -190,6 +238,10 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       if (markId === undefined) {
         return throwError(() => new Error("Invalid mark ID"));
       }
+
+      // Check if the mark is in local storage to return it.
+      const localMark = this.markService.getMarkFromLocalStorage(markId);
+      if (localMark) return of(localMark);
       
       return this.getMarkById(markId);
     }
@@ -224,19 +276,38 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     return this.markService.create(emptyMark);
   }
 
-  private updateMark(mark: Mark): void {
-    this.markService.patch(mark).subscribe({
+  private updateMarkSyncStatus(state: boolean): void {
+    this.currentMark.requiresSync = state;
+  }
+
+  private updateMarkWithRetry(mark: Mark): void {
+    const { requiresSync } = mark;
+    this.setSaveState(SaveState.saving);
+
+    this.markService.patch(mark)
+    .pipe(
+      // Error retry with exponential backoff
+      retry(this.getErrorRetryConfig())
+    )
+    .subscribe({
       next:  (mark)  => {
+        mark.requiresSync = requiresSync;
         this.form.reset(mark);
-        this.setSubmit(false);
-        this.messageService.showGeneralSuccess("Mark updated successfully");
+        this.setSaveState(SaveState.saved);
+
+        if (this.currentMark.requiresSync) {
+          this.updateMarkSyncStatus(false);
+          this.markService.dropMarkFromLocalStorage(mark.id);
+        }
+
       },
-      error: ()  => this.setSubmit(false)
+      // After maximum retries, set error state and buffer unsaved data.
+      error: ()  => this.saveChangesLocally()
     });
   }
 
   //* Blocks
-  private setBlocks(blocks: Block[]): void {
+  private async setBlocks(blocks: Block[]): Promise<void> {
     const blockControls = blocks.map(block =>
       this.fb.group({
         id: [block.id, Validators.required],
@@ -249,10 +320,28 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     blockControls.forEach(c => this.currentBlocks.push(c));
   }
 
+  private updateBlockContentWithRetry( id:number, content: string ): void {
+    this.setSaveState(SaveState.saving);
+
+    this.blockService.updateContent(id, content).pipe(
+      // Error retry with exponential backoff
+      retry(this.getErrorRetryConfig()),
+      delay(500),
+    ).subscribe({
+      next: () => this.setSaveState(SaveState.saved),
+      // After maximum retries, set error state and buffer unsaved data.
+      error: (error) => this.saveChangesLocally(),
+    });
+  }
+
   //* UTILS
+  private setSaveState = (state: SaveState) => this.saveState.set(state);
+  private redirectToUrl = (url: string) => this.router.navigate([url]);
+
   public castAbstractControlToFormGroup(control: AbstractControl) {
     return control as FormGroup;
   }
+
   private getIdFromUrlParam(): number | undefined {
     const markId = this.activatedRoute.snapshot.paramMap.get(this.MARKID_PARAM_NAME);
     
@@ -260,17 +349,31 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       this.redirectToUrl(this.previousUrl ?? ROUTES.COLLECTION_EXPLORER);
       return undefined;
     }
-
+    
     return Number(markId);
   }
-  private setSubmit(value: boolean): void {
-    this.submit = value;
-  }
+
   private changeFloatingMenuState( menuOptions ?: FloatingMenuOption[] ): void {
     if (menuOptions) this.floatingMenuOptions = menuOptions;
     this.isFloatingMenuVisible = !this.isFloatingMenuVisible;
   }
-  private redirectToUrl(url: string): void {
-    this.router.navigate([url]);
+
+  private getErrorRetryConfig(): RetryConfig {
+    const { maxEntries, delayInMs } = this.ERROR_RETRY_SETTINGS;
+    return {
+      count: maxEntries,
+      delay : (error, retryCount) => {
+        this.toastService.clear();
+        const baseDelay = Math.pow(2, retryCount) * delayInMs;
+        const jitter = Math.random() * 1000;
+        return timer(baseDelay + jitter)
+      },
+    };
+  }
+
+  private saveChangesLocally(): void {
+    this.setSaveState(SaveState.error);
+    this.updateMarkSyncStatus(true);
+    this.markService.setMarkInLocalStorage(this.currentMark);
   }
 }

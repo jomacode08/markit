@@ -10,4 +10,5 @@ export interface Mark {
     blocks    : Block[];
     
     collectionName ?: string;
+    requiresSync   ?: boolean;
 }

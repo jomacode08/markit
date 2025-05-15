@@ -18,10 +18,12 @@ namespace markit.Infraestructure.Repositorys.Common
         private ICollectionRepository _collectionRepository;
         private ICreatorRepository  _creatorRepository;
         private IMarkRepository     _markRepository;
+        private IBlockRepository _blockRepository;
 
         public ICollectionRepository collectionRepository => _collectionRepository = new CollectionRepository(_context);
         public ICreatorRepository creatorRepository => _creatorRepository = new CreatorRepository(_context);
         public IMarkRepository markRepository => _markRepository = new MarkRepository(_context);
+        public IBlockRepository blockRepository => _blockRepository = new BlockRepository(_context);
         #endregion
 
         public UnitOfWork(MarkitDbContext context)

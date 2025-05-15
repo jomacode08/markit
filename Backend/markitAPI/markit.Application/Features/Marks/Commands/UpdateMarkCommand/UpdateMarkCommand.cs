@@ -29,7 +29,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
         public async Task<MarkViewModel> Handle(UpdateMarkCommand request, CancellationToken cancellationToken)
         {
             // Validate the existence of the mark
-            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Blocks")
+            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Blocks,Collection")
                 ?? throw new NotFoundException("Mark", request.Id);
 
             // Mapping the request to the mark entity

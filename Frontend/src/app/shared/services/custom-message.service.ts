@@ -22,7 +22,8 @@ export class CustomMessageService {
         summary: message.title,
         detail: message.message,
         key: 'default',
-        life: 6000
+        life: message.duration ?? 6000,
+        sticky: message.sticky
       }
     );
   }

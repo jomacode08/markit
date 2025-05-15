@@ -3,7 +3,7 @@
         id="editor"
         [editor]="editor"
         [(ngModel)]="input"
-        (ngModelChange)="onChange($event)"
+        (ngModelChange)="onEditorInputChange($event)"
         (blur)="onTouched()"
         (mousedown)="onEditorClick()"
     />

@@ -22,10 +22,6 @@ body {
   background-color: var(--main-black-color);
 }
 
-footer {
-  height: 3rem;
-}
-
 h1 {
   font-size: 2.25rem !important;
 }
@@ -421,7 +417,7 @@ button {
   color: var(--main-gray-800);
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.75rem 0.75rem;
+  padding: 0.5rem;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 6px;
 }
@@ -436,6 +432,10 @@ button {
 }
 .p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
   border-bottom-color: var(--main-purple-color);
+}
+
+.p-progress-spinner-circle {
+  stroke: #ab93e0 !important;
 }
 
 /** Utils */

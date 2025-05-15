@@ -6,6 +6,8 @@ export interface CustomMessage {
     icon ?: string,
     message ?: string,
     validations ?: ValidationError
+    duration ?: number,
+    sticky ?: boolean
 }
 
 export enum MessageType {
