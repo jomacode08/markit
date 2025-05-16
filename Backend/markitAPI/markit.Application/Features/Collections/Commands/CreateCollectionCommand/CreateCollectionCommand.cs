@@ -14,6 +14,13 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         public int CreatorId { get; set; }
         public int? ParentId { get; set; }
         public string? Path { get; set; }
+
+        public void Deconstruct( out string name,out int creatorId, out int? parentId )
+        {
+            name = Name;
+            parentId = ParentId;
+            creatorId = CreatorId;
+        }
     }
 
     public class CreateCollectionCommandHandler : IRequestHandler<CreateCollectionCommand, CollectionViewModel>
@@ -31,7 +38,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         {
             // Validations
             await ValidateCreatorExistency(request.CreatorId);
-            await ValidateNameDuplicates(request.Name, request.ParentId);
+            await ValidateNameDuplicates(request);
             if (request.IsMain) await ValidateMainCollectionDuplicate(request.CreatorId);
 
             // Create path
@@ -72,10 +79,16 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             return Unit.Value;
         }
 
-        private async Task<Unit> ValidateNameDuplicates(string name, int? parentId)
+        private async Task<Unit> ValidateNameDuplicates(CreateCollectionCommand request)
         {
+            (string name, int creatorId, int? parentId) = request;
+
             var duplicates = await _unitOfWork.collectionRepository
-                .GetAsync(c => c.ParentId.Equals(parentId) && c.Name.Equals(name));
+                .GetAsync(c =>
+                    c.ParentId.Equals(parentId)
+                    && c.Name.Equals(name)
+                    && c.CreatorId.Equals(creatorId)
+                );
 
             if (duplicates.Any()) throw new CustomValidationException(@$"There's already a collection with the name: { name }");
 
