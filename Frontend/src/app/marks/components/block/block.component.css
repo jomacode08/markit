@@ -108,6 +108,16 @@
       margin: 0;
     }
   }
+
+  /* Link styles */
+  a {
+    color: var(--main-purple-color);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--main-purple-hover-color);
+    }
+  }
 }
 
 /** Code Styling */
