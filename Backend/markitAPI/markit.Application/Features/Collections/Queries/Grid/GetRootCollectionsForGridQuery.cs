@@ -40,7 +40,7 @@ namespace markit.Application.Features.Collections.Queries.Grid
         private async Task<List<Collection>> GetRootCollections(int creatorId)
         {
             return [.. await _unitOfWork.collectionRepository
-                .GetAsync(c => c.CreatorId.Equals(creatorId) && c.ParentId.Equals(null))
+                .GetAsync(c => c.CreatorId.Equals(creatorId) && c.ParentId.Equals(null), null, "Marks")
             ];
         }
     }
