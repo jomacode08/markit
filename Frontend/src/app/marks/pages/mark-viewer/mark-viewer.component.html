@@ -9,19 +9,7 @@
         <div class="header mb-5">
             <!-- Mark Name -->
             <div class="title">
-                <input
-                    id="name"
-                    placeholder="New Mark"
-                    maxlength="255"
-                    pInputText
-                    formControlName="name"
-                    type="text"
-                    class="transparent w-full p-0 text-3xl font-playfair font-semibold"
-                />
-                <shared-error-field
-                    *ngIf="isInvalidField('name')"
-                    [validationField]="getValidationField('name', 'masc', 'name title')">
-                </shared-error-field>  
+                {{ currentMark.name }}
             </div>
 
             <div class="divider lined-background">&nbsp;</div>

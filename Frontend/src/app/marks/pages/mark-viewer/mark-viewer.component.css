@@ -27,6 +27,10 @@ footer {
 .title {
   border: 1px solid var(--main-gray-700);
   padding: 0.5rem 1rem;
+  font-family: 'PlayfairDisplay';
+  font-weight: 600;
+  font-size: 1.75rem;
+  cursor: default;
 }
 
 .chips {
