@@ -24,12 +24,10 @@ import { CustomMessageService } from '../../../shared/services/custom-message.se
 import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
 import { DEFAULT_MARK_NAME, ROUTES } from './../../../shared/interfaces/constant';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
-import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { CanComponentDeactivate, CanDeactivateType } from '../../../auth/guards/can-deactivate/can-component-deactivate';
 
 enum SaveState {
@@ -47,7 +45,6 @@ enum SaveState {
     CarouselModule,
     ChipModule,
     CommonModule,
-    ErrorFieldComponent,
     FloatingMenuComponent,
     ProgressSpinnerModule,
     ReactiveFormsModule,
@@ -58,7 +55,7 @@ enum SaveState {
   templateUrl: './mark-viewer.component.html',
   styleUrl: './mark-viewer.component.css',
 })
-export class MarkViewerComponent extends ValidatorErrorField implements OnInit, AfterViewInit, CanComponentDeactivate {
+export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   //* Configuration
   private blockMenuDialogRef: DynamicDialogRef | undefined;
   private editor = signal<Editor | undefined>(undefined);
@@ -115,7 +112,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
     private router: Router,
     private toastService: MessageService,
   ) {
-    super();
     this.previousUrl = this.currentRouteService.previousSuccessfulUrl();
     this.currentUrl = this.currentRouteService.url();
     this.textFormattingOptions = createTextFormattingOptions(this.editor);
@@ -130,12 +126,6 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
       },
       error: (error) => this.handleError(error)
     });
-  }
-
-  public ngAfterViewInit(): void {
-    // set focus on the name input
-    const inputElement: HTMLElement | null = document.getElementById('name');
-    if (inputElement) inputElement.focus();
   }
 
   public canDeactivate(): CanDeactivateType {
@@ -268,7 +258,7 @@ export class MarkViewerComponent extends ValidatorErrorField implements OnInit, 
         {
           id : 0,
           title : DEFAULT_BLOCK_NAME,
-          content: ''
+          content: '',
         }
       ]
     };

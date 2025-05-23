@@ -9,6 +9,7 @@ using markit.Application.Features.Creators.Queries.ViewModels;
 using markit.Application.Features.Marks.Commands.CreateMarkCommand;
 using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries.ViewModels;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 
@@ -49,7 +50,7 @@ namespace markit.Application.Mappings
                     dest => dest.Preview,
                     opt => opt.MapFrom(src => src.Marks != null 
                     ? $"{ src.Marks.Count } marks" 
-                    : "0 marks")
+                    : GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW)
                 );
 
             // Creators
@@ -74,8 +75,21 @@ namespace markit.Application.Mappings
 
             // Marks
             CreateMap<CreateMarkCommand, Mark>()
-                .ForMember(dest => dest.Blocks, opt =>
-                    opt.MapFrom(src => src.Blocks));
+                .ForMember(dest => dest.Blocks, opt => opt.Ignore())
+                .AfterMap((src, dest) =>
+                {
+                    dest.Blocks = [];
+                    for( int i = 0; i < src.Blocks.Count; i++ ) {
+                        var sourceBlock = src.Blocks[i];
+
+                        dest.Blocks?.Add(new Block
+                        {
+                            Title = sourceBlock.Title,
+                            Content = sourceBlock.Content,
+                            Order = i + 1
+                        });
+                    }
+                });
 
             CreateMap<UpdateMarkCommand, Mark>()
                 // Ignore Blocks initially due to AutoMapper replace the existent collection with the new one.

@@ -24,5 +24,11 @@
             public static readonly string ProfilePictureUrl = "prof_pic_url";
             public static readonly string CreatorId = "creatorId";
         }
+
+        public static class Marks
+        {
+            public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
+            public static readonly string MARK_DEFAULT_PREVIEW = "New mark";
+        }
     }
 }

@@ -1,8 +1,10 @@
-﻿using markit.Application.Contracts.Persistence.Marks;
+﻿using System.Text.RegularExpressions;
+using markit.Application.Contracts.Persistence.Marks;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
+using markit.Application.Helpers;
 
 namespace markit.Infraestructure.Repositorys.Marks
 {
@@ -42,6 +44,7 @@ namespace markit.Infraestructure.Repositorys.Marks
         // Get child collections and marks of a specific collection.
         public async Task<List<CollectionItem>> GetCollectionItems(int collectionId)
         {
+
             var collections = await context
                 .Collections
                 .Include(c => c.Marks)
@@ -55,7 +58,7 @@ namespace markit.Infraestructure.Repositorys.Marks
                     TypeId = c.Id,
                     Preview = c.Marks != null
                         ? $"{c.Marks.Count} marks"
-                        : "0 marks",
+                        : GeneralConstant.Marks.MARK_DEFAULT_PREVIEW,
                 })
                 .ToListAsync();
 
@@ -71,11 +74,33 @@ namespace markit.Infraestructure.Repositorys.Marks
                     Type = CollectionItemType.Mark,
                     TypeId = m.Id,
                     UpdateDate = m.UpdatedDate ?? (DateTime)m.CreatedDate!,
-                    Preview = "This is a preview...",
+                    Preview = m.Blocks != null ? GetMarkPreview(m.Blocks) : "",
                 })
                 .ToListAsync();
 
             return [.. collections, .. marks];
+        }
+
+        private static string GetMarkPreview(ICollection<Block> blocks)
+        {
+            var firstBlock = blocks.FirstOrDefault();
+            string content = firstBlock?.Content ?? "";
+            int previewMaxLength = 40;
+
+            if (content.Length == 0) return GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW;
+
+            // Find the first closable html tag in the block content.
+            string firstTagElement = Regex.Match(content, "<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*>(.*?)<\\/\\1>").Value;
+
+            // Get inner text from the tag.
+            string innerText = Regex.Replace(firstTagElement, "<.*?>", string.Empty);
+
+            // Set preview maxlength
+            innerText = innerText.Length > previewMaxLength 
+                ? innerText[.. previewMaxLength]
+                : innerText;
+
+            return $"{ innerText }...";
         }
     }
 }

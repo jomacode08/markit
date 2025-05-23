@@ -47,13 +47,13 @@ export class BlockMenuComponent implements OnInit {
 
   //** Events
   public onAddBlockButtonClick(): void {
+    const newIndex = this.blocks().length;
     const newBlock : EditableBlock = {
       id : 0,
       title : 'My new block',
       editable : true,
     };
     
-    const newIndex = this.blocks().length;
     this.blocks.update((currentBlocks) => [...currentBlocks, newBlock]);
     this.setFocusToInputElement(`title${ newIndex }`);
   }
