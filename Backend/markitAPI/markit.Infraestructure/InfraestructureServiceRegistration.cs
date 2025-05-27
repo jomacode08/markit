@@ -17,6 +17,7 @@ using markit.Infraestructure.Security.Services.Google;
 using markit.Application.Models.Authentication.Google;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication.AppUser;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace markit.Infraestructure
 {
@@ -50,6 +51,7 @@ namespace markit.Infraestructure
             services.AddDbContext<MarkitDbContext>(
                 options => options
                     .UseSqlServer(connString)
+                    .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))
             );
 
             // Agregar Context Accesor usado en el Session Service

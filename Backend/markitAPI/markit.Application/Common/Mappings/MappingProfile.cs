@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using markit.Application.Common.Helpers;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
@@ -149,6 +150,35 @@ namespace markit.Application.Mappings
                     )
                 );
 
+            CreateMap<Mark, CollectionItem>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => Guid.NewGuid().ToString())
+                )
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name)
+                )
+                .ForMember(
+                    dest => dest.CollectionId,
+                    opt => opt.MapFrom(src => src.CollectionId)
+                )
+                .ForMember(
+                    dest => dest.Type,
+                    opt => opt.MapFrom(src => CollectionItemType.Mark)
+                )
+                .ForMember(
+                    dest => dest.TypeId,
+                    opt => opt.MapFrom(src => src.Id)
+                )
+                .ForMember(
+                    dest => dest.UpdateDate,
+                    opt => opt.MapFrom( src => src.UpdatedDate ?? src.CreatedDate)
+                )
+                .ForMember(
+                    dest => dest.Preview,
+                    opt => opt.MapFrom(src => Utilities.CreateMarkPreview(src))
+                );
         }
     }
 }

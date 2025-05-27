@@ -4,6 +4,7 @@ using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForGridQuery
 {
@@ -11,7 +12,6 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
     {
         public int CollectionId { get; set; }
         public int CreatorId { get; set; }
-
         public bool IncludeCollectionITems { get; set; }
     }
 
@@ -19,11 +19,13 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILogger<GetCollectionByIdQuery> _logger;
 
-        public GetCollectionItemsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetCollectionItemsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetCollectionByIdQuery> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<CollectionViewModel> Handle(GetCollectionByIdQuery request, CancellationToken cancellationToken)
@@ -51,7 +53,19 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
-        private async Task<List<CollectionItem>> GetCollectionItems(int collectionId) => await _unitOfWork.collectionRepository.GetCollectionItems(collectionId);
+        private async Task<List<CollectionItem>> MapCollectionItems(int collectionId)
+        {
+            // Get child collections and marks
+            var collections = await _unitOfWork.collectionRepository.GetAsync(c => c.ParentId.Equals(collectionId), null, "Marks");
+            var marks = await _unitOfWork.markRepository.GetAsync(m => m.CollectionId == collectionId, null, "Blocks");
+
+            // Map to collectionItem
+            var collectionItems = _mapper.Map<List<CollectionItem>>(collections);
+            var markItems = _mapper.Map<List<CollectionItem>>(marks);
+
+            return [.. collectionItems, .. markItems];
+        }
+
         private async Task<CollectionViewModel> MapCollection(Collection collection, bool includeItems)
         {
             // Mapping Collection to CollectionViewModel
@@ -60,20 +74,22 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
             // Add path
             try
             {
-                collectionVm.Path = MapCollectionPath(collection);
+                collectionVm.Path = CreateCollectionPath(collection);
             }
-            catch (FormatException) { }
+            catch (FormatException ex) {
+                _logger.LogError(ex.Message, ex);
+            }
 
             // Add CollectionItems if it's necesary
             if (includeItems)
             {
-                collectionVm.CollectionItems = await GetCollectionItems(collection.Id);
+                collectionVm.CollectionItems = await MapCollectionItems(collection.Id);
             }
 
             return collectionVm;
         }
 
-        private static List<CollectionPath> MapCollectionPath(Collection collection)
+        private static List<CollectionPath> CreateCollectionPath(Collection collection)
         {
             var path = new List<CollectionPath>();
             const string PATH_SPLITER = "/";
