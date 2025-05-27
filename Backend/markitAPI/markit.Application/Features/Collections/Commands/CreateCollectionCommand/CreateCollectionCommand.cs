@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Transactions;
+using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
@@ -13,7 +16,6 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         public bool IsMain { get; set; }
         public int CreatorId { get; set; }
         public int? ParentId { get; set; }
-        public string? Path { get; set; }
 
         public void Deconstruct( out string name,out int creatorId, out int? parentId )
         {
@@ -41,23 +43,17 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             await ValidateNameDuplicates(request);
             if (request.IsMain) await ValidateMainCollectionDuplicate(request.CreatorId);
 
-            // Create path
-            if (request.ParentId.HasValue)
-            {
-                int parentId = (int)request.ParentId;
+            // Begin transaction
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
-                Collection parent = await _unitOfWork.collectionRepository.GetByIdAsync(parentId) 
-                ?? throw new NotFoundException("Collection", parentId);
+                // Create collection
+                var collection = await CreateCollection(request);
+                // Update path
+                Collection? parent = collection.ParentId.HasValue ? await GetParentCollection((int)collection.ParentId) : null;
+                collection = await UpdateCollectionPath(collection, parent);
 
-                request.Path = CreatePath(request, parent);
-            }
-            else
-            {
-                request.Path = CreatePath(request);
-            }
-
-            // Create collection
-            var collection = await CreateCollection(request);
+            // Complete transaction
+            scope.Complete();
             return _mapper.Map<CollectionViewModel>(collection);
         }
 
@@ -98,17 +94,35 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         private async Task<Collection> CreateCollection(CreateCollectionCommand request)
         {
             var collection = _mapper.Map<Collection>(request);
-            _unitOfWork.collectionRepository.AddEntity(collection);
-            await _unitOfWork.Complete();
-
+            await _unitOfWork.collectionRepository.AddAsync(collection);
             return collection;
         }
 
-        private static string CreatePath(CreateCollectionCommand request, Collection? parent = null)
+        private async Task<Collection?> GetParentCollection(int parentId)
         {
-            if (parent == null) return @$"/{ request.Name }";
+            return await _unitOfWork.collectionRepository.GetByIdAsync(parentId)
+            ?? throw new NotFoundException("Collection", parentId);
+        }
 
-            return $@"{ parent?.Path }/{ request.Name }";
+        private async Task<Collection> UpdateCollectionPath(Collection collection, Collection? parent)
+        {
+            collection.Path = CreatePathIds(collection.Id, parent);
+            collection.PathNames = CreatePathNames(collection.Name, parent);
+            return await _unitOfWork.collectionRepository.UpdateAsync(collection);
+        }
+
+        private static string CreatePathIds(int collectionId, Collection? parent = null)
+        {
+            if (parent == null) return @$"/{ collectionId }";
+
+            return $@"{parent?.Path}/{collectionId}";
+        }
+
+        private static string CreatePathNames(string collectionName, Collection? parent = null)
+        {
+            if (parent == null) return @$"/{ collectionName }";
+
+            return $@"{ parent?.PathNames }/{ collectionName }";
         }
     }
 }

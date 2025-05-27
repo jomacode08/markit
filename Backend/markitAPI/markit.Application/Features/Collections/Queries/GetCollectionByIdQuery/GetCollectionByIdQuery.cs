@@ -32,16 +32,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
             await ValidateCreatorExistency(request.CreatorId);
             var collection = await ValidateCollection(request.CollectionId, request.CreatorId);
 
-            // Mapping Collection to CollectionViewModel
-            CollectionViewModel collectionVm = _mapper.Map<CollectionViewModel>(collection);
-
-            // Add CollectionItems if it's necesary
-            if (request.IncludeCollectionITems)
-            {
-                collectionVm.CollectionItems = await _unitOfWork.collectionRepository.GetCollectionItems(request.CollectionId);
-            }
-
-            return collectionVm;
+            return await MapCollection(collection, request.IncludeCollectionITems);
         }
 
         private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
@@ -58,6 +49,50 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForG
         {
             _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
+        }
+
+        private async Task<List<CollectionItem>> GetCollectionItems(int collectionId) => await _unitOfWork.collectionRepository.GetCollectionItems(collectionId);
+        private async Task<CollectionViewModel> MapCollection(Collection collection, bool includeItems)
+        {
+            // Mapping Collection to CollectionViewModel
+            CollectionViewModel collectionVm = _mapper.Map<CollectionViewModel>(collection);
+
+            // Add path
+            try
+            {
+                collectionVm.Path = MapCollectionPath(collection);
+            }
+            catch (FormatException) { }
+
+            // Add CollectionItems if it's necesary
+            if (includeItems)
+            {
+                collectionVm.CollectionItems = await GetCollectionItems(collection.Id);
+            }
+
+            return collectionVm;
+        }
+
+        private static List<CollectionPath> MapCollectionPath(Collection collection)
+        {
+            var path = new List<CollectionPath>();
+            const string PATH_SPLITER = "/";
+            string[] pathIds = collection.Path?.Split(PATH_SPLITER, StringSplitOptions.RemoveEmptyEntries) ?? [];
+            string[] pathNames = collection.PathNames.Split(PATH_SPLITER, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < pathIds.Length; i++)
+            {
+                if (!int.TryParse(pathIds[i], out int collectionId))
+                    throw new FormatException($"The path of the collection with id: { collection.Id } doesn't have the correct format.");
+
+                path.Add(new CollectionPath
+                {
+                    CollectionId = collectionId,
+                    Name = pathNames[i]
+                });
+            }
+
+            return path;
         }
     }
 }

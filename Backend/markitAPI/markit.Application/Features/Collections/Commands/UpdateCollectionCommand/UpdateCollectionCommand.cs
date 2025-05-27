@@ -36,7 +36,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
             // Map and update collection
             _mapper.Map(request, collection, typeof(UpdateCollectionCommand), typeof(Collection));
-            collection.Path = GetNewPath(nodeLevelToReplace: level, newName, oldPath: collection.Path);
+            collection.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: collection.Path);
             _unitOfWork.collectionRepository.UpdateEntity(collection);
 
             // Update descendants path
@@ -83,7 +83,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
         {
             foreach (Collection descendant in descendants)
             {
-                descendant.Path = GetNewPath(nodeLevelToReplace: level, newName, oldPath: descendant.Path);
+                descendant.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: descendant.Path);
                 _unitOfWork.collectionRepository.UpdateEntity(descendant);
             }
         }

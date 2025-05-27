@@ -23,7 +23,8 @@ namespace markit.Application.Mappings
             CreateMap<CreateCollectionCommand, Collection>();
             CreateMap<UpdateCollectionCommand, Collection>();
             CreateMap<Collection, CollectionViewModel>()
-                .ForMember(dest => dest.CollectionItems, opt => opt.Ignore());
+                .ForMember(dest => dest.CollectionItems, opt => opt.Ignore())
+                .ForMember(dest => dest.Path, opt => opt.Ignore());
 
             CreateMap<Collection, CollectionItem>()
                 .ForMember(

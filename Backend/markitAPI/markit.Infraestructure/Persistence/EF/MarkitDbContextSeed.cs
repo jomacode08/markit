@@ -34,14 +34,12 @@ namespace markit.Infraestructure.Persistence.EF
                 FirstName = userDefaultSettings.FirstName,
                 LastName = userDefaultSettings.LastName,
             };
-
             context.Creators.Add(creator);
             await context.SaveChangesAsync();
 
             // Update CreatorId from Admin AppUser
             AppUser user = context.User.Find(userDefaultSettings.Id) 
             ?? throw new CustomValidationException("The admin user hasn't been configured");
-
             user.CreatorId = creator.Id;
             context.Creators.Update(creator);
             await context.SaveChangesAsync();
@@ -50,12 +48,16 @@ namespace markit.Infraestructure.Persistence.EF
             Collection collection = new()
             {
                 Name = "My marks",
-                Path = "/My marks",
+                PathNames = "/My marks",
                 IsMain = true,
-                CreatorId = creator.Id,
+                CreatorId = (int)user.CreatorId,
             };
-
             context.Collections.Add(collection);
+            await context.SaveChangesAsync();
+
+            // Update path
+            collection.Path = $"/{collection.Id}";
+            context.Collections.Update(collection);
             await context.SaveChangesAsync();
 
             scope.Complete();
