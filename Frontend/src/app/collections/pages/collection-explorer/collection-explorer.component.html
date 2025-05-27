@@ -1,6 +1,8 @@
 <ng-container *ngIf="this.collection$ | async as collection">
+    <!-- Breadcrumb -->
+    <collection-explorer-breadcrumb [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
     <!-- Title -->
-    <p class="font-playfair font-semibold text-2xl">{{ collection.name }}</p>
+    <p class="font-playfair font-semibold text-2xl my-3">{{ collection.name }}</p>
     <!-- Data Grid -->
     <p-dataView
         [value]="collection.collectionItems"

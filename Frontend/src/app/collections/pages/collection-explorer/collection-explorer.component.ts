@@ -9,6 +9,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { Collection } from '../../interfaces/collection';
+import { CollectionExplorerBreadcrumbComponent } from '../../components/collection-explorer-breadcrumb/collection-explorer-breadcrumb.component';
 import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
 import { CollectionItemDialogComponent } from "../../components/collection-item-dialog/collection-item-dialog.component";
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
@@ -23,6 +24,7 @@ import { ROUTES } from '../../../shared/interfaces/constant';
   standalone: true,
   imports: [
     ButtonModule,
+    CollectionExplorerBreadcrumbComponent,
     CollectionItemIconPipe,
     CommonModule,
     DataViewModule,

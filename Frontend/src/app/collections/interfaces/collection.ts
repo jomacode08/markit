@@ -7,4 +7,10 @@ export interface Collection {
     creatorId ?: number;
     parentId  ?: number;
     collectionItems ?: CollectionItem[]
+    path ?: CollectionPath[]
+}
+
+export interface CollectionPath {
+    collectionId: number;
+    name: string;
 }

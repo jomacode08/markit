@@ -1,0 +1,20 @@
+<div class="flex align-items-center flex-wrap">
+
+    <!-- Home button -->
+    <button type="button" class="path-segment ml-0" (click)="navigate(0)">
+        <span class="fa fa-home"></span>
+        <span>Home</span>
+    </button>
+    <span *ngIf="pathSegments().length > 0" class="fa fa-chevron-right separator"></span>
+
+    <!-- Path segments -->
+    @for (segment of pathSegments(); track $index) {
+        <button type="button" class="path-segment" (click)="navigate(segment.collectionId)">
+            <span [ngClass]="{ 'active' : segment.collectionId === currentIdCollection() }">
+                {{ segment.name }}
+            </span>
+        </button>
+        <span *ngIf="$index != pathSegments().length - 1" class="fa fa-chevron-right separator"></span>
+    }
+
+</div>

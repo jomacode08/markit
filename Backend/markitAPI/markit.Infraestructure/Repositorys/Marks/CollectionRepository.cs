@@ -18,7 +18,7 @@ namespace markit.Infraestructure.Repositorys.Marks
 				.FromSql($@"
 					WITH CollectionHierarchy AS (
 						SELECT 
-							c1.Id, c1.Name, c1.Path, c1.IsMain, c1.ParentId, c1.CreatorId,
+							c1.Id, c1.Name, c1.Path, c1.PathNames, c1.IsMain, c1.ParentId, c1.CreatorId,
 							c1.CreatedDate, c1.CreatedBy, c1.UpdatedDate, c1.UpdatedBy, c1.Enable
 						FROM Collections as c1
 						WHERE c1.Id = { rootCollectionId } AND Enable = 1
@@ -26,7 +26,7 @@ namespace markit.Infraestructure.Repositorys.Marks
 						UNION ALL
 
 						SELECT
-							c2.Id, c2.Name, c2.Path, c2.IsMain, c2.ParentId, c2.CreatorId,
+							c2.Id, c2.Name, c2.Path, c2.PathNames, c2.IsMain, c2.ParentId, c2.CreatorId,
 							c2.CreatedDate, c2.CreatedBy, c2.UpdatedDate, c2.UpdatedBy, c2.Enable
 						FROM Collections AS c2
 						INNER JOIN CollectionHierarchy ch ON c2.ParentId = ch.Id

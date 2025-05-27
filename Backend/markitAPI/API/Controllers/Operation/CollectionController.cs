@@ -63,7 +63,7 @@ namespace markit.API.Controllers.Operation
         [Route("rename")]
         public async Task<CollectionViewModel> Rename([FromBody] UpdateCollectionCommand command)
         {
-            command.CreatorId = _sessionService.GetCreatorId();
+           command.CreatorId = _sessionService.GetCreatorId();
            return await _mediator.Send(command);
         }
 

@@ -31,12 +31,12 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
             Collection collection = await ValidateCollection(request.Id, request.CreatorId);
             await ValidateNameDuplicates(request.Name, request.Id, collection.ParentId);
 
-            int level = GetCollectionLevel(collection.Path);
+            int level = GetCollectionLevel(collection.PathNames);
             string newName = request.Name;
 
             // Map and update collection
             _mapper.Map(request, collection, typeof(UpdateCollectionCommand), typeof(Collection));
-            collection.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: collection.Path);
+            collection.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: collection.PathNames);
             _unitOfWork.collectionRepository.UpdateEntity(collection);
 
             // Update descendants path
@@ -83,7 +83,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
         {
             foreach (Collection descendant in descendants)
             {
-                descendant.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: descendant.Path);
+                descendant.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: descendant.PathNames);
                 _unitOfWork.collectionRepository.UpdateEntity(descendant);
             }
         }
