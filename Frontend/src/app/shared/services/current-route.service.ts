@@ -1,8 +1,8 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { BreadCrumb } from '../interfaces/breadcrumb';
-import { GeneralConstant } from '../utils/general-constant';
+import { ROUTES } from '../utils/constant';
 
 @Injectable({ providedIn: 'root' })
 /**
@@ -38,12 +38,12 @@ export class CurrentRouteService {
             // Get the breadcrumbs elements from the route tree
             let breadcrumbs = this.createBreadCrumbs(this.activatedRoute.root);
             // Check if the home route isn't included in the breadcrumbs array
-            if (breadcrumbs[0].url != GeneralConstant.HOME_URL) {
+            if (breadcrumbs[0].url != ROUTES.HOME_URL) {
             // Add the breadcrumb in the beggining of the array
                 breadcrumbs = [
                     {
                         label:'Home',
-                        url: GeneralConstant.HOME_URL
+                        url: ROUTES.HOME_URL
                     },
                     ...breadcrumbs
                 ];

@@ -1,9 +1,9 @@
+import { ROUTES } from '../../../../shared/utils/constant';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CurrentRouteService } from '../../../../shared/services/current-route.service';
 import { BreadCrumb } from '../../../../shared/interfaces/breadcrumb';
-import { GeneralConstant } from '../../../../shared/utils/general-constant';
 
 @Component({
   selector: 'app-bread-crumb',
@@ -20,7 +20,7 @@ export class BreadCrumbComponent implements OnInit {
   private currentRouteService = inject(CurrentRouteService);
 
   public breadcrumbs = computed<BreadCrumb[]>(() => []);
-  public homeUrl = GeneralConstant.HOME_URL;
+  public homeUrl = ROUTES.HOME_URL;
 
   public ngOnInit(): void {
     this.breadcrumbs = this.currentRouteService.breadcrumbs;

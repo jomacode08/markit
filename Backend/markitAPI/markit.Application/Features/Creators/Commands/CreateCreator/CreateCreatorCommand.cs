@@ -2,6 +2,7 @@
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
@@ -73,7 +74,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
         {
             CreateCollectionCommand createCollectionCommand = new()
             {
-                Name = "My marks",
+                Name = GeneralConstant.Marks.MAIN_COLLECTION_NAME,
                 IsMain = true,
                 CreatorId = creatorId
             };

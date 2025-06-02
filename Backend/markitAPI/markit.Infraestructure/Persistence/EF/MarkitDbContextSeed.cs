@@ -1,4 +1,5 @@
 ﻿using markit.Application.Exceptions;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
@@ -47,8 +48,8 @@ namespace markit.Infraestructure.Persistence.EF
             // Create main collection
             Collection collection = new()
             {
-                Name = "My marks",
-                PathNames = "/My marks",
+                Name = GeneralConstant.Marks.MAIN_COLLECTION_NAME,
+                PathNames = $"/{ GeneralConstant.Marks.MAIN_COLLECTION_NAME }",
                 IsMain = true,
                 CreatorId = (int)user.CreatorId,
             };

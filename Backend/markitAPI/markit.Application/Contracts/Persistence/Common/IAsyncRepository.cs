@@ -16,7 +16,9 @@ namespace markit.Application.Contracts.Persistence.Common
                                         string? includeString = null,
                                         bool disableTracking = true);
         // Paginación
-        Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? expression = null,
+        Task<IReadOnlyList<T>> GetAsyncPaged(int pageNumber,
+                                        int pageSize,
+                                        Expression<Func<T, bool>>? expression = null,
                                         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
                                         List<Expression<Func<T, object>>>? includes = null,
                                         bool disableTracking = true);

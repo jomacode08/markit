@@ -4,7 +4,7 @@ export const COLLECTIONS_ROUTES: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'root'
+        redirectTo: 'workplace'
     },
     {
         path: ':id',

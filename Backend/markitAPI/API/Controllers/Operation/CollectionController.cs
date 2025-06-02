@@ -1,9 +1,11 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
-using markit.Application.Features.Collections.Queries.GetCollectionItemsForGridQuery;
-using markit.Application.Features.Collections.Queries.Grid;
+using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
+using markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery;
+using markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Models.Filters;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,26 +28,41 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpGet]
-        [Route("getCollectionById/{CollectionId}")]
-        public async Task<CollectionViewModel> GetCollectionById(int CollectionId)
+        [Route("getById/{CollectionId}")]
+        public async Task<CollectionViewModel> GetCollectionById(int collectionId)
         {
-            var query = new GetCollectionByIdQuery
+            var collectionQuery = new GetCollectionByIdQuery
             {
-                CollectionId = CollectionId,
-                CreatorId = _sessionService.GetCreatorId(),
-                IncludeCollectionITems = true
+                CollectionId = collectionId,
+                CreatorId = _sessionService.GetCreatorId()
             };
 
-            return await _mediator.Send(query);
+            return await _mediator.Send(collectionQuery);
         }
 
         [HttpGet]
-        [Route("getRootCollectionsForGrid")]
-        public async Task<List<CollectionItem>> GetRootItemsForGrid()
+        [Route("getMainByCurrentSession")]
+        public async Task<CollectionViewModel> GetMainCollectionByCurrentSession()
         {
-            var query = new GetRootCollectionsForGridQuery
+            var collectionQuery = new GetMainCollectionByCreatorQuery
+            {
+                CreatorId = _sessionService.GetCreatorId()
+            };
+
+            return await _mediator.Send(collectionQuery);
+        }
+
+        [HttpPost]
+        [Route("getChildrenPaged")]
+        public async Task<List<CollectionItem>> GetCollectionChildrenPaged([FromBody] CollectionItemPagedFilter filter)
+        {
+            var query = new GetCollectionChildrenPagedQuery
             {
                 CreatorId = _sessionService.GetCreatorId(),
+                CollectionId = filter.CollectionId,
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                CollectionItemCategory = filter.CollectionItemCategory
             };
 
             return await _mediator.Send(query);

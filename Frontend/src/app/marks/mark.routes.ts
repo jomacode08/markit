@@ -5,11 +5,7 @@ export const MARK_ROUTES: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        title: 'My Marks',
-        data: { breadcrumb : '' },
-        loadComponent: () =>
-            import('./pages/mark-list/mark-list.component')
-            .then(c => c.MarkListComponent)
+        redirectTo: '/collections'
     },
     {
         path: 'new',

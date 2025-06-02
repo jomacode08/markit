@@ -8,6 +8,7 @@
             public static readonly string connStringSectionName = "ConnectionString";
             public static readonly string userDefaultSectionName = "UserDefaultSettings";
             public static readonly string googleAuthSectionName = "GoogleAuthSettings";
+            public static readonly int DEFAULT_PAGINATION_PAGE_SIZE = 20;
         }
 
         public static class Role
@@ -29,6 +30,7 @@
         {
             public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
             public static readonly string MARK_DEFAULT_PREVIEW = "New mark";
+            public static readonly string MAIN_COLLECTION_NAME = "Workplace";
         }
     }
 }

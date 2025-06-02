@@ -10,25 +10,24 @@ using markit.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
+namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery
 {
-    public class GetCollectionByIdQuery : IRequest<CollectionViewModel>
+    public class GetMainCollectionByCreatorQuery : IRequest<CollectionViewModel>
     {
-        public int CollectionId { get; set; }
-        public int CreatorId { get; set; }
+       public int CreatorId { get; set; }
     }
 
-    public class GetCollectionItemsQueryHandler : IRequestHandler<GetCollectionByIdQuery, CollectionViewModel>
+    public class GetMainCollectionByCreatorQueryHandler : IRequestHandler<GetMainCollectionByCreatorQuery, CollectionViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILogger<GetCollectionByIdQuery> _logger;
+        private readonly ILogger<GetMainCollectionByCreatorQuery> _logger;
         private readonly CollectionItemService _collectionItemService;
 
-        public GetCollectionItemsQueryHandler(
+        public GetMainCollectionByCreatorQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ILogger<GetCollectionByIdQuery> logger,
+            ILogger<GetMainCollectionByCreatorQuery> logger,
             CollectionItemService collectionItemService
         )
         {
@@ -38,28 +37,26 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
             _collectionItemService = collectionItemService;
         }
 
-        public async Task<CollectionViewModel> Handle(GetCollectionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<CollectionViewModel> Handle(GetMainCollectionByCreatorQuery request, CancellationToken cancellationToken)
         {
             await ValidateCreatorExistency(request.CreatorId);
-            var collection = await ValidateCollection(request.CollectionId, request.CreatorId);
 
-            return await MapCollection(collection);
-        }
-
-        private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
-        {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
-                ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
-            return collection;
+            var mainCollection = await GetMainCollection(request.CreatorId);
+            return await MapCollection(mainCollection);
         }
 
         private async Task ValidateCreatorExistency(int creatorId)
         {
             _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
+        }
+
+        private async Task<Collection> GetMainCollection(int creatorId)
+        {
+            var result = await _unitOfWork.collectionRepository.GetAsync(c => c.CreatorId == creatorId && c.IsMain)
+                ?? throw new CustomValidationException($"The main collection of the creator with ID: {creatorId} must be configurated");
+
+            return result[0];
         }
 
         private async Task<List<CollectionItem>> GetCollectionItems(CollectionItemPagedFilter filter)
@@ -76,7 +73,8 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
             {
                 collectionVm.Path = Utilities.CreateCollectionPath(collection);
             }
-            catch (FormatException ex) {
+            catch (FormatException ex)
+            {
                 _logger.LogError(ex.Message, ex);
             }
 

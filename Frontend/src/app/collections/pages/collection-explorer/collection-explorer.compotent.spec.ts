@@ -12,7 +12,7 @@ import { CollectionService } from '../../services/collection.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MarkService } from '../../../marks/services/mark.service';
-import { ROUTES } from './../../../shared/interfaces/constant';
+import { ROUTES } from '../../../shared/utils/constant';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { By } from '@angular/platform-browser';
@@ -40,6 +40,7 @@ describe('CollectionExplorerComponent', () => {
     const mockCollectionItem : CollectionItem = {
         id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
         name: 'Projects',
+        collectionId : 1,
         type: CollectionItemType.Collection,
         typeId: 1
     };
@@ -53,7 +54,7 @@ describe('CollectionExplorerComponent', () => {
 
     beforeEach(async () => {
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-        mockCollectionService = jasmine.createSpyObj('CollectionService', ['getRootCollectionsForGrid', 'getCollectionById', 'softDelete']);
+        mockCollectionService = jasmine.createSpyObj('CollectionService', ['getMainByCurrentSession', 'getById', 'softDelete']);
         mockMarkService = jasmine.createSpyObj('MarkService', ['softDelete']);
         mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
         mockMessageService = jasmine.createSpyObj('CustomMessageService', ['showConfirmationDialog']);
@@ -98,28 +99,29 @@ describe('CollectionExplorerComponent', () => {
         expect(component.isFloatingMenuVisible()).toBeFalse();
     })
 
-    it(`When id param is provided as 'root', then the root collection is loaded`, async () => {
+    it(`When id param is provided as a root value, then the root collection is loaded`, async () => {
         // GIVEN - Load test data and define expected results.
-        const ROOT_PARAM_VALUE = 'root';
+        const ROOT_PARAM_VALUE = 'workplace';
         const rootCollectionItems : CollectionItem[] = [
             {
                 id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
                 name: 'Main Collection',
                 type: CollectionItemType.Collection,
-                typeId: 1
+                typeId: 1,
+                collectionId: 1
             }
         ];
         const mockRootCollection : Collection = {
-            id: 0,
+            id: 1,
             name: 'My Collections',
             isMain: false,
             collectionItems: rootCollectionItems
         };
-        mockCollectionService.getRootCollectionsForGrid.and.returnValue(of(rootCollectionItems));
+        mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
         // WHEN - Perform the load collection operation.
         const collection = await loadCollection(ROOT_PARAM_VALUE);
         // THEN - Assert correct method call and compare results with expected values.
-        expect(mockCollectionService.getRootCollectionsForGrid).toHaveBeenCalled();
+        expect(mockCollectionService.getMainByCurrentSession).toHaveBeenCalled();
         expect(collection).toEqual(mockRootCollection);
         expect(component.loading()).toBeFalse();
     });
@@ -133,11 +135,11 @@ describe('CollectionExplorerComponent', () => {
             isMain: false,
             collectionItems: []
         };
-        mockCollectionService.getCollectionById.and.returnValue(of(mockRootCollection));
+        mockCollectionService.getById.and.returnValue(of(mockRootCollection));
         // WHEN - Perform the load collection operation.
         const collection = await loadCollection(VALID_PARAM);
         // THEN - Assert correct method calls and compare results with expected values.
-        expect(mockCollectionService.getCollectionById).toHaveBeenCalled();
+        expect(mockCollectionService.getById).toHaveBeenCalled();
         expect(collection).toEqual(mockRootCollection);
     });
 
@@ -155,7 +157,7 @@ describe('CollectionExplorerComponent', () => {
     it(`Should handle error when loading collection`, async () => {
         // GIVEN - Load test data.
         const PARAM = '1';
-        mockCollectionService.getCollectionById.and.returnValue(throwError(() => 'Error loading collection'));
+        mockCollectionService.getById.and.returnValue(throwError(() => 'Error loading collection'));
         spyOn(console, 'error');
 
         // WHEN - Perform the load collection operation.
@@ -168,12 +170,12 @@ describe('CollectionExplorerComponent', () => {
 
     it('Should close modal when ngOnDestroy is called', () => {
         // GIVEN - Load test data.
-        component['ref'] = new DynamicDialogRef();
-        spyOn(component['ref'], 'close');
+        component['dialogReference'] = new DynamicDialogRef();
+        spyOn(component['dialogReference'], 'close');
         // WHEN - Perfom lyfe cycle hook.
         component.ngOnDestroy();
         // THEN - Assert expected behaviour.
-        expect(component['ref'].close).toHaveBeenCalled();
+        expect(component['dialogReference'].close).toHaveBeenCalled();
     });
 
     it('Should redirect to see collection, onCollectionItemClick(item: CollectionItem)', () => {
@@ -189,7 +191,8 @@ describe('CollectionExplorerComponent', () => {
             id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
             name: 'Web development I',
             type: CollectionItemType.Mark,
-            typeId: 1
+            typeId: 1,
+            collectionId : 1
         };
         // WHEN - Perform operation.
         component.onCollectionItemClick(mockCollectionItem);
@@ -262,7 +265,8 @@ describe('CollectionExplorerComponent', () => {
             id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
             name: 'Web development I',
             type: CollectionItemType.Mark,
-            typeId: 2
+            typeId: 2,
+            collectionId : 1
         };
         const collectionId: number = mockMarkItem.typeId!;
         component['chosenCollectionItem'].set(mockMarkItem);

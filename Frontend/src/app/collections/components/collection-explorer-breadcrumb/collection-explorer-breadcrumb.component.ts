@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { CollectionPath } from '../../interfaces/collection';
-import { ROUTES } from '../../../shared/interfaces/constant';
+import { ROUTES } from '../../../shared/utils/constant';
 
 @Component({
   selector: 'collection-explorer-breadcrumb',
@@ -20,7 +20,6 @@ export class CollectionExplorerBreadcrumbComponent {
   constructor(private router: Router) {}
 
   public navigate( collectionId: number ): void {
-    const route = collectionId > 0 ? ROUTES.COLLECTIONS_SEE( collectionId ) : ROUTES.COLLECTION_EXPLORER;
-    this.router.navigate([route]);
+    this.router.navigate([ROUTES.COLLECTIONS_SEE( collectionId )]);
   }
 }

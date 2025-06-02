@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using markit.Application.Common.Behaviours;
+using markit.Application.Common.Helpers.Services;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -22,6 +23,8 @@ namespace markit.Application
 
             // Behaviours
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            // Helper services
+            services.AddTransient<CollectionItemService>();
 
             return services;
         }

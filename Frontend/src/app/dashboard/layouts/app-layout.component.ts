@@ -9,7 +9,7 @@ import { SidebarModule, Sidebar } from 'primeng/sidebar';
 import { MainBarComponent } from './components/main-bar/main-bar.component';
 import { AuthService } from '../../auth/services/auth.service';
 import { CurrentRouteService } from '../../shared/services/current-route.service';
-import { GeneralConstant } from '../../shared/utils/general-constant';
+import { ROUTES } from '../../shared/utils/constant';
 
 @Component({
   selector: 'app-app-layout',
@@ -28,7 +28,7 @@ export class AppLayoutComponent implements OnInit {
   //* Route Configuration
   public titleComponent  = computed<string>(() => '');
   public url = computed<string>(() => '');
-  public homeUrl: string = GeneralConstant.HOME_URL; 
+  public homeUrl: string = ROUTES.HOME_URL; 
 
   //* Menu Congiguration
   @ViewChild('sideBar')

@@ -13,7 +13,7 @@ import { ValidatorErrorField } from '../../../shared/utils/validator-error-field
 import { MarkService } from '../../../marks/services/mark.service';
 import { Mark } from '../../../marks/interfaces/mark';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { DEFAULT_BLOCK_NAME } from '../../../shared/interfaces/constant';
+import { DEFAULT_BLOCK_NAME } from '../../../shared/utils/constant';
 
 @Component({
   selector: 'app-collection-item-dialog',
@@ -118,8 +118,8 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
 
     const newMark : Mark = {
       id : 0,
-      name: name,
-      collectionId: collectionId ?? 0,
+      name,
+      collectionId,
       creatorId : 0,
       blocks: [
         {

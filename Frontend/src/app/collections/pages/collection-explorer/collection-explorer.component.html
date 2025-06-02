@@ -1,11 +1,25 @@
-<ng-container *ngIf="this.collection$ | async as collection">
+<ng-container *ngIf="this.collection() as collection">
     <!-- Breadcrumb -->
     <collection-explorer-breadcrumb [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
     <!-- Title -->
-    <p class="font-playfair font-semibold text-2xl my-3">{{ collection.name }}</p>
+    <p class="font-playfair font-semibold text-3xl mb-5 mt-2">{{ collection.name }}</p>
+    <!-- Filters -->
+    <div class="category-container flex justify-content-around md:inline-flex">
+        @for (category of collectionItemCategories; track $index) {
+            <button 
+                type="button"
+                class="category"
+                [disabled]="loading()"
+                [ngClass]="{ 'active' : category === queryFilter()?.collectionItemCategory }"
+                (click)="onCategoryButtonClick(category)"
+            >
+                {{ category }}
+            </button>
+        }
+    </div>
     <!-- Data Grid -->
     <p-dataView
-        [value]="collection.collectionItems"
+        [value]="collectionItems()"
         emptyMessage=" "
         [loading]="this.loading()"
     >

@@ -5,8 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 
 import { AuthService } from './../../../../auth/services/auth.service';
-import { GeneralConstant } from '../../../../shared/utils/general-constant';
-import { ROUTES } from '../../../../shared/interfaces/constant';
+import { ROUTES } from '../../../../shared/utils/constant';
 
 @Component({
   selector: 'app-main-bar',
@@ -25,17 +24,12 @@ export class MainBarComponent {
     {
       label: 'Home',
       icon: 'fa fa-home',
-      command: () => this.navigate(GeneralConstant.HOME_URL)
+      command: () => this.navigate(ROUTES.HOME_URL)
     },
     {
-      label: 'My marks',
-      icon: 'fa fa-file',
-      command: () => this.navigate('marks')
-    },
-    {
-      label: 'My collections',
+      label: 'Workplace',
       icon: 'fa fa-folder',
-      command: () => this.navigate('collections')
+      command: () => this.navigate(ROUTES.COLLECTION_EXPLORER)
     },
   ];
 

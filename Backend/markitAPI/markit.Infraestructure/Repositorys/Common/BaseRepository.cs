@@ -70,27 +70,25 @@ namespace markit.Infraestructure.Repositorys
             return await query.ToListAsync();
         }
 
-        public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? expression = null,
+        public async Task<IReadOnlyList<T>> GetAsyncPaged(int pageNumber,
+                                               int pageSize,
+                                               Expression<Func<T, bool>>? expression = null,
                                                Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
                                                List<Expression<Func<T, object>>>? includes = null,
                                                bool disableTracking = true)
         {
-            // Instanciar IQueryable
-            IQueryable<T> query = context.Set<T>();
+            /** Applying pagination **/
+            IQueryable<T> query = context.Set<T>()
+                .Where(expression ?? (e => e.Id > 0))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
 
-            // Evaluar params
-            if (disableTracking)
-                query = query.AsNoTracking();
-
+            /** Handling optional params **/
+            if (disableTracking) query = query.AsNoTracking();
             if (includes != null)
                 query = includes.Aggregate(query, 
                         (current, include) => current.Include(include));
-
-            if (expression != null)
-                query = query.Where(expression);
-
-            if (orderBy != null)
-                return await orderBy(query).ToListAsync();
+            if (orderBy != null) return await orderBy(query).ToListAsync();
 
             return await query.ToListAsync();
         }

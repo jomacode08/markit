@@ -9,14 +9,14 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthRequest } from '../interfaces/auth-request';
 import { AuthResponse } from '../interfaces/auth-response';
 import { AuthStatus } from '../interfaces/auth-status.enum';
-import { GeneralConstant } from '../../shared/utils/general-constant';
 import { GoogleAuthRequest } from '../interfaces/google/google-auth-request';
 import { UserInfo } from './../interfaces/user-info';
+import { TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   //* === Configuration === *//
-  private tokenKey: string = GeneralConstant.TOKEN_STORAGE_KEY;
+  private tokenKey: string = TOKEN_STORAGE_KEY;
   private _token       = signal<string | null>(null);
   private _currentUser = signal<UserInfo | null>(null);
   private _authStatus  = signal<AuthStatus>(AuthStatus.checking);

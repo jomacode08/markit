@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, map, Observable, of, startWith, Subject, switchMap, tap } from 'rxjs';
+import { catchError, Observable, of, startWith, Subject, Subscription, switchAll, switchMap, tap, filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { Collection } from '../../interfaces/collection';
 import { CollectionExplorerBreadcrumbComponent } from '../../components/collection-explorer-breadcrumb/collection-explorer-breadcrumb.component';
-import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
+import { CollectionItem, CollectionItemAction, CollectionItemFilter, CollectionItemType, CollectionItemCategory } from '../../interfaces/collection-item';
 import { CollectionItemDialogComponent } from "../../components/collection-item-dialog/collection-item-dialog.component";
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
 import { CollectionService } from '../../services/collection.service';
@@ -18,7 +18,7 @@ import { CustomMessageService } from '../../../shared/services/custom-message.se
 import { FloatingMenuComponent } from "../../../shared/components/layout/floating-menu/floating-menu.component";
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { MarkService } from '../../../marks/services/mark.service';
-import { ROUTES } from '../../../shared/interfaces/constant';
+import { ROUTES } from '../../../shared/utils/constant';
 
 @Component({
   standalone: true,
@@ -32,14 +32,17 @@ import { ROUTES } from '../../../shared/interfaces/constant';
     FormsModule,
   ],
   providers: [DialogService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './collection-explorer.component.html',
   styleUrl: './collection-explorer.component.css',
 })
-export class CollectionExplorerComponent implements OnDestroy {
+export class CollectionExplorerComponent implements OnDestroy, OnInit {
   private activatedRoute = inject(ActivatedRoute);
   
+  private dialogReference: DynamicDialogRef | undefined;
   //* Constants
-  private readonly ROOT_PARAM_VALUE = 'root';
+  private readonly ROOT_PARAM_VALUE = 'workplace';
+  private readonly PAGE_SIZE = 20;
   private readonly ICONS = {
     WARNING: 'fa fa-warning',
     FOLDER: 'fa fa-folder',
@@ -47,28 +50,26 @@ export class CollectionExplorerComponent implements OnDestroy {
   };
 
   //* State Management
-  private ref: DynamicDialogRef | undefined;
-  private collectionId = signal<number | null>(null);
-  private chosenCollectionItem  = signal<CollectionItem | null>(null);
+  public queryFilter = signal<CollectionItemFilter | null>(null);
+  public collection = signal<Collection | null>(null);
+  public collectionItems = signal<CollectionItem[]>([]);
   public loading = signal<boolean>(false);
+  private chosenCollectionItem  = signal<CollectionItem | null>(null);
 
   //* Collection
   private loadCollectionTrigger$ = new Subject<void>();
-  private collectionLoader$: Observable<Collection | null> = this.activatedRoute.params
+  private collectionSubscription : Subscription | undefined;
+  public collection$: Observable<Collection | null> = this.activatedRoute.params
   .pipe(
     tap(() => this.setLoading(true)),
     switchMap((params) => this.getCollection(params.id)),
-    tap((collection) => this.collectionId.set(collection.id > 0 ? collection.id : null)),
+    tap((collection) => this.initializeState(collection)),
     tap(() => this.setLoading(false)),
     catchError((error) => {
       this.setLoading(false);
       this.redirect();
       return of(null);
     })
-  );
-  public collection$: Observable<Collection | null> = this.loadCollectionTrigger$.pipe(
-    startWith(null),
-    switchMap(() => this.collectionLoader$)
   );
 
   //* Floating menu
@@ -102,6 +103,10 @@ export class CollectionExplorerComponent implements OnDestroy {
   get CollectionItemType(): typeof CollectionItemType {
     return CollectionItemType;
   }
+
+  get collectionItemCategories(): CollectionItemCategory[] {
+    return Object.keys(CollectionItemCategory) as CollectionItemCategory[];
+  }
   
   //* Lifecycle
   constructor(
@@ -112,8 +117,22 @@ export class CollectionExplorerComponent implements OnDestroy {
     private messageService: CustomMessageService
   ) {}
 
+  public ngOnInit(): void {
+    // Subscribe to collection$ observable
+    this.collectionSubscription = this.loadCollectionTrigger$.pipe(
+      startWith(null),
+      switchMap(() => this.collection$)
+    ).subscribe();
+  }
+
   public ngOnDestroy(): void {
-    if (this.ref) this.ref.close();
+    if (this.collectionSubscription){
+      this.collectionSubscription.unsubscribe();
+    }
+
+    if (this.dialogReference){
+      this.dialogReference.close();
+    }
   }
 
   //* Events
@@ -143,6 +162,30 @@ export class CollectionExplorerComponent implements OnDestroy {
     this.changeFloatingMenuState();
   }
 
+  public onCategoryButtonClick( category: CollectionItemCategory ) {
+    // Validations
+    let queryFilter = structuredClone(this.queryFilter());
+    if (queryFilter === null) return;
+    if (category === queryFilter.collectionItemCategory) return;
+
+    queryFilter.collectionItemCategory = category;
+    this.setLoading(true);
+
+    // Get items by query filter
+    this.collectionService.getChildrenPaged(queryFilter)
+    .subscribe({
+      next: (items) => {
+        this.collectionItems.update(() => items);
+        this.queryFilter.update((current) => {
+          current!.collectionItemCategory = category;
+          return current;
+        });
+        this.setLoading(false);
+      },
+      error: (error) => this.setLoading(false)
+    });
+  }
+
   //* Methods
   private validateIdParam( idParam: string ): number {
     const id = Number(idParam);
@@ -154,24 +197,14 @@ export class CollectionExplorerComponent implements OnDestroy {
   }
 
   private getCollection(idParam: string): Observable<Collection> {
-    // Check if the idParam is 'root' to get the root collection
+    // Check if the idParam has a root value to get the main collection
     if (idParam === this.ROOT_PARAM_VALUE ) {
-      return this.collectionService.getRootCollectionsForGrid()
-        .pipe(
-          map((collectionItems) => {
-            return {
-              id: 0,
-              name: 'My Collections',
-              isMain: false,
-              collectionItems
-            } as Collection;
-          })
-        );
+      return this.collectionService.getMainByCurrentSession();
     }
 
     // Otherwise, get the collection by id
     const id = this.validateIdParam(idParam);
-    return this.collectionService.getCollectionById(id);
+    return this.collectionService.getById(id);
   }
 
   private handleSuccessfulCollectionAction(collectionItem: CollectionItem, action: CollectionItemAction): void {
@@ -190,7 +223,7 @@ export class CollectionExplorerComponent implements OnDestroy {
     const header = (`${ action } ${ collectionItem.type }`);
 
     // Open the collectionItemDialog
-    this.ref = this.dialogService.open(CollectionItemDialogComponent, {
+    this.dialogReference = this.dialogService.open(CollectionItemDialogComponent, {
       header,
       width  : '25rem',
       modal  : true,
@@ -204,8 +237,8 @@ export class CollectionExplorerComponent implements OnDestroy {
     });
     
     // Subscribe to the onClose event of the dialog
-    this.ref.onClose.subscribe(async (collectionItemTypeId: number) => {
-      this.ref = undefined;
+    this.dialogReference.onClose.subscribe(async (collectionItemTypeId: number) => {
+      this.dialogReference = undefined;
 
       if (collectionItemTypeId > 0){
         collectionItem.typeId = collectionItemTypeId;
@@ -220,7 +253,7 @@ export class CollectionExplorerComponent implements OnDestroy {
       id : '',
       name : '',
       type,
-      collectionId : this.collectionId()
+      collectionId : this.collection()?.id
     } as CollectionItem;
 
     this.openActionDialog(collectionItem, CollectionItemAction.Add);
@@ -270,6 +303,16 @@ export class CollectionExplorerComponent implements OnDestroy {
   }
 
   //* Utils
+  private initializeState(collection: Collection): void {
+    this.collection.set(collection);
+    this.collectionItems.set(collection.collectionItems ?? []);
+    this.queryFilter.set({
+      collectionId: collection.id,
+      page: 1,
+      pageSize: this.PAGE_SIZE,
+      collectionItemCategory: CollectionItemCategory.All
+    } as CollectionItemFilter);
+  }
   private changeFloatingMenuState(): void {
     this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible());
   }

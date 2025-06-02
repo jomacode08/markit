@@ -1,8 +1,6 @@
-﻿
+﻿using FluentValidation;
 
-using FluentValidation;
-
-namespace markit.Application.Features.Collections.Queries.GetCollectionItemsForGridQuery
+namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 {
     public class GetcollectionByIdQueryValidator : AbstractValidator<GetCollectionByIdQuery>
     {

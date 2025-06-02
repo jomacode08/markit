@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { CollectionItem } from '../interfaces/collection-item';
+import { CollectionItem, CollectionItemFilter } from '../interfaces/collection-item';
 import { Collection } from '../interfaces/collection';
 
 @Injectable({providedIn: 'root'})
@@ -11,12 +11,16 @@ export class CollectionService {
 
     constructor(private http: HttpClient) { }
 
-    public getCollectionById(collectionId: number): Observable<Collection> {
-        return this.http.get<Collection>(`${ this.baseUrl }/getCollectionById/${ collectionId }`);
+    public getMainByCurrentSession(): Observable<Collection> {
+        return this.http.get<Collection>(`${ this.baseUrl }/getMainByCurrentSession`);
     }
 
-    public getRootCollectionsForGrid(): Observable<CollectionItem[]> {
-        return this.http.get<CollectionItem[]>(`${ this.baseUrl }/getRootCollectionsForGrid`);
+    public getById(collectionId: number): Observable<Collection> {
+        return this.http.get<Collection>(`${ this.baseUrl }/getById/${ collectionId }`);
+    }
+
+    public getChildrenPaged(filter: CollectionItemFilter): Observable<CollectionItem[]> {
+        return this.http.post<CollectionItem[]>(`${ this.baseUrl }/getChildrenPaged`, filter);
     }
 
     public create(collection: Collection): Observable<Collection> {
