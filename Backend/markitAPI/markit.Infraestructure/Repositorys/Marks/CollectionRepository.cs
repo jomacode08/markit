@@ -1,4 +1,5 @@
 ﻿using markit.Application.Contracts.Persistence.Marks;
+using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,28 @@ namespace markit.Infraestructure.Repositorys.Marks
                 ").IgnoreQueryFilters();
 
             return await collections.ToListAsync();
+        }
+
+		public Task<List<Collection>> GetAsyncCursorBasedPagination(int parentCollectionId, int pageSize, CursorData? cursor)
+		{
+			IQueryable<Collection> collectionsQuery = context.Collections.AsNoTracking();
+			collectionsQuery = collectionsQuery.Where(c => c.ParentId.Equals(parentCollectionId));
+
+			if (cursor != null)
+			{
+				collectionsQuery = collectionsQuery.Where(c =>
+					c.CreatedDate > cursor.CreatedAt ||
+					(c.CreatedDate.Equals(cursor.CreatedAt) &&
+						(cursor.Type != CollectionItemType.Collection || c.Id > cursor.Id))
+				);
+			}
+
+			return collectionsQuery
+				.Include(c => c.Marks)
+				.OrderBy(c => c.CreatedDate)
+				.ThenBy(c => c.Id)
+				.Take(pageSize + 1)
+				.ToListAsync();
         }
     }
 }

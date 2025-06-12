@@ -1,34 +1,38 @@
-<ng-container *ngIf="this.collection() as collection">
+<!-- Header -->
+<ng-container *ngIf="collection$ | async as collection ">
     <!-- Breadcrumb -->
     <collection-explorer-breadcrumb [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
     <!-- Title -->
     <p class="font-playfair font-semibold text-3xl mb-5 mt-2">{{ collection.name }}</p>
     <!-- Filters -->
-    <div class="category-container flex justify-content-around md:inline-flex">
-        @for (category of collectionItemCategories; track $index) {
-            <button 
-                type="button"
-                class="category"
-                [disabled]="loading()"
-                [ngClass]="{ 'active' : category === queryFilter()?.collectionItemCategory }"
-                (click)="onCategoryButtonClick(category)"
-            >
-                {{ category }}
-            </button>
-        }
-    </div>
-    <!-- Data Grid -->
+    <ng-container *ngIf="filter$ | async as currentFilter">
+        <div class="filter-container flex justify-content-around md:inline-flex">
+            @for (filter of collectionItemTypeFilters; track $index) {
+                <button 
+                    type="button"
+                    class="filter"
+                    [disabled]="loading()"
+                    [ngClass]="{ 'active' : currentFilter === filter }"
+                    (click)="onItemTypeFilterClick(filter)"
+                >
+                    {{ filter }}
+                </button>
+            }
+        </div>
+    </ng-container>
+</ng-container>
+
+<!-- Data Grid -->
+<ng-container *ngIf="items$ | async as items">
     <p-dataView
-        [value]="collectionItems()"
+        [value]="items"
         emptyMessage=" "
         [loading]="this.loading()"
     >
         <ng-template pTemplate="list" let-items>
-    
             <!-- List template -->
             @for ( item of items; track $index) {
-                <!-- Columns -->
-                <div class="item mb-2">
+                <div appIntersection (viewChange)="onItemViewChange($index, items.length)" class="item mb-2">
                     <!-- Collection Item Information -->
                     <div (click)="onCollectionItemClick(item)" class="grid grid-nogutter py-3 w-full cursor-pointer">
                         <!-- Name -->
@@ -60,7 +64,7 @@
                     </div>
                 </div>
             }
-    
+
             <!-- No results template -->
             <div *ngIf="items?.length === 0" class="flex flex-column align-items-center justify-content-center">
                 <img
@@ -69,7 +73,6 @@
                     class="h-25rem"
                 />
             </div>
-    
         </ng-template>
     </p-dataView>
 </ng-container>

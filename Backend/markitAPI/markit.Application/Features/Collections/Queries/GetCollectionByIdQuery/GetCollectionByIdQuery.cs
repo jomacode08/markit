@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using markit.Application.Common.Helpers;
-using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Helpers;
-using markit.Application.Models.Filters;
 using markit.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -23,19 +20,16 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<GetCollectionByIdQuery> _logger;
-        private readonly CollectionItemService _collectionItemService;
 
         public GetCollectionItemsQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ILogger<GetCollectionByIdQuery> logger,
-            CollectionItemService collectionItemService
+            ILogger<GetCollectionByIdQuery> logger
         )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-            _collectionItemService = collectionItemService;
         }
 
         public async Task<CollectionViewModel> Handle(GetCollectionByIdQuery request, CancellationToken cancellationToken)
@@ -43,7 +37,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
             await ValidateCreatorExistency(request.CreatorId);
             var collection = await ValidateCollection(request.CollectionId, request.CreatorId);
 
-            return await MapCollection(collection);
+            return MapCollection(collection);
         }
 
         private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
@@ -62,12 +56,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
-        private async Task<List<CollectionItem>> GetCollectionItems(CollectionItemPagedFilter filter)
-        {
-            return await _collectionItemService.GetCollectionItemsPaged(filter);
-        }
-
-        private async Task<CollectionViewModel> MapCollection(Collection collection)
+        private CollectionViewModel MapCollection(Collection collection)
         {
             CollectionViewModel collectionVm = _mapper.Map<CollectionViewModel>(collection);
 
@@ -79,15 +68,6 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
             catch (FormatException ex) {
                 _logger.LogError(ex.Message, ex);
             }
-
-            // Get collection items
-            collectionVm.CollectionItems = await GetCollectionItems(new CollectionItemPagedFilter
-            {
-                CollectionId = collection.Id,
-                Page = 1,
-                PageSize = GeneralConstant.Configuration.DEFAULT_PAGINATION_PAGE_SIZE,
-                CollectionItemCategory = CollectionItemCategory.All
-            });
 
             return collectionVm;
         }

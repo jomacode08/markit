@@ -16,6 +16,7 @@ import { ROUTES } from '../../../shared/utils/constant';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { By } from '@angular/platform-browser';
+import { CollectionItemService, CollectionItemTypeFilter } from '../../services/collection-item-service/collection-item.service';
 
 @Component({
   selector: 'shared-floating-menu',
@@ -32,6 +33,7 @@ describe('CollectionExplorerComponent', () => {
     let fixture: ComponentFixture<CollectionExplorerComponent>;
     let mockRouter: jasmine.SpyObj<Router>;
     let mockCollectionService: jasmine.SpyObj<CollectionService>;
+    let mockCollectionItemService: jasmine.SpyObj<CollectionItemService>;
     let mockMarkService: jasmine.SpyObj<MarkService>;
     let mockDialogService: jasmine.SpyObj<DialogService>;
     let mockMessageService: jasmine.SpyObj<CustomMessageService>;
@@ -55,16 +57,22 @@ describe('CollectionExplorerComponent', () => {
     beforeEach(async () => {
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
         mockCollectionService = jasmine.createSpyObj('CollectionService', ['getMainByCurrentSession', 'getById', 'softDelete']);
+        mockCollectionItemService = jasmine.createSpyObj('CollectionItemService', ['resetAndLoad', 'loadNewPage']);
         mockMarkService = jasmine.createSpyObj('MarkService', ['softDelete']);
         mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
         mockMessageService = jasmine.createSpyObj('CustomMessageService', ['showConfirmationDialog']);
         params = new BehaviorSubject({ id: '' });
+
+        mockCollectionItemService.items$   = new BehaviorSubject([]).asObservable();
+        mockCollectionItemService.filter$  = new BehaviorSubject(CollectionItemTypeFilter.All).asObservable();
+        mockCollectionItemService.loading$ = new BehaviorSubject(false).asObservable();
 
         await TestBed.configureTestingModule({
             imports: [CollectionExplorerComponent, CollectionItemIconPipe],
             providers: [
                 { provide: Router, useValue: mockRouter },
                 { provide: CollectionService, useValue: mockCollectionService },
+                { provide: CollectionItemService, useValue: mockCollectionItemService },
                 { provide: MarkService, useValue: mockMarkService },
                 { provide: DialogService, useValue: mockDialogService },
                 { provide: CustomMessageService, useValue: mockMessageService },
@@ -102,6 +110,11 @@ describe('CollectionExplorerComponent', () => {
     it(`When id param is provided as a root value, then the root collection is loaded`, async () => {
         // GIVEN - Load test data and define expected results.
         const ROOT_PARAM_VALUE = 'workplace';
+        const mockRootCollection : Collection = {
+            id: 1,
+            name: 'My Collections',
+            isMain: false
+        };
         const rootCollectionItems : CollectionItem[] = [
             {
                 id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
@@ -111,17 +124,12 @@ describe('CollectionExplorerComponent', () => {
                 collectionId: 1
             }
         ];
-        const mockRootCollection : Collection = {
-            id: 1,
-            name: 'My Collections',
-            isMain: false,
-            collectionItems: rootCollectionItems
-        };
         mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
         // WHEN - Perform the load collection operation.
         const collection = await loadCollection(ROOT_PARAM_VALUE);
         // THEN - Assert correct method call and compare results with expected values.
         expect(mockCollectionService.getMainByCurrentSession).toHaveBeenCalled();
+        expect(mockCollectionItemService.resetAndLoad).toHaveBeenCalledWith(mockRootCollection.id, CollectionItemTypeFilter.All);
         expect(collection).toEqual(mockRootCollection);
         expect(component.loading()).toBeFalse();
     });
@@ -129,18 +137,18 @@ describe('CollectionExplorerComponent', () => {
     it('When the id param is provided as a valid number, then a collection is provided', async () => {
         // GIVEN - Load test data and define expected results.
         const VALID_PARAM = '1';
-        const mockRootCollection : Collection = {
-            id: 1,
+        const mockCollection : Collection = {
+            id: 2,
             name: 'Projects',
-            isMain: false,
-            collectionItems: []
+            isMain: false
         };
-        mockCollectionService.getById.and.returnValue(of(mockRootCollection));
+        mockCollectionService.getById.and.returnValue(of(mockCollection));
         // WHEN - Perform the load collection operation.
         const collection = await loadCollection(VALID_PARAM);
         // THEN - Assert correct method calls and compare results with expected values.
         expect(mockCollectionService.getById).toHaveBeenCalled();
-        expect(collection).toEqual(mockRootCollection);
+        expect(mockCollectionItemService.resetAndLoad).toHaveBeenCalledWith(mockCollection.id, CollectionItemTypeFilter.All);
+        expect(collection).toEqual(mockCollection);
     });
 
     it(`When the id param is provided as an invalid number, then should redirect`, async () => {
@@ -318,5 +326,36 @@ describe('CollectionExplorerComponent', () => {
         const floatingMenu = fixture.debugElement.query(By.directive(MockFloatingMenuComponent));
         // THEN - Assert expected behaviour.
         expect(floatingMenu.attributes['ng-reflect-is-sidebar-displayed']).toBe('false');
+    });
+
+    it('Should load a new CollectionItem page, onItemViewChange()', () => {
+        // GIVEN - Set a valid scroll condition (Intersection of the last item).
+        const itemsLength = 3;
+        const lastElementIndex = 2;
+        // WHEN - Perform operation
+        component.onItemViewChange(lastElementIndex, itemsLength);
+        // THEN - Assert expected behaviour.
+        expect(mockCollectionItemService.loadNewPage).toHaveBeenCalled();
+    });
+
+    it('Should not load a new CollectionItem page, onItemViewChange()', () => {
+        // GIVEN - Set an invalid scroll condition (Intersection of an item != last item).
+        const itemsLength = 3;
+        const firstElementIndex = 0;
+        // WHEN - Perform operation
+        component.onItemViewChange(firstElementIndex, itemsLength);
+        // THEN - Assert expected behaviour.
+        expect(mockCollectionItemService.loadNewPage).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should reset and load a new page, onItemTypeFilterClick()', () => {
+        // GIVEN - Set test conditions
+        const collectionId = 1;
+        component['collectionId'] = collectionId;
+        const filter = CollectionItemTypeFilter.Mark;
+        // WHEN - Perform operation
+        component.onItemTypeFilterClick(filter);
+        // THEN - Assert expected behaviour.
+        expect(mockCollectionItemService.resetAndLoad).toHaveBeenCalledWith(collectionId, filter);
     });
 });

@@ -5,7 +5,6 @@ using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery;
 using markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Models.Filters;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -54,15 +53,15 @@ namespace markit.API.Controllers.Operation
 
         [HttpPost]
         [Route("getChildrenPaged")]
-        public async Task<List<CollectionItem>> GetCollectionChildrenPaged([FromBody] CollectionItemPagedFilter filter)
+        public async Task<CollectionItemPage> GetCollectionChildrenPaged([FromBody] CollectionItemPageRequest request)
         {
             var query = new GetCollectionChildrenPagedQuery
             {
                 CreatorId = _sessionService.GetCreatorId(),
-                CollectionId = filter.CollectionId,
-                Page = filter.Page,
-                PageSize = filter.PageSize,
-                CollectionItemCategory = filter.CollectionItemCategory
+                CollectionId = request.CollectionId,
+                PageSize = request.PageSize,
+                Cursor = request.Cursor,
+                Filter = request.Filter
             };
 
             return await _mediator.Send(query);

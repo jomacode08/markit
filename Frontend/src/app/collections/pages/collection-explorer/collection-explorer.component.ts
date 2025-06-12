@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, Observable, of, startWith, Subject, Subscription, switchAll, switchMap, tap, filter } from 'rxjs';
+import { catchError, finalize, Observable, of, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -10,13 +10,15 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { Collection } from '../../interfaces/collection';
 import { CollectionExplorerBreadcrumbComponent } from '../../components/collection-explorer-breadcrumb/collection-explorer-breadcrumb.component';
-import { CollectionItem, CollectionItemAction, CollectionItemFilter, CollectionItemType, CollectionItemCategory } from '../../interfaces/collection-item';
+import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
 import { CollectionItemDialogComponent } from "../../components/collection-item-dialog/collection-item-dialog.component";
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
+import { CollectionItemService, CollectionItemTypeFilter } from '../../services/collection-item-service/collection-item.service';
 import { CollectionService } from '../../services/collection.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { FloatingMenuComponent } from "../../../shared/components/layout/floating-menu/floating-menu.component";
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
+import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 import { MarkService } from '../../../marks/services/mark.service';
 import { ROUTES } from '../../../shared/utils/constant';
 
@@ -30,6 +32,7 @@ import { ROUTES } from '../../../shared/utils/constant';
     DataViewModule,
     FloatingMenuComponent,
     FormsModule,
+    IntersectionDirective,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,34 +42,37 @@ import { ROUTES } from '../../../shared/utils/constant';
 export class CollectionExplorerComponent implements OnDestroy, OnInit {
   private activatedRoute = inject(ActivatedRoute);
   
-  private dialogReference: DynamicDialogRef | undefined;
   //* Constants
   private readonly ROOT_PARAM_VALUE = 'workplace';
-  private readonly PAGE_SIZE = 20;
   private readonly ICONS = {
     WARNING: 'fa fa-warning',
     FOLDER: 'fa fa-folder',
     NOTE: 'fa fa-note-sticky',
   };
-
-  //* State Management
-  public queryFilter = signal<CollectionItemFilter | null>(null);
-  public collection = signal<Collection | null>(null);
-  public collectionItems = signal<CollectionItem[]>([]);
+  
+  //* Configuration
+  private dialogReference: DynamicDialogRef | undefined;
   public loading = signal<boolean>(false);
-  private chosenCollectionItem  = signal<CollectionItem | null>(null);
-
+  
+  //* Collection Items
+  public items$ : Observable<CollectionItem[]>;
+  public filter$ : Observable<CollectionItemTypeFilter>;
+  private chosenCollectionItem = signal<CollectionItem | undefined>(undefined);
+  
   //* Collection
-  private loadCollectionTrigger$ = new Subject<void>();
-  private collectionSubscription : Subscription | undefined;
+  private collectionId ?: number;
   public collection$: Observable<Collection | null> = this.activatedRoute.params
   .pipe(
     tap(() => this.setLoading(true)),
-    switchMap((params) => this.getCollection(params.id)),
-    tap((collection) => this.initializeState(collection)),
-    tap(() => this.setLoading(false)),
-    catchError((error) => {
-      this.setLoading(false);
+    //* Get collection
+    switchMap((params) => this.getCollectionObservable(params.id)),
+    //* Get items
+    tap((collection) => {
+      this.collectionId = collection.id;
+      this.collectionItemService.resetAndLoad(collection.id, CollectionItemTypeFilter.All);
+    }),
+    finalize(() => this.setLoading(false)),
+    catchError(() => {
       this.redirect();
       return of(null);
     })
@@ -104,43 +110,46 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     return CollectionItemType;
   }
 
-  get collectionItemCategories(): CollectionItemCategory[] {
-    return Object.keys(CollectionItemCategory) as CollectionItemCategory[];
+  get collectionItemTypeFilters(): CollectionItemTypeFilter[] {
+    return Object.keys(CollectionItemTypeFilter) as CollectionItemTypeFilter[];
   }
   
   //* Lifecycle
   constructor(
     private router: Router,
     private collectionService: CollectionService,
+    private collectionItemService: CollectionItemService,
     private markService: MarkService,
     private dialogService: DialogService,
-    private messageService: CustomMessageService
-  ) {}
+    private messageService: CustomMessageService,
+  ) {
+    this.items$ = collectionItemService.items$;
+    this.filter$ = collectionItemService.filter$;
+  }
 
   public ngOnInit(): void {
-    // Subscribe to collection$ observable
-    this.collectionSubscription = this.loadCollectionTrigger$.pipe(
-      startWith(null),
-      switchMap(() => this.collection$)
-    ).subscribe();
+    this.collectionItemService.loading$
+    .subscribe((areItemsloading) => {
+      this.setLoading(areItemsloading);
+    });
   }
 
   public ngOnDestroy(): void {
-    if (this.collectionSubscription){
-      this.collectionSubscription.unsubscribe();
-    }
-
     if (this.dialogReference){
       this.dialogReference.close();
     }
   }
 
   //* Events
+  public onItemViewChange(itemIndex: number, itemsLength: number) {
+    if (itemIndex != itemsLength - 1) return;
+    this.collectionItemService.loadNewPage();
+  }
+
   public onCollectionItemClick(item: CollectionItem): void {
     if (item.typeId === undefined) {
       throw new Error("The 'typeId' property is required for the selected collection item.");
     }
-
     const id: number = item.typeId;
     if (item.type == CollectionItemType.Collection)
       // Navigate to the same component route and refresh the Id route param.
@@ -162,28 +171,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     this.changeFloatingMenuState();
   }
 
-  public onCategoryButtonClick( category: CollectionItemCategory ) {
-    // Validations
-    let queryFilter = structuredClone(this.queryFilter());
-    if (queryFilter === null) return;
-    if (category === queryFilter.collectionItemCategory) return;
-
-    queryFilter.collectionItemCategory = category;
-    this.setLoading(true);
-
-    // Get items by query filter
-    this.collectionService.getChildrenPaged(queryFilter)
-    .subscribe({
-      next: (items) => {
-        this.collectionItems.update(() => items);
-        this.queryFilter.update((current) => {
-          current!.collectionItemCategory = category;
-          return current;
-        });
-        this.setLoading(false);
-      },
-      error: (error) => this.setLoading(false)
-    });
+  public onItemTypeFilterClick( filter: CollectionItemTypeFilter ) {
+    if (this.collectionId === undefined) return;
+    this.collectionItemService.resetAndLoad(this.collectionId, filter);
   }
 
   //* Methods
@@ -196,7 +186,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     return id;
   }
 
-  private getCollection(idParam: string): Observable<Collection> {
+  private getCollectionObservable(idParam: string): Observable<Collection> {
     // Check if the idParam has a root value to get the main collection
     if (idParam === this.ROOT_PARAM_VALUE ) {
       return this.collectionService.getMainByCurrentSession();
@@ -216,7 +206,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       return;
     }
     // Otherwise, re-load the collection data of the explorer to see new changes.
-    this.loadCollectionTrigger$.next();
+    if (this.collectionId != undefined) {
+      this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
+    }
   }
 
   private openActionDialog( collectionItem: CollectionItem, action: CollectionItemAction ) {
@@ -253,7 +245,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       id : '',
       name : '',
       type,
-      collectionId : this.collection()?.id
+      collectionId : this.collectionId
     } as CollectionItem;
 
     this.openActionDialog(collectionItem, CollectionItemAction.Add);
@@ -261,15 +253,13 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
 
   private renameChosenCollectionItem(): void {
     const chosenCollectionItem = this.chosenCollectionItem();
-
-    if (chosenCollectionItem === null) throw new Error("The 'chosenCollection' property is required");
-
+    if (chosenCollectionItem === undefined) throw new Error("The 'chosenCollection' property is required");
     this.openActionDialog(chosenCollectionItem, CollectionItemAction.Rename);
   }
 
   private deleteChosenCollectionItem(): void {
     const chosenCollectionItem = this.chosenCollectionItem();
-    if ( chosenCollectionItem === null ) throw new Error("The 'chosenCollection' property is required");
+    if ( chosenCollectionItem === undefined ) throw new Error("The 'chosenCollection' property is required");
 
     const { typeId, type, name } = chosenCollectionItem;
     if( typeId === undefined ) throw new Error("The 'typeId' propery is required.");
@@ -289,7 +279,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   private deleteCollection( collectionId: number ): void {
     this.collectionService.softDelete(collectionId)
     .subscribe((success) => {
-      this.loadCollectionTrigger$.next();
+      if (this.collectionId != undefined) {
+        this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
+      }
       this.changeFloatingMenuState();
     });
   }
@@ -297,22 +289,14 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   private deleteMark( markId: number ): void {
     this.markService.softDelete(markId)
     .subscribe((success) => {
-      this.loadCollectionTrigger$.next();
+      if (this.collectionId != undefined) {
+        this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
+      }
       this.changeFloatingMenuState();
     });
   }
 
   //* Utils
-  private initializeState(collection: Collection): void {
-    this.collection.set(collection);
-    this.collectionItems.set(collection.collectionItems ?? []);
-    this.queryFilter.set({
-      collectionId: collection.id,
-      page: 1,
-      pageSize: this.PAGE_SIZE,
-      collectionItemCategory: CollectionItemCategory.All
-    } as CollectionItemFilter);
-  }
   private changeFloatingMenuState(): void {
     this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible());
   }

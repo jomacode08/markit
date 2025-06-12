@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { CollectionItem, CollectionItemFilter } from '../interfaces/collection-item';
+
+import { environment } from '../../../environments/environment';
 import { Collection } from '../interfaces/collection';
 
 @Injectable({providedIn: 'root'})
@@ -17,10 +17,6 @@ export class CollectionService {
 
     public getById(collectionId: number): Observable<Collection> {
         return this.http.get<Collection>(`${ this.baseUrl }/getById/${ collectionId }`);
-    }
-
-    public getChildrenPaged(filter: CollectionItemFilter): Observable<CollectionItem[]> {
-        return this.http.post<CollectionItem[]>(`${ this.baseUrl }/getChildrenPaged`, filter);
     }
 
     public create(collection: Collection): Observable<Collection> {

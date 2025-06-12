@@ -8,7 +8,6 @@
             public static readonly string connStringSectionName = "ConnectionString";
             public static readonly string userDefaultSectionName = "UserDefaultSettings";
             public static readonly string googleAuthSectionName = "GoogleAuthSettings";
-            public static readonly int DEFAULT_PAGINATION_PAGE_SIZE = 20;
         }
 
         public static class Role

@@ -70,8 +70,8 @@ namespace markit.Infraestructure.Repositorys
             return await query.ToListAsync();
         }
 
-        public async Task<IReadOnlyList<T>> GetAsyncPaged(int pageNumber,
-                                               int pageSize,
+        public async Task<IReadOnlyList<T>> GetAsyncOffsetPagination(int offset,
+                                               int limit,
                                                Expression<Func<T, bool>>? expression = null,
                                                Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
                                                List<Expression<Func<T, object>>>? includes = null,
@@ -80,8 +80,8 @@ namespace markit.Infraestructure.Repositorys
             /** Applying pagination **/
             IQueryable<T> query = context.Set<T>()
                 .Where(expression ?? (e => e.Id > 0))
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+                .Skip((offset - 1) * limit)
+                .Take(limit);
 
             /** Handling optional params **/
             if (disableTracking) query = query.AsNoTracking();

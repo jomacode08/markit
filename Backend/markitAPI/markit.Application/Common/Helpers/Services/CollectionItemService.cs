@@ -1,81 +1,73 @@
-﻿using System.Linq.Expressions;
+﻿using System.Globalization;
 using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Models.Filters;
-using markit.Domain.Entities;
 
 namespace markit.Application.Common.Helpers.Services
 {
     public class CollectionItemService(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        public async Task<List<CollectionItem>> GetCollectionItemsPaged(CollectionItemPagedFilter filter)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+
+        public async Task<CollectionItemPage> GetItemsPageAsync(CollectionItemPageRequest request)
         {
-            IReadOnlyList<Collection> collections = [];
-            IReadOnlyList<Mark> marks = [];
-            var items = new List<CollectionItem>();
-            int numberOfItemsToDelivery = filter.PageSize;
+            List<CollectionItem> items = [];
+            CursorData? cursorData = ParseCursor(request.Cursor);
+            bool hasNextPage = false;
+            string? nextCursor = null;
 
-            // Get children collections
-            if (filter.CollectionItemCategory.Equals(CollectionItemCategory.All) || filter.CollectionItemCategory.Equals(CollectionItemCategory.Collections))
+            if (request.Filter.Equals(CollectionItemFilter.All) || request.Filter.Equals(CollectionItemFilter.Collection))
             {
-                // Filter: Only children of the parent collection
-                Expression<Func<Collection, bool>> filterExpression = c => c.ParentId == filter.CollectionId;
-                // Order by Name
-                Func<IQueryable<Collection>, IOrderedQueryable<Collection>> orderBy =
-                    q => q.OrderBy(c => c.CreatedDate);
-                // Include Marks (optional navigation property)
-                var includes = new List<Expression<Func<Collection, object>>>
-                {
-                    c => c.Marks!
-                };
+                var collections = await _unitOfWork.collectionRepository
+                    .GetAsyncCursorBasedPagination(request.CollectionId, request.PageSize, cursorData);
 
-                collections = await unitOfWork.collectionRepository
-                    .GetAsyncPaged(
-                        filter.Page,
-                        filter.PageSize,
-                        filterExpression,
-                        orderBy,
-                        includes
-                    );
-
-                // Map collection items
-                items.AddRange(mapper.Map<List<CollectionItem>>(collections));
+                items.AddRange(_mapper.Map<List<CollectionItem>>(collections));
             }
 
-            // Check if the limit of items is already supplied.
-            if (collections.Count == filter.PageSize) return items;
-            // Otherwise, adjust the limit
-            filter.PageSize -= collections.Count;
-
-            // Get children marks
-            if (filter.CollectionItemCategory.Equals(CollectionItemCategory.All) || filter.CollectionItemCategory.Equals(CollectionItemCategory.Marks))
+            if (request.Filter.Equals(CollectionItemFilter.All) || request.Filter.Equals(CollectionItemFilter.Mark))
             {
-                // Filter: Only children of the parent collection
-                Expression<Func<Mark, bool>> filterExpression = c => c.CollectionId == filter.CollectionId;
-                // Order by Name
-                Func<IQueryable<Mark>, IOrderedQueryable<Mark>> orderBy =
-                    q => q.OrderBy(c => c.CreatedDate);
-                // Include Blocks
-                var includes = new List<Expression<Func<Mark, object>>>
-                {
-                    c => c.Blocks!
-                };
+                var marks = await _unitOfWork.markRepository
+                    .GetAsyncCursorBasedPagination(request.CollectionId, request.PageSize, cursorData);
 
-                marks = await unitOfWork.markRepository
-                    .GetAsyncPaged(
-                        filter.Page,
-                        filter.PageSize,
-                        filterExpression,
-                        orderBy,
-                        includes
-                    );
-
-                // Map mark items
-                items.AddRange(mapper.Map<List<CollectionItem>>(marks));
+                items.AddRange(_mapper.Map<List<CollectionItem>>(marks));
             }
 
-            return items;
+            if (request.Filter.Equals(CollectionItemFilter.All))
+            {
+                items = [.. items.OrderBy(c => c.CreatedAt)
+                    .ThenBy(c => c.Type)
+                    .ThenBy(c => c.TypeId)
+                    .Take(request.PageSize + 1)
+                ];
+            }
+
+            hasNextPage = items.Count > request.PageSize;
+            items = [.. items.Take(request.PageSize)];
+
+            if (items.Count.Equals(request.PageSize))
+            {
+                var last = items.Last();
+                nextCursor = GenerateCursor(last);
+            }
+
+            return new CollectionItemPage(nextCursor, items, hasNextPage);
+        }
+
+        private static string GenerateCursor(CollectionItem lastItem) => $"{lastItem.CreatedAt:O}|{Enum.GetName(typeof(CollectionItemType), lastItem.Type)}|{lastItem.TypeId}";
+
+        private static CursorData? ParseCursor(string? cursor)
+        {
+            if (string.IsNullOrWhiteSpace(cursor)) return null;
+
+            var parts = cursor.Split('|');
+
+            if (parts.Length != 3) return null;
+            if (!DateTime.TryParse(parts[0], null, DateTimeStyles.RoundtripKind, out DateTime createdAt)) return null;
+            if (!Enum.TryParse(parts[1], true, out CollectionItemType type)) return null;
+            if (!int.TryParse(parts[2], out int id)) return null;
+
+            return new CursorData(createdAt, type, id);
         }
     }
 }

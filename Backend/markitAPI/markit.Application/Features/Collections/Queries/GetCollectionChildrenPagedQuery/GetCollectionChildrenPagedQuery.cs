@@ -1,18 +1,22 @@
-﻿using markit.Application.Common.Helpers.Services;
+﻿using System.Globalization;
+using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Models.Filters;
 using MediatR;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery
 {
-    public class GetCollectionChildrenPagedQuery : CollectionItemPagedFilter, IRequest<List<CollectionItem>>
+    public class GetCollectionChildrenPagedQuery : IRequest<CollectionItemPage>
     {
         public int CreatorId { get; set; }
+        public int CollectionId {  get; set; }
+        public int PageSize { get; set; }
+        public required string? Cursor { get; set; }
+        public CollectionItemFilter Filter { get; set; }
     }
 
-    public class GetCollectionChildrenPagedQueryHandler : IRequestHandler<GetCollectionChildrenPagedQuery, List<CollectionItem>>
+    public class GetCollectionChildrenPagedQueryHandler : IRequestHandler<GetCollectionChildrenPagedQuery, CollectionItemPage>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly CollectionItemService _collectionItemService;
@@ -23,12 +27,12 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionChildrenP
             _collectionItemService = collectionItemService;
         }
 
-        public async Task<List<CollectionItem>> Handle(GetCollectionChildrenPagedQuery request, CancellationToken cancellationToken)
+        public async Task<CollectionItemPage> Handle(GetCollectionChildrenPagedQuery request, CancellationToken cancellationToken)
         {
             await ValidateCreator(request.CreatorId);
             await ValidateCollection(request.CollectionId, request.CreatorId);
 
-            return await MapCollectionItems(request);
+            return await GetItemsAsync(request);
         }
 
         private async Task ValidateCreator(int creatorId)
@@ -45,9 +49,16 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionChildrenP
             if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
         }
 
-        private async Task<List<CollectionItem>> MapCollectionItems(GetCollectionChildrenPagedQuery request)
+        private async Task<CollectionItemPage> GetItemsAsync(GetCollectionChildrenPagedQuery request)
         {
-            return await _collectionItemService.GetCollectionItemsPaged(request);
+            return await _collectionItemService.GetItemsPageAsync(
+                new CollectionItemPageRequest(
+                    request.CollectionId,
+                    request.PageSize,
+                    request.Filter,
+                    request.Cursor
+                )
+            );
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using markit.Domain.Common;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using markit.Domain.Common;
 
 namespace markit.Application.Contracts.Persistence.Common
 {
@@ -16,8 +16,8 @@ namespace markit.Application.Contracts.Persistence.Common
                                         string? includeString = null,
                                         bool disableTracking = true);
         // Paginación
-        Task<IReadOnlyList<T>> GetAsyncPaged(int pageNumber,
-                                        int pageSize,
+        Task<IReadOnlyList<T>> GetAsyncOffsetPagination(int offset,
+                                        int limit,
                                         Expression<Func<T, bool>>? expression = null,
                                         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
                                         List<Expression<Func<T, object>>>? includes = null,

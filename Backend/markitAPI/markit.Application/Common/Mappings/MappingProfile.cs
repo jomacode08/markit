@@ -49,6 +49,10 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.Id)
                 )
                 .ForMember(
+                    dest => dest.CreatedAt,
+                    opt => opt.MapFrom(src => src.CreatedDate)
+                )
+                .ForMember(
                     dest => dest.Preview,
                     opt => opt.MapFrom(src => src.Marks != null 
                     ? $"{ src.Marks.Count } marks" 
@@ -172,7 +176,11 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.Id)
                 )
                 .ForMember(
-                    dest => dest.UpdateDate,
+                    dest => dest.CreatedAt,
+                    opt => opt.MapFrom(src => src.CreatedDate)
+                )
+                .ForMember(
+                    dest => dest.UpdateAt,
                     opt => opt.MapFrom( src => src.UpdatedDate ?? src.CreatedDate)
                 )
                 .ForMember(
