@@ -1,11 +1,12 @@
 export interface CollectionItem {
     id: string;
     name: string;
+    collectionId : number;
     type: CollectionItemType;
     typeId : number;
-    collectionId : number;
     preview?: string;
-    updateDate?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export enum CollectionItemType {

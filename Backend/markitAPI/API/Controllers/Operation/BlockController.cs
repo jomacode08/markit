@@ -1,5 +1,4 @@
-﻿using markit.Application.Exceptions;
-using markit.Application.Features.Blocks.Commands.PatchBlockCommand;
+﻿using markit.Application.Features.Blocks.Commands.PatchBlockCommand;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Infraestructure.Security.Services;
 using MediatR;

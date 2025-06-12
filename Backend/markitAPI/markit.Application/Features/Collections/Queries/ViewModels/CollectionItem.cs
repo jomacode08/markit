@@ -9,7 +9,7 @@
         public int TypeId { get; set; }
         public string Preview {  get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-        public DateTime? UpdateAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 
     public enum CollectionItemType

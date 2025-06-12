@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using markit.Application.Common.Helpers.Services;
+﻿using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;

@@ -180,7 +180,7 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.CreatedDate)
                 )
                 .ForMember(
-                    dest => dest.UpdateAt,
+                    dest => dest.UpdatedAt,
                     opt => opt.MapFrom( src => src.UpdatedDate ?? src.CreatedDate)
                 )
                 .ForMember(
