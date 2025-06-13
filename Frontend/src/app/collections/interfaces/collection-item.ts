@@ -4,9 +4,12 @@ export interface CollectionItem {
     collectionId : number;
     type: CollectionItemType;
     typeId : number;
+    isFavorite : boolean;
     preview?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    //* Utility properties
+    updating?: boolean;
 }
 
 export enum CollectionItemType {

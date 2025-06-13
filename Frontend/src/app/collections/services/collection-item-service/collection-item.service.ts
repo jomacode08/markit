@@ -78,4 +78,10 @@ export class CollectionItemService {
     this.collectionId = collectionId;
     this.loadNewPage();
   }
+
+  public updateItem(updatedItem: CollectionItem, index: number): void {
+    const items = this.items.getValue();
+    items[index] = updatedItem;
+    this.items.next(items);
+  }
 }

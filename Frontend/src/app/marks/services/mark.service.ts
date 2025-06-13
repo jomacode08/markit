@@ -71,16 +71,24 @@ export class MarkService {
         return this.http.post<Mark>(`${ this.baseUrl }/create`, mark);
     }
 
-    public patch(mark : Mark): Observable<Mark> {
+    public update(mark : Mark): Observable<Mark> {
         return this.http.patch<Mark>(`${ this.baseUrl }/update`, mark);
     }
 
-    public rename(id: number, newName: string): Observable<Mark> {
+    public rename(markId: number, newName: string): Observable<Mark> {
         const bodyRequest = {
-            Id: id,
+            Id: markId,
             Name: newName
         };
         return this.http.patch<Mark>(`${ this.baseUrl }/rename`, bodyRequest);
+    }
+
+    public setFavoriteStatus(id: number, isFavorite: boolean): Observable<boolean> {
+        const bodyRequest = {
+            Id : id,
+            IsFavorite : isFavorite
+        };
+        return this.http.patch<boolean>(`${ this.baseUrl }/favorite`, bodyRequest);
     }
 
     public softDelete(id: number): Observable<boolean> {

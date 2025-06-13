@@ -78,3 +78,7 @@ button {
   font-size: 48px;
   color: rgb(192 132 252 / 1);
 }
+
+.favorite {
+  color: var(--main-purple-color) !important;
+}

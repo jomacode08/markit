@@ -31,6 +31,15 @@ export class CollectionService {
         return this.http.patch<Collection>(`${ this.baseUrl }/rename`, bodyRequest);
     }
 
+    public setFavoriteStatus(id: number, isFavorite: boolean): Observable<boolean> {
+        const bodyRequest = {
+            Id : id,
+            IsFavorite : isFavorite
+        };
+
+        return this.http.patch<boolean>(`${ this.baseUrl }/favorite`, bodyRequest);
+    }
+
     public softDelete( id:number ): Observable<boolean> {
         return this.http.delete<boolean>(`${ this.baseUrl }/softDelete/${ id }`);
     }

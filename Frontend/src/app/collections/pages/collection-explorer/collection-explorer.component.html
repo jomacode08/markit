@@ -55,9 +55,11 @@
                         </div>
                         <!-- General actions -->
                         <div class="actions-container flex-column md:flex-row">
-                            <button type="button">
-                                <span class="fa fa-regular fa-star text-lg text-white-alpha-60"></span>
+                            <!-- Favorite -->
+                            <button (click)="onFavoriteButtonClick(item, $index)" [disabled]="item.updating" type="button">
+                                <span *ngIf="!item.isFavorite; else fullStar" class="fa-regular fa-star text-lg text-white-alpha-60"></span>
                             </button>
+                            <!-- Other Actions -->
                             <button (click)="onItemActionsButtonClick(item)" type="button">
                                 <span class="fa fa-ellipsis text-lg text-white-alpha-60"></span>
                             </button>
@@ -97,3 +99,7 @@
     [options]="floatingMenuOptions"
     [visible]="isFloatingMenuVisible()"
 />
+
+<ng-template #fullStar>
+    <span class="fa fa-star favorite text-lg"></span>
+</ng-template>

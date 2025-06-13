@@ -274,7 +274,7 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
     const { requiresSync } = mark;
     this.setSaveState(SaveState.saving);
 
-    this.markService.patch(mark)
+    this.markService.update(mark)
     .pipe(
       // Error retry with exponential backoff
       retry(this.getErrorRetryConfig())

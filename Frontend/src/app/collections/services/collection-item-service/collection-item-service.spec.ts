@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CollectionItemService, CollectionItemTypeFilter, CollectionItemPage } from './collection-item.service';
 import { environment } from '../../../../environments/environment';
-import { CollectionItemType } from '../../interfaces/collection-item';
+import { CollectionItem, CollectionItemType } from '../../interfaces/collection-item';
 import { BehaviorSubject } from 'rxjs';
 
 describe('CollectionItemService', () => {
@@ -18,14 +18,16 @@ describe('CollectionItemService', () => {
             type: CollectionItemType.Collection,
             typeId: 1,
             collectionId: 1,
-        },
-        { 
+            isFavorite: false,
+          },
+          { 
             id: '2',
             name: 'Item 2',
             type: CollectionItemType.Mark,
             typeId: 1,
             collectionId: 1,
-            preview: 'Im a new mark!'
+            preview: 'Im a new mark!',
+            isFavorite: false,
         },
     ],
     newCursor: mockCursor,
@@ -80,6 +82,7 @@ describe('CollectionItemService', () => {
                 type: CollectionItemType.Mark,
                 typeId: 3,
                 collectionId: 1,
+                isFavorite: false,
             },
         ],
         newCursor: undefined,
@@ -148,5 +151,42 @@ describe('CollectionItemService', () => {
     expect(service['cursor']).toBeUndefined();
     expect(service['collectionId']).toBe(2);
     expect(service.loadNewPage).toHaveBeenCalled();
+  });
+
+  it('should update an item, updateItem(updatedItem: CollectionItem, index: number)', () => {
+    // GIVEN: set test conditions
+    const mockItems : CollectionItem[] = [
+      { 
+        id: '1',
+        name: 'Item 1',
+        type: CollectionItemType.Collection,
+        typeId: 1,
+        collectionId: 1,
+        isFavorite: false,
+      },
+      { 
+        id: '2',
+        name: 'Item 2',
+        type: CollectionItemType.Mark,
+        typeId: 1,
+        collectionId: 1,
+        preview: 'Im a new mark!',
+        isFavorite: false,
+      },
+    ];
+    const itemUpdatedIndex = 0;
+    const itemUpdated : CollectionItem = {
+      id: '1',
+      name: 'Item 1 updated',
+      type: CollectionItemType.Collection,
+      typeId: 1,
+      collectionId: 1,
+      isFavorite: true,
+    }
+    service['items'] = new BehaviorSubject(mockItems);
+    // WHEN- Perform operation
+    service.updateItem(itemUpdated, itemUpdatedIndex);
+    // THEN - Assert expected behaviour
+    expect(service['items'].value[itemUpdatedIndex]).toBe(itemUpdated);
   });
 });

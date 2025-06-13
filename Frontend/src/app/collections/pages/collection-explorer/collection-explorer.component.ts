@@ -176,6 +176,22 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     this.collectionItemService.resetAndLoad(this.collectionId, filter);
   }
 
+  public onFavoriteButtonClick( item: CollectionItem, index: number ) {
+    const { typeId, type, isFavorite, updating } = item;
+    if (updating) return;
+
+    const command = type === CollectionItemType.Collection
+    ? this.collectionService.setFavoriteStatus(typeId, !isFavorite)
+    : this.markService.setFavoriteStatus(typeId, !isFavorite);
+
+    command.pipe(
+      finalize(() => {
+        item.updating = false;
+        this.collectionItemService.updateItem(item, index)
+      })
+    ).subscribe((newState) => item.isFavorite = newState);
+  }
+
   //* Methods
   private validateIdParam( idParam: string ): number {
     const id = Number(idParam);
@@ -308,5 +324,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   }
   private setFloatingMenuOptions( options: FloatingMenuOption[] ): void {
     this.floatingMenuOptions = options;
+  }
+  private setItemFavoriteStatus( item: CollectionItem, status: boolean ): void {
+    item.isFavorite = status;
+    item.updating = false;
   }
 }

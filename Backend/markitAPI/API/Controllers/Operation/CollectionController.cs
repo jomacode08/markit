@@ -1,5 +1,6 @@
 ﻿using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
+using markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery;
@@ -81,6 +82,14 @@ namespace markit.API.Controllers.Operation
         {
            command.CreatorId = _sessionService.GetCreatorId();
            return await _mediator.Send(command);
+        }
+
+        [HttpPatch]
+        [Route("favorite")]
+        public async Task<bool> SetFavoriteStatus([FromBody] SetCollectionFavoriteStatusCommand command)
+        {
+            command.CreatorId = _sessionService.GetCreatorId();
+            return await _mediator.Send(command);
         }
 
         [HttpDelete]

@@ -11,6 +11,7 @@ namespace markit.Domain.Entities
         public int? ParentId { get; set; }
         [Required] public int CreatorId { get; set; }
         [Required] public string PathNames {  get; set; } = string.Empty;
+        public bool IsFavorite { get; set; }
 
         public virtual Collection? Parent { get; set; }
         public virtual Creator? Creator { get; set; }

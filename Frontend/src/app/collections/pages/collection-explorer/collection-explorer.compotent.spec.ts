@@ -44,7 +44,8 @@ describe('CollectionExplorerComponent', () => {
         name: 'Projects',
         collectionId : 1,
         type: CollectionItemType.Collection,
-        typeId: 1
+        typeId: 1,
+        isFavorite : false
     };
 
     const loadCollection = async ( id : string ): Promise<Collection | null> => {
@@ -56,9 +57,9 @@ describe('CollectionExplorerComponent', () => {
 
     beforeEach(async () => {
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-        mockCollectionService = jasmine.createSpyObj('CollectionService', ['getMainByCurrentSession', 'getById', 'softDelete']);
-        mockCollectionItemService = jasmine.createSpyObj('CollectionItemService', ['resetAndLoad', 'loadNewPage']);
-        mockMarkService = jasmine.createSpyObj('MarkService', ['softDelete']);
+        mockCollectionService = jasmine.createSpyObj('CollectionService', ['getMainByCurrentSession', 'getById', 'softDelete', 'setFavoriteStatus']);
+        mockCollectionItemService = jasmine.createSpyObj('CollectionItemService', ['resetAndLoad', 'loadNewPage', 'updateItem']);
+        mockMarkService = jasmine.createSpyObj('MarkService', ['softDelete', 'setFavoriteStatus']);
         mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
         mockMessageService = jasmine.createSpyObj('CustomMessageService', ['showConfirmationDialog']);
         params = new BehaviorSubject({ id: '' });
@@ -121,7 +122,8 @@ describe('CollectionExplorerComponent', () => {
                 name: 'Main Collection',
                 type: CollectionItemType.Collection,
                 typeId: 1,
-                collectionId: 1
+                collectionId: 1,
+                isFavorite : false,
             }
         ];
         mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
@@ -200,7 +202,8 @@ describe('CollectionExplorerComponent', () => {
             name: 'Web development I',
             type: CollectionItemType.Mark,
             typeId: 1,
-            collectionId : 1
+            collectionId : 1,
+            isFavorite: false,
         };
         // WHEN - Perform operation.
         component.onCollectionItemClick(mockCollectionItem);
@@ -274,7 +277,8 @@ describe('CollectionExplorerComponent', () => {
             name: 'Web development I',
             type: CollectionItemType.Mark,
             typeId: 2,
-            collectionId : 1
+            collectionId : 1,
+            isFavorite : false
         };
         const collectionId: number = mockMarkItem.typeId!;
         component['chosenCollectionItem'].set(mockMarkItem);
@@ -357,5 +361,86 @@ describe('CollectionExplorerComponent', () => {
         component.onItemTypeFilterClick(filter);
         // THEN - Assert expected behaviour.
         expect(mockCollectionItemService.resetAndLoad).toHaveBeenCalledWith(collectionId, filter);
+    });
+
+    it('Should call collection service, onFavoriteButtonClick()', () => {
+        // GIVEN - Set test conditions
+        const mockItemIndex = 0;
+        const mockitem : CollectionItem = {
+            id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
+            name: 'Projects',
+            collectionId : 1,
+            type: CollectionItemType.Collection,
+            typeId: 1,
+            isFavorite : false,
+            updating : false,
+        }
+        const mockUpdateditem : CollectionItem = {
+            id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
+            name: 'Projects',
+            collectionId : 1,
+            type: CollectionItemType.Collection,
+            typeId: 1,
+            isFavorite : true,
+            updating : false,
+        }
+        mockCollectionItemService.items$ = new BehaviorSubject([ mockitem ]);
+        mockCollectionService.setFavoriteStatus.and.returnValue(of(true));
+        // WHEN - Perform operation
+        component.onFavoriteButtonClick(mockitem, mockItemIndex);
+        // THEN - Asser expected behaviour
+        expect(mockCollectionService.setFavoriteStatus).toHaveBeenCalledWith(mockitem.typeId, mockUpdateditem.isFavorite);
+        expect(mockCollectionItemService.updateItem).toHaveBeenCalledWith(mockUpdateditem, mockItemIndex);
+    });
+
+    it('Should call mark service, onFavoriteButtonClick()', () => {
+        // GIVEN - Set test conditions
+        const mockItemIndex = 0;
+        const mockitem : CollectionItem = {
+            id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
+            name: 'New mark',
+            collectionId : 1,
+            type: CollectionItemType.Mark,
+            typeId: 1,
+            isFavorite : true,
+            updating : false,
+        }
+        const mockUpdateditem : CollectionItem = {
+            id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
+            name: 'New mark',
+            collectionId : 1,
+            type: CollectionItemType.Mark,
+            typeId: 1,
+            isFavorite : false,
+            updating : false,
+        }
+        mockCollectionItemService.items$ = new BehaviorSubject([ mockitem ]);
+        mockMarkService.setFavoriteStatus.and.returnValue(of(false));
+        // WHEN - Perform operation
+        component.onFavoriteButtonClick(mockitem, mockItemIndex);
+        // THEN - Asser expected behaviour
+        expect(mockMarkService.setFavoriteStatus).toHaveBeenCalledWith(mockitem.typeId, mockUpdateditem.isFavorite);
+        expect(mockCollectionItemService.updateItem).toHaveBeenCalledWith(mockUpdateditem, mockItemIndex);
+    });
+
+    it('When item is updating, should not perform the operation, onFavoriteButtonClick()', () => {
+        // GIVEN - Set test conditions
+        const mockItemIndex = 0;
+        const mockitem : CollectionItem = {
+            id : '33a34bab-91cf-45cd-a45a-6c420e7f0f8a',
+            name: 'New mark',
+            collectionId : 1,
+            type: CollectionItemType.Mark,
+            typeId: 1,
+            isFavorite : true,
+            updating : true,
+        }
+        mockCollectionItemService.items$ = new BehaviorSubject([ mockitem ]);
+        // WHEN - Perform operation
+        component.onFavoriteButtonClick(mockitem, mockItemIndex);
+        // THEN - Asser expected behaviour
+        expect(mockMarkService.setFavoriteStatus).toHaveBeenCalledTimes(0);
+        expect(mockCollectionService.setFavoriteStatus).toHaveBeenCalledTimes(0);
+        expect(mockCollectionItemService.updateItem).toHaveBeenCalledTimes(0);
     });
 });
