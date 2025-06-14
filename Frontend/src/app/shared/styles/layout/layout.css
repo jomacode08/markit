@@ -52,9 +52,8 @@ a {
         height: 50%;
     }
     .floating-button {
-        position: fixed;
-        right: 30%;
-        bottom: 7.5rem;
+        right: 30% !important;
+        bottom: 7.5rem !important;
     }
 }
 /* sm: Aplica width <= 768px */
@@ -64,10 +63,5 @@ a {
     }
     .card {
         min-height: 16rem;
-    }
-    .floating-button {
-        position: fixed;
-        right:  1rem;
-        bottom: 6.5rem;
     }
 }

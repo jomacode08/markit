@@ -99,21 +99,16 @@
         </div>
     </footer>
 
-     <!-- Floating font menu button -->
-     <p-button
-         styleClass="floating-button"
-         icon="fa fa-font"
-         size="large"
-         [rounded]="true"
-         [raised]="true"
-         (onClick)="onTextFormattingButtonClick()"
-     />
-     
-     <!-- Floating menu -->
-     <shared-floating-menu
-         [options]="floatingMenuOptions"
-         [visible]="isFloatingMenuVisible"
-     />
+    <!-- Floating font menu button -->
+    <shared-floating-action-button 
+        iconClass="fa fa-font"
+        (onClick)="onTextFormattingButtonClick()"
+    />
+    <!-- Floating menu -->
+    <shared-floating-menu
+        [options]="floatingMenuOptions"
+        [visible]="isFloatingMenuVisible"
+    />
 </ng-container>
 
 <!-- Loading skeleton template -->

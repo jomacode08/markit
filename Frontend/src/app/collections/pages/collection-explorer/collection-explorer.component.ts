@@ -21,6 +21,7 @@ import { FloatingMenuOption } from '../../../shared/components/layout/floating-m
 import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 import { MarkService } from '../../../marks/services/mark.service';
 import { ROUTES } from '../../../shared/utils/constant';
+import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ import { ROUTES } from '../../../shared/utils/constant';
     CommonModule,
     DataViewModule,
     FloatingMenuComponent,
+    FloatingActionButtonComponent,
     FormsModule,
     IntersectionDirective,
   ],

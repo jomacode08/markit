@@ -18,17 +18,18 @@ import { Block } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
 import { BlockService } from '../../services/block.service';
+import { CanComponentDeactivate, CanDeactivateType } from '../../../auth/guards/can-deactivate/can-component-deactivate';
 import { createTextFormattingOptions } from '../../interfaces/text-formatting-options';
 import { CurrentRouteService } from '../../../shared/services/current-route.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DEFAULT_BLOCK_NAME } from '../../../shared/utils/constant';
 import { DEFAULT_MARK_NAME, ROUTES } from '../../../shared/utils/constant';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
-import { CanComponentDeactivate, CanDeactivateType } from '../../../auth/guards/can-deactivate/can-component-deactivate';
 
 enum SaveState {
   idle,
@@ -45,6 +46,7 @@ enum SaveState {
     CarouselModule,
     ChipModule,
     CommonModule,
+    FloatingActionButtonComponent,
     FloatingMenuComponent,
     ProgressSpinnerModule,
     ReactiveFormsModule,

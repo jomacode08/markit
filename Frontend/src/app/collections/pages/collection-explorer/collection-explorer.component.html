@@ -84,13 +84,8 @@
 </ng-container>
 
 <!-- Floating action button -->
-<p-button
-    *ngIf="!loading()"
-    styleClass="floating-button"
-    icon="fa fa-pen-to-square"
-    size="large"
-    [rounded]="true"
-    [raised]="true"
+<shared-floating-action-button
+    iconClass="fa fa-plus"
     (onClick)="onFloatingButtonClick()"
 />
 
