@@ -1,9 +1,7 @@
 <ng-container *ngIf="collection$ | async as collection">
 
     <!-- Breadcrumb -->
-    <collection-explorer-breadcrumb [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
-    <!-- Title -->
-    <p class="font-semibold text-2xl mt-5 mb-3">{{ collection.name }}</p>
+    <collection-explorer-breadcrumb class="mb-5" [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
     <!-- Filters -->
     <ng-container *ngIf="filter$ | async as currentFilter">
         <div class="filter-container flex justify-content-around md:inline-flex">

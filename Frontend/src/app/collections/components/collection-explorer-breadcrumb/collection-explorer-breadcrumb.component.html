@@ -1,4 +1,4 @@
-<div class="flex align-items-center flex-wrap">
+<div class="flex align-items-center flex-wrap gap-3">
     
     <!-- Path segments -->
     @for (segment of pathSegments(); track $index) {
@@ -8,12 +8,11 @@
             [ngClass]="{ 'ml-0' : $index === 0 }"
             (click)="navigate(segment.collectionId)"
         >
-            <span *ngIf="$index === 0" class="fa fa-home"></span>
             <span [ngClass]="{ 'active' : segment.collectionId === currentIdCollection() }">
                 {{ segment.name }}
             </span>
         </button>
-        <span *ngIf="$index != pathSegments().length - 1" class="fa fa-chevron-right separator"></span>
+        <span *ngIf="$index != pathSegments().length - 1" class="fa fa-angle-right separator"></span>
     }
 
 </div>
