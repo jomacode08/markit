@@ -20,7 +20,7 @@ import { FloatingMenuComponent } from "../../../shared/components/layout/floatin
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 import { MarkService } from '../../../marks/services/mark.service';
-import { ROUTES } from '../../../shared/utils/constant';
+import { MAIN_COLLECTION_PARAM, ROUTES } from '../../../shared/utils/constant';
 import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 
 @Component({
@@ -45,7 +45,6 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   private activatedRoute = inject(ActivatedRoute);
   
   //* Constants
-  private readonly ROOT_PARAM_VALUE = 'workplace';
   private readonly ICONS = {
     WARNING: 'fa fa-warning',
     FOLDER: 'fa fa-folder',
@@ -149,14 +148,11 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   }
 
   public onCollectionItemClick(item: CollectionItem): void {
-    if (item.typeId === undefined) {
-      throw new Error("The 'typeId' property is required for the selected collection item.");
-    }
     const id: number = item.typeId;
     if (item.type == CollectionItemType.Collection)
       // Navigate to the same component route and refresh the Id route param.
       // This will be noticed by the collection$ observable and the collection will be reloaded with the new Id.
-      this.router.navigate([ROUTES.COLLECTIONS_SEE( id )]);
+      this.router.navigate([ROUTES.COLLECTION_SEE( id )]);
     else
       // Navigate to mark viewer component
       this.router.navigate([ROUTES.MARKS_SEE( id )]);
@@ -205,8 +201,8 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   }
 
   private getCollectionObservable(idParam: string): Observable<Collection> {
-    // Check if the idParam has a root value to get the main collection
-    if (idParam === this.ROOT_PARAM_VALUE ) {
+    // Check the url to get the main collection
+    if (idParam === MAIN_COLLECTION_PARAM) {
       return this.collectionService.getMainByCurrentSession();
     }
 

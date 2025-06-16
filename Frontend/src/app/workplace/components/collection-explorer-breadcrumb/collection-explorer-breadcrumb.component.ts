@@ -19,7 +19,10 @@ export class CollectionExplorerBreadcrumbComponent {
 
   constructor(private router: Router) {}
 
-  public navigate( collectionId: number ): void {
-    this.router.navigate([ROUTES.COLLECTIONS_SEE( collectionId )]);
+  public navigate( collectionId: number, index: number ): void {
+    const route = index === 0
+      ? ROUTES.MY_MARKS
+      : ROUTES.COLLECTION_SEE( collectionId );
+    this.router.navigate([route]);
   }
 }

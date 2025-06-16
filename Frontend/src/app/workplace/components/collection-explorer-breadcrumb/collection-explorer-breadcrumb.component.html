@@ -6,7 +6,7 @@
             type="button"
             class="path-segment"
             [ngClass]="{ 'ml-0' : $index === 0 }"
-            (click)="navigate(segment.collectionId)"
+            (click)="navigate(segment.collectionId, $index)"
         >
             <span [ngClass]="{ 'active' : segment.collectionId === currentIdCollection() }">
                 {{ segment.name }}

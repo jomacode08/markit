@@ -152,7 +152,7 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   }
 
   public onCancel(): void {
-    this.redirectToUrl(this.previousUrl ?? ROUTES.COLLECTION_EXPLORER);
+    this.redirectToUrl(this.previousUrl ?? ROUTES.MY_MARKS);
   }
 
   public onTextFormattingButtonClick( ): void {
@@ -212,7 +212,7 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   }
 
   private handleError(error: Error): Observable<null> {
-    this.redirectToUrl(this.previousUrl ?? ROUTES.COLLECTION_EXPLORER);
+    this.redirectToUrl(this.previousUrl ?? ROUTES.MY_MARKS);
 
     if (error.message.length > 0)
       this.messageService.showGeneralError(error.message);
@@ -338,7 +338,7 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
     const markId = this.activatedRoute.snapshot.paramMap.get(this.MARKID_PARAM_NAME);
     
     if (markId == null || isNaN(Number(markId))) {
-      this.redirectToUrl(this.previousUrl ?? ROUTES.COLLECTION_EXPLORER);
+      this.redirectToUrl(this.previousUrl ?? ROUTES.MY_MARKS);
       return undefined;
     }
     

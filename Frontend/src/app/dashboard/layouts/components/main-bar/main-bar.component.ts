@@ -27,9 +27,9 @@ export class MainBarComponent {
       command: () => this.navigate(ROUTES.HOME_URL)
     },
     {
-      label: 'Workplace',
-      icon: 'fa fa-folder',
-      command: () => this.navigate(ROUTES.COLLECTION_EXPLORER)
+      label: 'My marks',
+      icon: 'fa fa-hard-drive',
+      command: () => this.navigate(ROUTES.MY_MARKS)
     },
   ];
 

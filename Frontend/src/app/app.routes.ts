@@ -31,14 +31,14 @@ export const routes: Routes = [
             import('./marks/mark.routes').then(r => r.MARK_ROUTES)
     },
     {
-        path: 'collections',
-        data: { breadcrumb : 'Collections' },
+        path: 'workplace',
+        data: { breadcrumb : 'Workplace' },
         canActivate: [IsAuthenticatedActivateGuard],
         canMatch: [IsAuthenticatedActivateGuard],
         loadComponent: () => 
             import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
         loadChildren: () =>
-            import('./collections/collections.routes').then(r => r.COLLECTIONS_ROUTES)
+            import('./workplace/workplace.routes').then(r => r.WORKPLACE_ROUTES)
     },
     {
         path: 'not-found',

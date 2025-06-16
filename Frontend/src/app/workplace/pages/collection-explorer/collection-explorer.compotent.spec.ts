@@ -110,7 +110,7 @@ describe('CollectionExplorerComponent', () => {
 
     it(`When id param is provided as a root value, then the root collection is loaded`, async () => {
         // GIVEN - Load test data and define expected results.
-        const ROOT_PARAM_VALUE = 'workplace';
+        const ROOT_PARAM_VALUE = 'my-marks';
         const mockRootCollection : Collection = {
             id: 1,
             name: 'My Collections',
@@ -192,7 +192,7 @@ describe('CollectionExplorerComponent', () => {
         // WHEN - Perform operation.
         component.onCollectionItemClick(mockCollectionItem);
         // THEN - Assert expected behaviour.
-        expect(mockRouter.navigate).toHaveBeenCalledWith([ROUTES.COLLECTIONS_SEE(mockCollectionItem.typeId!)]);
+        expect(mockRouter.navigate).toHaveBeenCalledWith([ROUTES.COLLECTION_SEE(mockCollectionItem.typeId!)]);
     });
 
     it('Should redirect to see mark, onCollectionItemClick(item: CollectionItem)', () => {
