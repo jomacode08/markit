@@ -18,29 +18,4 @@ export class CollectionService {
     public getById(collectionId: number): Observable<Collection> {
         return this.http.get<Collection>(`${ this.baseUrl }/getById/${ collectionId }`);
     }
-
-    public create(collection: Collection): Observable<Collection> {
-        return this.http.post<Collection>(`${ this.baseUrl }/create`, collection);
-    }
-
-    public rename( id: number, newName: string ): Observable<Collection> {
-        const bodyRequest = {
-            Id: id,
-            name: newName
-        };
-        return this.http.patch<Collection>(`${ this.baseUrl }/rename`, bodyRequest);
-    }
-
-    public setFavoriteStatus(id: number, isFavorite: boolean): Observable<boolean> {
-        const bodyRequest = {
-            Id : id,
-            IsFavorite : isFavorite
-        };
-
-        return this.http.patch<boolean>(`${ this.baseUrl }/favorite`, bodyRequest);
-    }
-
-    public softDelete( id:number ): Observable<boolean> {
-        return this.http.delete<boolean>(`${ this.baseUrl }/softDelete/${ id }`);
-    }
 }

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize } from 'rxjs';
 
-import { CollectionItem } from '../../interfaces/collection-item';
-import { environment } from '../../../../environments/environment';
+import { CollectionItem } from '../../../interfaces/collection-item';
+import { environment } from '../../../../../environments/environment';
 
 export enum CollectionItemTypeFilter {
   All = 'All',
@@ -25,9 +25,9 @@ export interface CollectionItemPageRequest {
 }
 
 @Injectable({providedIn: 'root'})
-export class CollectionItemService {
-  private readonly PAGE_SIZE = 20;
+export class CollectionItemPaginationService {
   private readonly BASE_URL: string = `${ environment.baseApiUrl }/collections`;
+  private readonly PAGE_SIZE = 20;
   private items = new BehaviorSubject<CollectionItem[]>([]);
   private filter = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
   private loading = new BehaviorSubject<boolean>(false);
@@ -41,7 +41,9 @@ export class CollectionItemService {
   public filter$ = this.filter.asObservable();
   public loading$ = this.loading.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   public loadNewPage(): void {
     if (this.loading.value) return;
@@ -70,18 +72,12 @@ export class CollectionItemService {
     });
   }
 
-  public resetAndLoad( collectionId: number, filter: CollectionItemTypeFilter ): void {
+  public resetAndLoad( filter: CollectionItemTypeFilter, collectionId ?: number ): void {
     this.filter.next(filter);
     this.isResetEnabled = true;
     this.hasNextPage = true;
     this.cursor = undefined;
     this.collectionId = collectionId;
     this.loadNewPage();
-  }
-
-  public updateItem(updatedItem: CollectionItem, index: number): void {
-    const items = this.items.getValue();
-    items[index] = updatedItem;
-    this.items.next(items);
   }
 }

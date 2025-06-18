@@ -388,6 +388,9 @@ button {
   border: 0 none;
   padding: 0;
 }
+.p-component-overlay {
+  background-color: rgb(18, 18, 18, 0.4);
+}
 
 /** Chips */
 .p-chip {

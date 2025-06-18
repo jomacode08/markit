@@ -1,40 +1,34 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, finalize, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { Collection } from '../../interfaces/collection';
 import { CollectionExplorerBreadcrumbComponent } from '../../components/collection-explorer-breadcrumb/collection-explorer-breadcrumb.component';
 import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
-import { CollectionItemDialogComponent } from "../../components/collection-item-dialog/collection-item-dialog.component";
-import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
-import { CollectionItemService, CollectionItemTypeFilter } from '../../services/collection-item-service/collection-item.service';
 import { CollectionService } from '../../services/collection.service';
-import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { FloatingMenuComponent } from "../../../shared/components/layout/floating-menu/floating-menu.component";
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
-import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
-import { MarkService } from '../../../marks/services/mark.service';
 import { MAIN_COLLECTION_PARAM, ROUTES } from '../../../shared/utils/constant';
 import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
+import { CollectionItemDataViewComponent } from '../../components/collection-item-data-view/collection-item-data-view.component';
+import { CollectionItemPaginationService, CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
+import { CollectionItemDialogComponent } from '../../components/collection-item-dialog/collection-item-dialog.component';
 
 @Component({
   standalone: true,
   imports: [
     ButtonModule,
     CollectionExplorerBreadcrumbComponent,
-    CollectionItemIconPipe,
+    CollectionItemDataViewComponent,
     CommonModule,
-    DataViewModule,
     FloatingMenuComponent,
     FloatingActionButtonComponent,
-    FormsModule,
-    IntersectionDirective,
+    FormsModule
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,162 +36,139 @@ import { FloatingActionButtonComponent } from '../../../shared/components/ui/but
   styleUrl: './collection-explorer.component.css',
 })
 export class CollectionExplorerComponent implements OnDestroy, OnInit {
-  private activatedRoute = inject(ActivatedRoute);
-  
   //* Constants
+  private readonly DYNAMIC_DIALOG_CONFIG = (header: string, data: any): DynamicDialogConfig => {
+    return {
+      header,
+      width  : '25rem',
+      modal  : true,
+      closable: false,
+      dismissableMask: true,
+      styleClass : 'custom-dialog',
+      data : data
+    }
+  }
   private readonly ICONS = {
-    WARNING: 'fa fa-warning',
     FOLDER: 'fa fa-folder',
     NOTE: 'fa fa-note-sticky',
   };
-  
+
   //* Configuration
   private dialogReference: DynamicDialogRef | undefined;
+  public itemsLoadingSubscription ?: Subscription;
+  public itemsFilterSubscription ?: Subscription;
   public loading = signal<boolean>(false);
-  
-  //* Collection Items
-  public items$ : Observable<CollectionItem[]>;
-  public filter$ : Observable<CollectionItemTypeFilter>;
-  private chosenCollectionItem = signal<CollectionItem | undefined>(undefined);
-  
+
   //* Collection
   private collectionId ?: number;
-  public collection$: Observable<Collection | null> = this.activatedRoute.params
-  .pipe(
-    tap(() => this.setLoading(true)),
-    //* Get collection
-    switchMap((params) => this.getCollectionObservable(params.id)),
-    //* Get items
-    tap((collection) => {
-      this.collectionId = collection.id;
-      this.collectionItemService.resetAndLoad(collection.id, CollectionItemTypeFilter.All);
-    }),
-    finalize(() => this.setLoading(false)),
-    catchError(() => {
-      this.redirect();
-      return of(null);
-    })
-  );
+  public collection$ : Observable<Collection | null>;
+
+  //* Collection Items
+  public items$ : Observable<CollectionItem[]>;
+  public currentFilter = signal<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
 
   //* Floating menu
   public isFloatingMenuVisible = signal(false);
-  public floatingMenuOptions : FloatingMenuOption[] = [];
-  public readonly gridActions: FloatingMenuOption[] = [
-    {
-      label: 'Rename',
-      icon: 'fa fa-font',
-      command: () => this.renameChosenCollectionItem()
-    },
-    {
-      label: 'Delete',
-      icon: 'fa fa-trash',
-      command: () => this.deleteChosenCollectionItem()
-    },
-  ];
-  public readonly additionActions: FloatingMenuOption[] = [
+  public readonly ADD_ITEM_ACTIONS: FloatingMenuOption[] = [
     {
       label: 'Add collection',
       icon: this.ICONS.FOLDER,
-      command: () => this.addNewCollectionItem(CollectionItemType.Collection)
+      command: () => this.addItem(CollectionItemType.Collection)
     },
     {
       label: 'Add mark',
       icon: this.ICONS.NOTE,
-      command: () => this.addNewCollectionItem(CollectionItemType.Mark)
+      command: () => this.addItem(CollectionItemType.Mark)
     },
   ];
-
-  get CollectionItemType(): typeof CollectionItemType {
-    return CollectionItemType;
-  }
-
-  get collectionItemTypeFilters(): CollectionItemTypeFilter[] {
-    return Object.keys(CollectionItemTypeFilter) as CollectionItemTypeFilter[];
-  }
   
   //* Lifecycle
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private dialogService : DialogService,
     private router: Router,
     private collectionService: CollectionService,
-    private collectionItemService: CollectionItemService,
-    private markService: MarkService,
-    private dialogService: DialogService,
-    private messageService: CustomMessageService,
+    private collectionItemPaginationService: CollectionItemPaginationService,
   ) {
-    this.items$ = collectionItemService.items$;
-    this.filter$ = collectionItemService.filter$;
+    this.items$ = collectionItemPaginationService.items$;
+    this.collection$ = this.activatedRoute.params
+    .pipe(
+      tap(() => this.setLoading(true)),
+      //* Get collection
+      switchMap((params) => this.getCollectionObservable(params.id)),
+      //* Load first items page
+      tap((collection) => {
+        this.collectionId = collection.id;
+        this.collectionItemPaginationService.resetAndLoad(CollectionItemTypeFilter.All, collection.id);
+      }),
+      finalize(() => this.setLoading(false)),
+      catchError(() => {
+        this.redirect();
+        return of(null);
+      })
+    );
   }
 
   public ngOnInit(): void {
-    this.collectionItemService.loading$
-    .subscribe((areItemsloading) => {
-      this.setLoading(areItemsloading);
-    });
+    this.itemsLoadingSubscription = this.collectionItemPaginationService.loading$
+    .subscribe((areItemsloading) => this.setLoading(areItemsloading));
+    this.itemsFilterSubscription = this.collectionItemPaginationService.filter$
+    .subscribe((filter) => this.currentFilter.set(filter));
   }
 
   public ngOnDestroy(): void {
-    if (this.dialogReference){
-      this.dialogReference.close();
-    }
+    if (this.dialogReference) this.dialogReference.destroy();
+    if (this.itemsLoadingSubscription) this.itemsLoadingSubscription.unsubscribe();
+    if (this.itemsFilterSubscription) this.itemsFilterSubscription.unsubscribe();
   }
 
-  //* Events
-  public onItemViewChange(itemIndex: number, itemsLength: number) {
+  public onFloatingButtonClick(): void {
+    this.changeFloatingMenuState();
+  }
+
+  public onItemViewChange(itemIndex: number, itemsLength: number):void {
     if (itemIndex != itemsLength - 1) return;
-    this.collectionItemService.loadNewPage();
+    this.collectionItemPaginationService.loadNewPage();
   }
 
-  public onCollectionItemClick(item: CollectionItem): void {
-    const id: number = item.typeId;
-    if (item.type == CollectionItemType.Collection)
-      // Navigate to the same component route and refresh the Id route param.
-      // This will be noticed by the collection$ observable and the collection will be reloaded with the new Id.
-      this.router.navigate([ROUTES.COLLECTION_SEE( id )]);
-    else
-      // Navigate to mark viewer component
-      this.router.navigate([ROUTES.MARKS_SEE( id )]);
+  public onItemUpdated(): void {
+    this.applyCollectionItemFilter(CollectionItemTypeFilter.All);
   }
 
-  public onFloatingButtonClick() {
-    this.setFloatingMenuOptions(this.additionActions);
-    this.changeFloatingMenuState();
-  }
-  
-  public onItemActionsButtonClick( item: CollectionItem ) {
-    this.chosenCollectionItem.set(item);
-    this.setFloatingMenuOptions(this.gridActions);
-    this.changeFloatingMenuState();
-  }
-
-  public onItemTypeFilterClick( filter: CollectionItemTypeFilter ) {
+  public applyCollectionItemFilter( filter: CollectionItemTypeFilter ): void {
     if (this.collectionId === undefined) return;
-    this.collectionItemService.resetAndLoad(this.collectionId, filter);
+    this.collectionItemPaginationService.resetAndLoad(filter, this.collectionId);
   }
 
-  public onFavoriteButtonClick( item: CollectionItem, index: number ) {
-    const { typeId, type, isFavorite, updating } = item;
-    if (updating) return;
+  private addItem( type: CollectionItemType ): void {
+    const action = CollectionItemAction.Add;
+    const header = `${ action } ${ type }`;
+    const collectionItemEntry = {
+      id: '',
+      name : '',
+      type : type,
+      typeId : 0,
+      collectionId : this.collectionId,
+    } as CollectionItem;
+    const data = {
+      action : action,
+      collectionItem: collectionItemEntry,
+    };
 
-    const command = type === CollectionItemType.Collection
-    ? this.collectionService.setFavoriteStatus(typeId, !isFavorite)
-    : this.markService.setFavoriteStatus(typeId, !isFavorite);
-
-    command.pipe(
-      finalize(() => {
-        item.updating = false;
-        this.collectionItemService.updateItem(item, index)
-      })
-    ).subscribe((newState) => item.isFavorite = newState);
-  }
-
-  //* Methods
-  private validateIdParam( idParam: string ): number {
-    const id = Number(idParam);
-
-    if (isNaN( id ) || id <= 0)
-      throw new Error("The id parameter is not in the correct format.");
-
-    return id;
+    // Open action dialog
+    this.dialogReference = this.dialogService.open(
+      CollectionItemDialogComponent,
+      this.DYNAMIC_DIALOG_CONFIG(header, data)
+    );
+    
+    // Subscribe to the onClose event of the dialog
+    this.dialogReference.onClose.subscribe(async (itemTypeId: number) => {
+      this.dialogReference = undefined;
+      if (itemTypeId > 0) {
+        this.changeFloatingMenuState();
+        this.onItemUpdated();
+      }
+    });
   }
 
   private getCollectionObservable(idParam: string): Observable<Collection> {
@@ -205,126 +176,20 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     if (idParam === MAIN_COLLECTION_PARAM) {
       return this.collectionService.getMainByCurrentSession();
     }
-
     // Otherwise, get the collection by id
     const id = this.validateIdParam(idParam);
     return this.collectionService.getById(id);
   }
 
-  private handleSuccessfulCollectionAction(collectionItem: CollectionItem, action: CollectionItemAction): void {
-    // Close floating menu
-    this.changeFloatingMenuState();
-    // Navigate to mark viewer after the success of adding a mark.
-    if (action === CollectionItemAction.Add && collectionItem.type === CollectionItemType.Mark) {
-      this.router.navigate([ROUTES.MARKS_SEE(collectionItem.typeId)]);
-      return;
-    }
-    // Otherwise, re-load the collection data of the explorer to see new changes.
-    if (this.collectionId != undefined) {
-      this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
-    }
-  }
-
-  private openActionDialog( collectionItem: CollectionItem, action: CollectionItemAction ) {
-    const header = (`${ action } ${ collectionItem.type }`);
-
-    // Open the collectionItemDialog
-    this.dialogReference = this.dialogService.open(CollectionItemDialogComponent, {
-      header,
-      width  : '25rem',
-      modal  : true,
-      closable: false,
-      dismissableMask: true,
-      styleClass : 'custom-dialog',
-      data : {
-        collectionItem,
-        action
-      }
-    });
-    
-    // Subscribe to the onClose event of the dialog
-    this.dialogReference.onClose.subscribe(async (collectionItemTypeId: number) => {
-      this.dialogReference = undefined;
-
-      if (collectionItemTypeId > 0){
-        collectionItem.typeId = collectionItemTypeId;
-        this.handleSuccessfulCollectionAction(collectionItem, action);
-      }
-
-    });
-  }
-
-  private addNewCollectionItem( type: CollectionItemType ): void {
-    const collectionItem = {
-      id : '',
-      name : '',
-      type,
-      collectionId : this.collectionId
-    } as CollectionItem;
-
-    this.openActionDialog(collectionItem, CollectionItemAction.Add);
-  }
-
-  private renameChosenCollectionItem(): void {
-    const chosenCollectionItem = this.chosenCollectionItem();
-    if (chosenCollectionItem === undefined) throw new Error("The 'chosenCollection' property is required");
-    this.openActionDialog(chosenCollectionItem, CollectionItemAction.Rename);
-  }
-
-  private deleteChosenCollectionItem(): void {
-    const chosenCollectionItem = this.chosenCollectionItem();
-    if ( chosenCollectionItem === undefined ) throw new Error("The 'chosenCollection' property is required");
-
-    const { typeId, type, name } = chosenCollectionItem;
-    if( typeId === undefined ) throw new Error("The 'typeId' propery is required.");
-
-    this.messageService.showConfirmationDialog({
-      message : `Do you want to delete the ${ type }: ${ name }?`,
-      header : `Delete ${ type }`,
-      icon : this.ICONS.WARNING,
-      accept: () => {
-        type === CollectionItemType.Collection
-        ? this.deleteCollection(typeId)
-        : this.deleteMark(typeId);
-      }
-    });
-  }
-
-  private deleteCollection( collectionId: number ): void {
-    this.collectionService.softDelete(collectionId)
-    .subscribe((success) => {
-      if (this.collectionId != undefined) {
-        this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
-      }
-      this.changeFloatingMenuState();
-    });
-  }
-  
-  private deleteMark( markId: number ): void {
-    this.markService.softDelete(markId)
-    .subscribe((success) => {
-      if (this.collectionId != undefined) {
-        this.collectionItemService.resetAndLoad(this.collectionId, CollectionItemTypeFilter.All);
-      }
-      this.changeFloatingMenuState();
-    });
+  private validateIdParam( idParam: string ): number {
+    const id = Number(idParam);
+    if (isNaN( id ) || id <= 0)
+      throw new Error("The id parameter is not in the correct format.");
+    return id;
   }
 
   //* Utils
-  private changeFloatingMenuState(): void {
-    this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible());
-  }
-  private redirect(): void {
-    this.router.navigate([ROUTES.NOT_FOUND]);
-  }
-  private setLoading(value: boolean): void {
-    this.loading.set(value);
-  }
-  private setFloatingMenuOptions( options: FloatingMenuOption[] ): void {
-    this.floatingMenuOptions = options;
-  }
-  private setItemFavoriteStatus( item: CollectionItem, status: boolean ): void {
-    item.isFavorite = status;
-    item.updating = false;
-  }
+  private redirect = () => this.router.navigate([ROUTES.NOT_FOUND]);
+  private setLoading = (value: boolean) => this.loading.set(value);
+  private changeFloatingMenuState = () => this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible())
 }

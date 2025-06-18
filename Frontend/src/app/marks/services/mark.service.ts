@@ -74,24 +74,4 @@ export class MarkService {
     public update(mark : Mark): Observable<Mark> {
         return this.http.patch<Mark>(`${ this.baseUrl }/update`, mark);
     }
-
-    public rename(markId: number, newName: string): Observable<Mark> {
-        const bodyRequest = {
-            Id: markId,
-            Name: newName
-        };
-        return this.http.patch<Mark>(`${ this.baseUrl }/rename`, bodyRequest);
-    }
-
-    public setFavoriteStatus(id: number, isFavorite: boolean): Observable<boolean> {
-        const bodyRequest = {
-            Id : id,
-            IsFavorite : isFavorite
-        };
-        return this.http.patch<boolean>(`${ this.baseUrl }/favorite`, bodyRequest);
-    }
-
-    public softDelete(id: number): Observable<boolean> {
-        return this.http.delete<boolean>(`${ this.baseUrl }/softDelete/${ id }`);
-    }
 }

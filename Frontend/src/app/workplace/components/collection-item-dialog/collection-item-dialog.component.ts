@@ -5,15 +5,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-import { Collection } from '../../interfaces/collection';
 import { CollectionItem, CollectionItemAction, CollectionItemType } from './../../interfaces/collection-item';
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
-import { CollectionService } from '../../services/collection.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { MarkService } from '../../../marks/services/mark.service';
-import { Mark } from '../../../marks/interfaces/mark';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { DEFAULT_BLOCK_NAME } from '../../../shared/utils/constant';
+import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
 
 @Component({
   selector: 'app-collection-item-dialog',
@@ -48,8 +44,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   constructor(
     private config : DynamicDialogConfig,
     private ref : DynamicDialogRef,
-    private collectionService: CollectionService,
-    private markService: MarkService
+    private collectionItemActionService: CollectionItemActionService
   ) {
     super();
     this.validateSharedData(this.config.data);
@@ -85,24 +80,19 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   }
 
   private renameItem( collectionItem: CollectionItem ): void {
-    if (collectionItem.type === CollectionItemType.Collection)
-      this.renameCollection(collectionItem);
-    else  
-      this.renameMark(collectionItem);
+    this.collectionItemActionService.rename(collectionItem).subscribe({
+      next: (response) => {
+        this.ref.close(response.id);
+      },
+      error: (error) => {
+        this.setSubmit(false);
+        this.form.get('name')?.enable();
+      }
+    });
   }
 
   private addCollection( collectionItem: CollectionItem ): void {
-    const { name, collectionId } = collectionItem;
-
-    const newCollection : Collection = {
-      id: 0,
-      name: name,
-      isMain: false,
-      parentId : collectionId,
-      creatorId: 0,
-    }
-
-    this.collectionService.create(newCollection).subscribe({
+    this.collectionItemActionService.createEmptyCollection(collectionItem).subscribe({
       next: (collection) => {
         this.ref.close(collection.id);
       },
@@ -114,53 +104,9 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   }
 
   private addMark( collectionItem: CollectionItem ): void {
-    const { name, collectionId } = collectionItem;
-
-    const newMark : Mark = {
-      id : 0,
-      name,
-      collectionId,
-      creatorId : 0,
-      blocks: [
-        {
-          id : 0,
-          title : DEFAULT_BLOCK_NAME,
-          content: ''
-        }
-      ]
-    };
-
-    this.markService.create(newMark).subscribe({
+    this.collectionItemActionService.createEmptyMark(collectionItem).subscribe({
       next: (mark) => {
         this.ref.close(mark.id);
-      },
-      error: (error) => {
-        this.setSubmit(false);
-        this.form.get('name')?.enable();
-      }
-    });
-  }
-
-  private renameCollection( collectionItem: CollectionItem ): void {
-    const { typeId, name } = collectionItem;
-
-    this.collectionService.rename(typeId, name).subscribe({
-      next: (collection) => {
-        this.ref.close(collection.id);
-      },
-      error: (error) => {
-        this.setSubmit(false);
-        this.form.get('name')?.enable();
-      }
-    });
-  }
-
-  private renameMark(collectionItem: CollectionItem): void {
-    const { typeId, name } = collectionItem;
-
-    this.markService.rename(typeId, name).subscribe({
-      next: (collection) => {
-        this.ref.close(collection.id);
       },
       error: (error) => {
         this.setSubmit(false);

@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="floating-button">
-      <button type="button" (click)="onButtonClicked()">
+      <button type="button" [disabled]="!enabled()" (click)="onButtonClicked()">
         <span [class]="iconClass()"></span>
       </button>
     </div>
@@ -16,6 +16,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from 
 })
 export class FloatingActionButtonComponent {
   public iconClass = input.required<string>();
+  public enabled = input<boolean>(true);
   @Output() public onClick = new EventEmitter<void>();
 
   public onButtonClicked = () => this.onClick.emit();

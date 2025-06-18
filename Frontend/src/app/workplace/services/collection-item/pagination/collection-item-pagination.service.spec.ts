@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { CollectionItemService, CollectionItemTypeFilter, CollectionItemPage } from './collection-item.service';
-import { environment } from '../../../../environments/environment';
-import { CollectionItem, CollectionItemType } from '../../interfaces/collection-item';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 
+import { CollectionItemPage, CollectionItemPaginationService, CollectionItemTypeFilter } from './collection-item-pagination.service';
+import { CollectionItemType } from '../../../interfaces/collection-item';
+import { environment } from '../../../../../environments/environment';
+
 describe('CollectionItemService', () => {
-  let service: CollectionItemService;
+  let service: CollectionItemPaginationService;
   let httpMock: HttpTestingController;
 
   const mockCursor = '2025-05-30T14:08:08.1966667|Mark|2';
@@ -37,9 +38,9 @@ describe('CollectionItemService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CollectionItemService]
+      providers: [CollectionItemPaginationService]
     });
-    service = TestBed.inject(CollectionItemService);
+    service = TestBed.inject(CollectionItemPaginationService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -143,7 +144,7 @@ describe('CollectionItemService', () => {
   it('should reset and load new page', () => {
     spyOn(service, 'loadNewPage');
     // WHEN
-    service.resetAndLoad(2, CollectionItemTypeFilter.Mark);
+    service.resetAndLoad(CollectionItemTypeFilter.Mark, 2);
     // THEN
     expect(service['filter'].value).toBe(CollectionItemTypeFilter.Mark);
     expect(service['isResetEnabled']).toBeTrue();
@@ -151,42 +152,5 @@ describe('CollectionItemService', () => {
     expect(service['cursor']).toBeUndefined();
     expect(service['collectionId']).toBe(2);
     expect(service.loadNewPage).toHaveBeenCalled();
-  });
-
-  it('should update an item, updateItem(updatedItem: CollectionItem, index: number)', () => {
-    // GIVEN: set test conditions
-    const mockItems : CollectionItem[] = [
-      { 
-        id: '1',
-        name: 'Item 1',
-        type: CollectionItemType.Collection,
-        typeId: 1,
-        collectionId: 1,
-        isFavorite: false,
-      },
-      { 
-        id: '2',
-        name: 'Item 2',
-        type: CollectionItemType.Mark,
-        typeId: 1,
-        collectionId: 1,
-        preview: 'Im a new mark!',
-        isFavorite: false,
-      },
-    ];
-    const itemUpdatedIndex = 0;
-    const itemUpdated : CollectionItem = {
-      id: '1',
-      name: 'Item 1 updated',
-      type: CollectionItemType.Collection,
-      typeId: 1,
-      collectionId: 1,
-      isFavorite: true,
-    }
-    service['items'] = new BehaviorSubject(mockItems);
-    // WHEN- Perform operation
-    service.updateItem(itemUpdated, itemUpdatedIndex);
-    // THEN - Assert expected behaviour
-    expect(service['items'].value[itemUpdatedIndex]).toBe(itemUpdated);
   });
 });
