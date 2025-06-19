@@ -57,7 +57,7 @@
             </div>
         }
         <!-- No results template -->
-        <div *ngIf="items.length === 0 && !this.loading()" class="flex flex-column align-items-center justify-content-center py-7 px-3 fadein animation-duration-1000">
+        <div id="noResultsTemplate" *ngIf="items.length === 0 && !this.loading()" class="flex flex-column align-items-center justify-content-center py-7 px-3 fadein animation-duration-1000">
             <div class="relative">
                 <div class="absolute search-background-icon"></div>
                 <div class="relative search-icon">

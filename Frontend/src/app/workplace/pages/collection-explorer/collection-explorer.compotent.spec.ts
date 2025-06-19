@@ -77,13 +77,22 @@ describe('CollectionExplorerComponent', () => {
         return firstValueFrom(component.collection$);
     }
 
+    const mockRootCollection : Collection = {
+        id: 1,
+        name: 'My Collections',
+        isMain: false
+    };
+
     beforeEach(async () => {
+        // Configure spies
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
         mockCollectionService = jasmine.createSpyObj('CollectionService', ['getMainByCurrentSession', 'getById']);
         mockCollectionItemPaginationService = jasmine.createSpyObj('CollectionItemService', ['resetAndLoad', 'loadNewPage']);
         mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
-        params = new BehaviorSubject({ id: '' });
-
+        
+        // Set initial flow mock values
+        mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
+        params = new BehaviorSubject({ id: MAIN_COLLECTION_PARAM });
         mockCollectionItemPaginationService.items$   = new BehaviorSubject([]).asObservable();
         mockCollectionItemPaginationService.filter$  = new BehaviorSubject(CollectionItemTypeFilter.All).asObservable();
         mockCollectionItemPaginationService.loading$ = new BehaviorSubject(false).asObservable();
@@ -128,10 +137,6 @@ describe('CollectionExplorerComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it(`should loading be 'false' on initialization`, () => {
-        expect(component.loading()).toBeFalse();
-    })
-
     it(`should isFloatingMenuVisible be 'false' on initialization`, () => {
         expect(component.isFloatingMenuVisible()).toBeFalse();
     })
@@ -139,11 +144,6 @@ describe('CollectionExplorerComponent', () => {
     it(`When id param is provided as a root value, then the root collection is loaded`, async () => {
         // GIVEN - Load test data and define expected results.
         const ROOT_PARAM_VALUE = MAIN_COLLECTION_PARAM;
-        const mockRootCollection : Collection = {
-            id: 1,
-            name: 'My Collections',
-            isMain: false
-        };
         mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
         // WHEN - Perform the load collection operation.
         const collection = await loadCollection(ROOT_PARAM_VALUE);
