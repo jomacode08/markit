@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 
 import { DialogService } from "primeng/dynamicdialog";
-import { FilterMatchMode, MessageService } from "primeng/api";
 
 import { CollectionItemDataViewComponent } from "./collection-item-data-view.component";
 import { CollectionItemActionService } from "../../services/collection-item/action/collection-item-action.service";
@@ -16,6 +15,7 @@ import { CustomMessageService } from "../../../shared/services/custom-message.se
 import { CollectionItemTypeFilter } from "../../services/collection-item/pagination/collection-item-pagination.service";
 import { of } from 'rxjs';
 import { By } from "@angular/platform-browser";
+import { IntersectionDirective } from "../../../shared/directives/intersection.directive";
 
 @Component({
   selector: 'shared-floating-menu',
@@ -52,7 +52,7 @@ describe('CollectionItemDataViewComponent', () => {
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
         await TestBed.configureTestingModule({
-            imports: [CollectionItemDataViewComponent, CollectionItemIconPipe],
+            imports: [CollectionItemDataViewComponent, CollectionItemIconPipe, IntersectionDirective],
             providers: [
                 { provide: CollectionItemActionService, useValue: mockCollectionItemActionService },
                 { provide: DialogService, useValue: mockDialogService },
@@ -153,11 +153,5 @@ describe('CollectionItemDataViewComponent', () => {
         const noResultsTemplate = fixture.debugElement.query(By.css('#noResultsTemplate'));
         // ASSERT
         expect(noResultsTemplate).toBeTruthy();
-    });
-
-    it('should show no results template', () => {
-        // GIVEN
-        // WHEN
-        // ASSERT
     });
 });

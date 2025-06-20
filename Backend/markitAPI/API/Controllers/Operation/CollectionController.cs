@@ -3,7 +3,7 @@ using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
-using markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery;
+using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
 using markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Infraestructure.Security.Services;
@@ -53,16 +53,15 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpPost]
-        [Route("getChildrenPaged")]
-        public async Task<CollectionItemPage> GetCollectionChildrenPaged([FromBody] CollectionItemPageRequest request)
+        [Route("getItemsPaged")]
+        public async Task<CollectionItemPage> GetItemsPaged([FromBody] CollectionItemPageRequest request)
         {
-            var query = new GetCollectionChildrenPagedQuery
+            var query = new GetCollectionItemsPagedQuery
             {
                 CreatorId = _sessionService.GetCreatorId(),
-                CollectionId = request.CollectionId,
                 PageSize = request.PageSize,
                 Cursor = request.Cursor,
-                Filter = request.Filter
+                Filters = request.Filters
             };
 
             return await _mediator.Send(query);

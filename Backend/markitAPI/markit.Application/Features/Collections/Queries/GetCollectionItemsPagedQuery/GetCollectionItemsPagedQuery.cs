@@ -4,32 +4,31 @@ using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using MediatR;
 
-namespace markit.Application.Features.Collections.Queries.GetCollectionChildrenPagedQuery
+namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery
 {
-    public class GetCollectionChildrenPagedQuery : IRequest<CollectionItemPage>
+    public class GetCollectionItemsPagedQuery : CollectionItemPageRequest, IRequest<CollectionItemPage>
     {
         public int CreatorId { get; set; }
-        public int CollectionId {  get; set; }
-        public int PageSize { get; set; }
-        public required string? Cursor { get; set; }
-        public CollectionItemFilter Filter { get; set; }
     }
 
-    public class GetCollectionChildrenPagedQueryHandler : IRequestHandler<GetCollectionChildrenPagedQuery, CollectionItemPage>
+    public class GetCollectionItemsPagedQueryHandler : IRequestHandler<GetCollectionItemsPagedQuery, CollectionItemPage>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly CollectionItemService _collectionItemService;
 
-        public GetCollectionChildrenPagedQueryHandler(IUnitOfWork unitOfWork, CollectionItemService collectionItemService)
+        public GetCollectionItemsPagedQueryHandler(IUnitOfWork unitOfWork, CollectionItemService collectionItemService)
         {
             _unitOfWork = unitOfWork;
             _collectionItemService = collectionItemService;
         }
 
-        public async Task<CollectionItemPage> Handle(GetCollectionChildrenPagedQuery request, CancellationToken cancellationToken)
+        public async Task<CollectionItemPage> Handle(GetCollectionItemsPagedQuery request, CancellationToken cancellationToken)
         {
             await ValidateCreator(request.CreatorId);
-            await ValidateCollection(request.CollectionId, request.CreatorId);
+
+            if (request.Filters.CollectionId.HasValue) {
+                await  ValidateCollection(request.Filters.CollectionId.GetValueOrDefault(), request.CreatorId);
+            }
 
             return await GetItemsAsync(request);
         }
@@ -48,16 +47,9 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionChildrenP
             if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
         }
 
-        private async Task<CollectionItemPage> GetItemsAsync(GetCollectionChildrenPagedQuery request)
+        private async Task<CollectionItemPage> GetItemsAsync(GetCollectionItemsPagedQuery request)
         {
-            return await _collectionItemService.GetItemsPageAsync(
-                new CollectionItemPageRequest(
-                    request.CollectionId,
-                    request.PageSize,
-                    request.Filter,
-                    request.Cursor
-                )
-            );
+            return await _collectionItemService.GetItemsPageAsync(request);
         }
     }
 }

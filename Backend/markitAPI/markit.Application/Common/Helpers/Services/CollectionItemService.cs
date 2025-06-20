@@ -17,23 +17,33 @@ namespace markit.Application.Common.Helpers.Services
             bool hasNextPage = false;
             string? nextCursor = null;
 
-            if (request.Filter.Equals(CollectionItemFilter.All) || request.Filter.Equals(CollectionItemFilter.Collection))
+            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Collection))
             {
                 var collections = await _unitOfWork.collectionRepository
-                    .GetAsyncCursorBasedPagination(request.CollectionId, request.PageSize, cursorData);
+                    .GetAsyncCursorBasedPagination(
+                        request.PageSize,
+                        cursorData,
+                        request.Filters.CollectionId,
+                        request.Filters.OnlyFavorites
+                    );
 
                 items.AddRange(_mapper.Map<List<CollectionItem>>(collections));
             }
 
-            if (request.Filter.Equals(CollectionItemFilter.All) || request.Filter.Equals(CollectionItemFilter.Mark))
+            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Mark))
             {
                 var marks = await _unitOfWork.markRepository
-                    .GetAsyncCursorBasedPagination(request.CollectionId, request.PageSize, cursorData);
+                    .GetAsyncCursorBasedPagination(
+                        request.PageSize,
+                        cursorData,
+                        request.Filters.CollectionId,
+                        request.Filters.OnlyFavorites
+                    );
 
                 items.AddRange(_mapper.Map<List<CollectionItem>>(marks));
             }
 
-            if (request.Filter.Equals(CollectionItemFilter.All))
+            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All))
             {
                 items = [.. items.OrderBy(c => c.CreatedAt)
                     .ThenBy(c => c.Type)

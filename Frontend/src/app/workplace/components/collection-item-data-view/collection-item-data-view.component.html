@@ -21,7 +21,7 @@
     <ng-template pTemplate="list" let-items>
         <!-- List template -->
         @for ( item of items; track $index) {
-            <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item mb-2 fadein animation-duration-200">
+            <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item mb-2">
                 <!-- Collection Item Information -->
                 <div (click)="onItemSelected(item)" class="grid grid-nogutter w-full cursor-pointer">
                     <!-- Name and Description -->

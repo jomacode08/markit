@@ -5,12 +5,20 @@ export const WORKPLACE_ROUTES: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: MAIN_COLLECTION_PARAM
+        redirectTo: `explore/${ MAIN_COLLECTION_PARAM }`
     },
     {
-        path: ':id',
+        path: 'explore/:id',
         loadComponent: () =>
             import('./pages/collection-explorer/collection-explorer.component')
             .then(c => c.CollectionExplorerComponent)
-    }
+    },
+    {
+        title: 'Starred',
+        path: 'starred',
+        loadComponent: () =>
+            import('./pages/starred/starred.component')
+            .then(c => c.StarredComponent)
+    },
+
 ]

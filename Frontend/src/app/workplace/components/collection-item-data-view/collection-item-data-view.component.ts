@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { ROUTES } from '../../../shared/utils/constant';
 import { CollectionItemDialogComponent } from '../collection-item-dialog/collection-item-dialog.component';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 
 @Component({
   selector: 'collection-item-data-view',
@@ -24,6 +25,7 @@ import { CustomMessageService } from '../../../shared/services/custom-message.se
     CollectionItemIconPipe,
     DataViewModule,
     FloatingMenuComponent,
+    IntersectionDirective,
   ],
   providers: [DialogService],
   templateUrl: './collection-item-data-view.component.html',

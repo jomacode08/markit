@@ -55,8 +55,8 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
 
   //* Configuration
   private dialogReference: DynamicDialogRef | undefined;
-  public itemsLoadingSubscription ?: Subscription;
-  public itemsFilterSubscription ?: Subscription;
+  private itemsLoadingSubscription ?: Subscription;
+  private itemsFilterSubscription ?: Subscription;
   public loading = signal<boolean>(false);
 
   //* Collection
@@ -99,7 +99,11 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       //* Load first items page
       tap((collection) => {
         this.collectionId = collection.id;
-        this.collectionItemPaginationService.resetAndLoad(CollectionItemTypeFilter.All, collection.id);
+        this.collectionItemPaginationService.resetAndLoad({
+          type: CollectionItemTypeFilter.All,
+          collectionId : collection.id,
+          onlyFavorites : false
+        });
       }),
       finalize(() => this.setLoading(false)),
       catchError(() => {
@@ -111,9 +115,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     this.itemsLoadingSubscription = this.collectionItemPaginationService.loading$
-    .subscribe((areItemsloading) => this.setLoading(areItemsloading));
-    this.itemsFilterSubscription = this.collectionItemPaginationService.filter$
-    .subscribe((filter) => this.currentFilter.set(filter));
+      .subscribe((areItemsloading) => this.setLoading(areItemsloading));
+    this.itemsFilterSubscription = this.collectionItemPaginationService.type$
+      .subscribe((filter) => this.currentFilter.set(filter));
   }
 
   public ngOnDestroy(): void {
@@ -137,7 +141,11 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
 
   public applyCollectionItemFilter( filter: CollectionItemTypeFilter ): void {
     if (this.collectionId === undefined) return;
-    this.collectionItemPaginationService.resetAndLoad(filter, this.collectionId);
+    this.collectionItemPaginationService.resetAndLoad({
+      type: filter,
+      collectionId : this.collectionId,
+      onlyFavorites : false
+    });
   }
 
   private addItem( type: CollectionItemType ): void {

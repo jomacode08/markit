@@ -39,10 +39,24 @@ namespace markit.Infraestructure.Repositorys.Marks
             return await collections.ToListAsync();
         }
 
-		public Task<List<Collection>> GetAsyncCursorBasedPagination(int parentCollectionId, int pageSize, CursorData? cursor)
-		{
+		public Task<List<Collection>> GetAsyncCursorBasedPagination(
+			int pageSize,
+			CursorData? cursor,
+			int? collectionId = null,
+			bool onlyFavorites = false
+		)
+        {
 			IQueryable<Collection> collectionsQuery = context.Collections.AsNoTracking();
-			collectionsQuery = collectionsQuery.Where(c => c.ParentId.Equals(parentCollectionId));
+
+			if (collectionId.HasValue)
+			{
+				collectionsQuery = collectionsQuery.Where(c => c.ParentId.Equals(collectionId));
+			}
+
+			if (onlyFavorites)
+			{
+				collectionsQuery = collectionsQuery.Where(c => c.IsFavorite);
+			}
 
 			if (cursor != null)
 			{

@@ -5,10 +5,10 @@ import { BehaviorSubject, finalize } from 'rxjs';
 import { CollectionItem } from '../../../interfaces/collection-item';
 import { environment } from '../../../../../environments/environment';
 
-export enum CollectionItemTypeFilter {
-  All = 'All',
-  Collection = 'Collection',
-  Mark = 'Mark'
+export interface CollectionItemPageRequest {
+  pageSize : number,
+  cursor ?: string,
+  filters : CollectionItemFilters
 }
 
 export interface CollectionItemPage {
@@ -17,67 +17,76 @@ export interface CollectionItemPage {
   hasNextPage : boolean;
 }
 
-export interface CollectionItemPageRequest {
-  collectionId : number;
-  pageSize: number;
-  filter : CollectionItemTypeFilter;
-  cursor ?: string;
+export interface CollectionItemFilters {
+  type: CollectionItemTypeFilter,
+  collectionId ?: number,
+  onlyFavorites : boolean,
+}
+
+export enum CollectionItemTypeFilter {
+  All = 'All',
+  Collection = 'Collection',
+  Mark = 'Mark'
 }
 
 @Injectable({providedIn: 'root'})
 export class CollectionItemPaginationService {
   private readonly BASE_URL: string = `${ environment.baseApiUrl }/collections`;
   private readonly PAGE_SIZE = 20;
-  private items = new BehaviorSubject<CollectionItem[]>([]);
-  private filter = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
-  private loading = new BehaviorSubject<boolean>(false);
+  private cursor ?: string;
   private hasNextPage : boolean = true;
   private isResetEnabled : boolean = false;
-  private collectionId ?: number;
-  private cursor ?: string;
 
+  private itemsSubject = new BehaviorSubject<CollectionItem[]>([]);
+  private typeSubject = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  
+  private filters : CollectionItemFilters = {
+    type : this.typeSubject.value,
+    collectionId : undefined,
+    onlyFavorites : false
+  };
+  
   //! To the external world
-  public items$ = this.items.asObservable();
-  public filter$ = this.filter.asObservable();
-  public loading$ = this.loading.asObservable();
+  public items$ = this.itemsSubject.asObservable();
+  public type$ = this.typeSubject.asObservable();
+  public loading$ = this.loadingSubject.asObservable();
 
   constructor(
     private http: HttpClient
   ) { }
 
   public loadNewPage(): void {
-    if (this.loading.value) return;
+    if (this.loadingSubject.value) return;
     if (!this.hasNextPage) return;
-    if (!this.collectionId) return;
     
-    this.loading.next(true);
+    this.loadingSubject.next(true);
 
     let bodyRequest = {
-      collectionId : this.collectionId,
-      pageSize: this.PAGE_SIZE,
-      filter: this.filter.value,
-      cursor: this.cursor
+      pageSize : this.PAGE_SIZE,
+      cursor : this.cursor,
+      filters : this.filters
     } as CollectionItemPageRequest;
 
-    this.http.post<CollectionItemPage>(`${ this.BASE_URL }/getChildrenPaged`, bodyRequest)
+    this.http.post<CollectionItemPage>(`${ this.BASE_URL }/getItemsPaged`, bodyRequest)
     .pipe(
-      finalize(() => this.loading.next(false))
+      finalize(() => this.loadingSubject.next(false))
     )
     .subscribe((page) => {
-      const currentItems = this.isResetEnabled ? [] : this.items.value;
-      this.items.next([...currentItems, ...page.items ?? []]);
+      const currentItems = this.isResetEnabled ? [] : this.itemsSubject.value;
+      this.itemsSubject.next([...currentItems, ...page.items]);
       this.cursor = page.newCursor;
       this.hasNextPage = page.hasNextPage;
       this.isResetEnabled = this.isResetEnabled ? false : this.isResetEnabled;
     });
   }
 
-  public resetAndLoad( filter: CollectionItemTypeFilter, collectionId ?: number ): void {
-    this.filter.next(filter);
+  public resetAndLoad(filters : CollectionItemFilters): void {
+    this.filters = filters;
     this.isResetEnabled = true;
-    this.hasNextPage = true;
     this.cursor = undefined;
-    this.collectionId = collectionId;
+    this.hasNextPage = true;
+    this.typeSubject.next(filters.type);
     this.loadNewPage();
   }
 }

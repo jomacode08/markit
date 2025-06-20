@@ -10,6 +10,7 @@ describe('CollectionItemService', () => {
   let service: CollectionItemPaginationService;
   let httpMock: HttpTestingController;
 
+  const getItemsPagedUrl = `${environment.baseApiUrl}/collections/getItemsPaged`;
   const mockCursor = '2025-05-30T14:08:08.1966667|Mark|2';
   const mockPage: CollectionItemPage = {
     items: [
@@ -54,13 +55,13 @@ describe('CollectionItemService', () => {
 
   it('should load a new page', () => {
     // GIVEN
-    service['collectionId'] = 1;
-    service['filter'].next(CollectionItemTypeFilter.All);
+    service['filters'].collectionId = 1;
+    service['typeSubject'].next(CollectionItemTypeFilter.All);
     service['isResetEnabled'] = true;
     // WHEN
     service.loadNewPage();
     // THEN
-    const req = httpMock.expectOne(`${environment.baseApiUrl}/collections/getChildrenPaged`);
+    const req = httpMock.expectOne(getItemsPagedUrl);
     expect(req.request.method).toBe('POST');
     req.flush(mockPage);
 
@@ -89,18 +90,18 @@ describe('CollectionItemService', () => {
         newCursor: undefined,
         hasNextPage: false
     };
-    service['collectionId'] = 1;
-    service['filter'].next(CollectionItemTypeFilter.All);
+    service['filters'].collectionId = 1;
+    service['typeSubject'].next(CollectionItemTypeFilter.All);
     service['isResetEnabled'] = false;
-    service['items'] = new BehaviorSubject(mockPage.items);
+    service['itemsSubject'] = new BehaviorSubject(mockPage.items);
     // WHEN    
     service.loadNewPage();
     // THEN
-    const req = httpMock.expectOne(`${environment.baseApiUrl}/collections/getChildrenPaged`);
+    const req = httpMock.expectOne(getItemsPagedUrl);
     expect(req.request.method).toBe('POST');
     req.flush(mockNextPage);
 
-    const newItemsValue = service['items'].value;
+    const newItemsValue = service['itemsSubject'].value;
     expect(newItemsValue.length).toBe(3);
     expect(newItemsValue[0].name).toBe('Item 1');
     expect(newItemsValue[2].name).toBe('Item 3');
@@ -111,46 +112,39 @@ describe('CollectionItemService', () => {
 
   it('should not load a new page if already loading', () => {
     // GIVEN
-    service['loading'].next(true);
-    service['collectionId'] = 1;
+    service['loadingSubject'].next(true);
+    service['filters'].collectionId = 1;
     // WHEN
     service.loadNewPage();
     // THEN
-    httpMock.expectNone(`${environment.baseApiUrl}/collections/getChildrenPaged`);
+    httpMock.expectNone(getItemsPagedUrl);
   });
 
   it('should not load a new page if hasNextPage is false', () => {
     // GIVEN
-    service['loading'].next(false);
+    service['loadingSubject'].next(false);
     service['hasNextPage'] = false;
-    service['collectionId'] = 1;
+    service['filters'].collectionId = 1;
     // WHEN
     service.loadNewPage();
     // THEN
-    httpMock.expectNone(`${environment.baseApiUrl}/collections/getChildrenPaged`);
-  });
-
-  it('should not load a new page if collectionId is not set', () => {
-    // GIVEN
-    service['loading'].next(false);
-    service['hasNextPage'] = true;
-    service['collectionId'] = undefined;
-    // WHEN
-    service.loadNewPage();
-    // THEN
-    httpMock.expectNone(`${environment.baseApiUrl}/collections/getChildrenPaged`);
+    httpMock.expectNone(getItemsPagedUrl);
   });
 
   it('should reset and load new page', () => {
     spyOn(service, 'loadNewPage');
     // WHEN
-    service.resetAndLoad(CollectionItemTypeFilter.Mark, 2);
+    service.resetAndLoad({
+      type: CollectionItemTypeFilter.Mark,
+      collectionId : 2,
+      onlyFavorites : false
+    });
     // THEN
-    expect(service['filter'].value).toBe(CollectionItemTypeFilter.Mark);
+    expect(service['typeSubject'].value).toBe(CollectionItemTypeFilter.Mark);
     expect(service['isResetEnabled']).toBeTrue();
     expect(service['hasNextPage']).toBeTrue();
     expect(service['cursor']).toBeUndefined();
-    expect(service['collectionId']).toBe(2);
+    expect(service['filters'].collectionId).toBe(2);
     expect(service.loadNewPage).toHaveBeenCalled();
   });
 });

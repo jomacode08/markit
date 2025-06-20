@@ -7,6 +7,6 @@ namespace markit.Application.Contracts.Persistence.Marks
     public interface ICollectionRepository : IAsyncRepository<Collection>
     {
         Task<List<Collection>> GetHierarchyRecursively(int rootCollectionId);
-        Task<List<Collection>> GetAsyncCursorBasedPagination(int parentCollectionId, int pageSize, CursorData? cursor);
+        Task<List<Collection>> GetAsyncCursorBasedPagination(int pageSize, CursorData? cursor, int? collectionId = null, bool onlyFavorites = false);
     }
 }

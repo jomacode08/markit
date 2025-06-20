@@ -1,6 +1,6 @@
 import { CollectionExplorerBreadcrumbComponent } from './../../components/collection-explorer-breadcrumb/collection-explorer-breadcrumb.component';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, firstValueFrom, Observable, of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { Component, input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -94,7 +94,7 @@ describe('CollectionExplorerComponent', () => {
         mockCollectionService.getMainByCurrentSession.and.returnValue(of(mockRootCollection));
         params = new BehaviorSubject({ id: MAIN_COLLECTION_PARAM });
         mockCollectionItemPaginationService.items$   = new BehaviorSubject([]).asObservable();
-        mockCollectionItemPaginationService.filter$  = new BehaviorSubject(CollectionItemTypeFilter.All).asObservable();
+        mockCollectionItemPaginationService.type$  = new BehaviorSubject(CollectionItemTypeFilter.All).asObservable();
         mockCollectionItemPaginationService.loading$ = new BehaviorSubject(false).asObservable();
 
         await TestBed.configureTestingModule({
@@ -149,7 +149,11 @@ describe('CollectionExplorerComponent', () => {
         const collection = await loadCollection(ROOT_PARAM_VALUE);
         // THEN - Assert correct method call and compare results with expected values.
         expect(mockCollectionService.getMainByCurrentSession).toHaveBeenCalled();
-        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith(CollectionItemTypeFilter.All, mockRootCollection.id);
+        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
+            type: CollectionItemTypeFilter.All,
+            collectionId: mockRootCollection.id,
+            onlyFavorites: false 
+        });
         expect(collection).toEqual(mockRootCollection);
         expect(component.loading()).toBeFalse();
     });
@@ -167,7 +171,11 @@ describe('CollectionExplorerComponent', () => {
         const collection = await loadCollection(VALID_PARAM);
         // THEN - Assert correct method calls and compare results with expected values.
         expect(mockCollectionService.getById).toHaveBeenCalled();
-        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith(CollectionItemTypeFilter.All, mockCollection.id);
+        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
+            type: CollectionItemTypeFilter.All,
+            collectionId: mockCollection.id,
+            onlyFavorites: false 
+        });
         expect(collection).toEqual(mockCollection);
     });
 
@@ -283,7 +291,11 @@ describe('CollectionExplorerComponent', () => {
         // WHEN - Perform operation
         component.applyCollectionItemFilter(filter);
         // THEN - Assert expected behaviour.
-        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith(filter, collectionId);
+        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
+            type: filter,
+            collectionId: collectionId,
+            onlyFavorites: false 
+        });
     });
 
     it('Should reset pagination and set all filter, onItemUpdated()', () => {
@@ -294,6 +306,10 @@ describe('CollectionExplorerComponent', () => {
         // WHEN - Perform operation
         component.onItemUpdated();
         // THEN - Assert expected behaviour.
-        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith(filter, collectionId);
+        expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
+            type: filter,
+            collectionId: collectionId,
+            onlyFavorites: false 
+        });
     });
 });

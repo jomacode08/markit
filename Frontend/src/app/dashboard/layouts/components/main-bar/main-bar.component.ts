@@ -31,6 +31,11 @@ export class MainBarComponent {
       icon: 'fa fa-hard-drive',
       command: () => this.navigate(ROUTES.MY_MARKS)
     },
+    {
+      label: 'Starred',
+      icon: 'fa fa-star',
+      command: () => this.navigate(ROUTES.STARRED)
+    },
   ];
 
   public userActions : MenuItem[] = [

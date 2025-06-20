@@ -1,12 +1,23 @@
 ﻿namespace markit.Application.Features.Collections.Queries.ViewModels
 {
+    public class CollectionItemPageRequest
+    {
+        public int PageSize { get; set; }
+        public string? Cursor { get; set; }
+        public required CollectionItemPageFilters Filters { get; set; }
+    }
+
     public record CollectionItemPage(string? NewCursor, List<CollectionItem> Items, bool HasNextPage);
 
-    public record CollectionItemPageRequest(int CollectionId, int PageSize, CollectionItemFilter Filter, string? Cursor);
+    public record CollectionItemPageFilters(
+        CollectionItemTypeFilter Type,
+        int? CollectionId = null,
+        bool OnlyFavorites = false
+    );
 
     public record CursorData(DateTime CreatedAt, CollectionItemType Type, int Id);
 
-    public enum CollectionItemFilter
+    public enum CollectionItemTypeFilter
     {
         All,
         Collection,
