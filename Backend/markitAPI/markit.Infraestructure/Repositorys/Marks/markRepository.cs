@@ -1,7 +1,9 @@
-﻿using markit.Application.Contracts.Persistence.Marks;
+﻿using System.Linq.Expressions;
+using markit.Application.Contracts.Persistence.Marks;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace markit.Infraestructure.Repositorys.Marks
@@ -30,37 +32,79 @@ namespace markit.Infraestructure.Repositorys.Marks
         public Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
             CursorData? cursor,
+            SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,
             bool onlyFavorites = false
         )
         {
             IQueryable<Mark> marksQuery = context.Marks.AsNoTracking();
 
+            // Apply filters
             if (collectionId.HasValue)
             {
-                marksQuery = marksQuery.Where(c => c.CollectionId.Equals(collectionId));
+                marksQuery = marksQuery.Where(m => m.CollectionId.Equals(collectionId));
             }
 
             if (onlyFavorites)
             {
-                marksQuery = marksQuery.Where(c => c.IsFavorite);
+                marksQuery = marksQuery.Where(m => m.IsFavorite);
             }
 
             if (cursor != null)
             {
-                marksQuery = marksQuery.Where(c =>
-                    c.CreatedDate > cursor.CreatedAt ||
-                    (c.CreatedDate.Equals(cursor.CreatedAt) &&
-                        (cursor.Type != CollectionItemType.Mark || c.Id > cursor.Id))
-                );
+                var cursorFilter = GetCursorBasedPaginationFilterExpression(sortOrder, cursor);
+                marksQuery = marksQuery.Where(cursorFilter);
+            }
+
+            // Includes
+            marksQuery = marksQuery.Include(m => m.Blocks);
+
+            // Sorting
+            if (sortOrder.Equals(SortPaginationOrder.Ascending))
+            {
+                marksQuery = marksQuery
+                    .OrderBy(m => m.CreatedDate)
+                    .ThenBy(m => m.Id);
+            }
+            else
+            {
+                marksQuery = marksQuery
+                    .OrderByDescending(m => m.CreatedDate)
+                    .ThenByDescending(m => m.Id);
             }
 
             return marksQuery
-                .Include(c => c.Blocks)
-                .OrderBy(c => c.CreatedDate)
-                .ThenBy(c => c.Id)
                 .Take(pageSize + 1)
                 .ToListAsync();
+        }
+
+        private static Expression<Func<Mark, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)
+        {
+            if (sortOrder.Equals(SortPaginationOrder.Ascending))
+            {
+                return m =>
+                    m.CreatedDate > cursor.CreatedAt ||
+                    (
+                        m.CreatedDate == cursor.CreatedAt &&
+                        (
+                            cursor.Type != CollectionItemType.Mark ||
+                            m.Id > cursor.Id
+                        )
+                    );
+
+            }
+            else
+            {
+                return m =>
+                    m.CreatedDate < cursor.CreatedAt ||
+                    (
+                        m.CreatedDate == cursor.CreatedAt &&
+                        (
+                            cursor.Type != CollectionItemType.Mark ||
+                            m.Id < cursor.Id
+                        )
+                    );
+            }
         }
     }
 }

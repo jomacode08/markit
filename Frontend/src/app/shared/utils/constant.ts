@@ -12,6 +12,7 @@ export const ROUTES = {
     COLLECTION_SEE: (id: number) => `workplace/explore/${ id }`,
     MY_MARKS: `workplace/explore/${ MAIN_COLLECTION_PARAM }`,
     STARRED: 'workplace/starred',
+    RECENT: 'workplace/recent',
     
     // Others
     NOT_FOUND: 'not-found',

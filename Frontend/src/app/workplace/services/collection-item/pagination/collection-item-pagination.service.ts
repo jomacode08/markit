@@ -8,6 +8,7 @@ import { environment } from '../../../../../environments/environment';
 export interface CollectionItemPageRequest {
   pageSize : number,
   cursor ?: string,
+  sortOrder : SortPaginationOrder,
   filters : CollectionItemFilters
 }
 
@@ -29,13 +30,20 @@ export enum CollectionItemTypeFilter {
   Mark = 'Mark'
 }
 
+export enum SortPaginationOrder {
+  Ascending = 'Ascending',
+  Descending = 'Descending',
+}
+
 @Injectable({providedIn: 'root'})
 export class CollectionItemPaginationService {
   private readonly BASE_URL: string = `${ environment.baseApiUrl }/collections`;
   private readonly PAGE_SIZE = 20;
+
   private cursor ?: string;
   private hasNextPage : boolean = true;
   private isResetEnabled : boolean = false;
+  private sortOrder : SortPaginationOrder = SortPaginationOrder.Ascending;
 
   private itemsSubject = new BehaviorSubject<CollectionItem[]>([]);
   private typeSubject = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
@@ -65,6 +73,7 @@ export class CollectionItemPaginationService {
     let bodyRequest = {
       pageSize : this.PAGE_SIZE,
       cursor : this.cursor,
+      sortOrder : this.sortOrder,
       filters : this.filters
     } as CollectionItemPageRequest;
 
@@ -81,8 +90,12 @@ export class CollectionItemPaginationService {
     });
   }
 
-  public resetAndLoad(filters : CollectionItemFilters): void {
+  public resetAndLoad(
+    filters : CollectionItemFilters,
+    sortOrder : SortPaginationOrder = SortPaginationOrder.Ascending
+  ): void {
     this.filters = filters;
+    this.sortOrder = sortOrder;
     this.isResetEnabled = true;
     this.cursor = undefined;
     this.hasNextPage = true;

@@ -4,6 +4,7 @@
     {
         public int PageSize { get; set; }
         public string? Cursor { get; set; }
+        public SortPaginationOrder SortOrder { get; set; } = SortPaginationOrder.Ascending;
         public required CollectionItemPageFilters Filters { get; set; }
     }
 
@@ -22,5 +23,11 @@
         All,
         Collection,
         Mark
+    }
+
+    public enum SortPaginationOrder
+    {
+        Ascending,
+        Descending
     }
 }

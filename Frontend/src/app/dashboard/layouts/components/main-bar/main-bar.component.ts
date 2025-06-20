@@ -36,6 +36,11 @@ export class MainBarComponent {
       icon: 'fa fa-star',
       command: () => this.navigate(ROUTES.STARRED)
     },
+    {
+      label: 'Recent',
+      icon: 'fa fa-clock',
+      command: () => this.navigate(ROUTES.RECENT)
+    },
   ];
 
   public userActions : MenuItem[] = [

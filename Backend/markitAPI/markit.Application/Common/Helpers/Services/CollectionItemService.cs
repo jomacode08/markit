@@ -14,7 +14,6 @@ namespace markit.Application.Common.Helpers.Services
         {
             List<CollectionItem> items = [];
             CursorData? cursorData = ParseCursor(request.Cursor);
-            bool hasNextPage = false;
             string? nextCursor = null;
 
             if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Collection))
@@ -23,6 +22,7 @@ namespace markit.Application.Common.Helpers.Services
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
                         cursorData,
+                        request.SortOrder,
                         request.Filters.CollectionId,
                         request.Filters.OnlyFavorites
                     );
@@ -36,6 +36,7 @@ namespace markit.Application.Common.Helpers.Services
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
                         cursorData,
+                        request.SortOrder,
                         request.Filters.CollectionId,
                         request.Filters.OnlyFavorites
                     );
@@ -45,14 +46,12 @@ namespace markit.Application.Common.Helpers.Services
 
             if (request.Filters.Type.Equals(CollectionItemTypeFilter.All))
             {
-                items = [.. items.OrderBy(c => c.CreatedAt)
-                    .ThenBy(c => c.Type)
-                    .ThenBy(c => c.TypeId)
-                    .Take(request.PageSize + 1)
-                ];
+
+                var orderedItems = OrderItems(request.SortOrder, items);
+                items = [.. orderedItems.Take(request.PageSize + 1)];
             }
 
-            hasNextPage = items.Count > request.PageSize;
+            bool hasNextPage = items.Count > request.PageSize;
             items = [.. items.Take(request.PageSize)];
 
             if (items.Count.Equals(request.PageSize))
@@ -78,6 +77,24 @@ namespace markit.Application.Common.Helpers.Services
             if (!int.TryParse(parts[2], out int id)) return null;
 
             return new CursorData(createdAt, type, id);
+        }
+
+        private static IOrderedEnumerable<CollectionItem> OrderItems(SortPaginationOrder sortOrder, List<CollectionItem> items)
+        {
+            if (sortOrder.Equals(SortPaginationOrder.Ascending))
+            {
+                return items
+                    .OrderBy(c => c.CreatedAt)
+                    .ThenBy(c => c.Type)
+                    .ThenBy(c => c.TypeId);
+            }
+            else
+            {
+                return items
+                    .OrderByDescending(c => c.CreatedAt)
+                    .ThenByDescending(c => c.Type)
+                    .ThenByDescending(c => c.TypeId);
+            }
         }
     }
 }

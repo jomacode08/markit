@@ -1,0 +1,10 @@
+<ng-container *ngIf="items$ | async as items">
+    <collection-item-data-view
+        [items]="items"
+        [currentFilter]="currentFilter()"
+        [loading]="loading()"
+        (onFilterSelected)="resetAndFilterItems($event)"
+        (onItemViewChange)="onItemViewChange($event, items.length)"
+        (onItemUpdated)="resetAndFilterItems(CollectionItemTypeFilter.All)"
+    />
+</ng-container>

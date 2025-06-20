@@ -20,5 +20,12 @@ export const WORKPLACE_ROUTES: Routes = [
             import('./pages/starred/starred.component')
             .then(c => c.StarredComponent)
     },
+    {
+        title: 'Recent',
+        path: 'recent',
+        loadComponent: () =>
+            import('./pages/recent/recent.component')
+            .then(c => c.RecentComponent)
+    },
 
 ]

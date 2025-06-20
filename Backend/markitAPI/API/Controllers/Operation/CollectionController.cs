@@ -61,6 +61,7 @@ namespace markit.API.Controllers.Operation
                 CreatorId = _sessionService.GetCreatorId(),
                 PageSize = request.PageSize,
                 Cursor = request.Cursor,
+                SortOrder = request.SortOrder,
                 Filters = request.Filters
             };
 
