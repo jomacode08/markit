@@ -3,6 +3,7 @@ using markit.Application.Models.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace markit.Infraestructure.Persistence.EF
 {
@@ -19,14 +20,15 @@ namespace markit.Infraestructure.Persistence.EF
             using (var scope = webApplication.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<MarkitDbContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<object>>();
 
                 try
                 {
                     await MarkitDbContextSeed.SeedAsync(context, userDefaultSettings);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // TODO: Aplicar Logging, revisar rollback
+                    logger.LogError(ex, "An error ocurred while seeding the database: {ex.Message}" , ex.Message);
                     throw;
                 }
             }

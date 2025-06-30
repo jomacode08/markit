@@ -18,6 +18,7 @@ using markit.Application.Models.Authentication.Google;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using markit.Application.Models.Authentication.MeiliSearch;
 
 namespace markit.Infraestructure
 {
@@ -27,7 +28,7 @@ namespace markit.Infraestructure
         private static readonly string connStringSectionName = GeneralConstant.Configuration.connStringSectionName;
         private static readonly string userDefaultSectionName = GeneralConstant.Configuration.userDefaultSectionName;
         private static readonly string googleAuthSectionName = GeneralConstant.Configuration.googleAuthSectionName;
-
+        private static readonly string meiliSearchSectionName = GeneralConstant.Configuration.meiliSearchSettingsName;
 
         public static IServiceCollection AddInfraestructureServices(this IServiceCollection services,
             IConfiguration configuration)
@@ -77,6 +78,10 @@ namespace markit.Infraestructure
             var googleAuthSettings = new GoogleAuthSettings();
             services.Configure<GoogleAuthSettings>(configuration.GetSection(googleAuthSectionName));
             configuration.Bind(googleAuthSectionName, googleAuthSettings);
+
+            var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
+            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(meiliSearchSectionName));
+            configuration.Bind(meiliSearchSectionName, meiliSearchAuthSettings);
 
             // Configurar Identity con la clase personalizada de Usuario
             services.AddIdentity<AppUser, IdentityRole>()

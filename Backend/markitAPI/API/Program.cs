@@ -5,6 +5,7 @@ using markit.API.Middleware;
 using markit.Infraestructure.Persistence.EF;
 using Serilog;
 using System.Text.Json;
+using markit.Infraestructure.Persistence.MeiliSearch.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,5 +55,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.SeedDatabase(builder.Configuration);
+await app.SeedIndexes(builder.Configuration);
 
 app.Run();
