@@ -19,6 +19,9 @@ using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using markit.Application.Models.Authentication.MeiliSearch;
+using markit.Infraestructure.Repositorys.MeiliSearch;
+using markit.Application.Contracts.MeiliSearch;
+using markit.Application.Models.MeiliSearch.Documents;
 
 namespace markit.Infraestructure
 {
@@ -34,12 +37,13 @@ namespace markit.Infraestructure
             IConfiguration configuration)
         {
             services
-                .AddPersistence(configuration)
+                .AddDataBasePersistence(configuration)
+                .AddMeiliSearchPersistence(configuration)
                 .AddAuthentication(configuration);
             return services;
         }
 
-        public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDataBasePersistence(this IServiceCollection services, IConfiguration configuration)
         {
             string connString = configuration.GetConnectionString(connStringSectionName) ?? "";
 
@@ -68,6 +72,25 @@ namespace markit.Infraestructure
             return services;
         }
 
+        public static IServiceCollection AddMeiliSearchPersistence(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Bind auth settings configuration data
+            var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
+            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(meiliSearchSectionName));
+            configuration.Bind(meiliSearchSectionName, meiliSearchAuthSettings);
+
+            // Inject repositories
+            services.AddScoped<IDocumentRepository<CollectionDocument>, DocumentRepository<CollectionDocument>>(provider =>
+            {
+                return new DocumentRepository<CollectionDocument>(meiliSearchAuthSettings, GeneralConstant.MeiliSearch.COLLECTION_INDEX_UID);
+            });
+            services.AddScoped<IDocumentRepository<MarkDocument>, DocumentRepository<MarkDocument>>(provider =>
+            {
+                return new DocumentRepository<MarkDocument>(meiliSearchAuthSettings, GeneralConstant.MeiliSearch.MARK_INDEX_UID);
+            });
+            return services;
+        }
+
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             // Mapear clase JwtSettings, GoogleAuthSettings contra la configuración incluida en AppSettings.json
@@ -78,10 +101,6 @@ namespace markit.Infraestructure
             var googleAuthSettings = new GoogleAuthSettings();
             services.Configure<GoogleAuthSettings>(configuration.GetSection(googleAuthSectionName));
             configuration.Bind(googleAuthSectionName, googleAuthSettings);
-
-            var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
-            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(meiliSearchSectionName));
-            configuration.Bind(meiliSearchSectionName, meiliSearchAuthSettings);
 
             // Configurar Identity con la clase personalizada de Usuario
             services.AddIdentity<AppUser, IdentityRole>()

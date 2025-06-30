@@ -1,4 +1,5 @@
-﻿using markit.Application.Models.Authentication.MeiliSearch;
+﻿using markit.Application.Helpers;
+using markit.Application.Models.Authentication.MeiliSearch;
 using markit.Application.Models.MeiliSearch;
 using Meilisearch;
 
@@ -7,13 +8,13 @@ namespace markit.Infraestructure.Persistence.MeiliSearch
     public static class MeiliSearchSeed
     {
         private static readonly List<MeiliSearchIndex> indexes = [
-            new MeiliSearchIndex("collections", [
+            new MeiliSearchIndex(GeneralConstant.MeiliSearch.COLLECTION_INDEX_UID, [
                 new MeiliSearchAttributeIndex("id", Displayed : true),
                 new MeiliSearchAttributeIndex("name", Displayed : true, Searchable: true),
                 new MeiliSearchAttributeIndex("collectionId", Displayed : true),
                 new MeiliSearchAttributeIndex("creatorId", Displayed : true, Filterable: true),
             ]),
-            new MeiliSearchIndex("marks", [
+            new MeiliSearchIndex(GeneralConstant.MeiliSearch.COLLECTION_INDEX_UID, [
                 new MeiliSearchAttributeIndex("id", Displayed : true),
                 new MeiliSearchAttributeIndex("name", Displayed : true, Searchable: true),
                 new MeiliSearchAttributeIndex("markId", Displayed : true),

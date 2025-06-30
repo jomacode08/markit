@@ -32,5 +32,11 @@
             public static readonly string MARK_DEFAULT_PREVIEW = "New mark";
             public static readonly string MAIN_COLLECTION_NAME = "My marks";
         }
+
+        public static class MeiliSearch
+        {
+            public static readonly string COLLECTION_INDEX_UID = "collections";
+            public static readonly string MARK_INDEX_UID = "marks";
+        }
     }
 }
