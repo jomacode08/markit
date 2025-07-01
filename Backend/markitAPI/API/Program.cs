@@ -6,6 +6,7 @@ using markit.Infraestructure.Persistence.EF;
 using Serilog;
 using System.Text.Json;
 using markit.Infraestructure.Persistence.MeiliSearch.Managers;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,7 @@ app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfireDashboard();
 app.MapControllers();
 
 await app.SeedDatabase(builder.Configuration);

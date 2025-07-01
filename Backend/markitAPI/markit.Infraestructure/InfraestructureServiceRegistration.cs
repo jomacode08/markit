@@ -22,6 +22,9 @@ using markit.Application.Models.Authentication.MeiliSearch;
 using markit.Infraestructure.Repositorys.MeiliSearch;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
+using Hangfire;
+using System.CodeDom;
+using markit.Infraestructure.Persistence.MeiliSearch.Services;
 
 namespace markit.Infraestructure
 {
@@ -39,7 +42,8 @@ namespace markit.Infraestructure
             services
                 .AddDataBasePersistence(configuration)
                 .AddMeiliSearchPersistence(configuration)
-                .AddAuthentication(configuration);
+                .AddAuthentication(configuration)
+                .AddHangfire(configuration);
             return services;
         }
 
@@ -88,6 +92,10 @@ namespace markit.Infraestructure
             {
                 return new DocumentRepository<MarkDocument>(meiliSearchAuthSettings, GeneralConstant.MeiliSearch.MARK_INDEX_UID);
             });
+
+            // Inject background job service
+            services.AddTransient(typeof(IDocumentJobService<>), typeof(DocumentJobService<>));
+
             return services;
         }
 
@@ -142,6 +150,14 @@ namespace markit.Infraestructure
                 options.Password.RequireNonAlphanumeric = false;
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            string connString = configuration.GetConnectionString(connStringSectionName) ?? "";
+            services.AddHangfire(config => config.UseSqlServerStorage(connString));
+            services.AddHangfireServer();
             return services;
         }
     }
