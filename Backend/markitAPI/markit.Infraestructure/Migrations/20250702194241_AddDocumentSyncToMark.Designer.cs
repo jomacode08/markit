@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using markit.Infraestructure.Persistence.EF;
 
@@ -11,9 +12,11 @@ using markit.Infraestructure.Persistence.EF;
 namespace markit.Infraestructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    partial class MarkitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250702194241_AddDocumentSyncToMark")]
+    partial class AddDocumentSyncToMark
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,19 +268,19 @@ namespace markit.Infraestructure.Migrations
                             Id = "89063556-7135-4382-a532-66f364e26b85",
                             AccessFailedCount = 0,
                             AccessType = 1,
-                            ConcurrencyStamp = "7280f25f-1e7f-4d4e-b7d2-f0c3d64fb0ff",
-                            CreatedDate = new DateTime(2025, 7, 2, 19, 43, 12, 3, DateTimeKind.Utc).AddTicks(2471),
+                            ConcurrencyStamp = "351e226c-dc5b-413c-9141-1762c307f098",
+                            CreatedDate = new DateTime(2025, 7, 2, 19, 42, 40, 707, DateTimeKind.Utc).AddTicks(9011),
                             Email = "jomacode8@gmail.com",
                             EmailConfirmed = true,
                             GivenName = "Markit Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "JOMACODE8@GMAIL.COM",
                             NormalizedUserName = "JOMACODE8@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL2SIK+badvOkYJFQ+NVqTSeOwEhFnN0naz78RmlwstRt4XkpYhaXHQbhFp0X67XOw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECOxHGWndHL8/EHqeruOA4wtr16hiW5QO2sYS6Ej2NTEYF2S7ixf/ldP8APTtIFe5w==",
                             PhoneNumber = "0000000000",
                             PhoneNumberConfirmed = true,
                             RegistrationConfirmed = false,
-                            SecurityStamp = "e04aa47e-6b83-4c10-88b6-e1df4cdc2fed",
+                            SecurityStamp = "a0ed06f1-a9f6-482d-acb5-1b9efcabede5",
                             TwoFactorEnabled = false,
                             UserName = "jomacode8@gmail.com"
                         });
@@ -344,9 +347,6 @@ namespace markit.Infraestructure.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DocumentId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit");
 
@@ -355,9 +355,6 @@ namespace markit.Infraestructure.Migrations
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastSync")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
