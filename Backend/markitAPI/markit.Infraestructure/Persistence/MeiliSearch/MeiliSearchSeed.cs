@@ -1,6 +1,7 @@
 ﻿using markit.Application.Helpers;
 using markit.Application.Models.Authentication.MeiliSearch;
 using markit.Application.Models.MeiliSearch;
+using markit.Infraestructure.Persistence.MeiliSearch.Helpers;
 using Meilisearch;
 
 namespace markit.Infraestructure.Persistence.MeiliSearch
@@ -14,7 +15,7 @@ namespace markit.Infraestructure.Persistence.MeiliSearch
                 new MeiliSearchAttributeIndex("collectionId", Displayed : true),
                 new MeiliSearchAttributeIndex("creatorId", Displayed : true, Filterable: true),
             ]),
-            new MeiliSearchIndex(GeneralConstant.MeiliSearch.COLLECTION_INDEX_UID, [
+            new MeiliSearchIndex(GeneralConstant.MeiliSearch.MARK_INDEX_UID, [
                 new MeiliSearchAttributeIndex("id", Displayed : true),
                 new MeiliSearchAttributeIndex("name", Displayed : true, Searchable: true),
                 new MeiliSearchAttributeIndex("markId", Displayed : true),
@@ -43,9 +44,6 @@ namespace markit.Infraestructure.Persistence.MeiliSearch
             {
                 if (!currentIndexes.ContainsKey(index.Uid))
                 {
-                    await client.CreateIndexAsync(index.Uid, "id");
-                    var currentIndex = await client.GetIndexAsync(index.Uid);
-
                     var displayedAttributes = index.Attributes.Where(a => a.Displayed).Select(a => a.Name);
                     var searchableAttributes = index.Attributes.Where(a => a.Searchable).Select(a => a.Name);
                     var filterableAttributes = index.Attributes.Where(a => a.Filterable).Select(a => a.Name);
@@ -57,7 +55,9 @@ namespace markit.Infraestructure.Persistence.MeiliSearch
                         FilterableAttributes = filterableAttributes
                     };
 
-                    await currentIndex.UpdateSettingsAsync(settings);
+                    var unfinishedTask = await client.Index(index.Uid).UpdateSettingsAsync(settings);
+                    var finishedTask = await client.WaitForTaskAsync(unfinishedTask.TaskUid);
+                    MeiliSearchHelper.EnsureTaskSucceeded(finishedTask);
                 }
             }
         }

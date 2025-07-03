@@ -35,6 +35,7 @@
 
         public static class MeiliSearch
         {
+            public static readonly string INDEX_PRIMARY_KEY_NAME = "id";
             public static readonly string COLLECTION_INDEX_UID = "collections";
             public static readonly string MARK_INDEX_UID = "marks";
         }
