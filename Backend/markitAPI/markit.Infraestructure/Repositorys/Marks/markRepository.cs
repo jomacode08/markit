@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using markit.Application.Contracts.Persistence.Marks;
+using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace markit.Infraestructure.Repositorys.Marks
@@ -76,6 +76,20 @@ namespace markit.Infraestructure.Repositorys.Marks
             return marksQuery
                 .Take(pageSize + 1)
                 .ToListAsync();
+        }
+
+        public async Task<Mark> UpdateSyncModelAsync(int markId, string documentId)
+        {
+            var mark = await context.Marks
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.Id.Equals(markId))
+                ?? throw new NotFoundException("Mark", markId);
+
+            mark.DocumentId = documentId;
+            mark.LastSync = DateTime.Now;
+
+            await UpdateAsync(mark);
+            return mark;
         }
 
         private static Expression<Func<Mark, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)

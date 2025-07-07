@@ -1,8 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Transactions;
+using AutoMapper;
+using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
+using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -18,11 +21,17 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
     public class CreateMarkCommandHandler : IRequestHandler<CreateMarkCommand, MarkViewModel>
     {
-        private IUnitOfWork _unitOfWork;
-        private IMapper _mapper;
+        private readonly IDocumentJobService<MarkDocument> _documentJobService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CreateMarkCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateMarkCommandHandler(
+            IDocumentJobService<MarkDocument> documentJobService,
+            IUnitOfWork unitOfWork,
+            IMapper mapper
+        )
         {
+            _documentJobService = documentJobService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -30,6 +39,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
         public async Task<MarkViewModel> Handle(CreateMarkCommand request, CancellationToken cancellationToken)
         {
             await ValidateCreatorExistency(request.CreatorId);
+            await ValidateCollection(request.CollectionId);
             
             // Assign main collectionId if empty
             if (request.CollectionId.Equals(0))
@@ -37,15 +47,14 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
                 request.CollectionId = (await GetMainCollection(request.CreatorId)).Id;
             }
 
-            await ValidateCollection(request.CollectionId);
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+                Mark mark = _mapper.Map<Mark>(request);
+                await AddMarkAsync(mark);
+                CreateDocumentBackgroundJob(mark, request.CreatorId);
+                var markViewModel = _mapper.Map<MarkViewModel>(mark);
+            scope.Complete();
 
-            // Create the mark
-            Mark mark = _mapper.Map<Mark>(request);
-            _unitOfWork.markRepository.AddEntity(mark);
-
-            // Complete the transaction
-            await _unitOfWork.Complete();
-            return _mapper.Map<MarkViewModel>(mark);
+            return markViewModel;
         }
 
         private async Task ValidateCreatorExistency(int creatorId)
@@ -59,7 +68,6 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
             _ = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
         }
-
         private async Task<Collection> GetMainCollection(int creatorId)
         {
             var mainCollection = await _unitOfWork.collectionRepository
@@ -70,6 +78,17 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
             return mainCollection.FirstOrDefault()
                 ?? throw new CustomValidationException($"The main collection of the creator with id:{creatorId} is not configured.");
+        }
+
+        private async Task AddMarkAsync(Mark mark) => await _unitOfWork.markRepository.AddAsync(mark);
+
+        private void CreateDocumentBackgroundJob(Mark mark, int creatorId)
+        {
+            MarkDocument document = new(mark.Name, mark.Id, creatorId);
+            _documentJobService.ScheduleAddAsync(
+                document,
+                continueWith: () => _unitOfWork.markRepository.UpdateSyncModelAsync(mark.Id, document.Id)
+            );
         }
     }
 }

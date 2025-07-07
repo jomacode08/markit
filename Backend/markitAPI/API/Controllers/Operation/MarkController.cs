@@ -75,9 +75,15 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpDelete]
-        [Route("softDelete/{Id}")]
-        public async Task<bool> SoftDelete([FromRoute] SoftDeleteMarkCommand command)
+        [Route("softDelete/{markId}")]
+        public async Task<bool> SoftDelete(int markId)
         {
+            SoftDeleteMarkCommand command = new()
+            {
+                Id = markId,
+                CreatorId = _sessionService.GetCreatorId()
+            };
+
             return await _mediator.Send(command);
         }
     }

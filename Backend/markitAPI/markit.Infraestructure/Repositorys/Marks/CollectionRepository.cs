@@ -96,8 +96,10 @@ namespace markit.Infraestructure.Repositorys.Marks
 
         public async Task<Collection> UpdateSyncModelAsync(int collectionId, string documentId)
 		{
-			var collection = await GetByIdAsync(collectionId)
-				?? throw new NotFoundException("Collections", collectionId);
+			var collection = await context.Collections
+				.IgnoreQueryFilters()
+				.FirstOrDefaultAsync(c => c.Id.Equals(collectionId))
+				?? throw new NotFoundException("Collection", collectionId);
 
 			collection.DocumentId = documentId;
 			collection.LastSync = DateTime.Now;

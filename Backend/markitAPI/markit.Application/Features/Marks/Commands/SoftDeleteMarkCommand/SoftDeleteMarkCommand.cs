@@ -1,5 +1,8 @@
-﻿using markit.Application.Contracts.Persistence.Common;
+﻿using System.Transactions;
+using markit.Application.Contracts.MeiliSearch;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -8,36 +11,71 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
     public class SoftDeleteMarkCommand : IRequest<bool>
     {
         public int Id { get; set; }
+        public int CreatorId { get; set; }
     }
 
     public class SoftDeleteMarkCommandHandler : IRequestHandler<SoftDeleteMarkCommand, bool>
     {
+        private readonly IDocumentJobService<MarkDocument> _documentJobService;
+        private readonly IDocumentRepository<MarkDocument> _documentRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SoftDeleteMarkCommandHandler(IUnitOfWork unitOfWork)
+        public SoftDeleteMarkCommandHandler(
+            IDocumentJobService<MarkDocument> documentJobService,
+            IDocumentRepository<MarkDocument> documentRepository,
+            IUnitOfWork unitOfWork
+        )
         {
+            _documentJobService = documentJobService;
+            _documentRepository = documentRepository;
             _unitOfWork = unitOfWork;
         }
-        
+
         public async Task<bool> Handle(SoftDeleteMarkCommand request, CancellationToken cancellationToken)
         {
-            // Validate the existence of the mark
-            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(request.Id, "Links")
-                ?? throw new NotFoundException("Mark", request.Id);
+            Mark mark = await ValidateMarkExistency(request.Id, request.CreatorId);
 
-            // Soft delete the links
-            if (mark.Links != null && mark.Links.Count > 0)
-            {
-                _unitOfWork.Repository<Link>()
-                    .SoftDeleteRangeEntity(mark.Links.ToList());
-            }
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+                SoftDeleteMark(mark);
+                await SoftDeleteBlocks(mark.Id);
+                await _unitOfWork.Complete();
+                await CreateDocumentBackgroundJob(mark);
+            scope.Complete();
 
-            // Soft delete the mark
-            _unitOfWork.markRepository.SoftDeleteEntity(mark);
-
-            // Complete the transaction
-            await _unitOfWork.Complete();
             return true;
+        }
+
+        private async Task<Mark> ValidateMarkExistency(int markId, int creatorId)
+        {
+            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Collection")
+                ?? throw new NotFoundException("Mark", markId);
+
+            if (mark.Collection?.CreatorId != creatorId) throw new UnauthorizedAccessException();
+            return mark;
+        }
+
+        private void SoftDeleteMark(Mark mark)
+        {
+            _unitOfWork.markRepository.SoftDeleteEntity(mark);
+        }
+
+        private async Task SoftDeleteBlocks(int markId)
+        {
+            var blocks = await _unitOfWork.blockRepository.GetAsync(b => b.MarkId.Equals(markId));
+            _unitOfWork.blockRepository.SoftDeleteRangeEntity([.. blocks]);
+        }
+
+        private async Task CreateDocumentBackgroundJob(Mark mark)
+        {
+            if (mark.DocumentId == null) return;
+
+            MarkDocument document = await _documentRepository.GetByIdAsync(mark.DocumentId);
+            document.Enabled = false;
+
+            _documentJobService.ScheduleUpdateAsync(
+                document,
+                continueWith: () => _unitOfWork.markRepository.UpdateSyncModelAsync(mark.Id, document.Id)
+            );
         }
     }
 }

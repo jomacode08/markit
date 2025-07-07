@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Transactions;
+﻿using System.Transactions;
 using AutoMapper;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
