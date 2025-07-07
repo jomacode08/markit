@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
 using System.Transactions;
 using AutoMapper;
+using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -27,11 +28,17 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
     public class CreateCollectionCommandHandler : IRequestHandler<CreateCollectionCommand, CollectionViewModel>
     {
+        private readonly IDocumentJobService<CollectionDocument> _documentJobService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CreateCollectionCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateCollectionCommandHandler(
+            IDocumentJobService<CollectionDocument> documentJobService,
+            IUnitOfWork unitOfWork,
+            IMapper mapper
+        )
         {
+            _documentJobService = documentJobService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -43,18 +50,16 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             await ValidateNameDuplicates(request);
             if (request.IsMain) await ValidateMainCollectionDuplicate(request.CreatorId);
 
-            // Begin transaction
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
-                // Create collection
                 var collection = await CreateCollection(request);
-                // Update path
-                Collection? parent = collection.ParentId.HasValue ? await GetParentCollection((int)collection.ParentId) : null;
+                Collection? parent = collection.ParentId.HasValue ? await GetCollection((int)collection.ParentId) : null;
                 collection = await UpdateCollectionPath(collection, parent);
+                CreateDocumentBackgroundJob(collection);
+                var collectionViewModel = _mapper.Map<CollectionViewModel>(collection);
 
-            // Complete transaction
             scope.Complete();
-            return _mapper.Map<CollectionViewModel>(collection);
+            return collectionViewModel;
         }
 
         private async Task<Unit> ValidateCreatorExistency(int creatorId)
@@ -90,6 +95,11 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
             return Unit.Value;
         }
+        private async Task<Collection> GetCollection(int collectionId)
+        {
+            return await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            ?? throw new NotFoundException("Collection", collectionId);
+        }
 
         private async Task<Collection> CreateCollection(CreateCollectionCommand request)
         {
@@ -98,10 +108,13 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             return collection;
         }
 
-        private async Task<Collection?> GetParentCollection(int parentId)
+        private void CreateDocumentBackgroundJob(Collection collection)
         {
-            return await _unitOfWork.collectionRepository.GetByIdAsync(parentId)
-            ?? throw new NotFoundException("Collection", parentId);
+            CollectionDocument document = new(collection.Name, collection.Id, collection.CreatorId);
+            _documentJobService.ScheduleAddAsync(
+                document,
+                () => _unitOfWork.collectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
+            );
         }
 
         private async Task<Collection> UpdateCollectionPath(Collection collection, Collection? parent)

@@ -1,5 +1,8 @@
-﻿using markit.Application.Contracts.Persistence.Common;
+﻿using System.Transactions;
+using markit.Application.Contracts.MeiliSearch;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -13,30 +16,42 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
     public class DeleteCollectionCommandHandler : IRequestHandler<SoftDeleteCollectionCommand, bool>
     {
+        private readonly IDocumentJobService<CollectionDocument> _documentJobService;
+        private readonly IDocumentRepository<CollectionDocument> _documentRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteCollectionCommandHandler(IUnitOfWork unitOfWork)
+        public DeleteCollectionCommandHandler(
+            IDocumentJobService<CollectionDocument> documentJobService,
+            IDocumentRepository<CollectionDocument> documentRepository,
+            IUnitOfWork unitOfWork
+        )
         {
+            _documentJobService = documentJobService;
+            _documentRepository = documentRepository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> Handle(SoftDeleteCollectionCommand request, CancellationToken cancellationToken)
         {
-            await ValidateCollectionExistency(request.CollectionId, request.CreatorId);
-
+            var collection = await ValidateCollectionExistency(request.CollectionId, request.CreatorId);
             List<Collection> hierarchy = await GetHierarchy(collectionId: request.CollectionId);
-            await SoftDeleteOnCascade(hierarchy);
 
-            await _unitOfWork.Complete();
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+                await SoftDeleteOnCascade(hierarchy);
+                await _unitOfWork.Complete();
+                await CreateDocumentBackgroundJob(collection);
+            scope.Complete();
+
             return true;
         }
 
-        private async Task ValidateCollectionExistency(int collectionId, int creatorId)
+        private async Task<Collection> ValidateCollectionExistency(int collectionId, int creatorId)
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
 
             if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
+            return collection;
         }
 
         private async Task<List<Collection>> GetHierarchy(int collectionId)
@@ -72,6 +87,19 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
             }
 
             return Unit.Value;
+        }
+
+        private async Task CreateDocumentBackgroundJob(Collection collection)
+        {
+            if (collection.DocumentId == null) return;
+
+            CollectionDocument document = await _documentRepository.GetByIdAsync(collection.DocumentId);
+            document.Enabled = false;
+
+            _documentJobService.ScheduleUpdateAsync(
+                document,
+                () => _unitOfWork.collectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
+            );
         }
     }
 }

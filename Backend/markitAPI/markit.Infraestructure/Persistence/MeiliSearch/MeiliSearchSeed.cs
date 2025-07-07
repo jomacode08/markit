@@ -14,12 +14,14 @@ namespace markit.Infraestructure.Persistence.MeiliSearch
                 new MeiliSearchAttributeIndex("name", Displayed : true, Searchable: true),
                 new MeiliSearchAttributeIndex("collectionId", Displayed : true),
                 new MeiliSearchAttributeIndex("creatorId", Displayed : true, Filterable: true),
+                new MeiliSearchAttributeIndex("enabled", Displayed : false, Filterable: true),
             ]),
             new MeiliSearchIndex(GeneralConstant.MeiliSearch.MARK_INDEX_UID, [
                 new MeiliSearchAttributeIndex("id", Displayed : true),
                 new MeiliSearchAttributeIndex("name", Displayed : true, Searchable: true),
                 new MeiliSearchAttributeIndex("markId", Displayed : true),
                 new MeiliSearchAttributeIndex("creatorId", Displayed : true, Filterable: true),
+                new MeiliSearchAttributeIndex("enabled", Displayed : false, Filterable: true),
             ]),
         ];
 
