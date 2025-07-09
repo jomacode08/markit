@@ -11,21 +11,22 @@ import { AuthResponse } from '../interfaces/auth-response';
 import { AuthStatus } from '../interfaces/auth-status.enum';
 import { GoogleAuthRequest } from '../interfaces/google/google-auth-request';
 import { UserInfo } from './../interfaces/user-info';
-import { TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
+import { MEILISEARCH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   //* === Configuration === *//
-  private tokenKey: string = TOKEN_STORAGE_KEY;
-  private _token       = signal<string | null>(null);
+  private _token = signal<string | null>(null);
+  private _meiliSearchToken = signal<string | null>(null);
   private _currentUser = signal<UserInfo | null>(null);
-  private _authStatus  = signal<AuthStatus>(AuthStatus.checking);
-  private baseUrl: string = `${ environment.baseApiUrl }/login`;
+  private _authStatus = signal<AuthStatus>(AuthStatus.checking);
+  private baseUrl: string = `${environment.baseApiUrl}/login`;
 
   //! To the external world
-  public token       = computed( () => this._token() );
-  public currentUser = computed( () => this._currentUser() );
-  public authStatus  = computed( () => this._authStatus() );
+  public token = computed(() => this._token());
+  public meiliSearchToken = computed(() => this._meiliSearchToken());
+  public currentUser = computed(() => this._currentUser());
+  public authStatus = computed(() => this._authStatus());
 
   constructor(
     private jwtHelper: JwtHelperService,
@@ -40,7 +41,7 @@ export class AuthService {
   public login(authRequest: AuthRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${ this.baseUrl }/authenticate`, authRequest)
       .pipe(
-        tap(({ token }) => this.setAuthentication(token))
+        tap((authData) => this.setAuthentication(authData))
       );
   }
 
@@ -50,15 +51,17 @@ export class AuthService {
     };
     return this.http.post<AuthResponse>(`${ this.baseUrl }/authenticateByGoogle`, googleSignRequest)
       .pipe(
-        tap(({ token }) => this.setAuthentication(token))
+        tap((authData) => this.setAuthentication(authData))
       );
   }
 
   public logout(): void {
     this._token.set(null);
+    this._meiliSearchToken.set(null);
     this._currentUser.set(null);
     this._authStatus.set(AuthStatus.notAuthenticated);
-    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(MEILISEARCH_TOKEN_STORAGE_KEY);
     this.router.navigate(['auth']);
   }
 
@@ -68,15 +71,19 @@ export class AuthService {
   }
 
   //* === Utilities ===  //
-  private setAuthentication(token: string): void {
+  private setAuthentication(auth: AuthResponse): void {
+    const { token, meiliSearchToken } = auth;
     this._token.set(token);
+    this._meiliSearchToken.set(meiliSearchToken);
     this._currentUser.set(this.getUserInfo(token));
     this._authStatus.set(AuthStatus.authenticated);
-    this.setTokenInLocalStorage(token);
+    this.setTokenInLocalStorage(token, TOKEN_STORAGE_KEY);
+    this.setTokenInLocalStorage(meiliSearchToken, MEILISEARCH_TOKEN_STORAGE_KEY);
   }
 
   private checkAuthStatus(): void {
-    this._token.set(localStorage.getItem(this.tokenKey));
+    this._token.set(localStorage.getItem(TOKEN_STORAGE_KEY));
+    this._meiliSearchToken.set(localStorage.getItem(MEILISEARCH_TOKEN_STORAGE_KEY));
 
     this._currentUser.set
     (
@@ -93,8 +100,8 @@ export class AuthService {
     );
   }
 
-  private setTokenInLocalStorage(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+  private setTokenInLocalStorage(token: string, key: string): void {
+    localStorage.setItem(key, token);
   }
 
   private getUserInfo( token: string ): UserInfo {

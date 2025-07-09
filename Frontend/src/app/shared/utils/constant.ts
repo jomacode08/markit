@@ -1,4 +1,5 @@
 export const TOKEN_STORAGE_KEY: string = 'markit-token';
+export const MEILISEARCH_TOKEN_STORAGE_KEY: string = 'meili-token';
 export const DEFAULT_MARK_NAME : string = 'My new mark 🎉'; 
 export const DEFAULT_BLOCK_NAME : string = 'Main block';
 export const MAIN_COLLECTION_PARAM : string = 'my-marks';

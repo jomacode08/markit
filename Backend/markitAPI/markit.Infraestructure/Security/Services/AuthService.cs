@@ -15,6 +15,9 @@ using markit.Application.Contracts.Authentication;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using MediatR;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.MeiliSearch;
+using Meilisearch;
+using markit.Application.Helpers;
 
 namespace markit.Infraestructure.Security.Services
 {
@@ -24,27 +27,27 @@ namespace markit.Infraestructure.Security.Services
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly MeiliSearchAuthSettings _meiliSearchAuthSettings;
         private readonly JwtSettings _jwtSettings;
 
         public AuthService(
             IGoogleAuthenticationService googleAuthenticationService,
+            IOptions<MeiliSearchAuthSettings> meiliSearchAuthSettings,
             IOptions<JwtSettings> jwtSettings,
             IMapper mapper,
             IMediator mediator,
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
-            RoleManager<IdentityRole> roleManager
+            SignInManager<AppUser> signInManager
         )
         {
             _googleAuthenticationService = googleAuthenticationService;
+            _meiliSearchAuthSettings = meiliSearchAuthSettings.Value;
             _jwtSettings = jwtSettings.Value;
             _mapper = mapper;
             _mediator = mediator;
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
         }
 
         #region Login Methods
@@ -80,7 +83,7 @@ namespace markit.Infraestructure.Security.Services
             {
                 await CreateCreator(new CreateAppUserRequest(
                     googleUserData.Email,
-                    null,
+                    password: null,
                     googleUserData.FirstName,
                     googleUserData.LastName,
                     googleUserData.Picture,
@@ -108,7 +111,8 @@ namespace markit.Infraestructure.Security.Services
 
             return new AuthResponse()
             {
-                Token = GenerateToken(user, roles)
+                Token = GenerateToken(user, roles),
+                MeiliSearchToken = await GenerateMeiliSearchTenantToken(user)
             };
         }
 
@@ -146,7 +150,36 @@ namespace markit.Infraestructure.Security.Services
             return new JwtSecurityTokenHandler().WriteToken(securityToken);
         }
 
-        private static void ValidateCreatorExistency(AppUser user)
+        private async Task<string> GenerateMeiliSearchTenantToken(AppUser user)
+        {
+            MeilisearchClient client = new(_meiliSearchAuthSettings.UrlServer, _meiliSearchAuthSettings.ApiKey);
+            Key apiKeyInfo = await client.GetKeyAsync(_meiliSearchAuthSettings.ApiKey);
+            var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes);
+            var searchRules = new TenantTokenRules(new Dictionary<string, object> {
+                { 
+                    MeiliSearch.COLLECTION_INDEX_UID,
+                    new Dictionary<string, object> { 
+                        { "filter", $"creatorId = { user.CreatorId }" }
+                    } 
+                },
+                {
+                    MeiliSearch.MARK_INDEX_UID,
+                    new Dictionary<string, object> {
+                        { "filter", $"creatorId = { user.CreatorId }" }
+                    }
+                },
+            });
+
+            return client.GenerateTenantToken(
+                apiKeyInfo.Uid,
+                searchRules,
+                apiKeyInfo.KeyUid,
+                expiresAt
+            );
+        }
+
+        private static void 
+            ValidateCreatorExistency(AppUser user)
         {
             if (user.CreatorId == null)
                 throw new CustomValidationException("The user has not yet been fully configured");
