@@ -23,7 +23,6 @@ using markit.Infraestructure.Repositorys.MeiliSearch;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
 using Hangfire;
-using System.CodeDom;
 using markit.Infraestructure.Persistence.MeiliSearch.Services;
 
 namespace markit.Infraestructure

@@ -1,12 +1,11 @@
 <div class="min-h-screen flex flex-column">
-    
     <!-- Top navigation bar -->
     <header class="z-1 w-full fixed">
         <app-main-bar
-            (onShowSideBar)="showSideBar($event)"
+            (onShowNavigationSidebar)="showSidebar('Navigation', $event)"
+            (onShowSearchSidebar)="showSidebar('Searching')"
         />
     </header>
-
     <!-- Main container -->
     <section id="main-container">
         <!-- Component Title -->
@@ -14,33 +13,48 @@
         <!-- Router Outlet -->
         <router-outlet />
     </section>
-
-    <!-- <footer>
-        <span>
-            <a class="text-white-alpha-80 hover:text-purple-200" href="https://www.jomacode.com/" target="_blank">
-                © jomacode
-            </a>
-        </span>
-    </footer> -->
-
 </div>
 
 <!-- Side Bar -->
-<p-sidebar
-    #sideBar
-    id="main-sidebar"
-    [modal]="false"
-    [(visible)]="this.isSideBarVisible"
-    [position]="width < 640 ? 'bottom' : 'left'"
-    [styleClass]="width < 640 ? 'h-50 border-round-top-3xl' : ''"
->
-    <div class="w-full">
-        <p class="text-2xl text-center font-light">
-            Hello, <span class="font-normal">{{ userName }}</span>
-        </p>
-        <p-menu
-            [model]="menuItems"
-            styleClass="w-full"
-        />
-    </div>
-</p-sidebar>
+<ng-container *ngIf="sideBarConfig() as config">
+    <p-sidebar
+        id="main-sidebar"
+        styleClass="h-full"
+        showCloseIcon="false"
+        [modal]="false"
+        [visible]="this.isSidebarVisible()"
+        [position]="width <= 576 ? 'bottom' : 'left'"
+    >
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <div class="flex w-full justify-content-between align-content-center">
+                <h2 class="m-0 font-medium">{{ config.title }}</h2>
+                <button
+                    class="border-none cursor-pointer p-2"
+                    (click)="toggleSidebar()"
+                >
+                    <span class="fa fa-close text-base"></span>
+                </button>
+            </div>
+        </ng-template>
+        <!-- Content -->
+        <ng-template pTemplate="content">
+            <div class="w-full">
+                @switch ( config.contentType ) {
+                    @case ('Navigation') {
+                        <p class="text-2xl text-center font-light">
+                            Hello, <span class="font-normal">{{ userName }}</span>
+                        </p>
+                        <p-menu
+                            [model]="config.navigationItems"
+                            styleClass="w-full px-3"
+                        />
+                    }
+                    @case ('Searching') {
+                        <app-quick-search (onSearchNavigate)="toggleSidebar()"/>
+                    }
+                }
+            </div>
+        </ng-template>
+    </p-sidebar>
+</ng-container>

@@ -1,16 +1,13 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { googleOAuthEnvironment } from '../../../environments/environment';
 import { OAuth20Response } from '../interfaces/google/o-auth-20-response';
-import { AuthService } from './auth.service';
 
 @Injectable({providedIn: 'root'})
 export class GoogleOAuthService {
-
     private http = inject(HttpClient);
-
     private baseUrlPermissionServer = 'https://accounts.google.com/o/oauth2/v2/auth';
     private scopes = 'email https://www.googleapis.com/auth/userinfo.profile';
     public permissionServerUrl = computed(() => 

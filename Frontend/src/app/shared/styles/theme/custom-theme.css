@@ -71,11 +71,6 @@ input.transparent {
   box-shadow: none !important;
 }
 
-input:focus {
-  box-shadow: 0 0 0 0.2rem var(--light-gray-color);
-  border: none;
-}
-
 input:hover {
   border-color: var(--main-gray-700);
 }
@@ -262,19 +257,23 @@ button {
   color: #ffffff;
 }
 .p-sidebar-header {
-  padding: 10px;
+  padding: 1rem;
+}
+.p-sidebar-content {
+  display: flex;
+  padding: 0 1rem 1rem 1rem;
 }
 
 #main-sidebar {
-  .p-sidebar-left {
-    width: 18rem;
-  }
   .p-sidebar {
     background-color: var(--main-black-color);
     border: 1px solid var(--main-gray-700);
   }
   .p-sidebar-content {
-    display: flex;
+    padding: 0 !important;
+  }
+  .p-sidebar-left {
+    width: 20rem;
   }
 }
 

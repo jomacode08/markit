@@ -28,15 +28,16 @@
         <p-button
             styleClass="nav-button p-2 up-down-transition"
             icon="fa fa-search"
+            (onClick)="onShowSearchSidebar.emit()"
         />
         <!-- Menu -->
         <p-button
             styleClass="nav-button p-2 up-down-transition"
             icon="fa fa-bars"
-            (onClick)="onShowSideBar.emit(this.navigationRutes)"
+            (onClick)="onShowNavigationSidebar.emit(this.navigationRutes)"
         />
         <!-- User Picture -->
-        <div class="p-avatar" (click)="onShowSideBar.emit(this.userActions)">
+        <div class="p-avatar" (click)="onShowNavigationSidebar.emit(this.userActions)">
             @if ( userPictureUrl ) {
                 <img
                     [src]="userPictureUrl"

@@ -10,3 +10,7 @@ export const googleOAuthEnvironment = {
     clientSecret : '',
     redirectUri : '',
 }
+
+export const meiliSearchEnvironment = {
+    serverUrl : ''
+}

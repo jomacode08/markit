@@ -1,6 +1,6 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AfterViewInit, Component, ViewChild, signal, OnInit } from '@angular/core';
+import { Component, ViewChild, signal, OnInit } from '@angular/core';
 import { delay, Observable, of, retry, RetryConfig, Subject, throwError, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 

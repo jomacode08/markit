@@ -66,7 +66,9 @@ export class MainBarComponent {
   }
 
   @Output()
-  public onShowSideBar = new EventEmitter<MenuItem[]>();
+  public onShowNavigationSidebar = new EventEmitter<MenuItem[]>();
+  @Output()
+  public onShowSearchSidebar = new EventEmitter<void>();
 
   public onNewMarkButtonClick = () => this.navigate(ROUTES.MARKS_NEW);
 

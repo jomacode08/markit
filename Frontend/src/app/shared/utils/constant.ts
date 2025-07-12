@@ -19,3 +19,10 @@ export const ROUTES = {
     NOT_FOUND: 'not-found',
     HOME_URL: 'dashboard'
 };
+
+export const MEILISEARCH = {
+    COLLECTION_INDEX_UID : 'collections',
+    COLLECTION_SEARCHABLE_ATTRIBUTE_NAME : 'name',
+    MARK_INDEX_UID : 'marks',
+    MARK_SEARCHABLE_ATTRIBUTE_NAME : 'name',
+}

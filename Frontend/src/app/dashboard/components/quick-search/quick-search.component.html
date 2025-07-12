@@ -1,0 +1,82 @@
+<div class="header">
+    <div class="search-box">
+        <span class="fa fa-search text-base"></span>
+        <input
+            id="searchBox"
+            type="text"
+            [placeholder]="searchInputPlaceholder"
+            [(ngModel)]="query"
+            (ngModelChange)="onSearchBoxChanged($event)"
+        />
+    </div>
+</div>
+
+<div class="filters">
+    @for (filter of listOfSearchFilters; track $index) {
+        <button
+            type="button"
+            class="filter"
+            [ngClass]="{ 'active' : currentFilter() === filter }"
+            (click)="onFilterSelected(filter)"
+        >
+            {{ filter }}
+        </button>
+    }
+</div>
+
+<div class="results">
+    <ng-container 
+        *ngIf="searchResults()?.collectionDocuments?.length
+            || searchResults()?.markDocuments?.length;
+            else noResultsTemplate"
+        class="results-list"
+    >
+        <!-- Collection documents -->
+        <div *ngIf="showCollections()" class="mb-2 fadein animation-duration-200">
+            <div class="py-3 text-sm font-light text-white-alpha-60">
+                COLLECTIONS ({{ searchResults()?.collectionDocuments?.length }})
+            </div>
+            @for (collection of searchResults()?.collectionDocuments; track $index) {
+                <div class="item-result" (click)="navigateToCollectionExplorer(collection.collectionId)">
+                    <span class="fa-regular fa-folder mr-2"></span>
+                    <div [innerHTML]="collection.name" class="name formatted"></div>
+                </div>
+            }
+        </div>
+        <!-- Mark documents -->
+        <div *ngIf="showMarks()" class="mb-3 fadein animation-duration-200">
+            <div class="py-2 text-sm font-light text-white-alpha-60">
+                MARKS ({{ searchResults()?.markDocuments?.length }})
+            </div>
+            @for (mark of searchResults()?.markDocuments; track $index) {
+                <div class="item-result" (click)="navigateToMarkViewer(mark.markId)">
+                    <span class="fa-regular fa-file mr-2"></span>
+                    <div [innerHTML]="mark.name" class="name formatted"></div>
+                </div>
+            }
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #noResultsTemplate>
+    <div class="no-results fadein animation-duration-500">
+        @switch (searchState()) {
+            @case (searchStateEnum.idle) {
+                <i class="fa fa-search gray"></i>
+                <p class="m-0 mt-4">Type to start searching</p>
+            }
+            @case (searchStateEnum.finished) {
+                <div class="flex flex-column">
+                    <i class="fa fa-search purple-highlight"></i>
+                    <p class="m-0 mt-4 font-medium text-white-alpha-90">No results found</p>
+                    <p class="m-0 mt-2">Try a different search term</p>
+                </div>
+            }
+            @case (searchStateEnum.error) {
+                <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
+                <p class="m-0 mt-4 font-medium text-white-alpha-90">Something went wrong.</p>
+                <p class="m-0 mt-2">Feel free to contact us if refreshing doesn't fix things.</p>
+            }
+        }
+    </div>
+</ng-template>
