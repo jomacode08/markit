@@ -37,15 +37,15 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
         }
 
         public async Task<MarkViewModel> Handle(CreateMarkCommand request, CancellationToken cancellationToken)
-        {
-            await ValidateCreatorExistency(request.CreatorId);
-            await ValidateCollection(request.CollectionId);
-            
+        {            
             // Assign main collectionId if empty
             if (request.CollectionId.Equals(0))
             {
                 request.CollectionId = (await GetMainCollection(request.CreatorId)).Id;
             }
+
+            await ValidateCreatorExistency(request.CreatorId);
+            await ValidateCollection(request.CollectionId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 Mark mark = _mapper.Map<Mark>(request);
