@@ -94,6 +94,13 @@ namespace markit.Infraestructure.Repositorys.Marks
 				.ToListAsync();
         }
 
+		public async Task<int> CountByCreatorIdAsync(int creatorId)
+		{
+			return await context.Collections
+				.Where(c => c.CreatorId.Equals(creatorId))
+				.CountAsync();
+		}
+
         public async Task<Collection> UpdateSyncModelAsync(int collectionId, string documentId)
 		{
 			var collection = await context.Collections

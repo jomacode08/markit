@@ -20,4 +20,8 @@
     <ProjectReference Include="..\markit.Domain\markit.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Reports\Dashboard\Queries\ViewModels\" />
+  </ItemGroup>
+
 </Project>

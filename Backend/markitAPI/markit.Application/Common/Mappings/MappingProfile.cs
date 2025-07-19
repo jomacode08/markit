@@ -147,6 +147,13 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.Blocks)
                 )
                 .ForMember(
+                    dest => dest.CreatorId,
+                    opt => opt.MapFrom(src => src.Collection != null
+                        ? src.Collection.CreatorId
+                        : (int?)null
+                    )
+                )
+                .ForMember(
                     dest => dest.CollectionName,
                     opt => opt.MapFrom(src => src.Collection != null
                         ? src.Collection.Name

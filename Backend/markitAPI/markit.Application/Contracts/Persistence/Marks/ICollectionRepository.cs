@@ -14,6 +14,7 @@ namespace markit.Application.Contracts.Persistence.Marks
             int? collectionId = null,
             bool onlyFavorites = false
         );
+        Task<int> CountByCreatorIdAsync(int creatorId);
 
         Task<Collection> UpdateSyncModelAsync(int collectionId, string documentId);
     }

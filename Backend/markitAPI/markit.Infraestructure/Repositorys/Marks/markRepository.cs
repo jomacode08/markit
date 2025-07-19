@@ -78,6 +78,24 @@ namespace markit.Infraestructure.Repositorys.Marks
                 .ToListAsync();
         }
 
+        public async Task<List<Mark>> GetMostRecentAsync(int creatorId, int limit)
+        {
+            return await context.Marks
+                .AsNoTracking()
+                .Include(m => m.Collection)
+                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId))
+                .OrderByDescending(m => m.CreatedDate)
+                .Take(limit)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountByCreatorIdAsync(int creatorId)
+        {
+            return await context.Marks
+                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId))
+                .CountAsync();
+        }
+
         public async Task<Mark> UpdateSyncModelAsync(int markId, string documentId)
         {
             var mark = await context.Marks

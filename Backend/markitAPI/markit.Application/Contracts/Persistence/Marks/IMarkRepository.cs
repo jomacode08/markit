@@ -14,6 +14,8 @@ namespace markit.Application.Contracts.Persistence.Marks
             int? collectionId = null,
             bool onlyFavorites = false
         );
+        Task<List<Mark>> GetMostRecentAsync(int creatorId, int limit);
+        Task<int> CountByCreatorIdAsync(int creatorId);
         Task<Mark> UpdateSyncModelAsync(int markId, string documentId);
     }
 }

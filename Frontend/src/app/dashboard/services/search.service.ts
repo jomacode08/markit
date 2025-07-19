@@ -20,12 +20,10 @@ export enum SearchFilters {
 @Injectable({ providedIn: 'root' })
 export class SearchService {
     private readonly SEARCH_LIMIT: number = 10;
-    private readonly generalError = "Something went wrong, we keep track of this error, but feel free to contact us if refreshing doesn't fix things.";
 
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private messageService: CustomMessageService
     ) { }
 
     public search(query: string, filter: SearchFilters): Observable<SearchResults | null> {
@@ -38,11 +36,7 @@ export class SearchService {
                 'Authorization': `Bearer ${this.authService.meiliSearchToken()}`
             }
         }).pipe(
-            map(result => this.mapSearchResults(result)),
-            catchError(err => {
-                this.messageService.showGeneralError(this.generalError);
-                return of(null);
-            })
+            map(result => this.mapSearchResults(result))
         );
     }
 
