@@ -10,7 +10,7 @@
             <div class="brand">{{ MAIN_BAR_BRAND_TITLE }}</div>
         </div>
         <!-- Add mark button -->
-         <button
+         <!-- <button
             type="button"
             id="new-mark-btn"
             class="gradient-background hidden sm:block"
@@ -19,7 +19,7 @@
             <div>
                 <span class="fa fa-plus text-xs mr-1"></span>New
             </div>
-         </button>
+         </button> -->
     </div>
 
     <!-- Navigation buttons -->
@@ -37,7 +37,7 @@
             (onClick)="onShowNavigationSidebar.emit(this.navigationRutes)"
         />
         <!-- User Picture -->
-        <div class="p-avatar" (click)="onShowNavigationSidebar.emit(this.userActions)">
+        <div class="p-avatar" (click)="onAvatarClick()">
             @if ( userPictureUrl ) {
                 <img
                     [src]="userPictureUrl"
@@ -45,9 +45,6 @@
                     alt="user picture"
                     referrerpolicy="no-referrer"
                 >
-            }
-            @else {
-                <i class="fa-solid fa-glasses"></i>
             }
         </div>
     </div>

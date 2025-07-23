@@ -23,37 +23,24 @@ export class MainBarComponent {
   public navigationRutes : MenuItem[] = [
     {
       label: 'Home',
-      icon: 'fa fa-home',
-      command: () => this.navigate(ROUTES.HOME_URL)
+      icon: 'fa-regular fa-chart-bar',
+      route: ROUTES.HOME_URL,
     },
     {
       label: 'My marks',
-      icon: 'fa fa-hard-drive',
-      command: () => this.navigate(ROUTES.MY_MARKS)
+      icon: 'fa-regular fa-hard-drive',
+      route: ROUTES.MY_MARKS,
     },
     {
       label: 'Starred',
-      icon: 'fa fa-star',
-      command: () => this.navigate(ROUTES.STARRED)
+      icon: 'fa-regular fa-star',
+      route: ROUTES.STARRED,
     },
     {
       label: 'Recent',
-      icon: 'fa fa-clock',
-      command: () => this.navigate(ROUTES.RECENT)
-    },
-  ];
-
-  public userActions : MenuItem[] = [
-    {
-      label: 'Profile',
-      icon: 'fa fa-user',
-      command: () => this.navigate('dashboard/profile')
-     },
-    {
-      label: 'Logout',
-      icon: 'fa fa-right-to-bracket',
-      command: () => this.authService.logout()
-    },
+      icon: 'fa-regular fa-clock',
+      route: ROUTES.RECENT,
+    }
   ];
 
   public userPictureUrl ?: string;
@@ -71,6 +58,7 @@ export class MainBarComponent {
   public onShowSearchSidebar = new EventEmitter<void>();
 
   public onNewMarkButtonClick = () => this.navigate(ROUTES.MARKS_NEW);
+  public onAvatarClick = () => this.navigate(ROUTES.PROFILE);
 
   private navigate( path: string ): void {
     this.router.navigate([path]);

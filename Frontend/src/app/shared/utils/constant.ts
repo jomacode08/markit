@@ -6,18 +6,19 @@ export const MAIN_COLLECTION_PARAM : string = 'my-marks';
 
 export const ROUTES = {
     // Marks
-    MARKS_NEW: 'marks/new',
-    MARKS_SEE: (id: number) => `marks/see/${ id }`,
+    MARKS_NEW: '/marks/new',
+    MARKS_SEE: (id: number) => `/marks/see/${ id }`,
     
     // Workplace
-    COLLECTION_SEE: (id: number) => `workplace/explore/${ id }`,
-    MY_MARKS: `workplace/explore/${ MAIN_COLLECTION_PARAM }`,
-    STARRED: 'workplace/starred',
-    RECENT: 'workplace/recent',
+    COLLECTION_SEE: (id: number) => `/workplace/explore/${ id }`,
+    MY_MARKS: `/workplace/explore/${ MAIN_COLLECTION_PARAM }`,
+    STARRED: '/workplace/starred',
+    RECENT: '/workplace/recent',
     
     // Others
-    NOT_FOUND: 'not-found',
-    HOME_URL: 'dashboard'
+    NOT_FOUND: '/not-found',
+    HOME_URL: '/dashboard',
+    PROFILE: '/dashboard/profile',
 };
 
 export const MEILISEARCH = {

@@ -27,17 +27,11 @@ button#new-mark-btn {
     align-items: center;
     font-size: 1.80rem;
     padding-right: 1rem;
-    border-right: 1px solid rgb(255,255,255, 0.2);
 }
 
 .brand {
     font-family: 'PlayfairDisplay';
     font-weight: 500;
-}
-
-.p-avatar {
-    width:  2.5rem;
-    height: 2.5rem;
 }
 
 .gradient-background {

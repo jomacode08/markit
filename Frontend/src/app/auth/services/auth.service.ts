@@ -105,11 +105,12 @@ export class AuthService {
   }
 
   private getUserInfo( token: string ): UserInfo {
-    const { given_name, prof_pic_url, creatorId } = this.jwtHelper.decodeToken(token);
+    const { given_name, prof_pic_url, creatorId, email } = this.jwtHelper.decodeToken(token);
     return {
       given_name : given_name,
+      email : email,
       userPictureUrl : prof_pic_url,
-      creatorId : creatorId
+      creatorId : creatorId,
     }
   }
 }

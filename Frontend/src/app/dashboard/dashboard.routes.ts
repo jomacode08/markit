@@ -4,7 +4,6 @@ export const DASHBOARD_ROUTES: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        title: 'Home',
         data: { breadcrumb : '' },
         loadComponent: () =>
             import('./pages/home/home.component')

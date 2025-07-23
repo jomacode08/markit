@@ -236,13 +236,11 @@ button {
 
 /** Avatar */
 .p-avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 2rem;
+  height: 2rem;
   cursor: pointer;
   color: var(--main-black-color);
-  background-color: var(--main-purple-color);
-  border: 1px solid var(--main-gray-700);
+  background-image: linear-gradient(to right, #a855f7, #4f46e5);
   border-radius: 100%;
 }
 
@@ -266,14 +264,18 @@ button {
 
 #main-sidebar {
   .p-sidebar {
-    background-color: var(--main-black-color);
+    background-color: var(--main-gray-900);
     border: 1px solid var(--main-gray-700);
+  }
+  .p-sidebar-header {
+    border-bottom: 1px solid var(--main-gray-700);
+    height: 64px;
   }
   .p-sidebar-content {
     padding: 0 !important;
   }
   .p-sidebar-left {
-    width: 20rem;
+    width: 16rem;
   }
 }
 
@@ -303,17 +305,20 @@ button {
   border: none;
 }
 .p-menuitem-content {
-  margin-bottom: 1em;
+  cursor: pointer;
+  margin-bottom: .5rem;
   background-color: var(--main-gray-900);
-  border: 1px solid #3b3b3b;
-  border-radius: 0.5rem;
   transition: background-color 0.3s ease;
 }
 .p-menuitem-link {
-  padding: 0.75rem 0.50rem;
+  padding: .85rem 1rem !important;
 }
-.p-menuitem-icon {
-    color: var(--main-purple-color);
+.p-menuitem-link i {
+  color: #c084fc;
+}
+.p-menuitem-link-active {
+  background-color: #581c8766;
+  border-right: 2px solid rgb(168 85 247 / 1);
 }
 .p-menuitem-text {
   color: #ffffff;

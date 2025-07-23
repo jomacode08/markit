@@ -1,0 +1,47 @@
+<!-- Welcome greeting -->
+<div class="p-3 border-bottom-1 border-gray">
+    <p class="m-0 mb-1 text-sm text-gray-400">Welcome back,</p>
+    <p class="m-0 font-medium">{{ userName }}</p>
+</div>
+<!-- Menu -->
+<div class="flex-1">
+    <p-menu
+        [model]="navigationItems()"
+        [routerLink]=""
+        styleClass="w-full py-3"
+    >
+        <ng-template pTemplate="item" let-item>
+            <a [routerLink]="item.route" routerLinkActive="p-menuitem-link-active" class="p-menuitem-link">
+                <i [class]="item.icon"></i>
+                <span class="ml-3 p-menuitem-text">{{ item.label }}</span>
+            </a>
+        </ng-template>
+    </p-menu>
+</div>
+<!-- User information and logout -->
+<div class="p-3 border-top-1 border-gray">
+    <div class="flex align-items-center">
+        <div class="p-avatar">
+            @if ( userPictureUrl ) {
+                <img
+                    [src]="userPictureUrl"
+                    class="border-circle"
+                    alt="user picture"
+                    referrerpolicy="no-referrer"
+                >
+            }
+        </div>
+        <div class="ml-3">
+            <p class="m-0 font-medium"> {{ userName }} </p>
+            <button 
+                type="button"
+                aria-label="Logout"
+                class="p-0 border-none cursor-pointer flex align-items-center text-sm text-white-alpha-60"
+                (click)="onLogoutBtnClick()"
+            >
+                <i class="fa fa-right-to-bracket mr-2"></i>
+                <p class="m-0 font-worksans font-light"> Logout </p>
+            </button>
+        </div>
+    </div>
+</div>

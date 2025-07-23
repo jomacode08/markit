@@ -1,4 +1,6 @@
 #main-container {
+  max-width: 80rem;
+  margin: 65px auto 0 auto;
   margin-top: 65px;
   width: 100%;
   flex: 1 1 auto;
@@ -9,4 +11,10 @@ footer {
   text-align: center;
   padding: 1rem;
   border: 1px solid var(--main-gray-700);
+}
+
+.text-gradient {
+  color: transparent !important;
+  background-clip: text;
+  background-image: linear-gradient(to right, #c084fc, #6366f1);
 }

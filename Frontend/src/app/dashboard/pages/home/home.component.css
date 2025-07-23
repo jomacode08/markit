@@ -6,6 +6,7 @@ section.hero {
   padding: 2rem;
   margin-bottom: 1.5rem;
   border-radius: 1rem;
+  border: 1px solid #6b21a84d;
   background-image: linear-gradient(to bottom right, rgb(88 28 135 / .4) , #111827);
 }
 
