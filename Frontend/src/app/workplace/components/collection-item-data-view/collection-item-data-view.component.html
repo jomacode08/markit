@@ -21,26 +21,26 @@
     <ng-template pTemplate="list" let-items>
         <!-- List template -->
         @for ( item of items; track $index) {
-            <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item mb-2">
+            <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item">
                 <!-- Collection Item Information -->
                 <div (click)="onItemSelected(item)" class="grid grid-nogutter w-full cursor-pointer">
                     <!-- Name and Description -->
                     <div class="col-12 mb-3 md:col-6 md:m-0">
-                        <span class="fa-lg mr-3">
+                        <span class="item-icon">
                             <i [class]="(item.type | collectionItemIcon)"></i>
                         </span>
                         <div class="flex flex-column">
-                            <span class="w-full font-medium mb-1">
+                            <span class="w-full font-medium text-base">
                                 {{ item.name }}
                             </span>
-                            <span class="w-full font-light text-white-alpha-60">
+                            <span class="w-full font-light text-sm text-white-alpha-60">
                                 {{ item.preview }}
                             </span>
                         </div>
                     </div>
                     <!-- Date -->
-                    <div class="col-12 md:col-6 font-light text-white-alpha-60">
-                        {{ item.updatedAt ?? item.createdAt | date: 'medium' }}
+                    <div class="col-12 md:col-6 text-sm text-white-alpha-60">
+                        {{ item.updatedAt ?? item.createdAt | timeAgo }}
                     </div>
                 </div>
                 <!-- General actions -->
@@ -78,5 +78,5 @@
 />
 
 <ng-template #fullStar>
-    <span class="fa fa-star favorite text-lg"></span>
+    <span class="fa fa-star text-lg text-yellow-500"></span>
 </ng-template>

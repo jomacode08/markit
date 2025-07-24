@@ -1,31 +1,33 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { DataViewModule } from 'primeng/dataview';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
+import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
+import { CollectionItemDialogComponent } from '../collection-item-dialog/collection-item-dialog.component';
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
+import { CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
+import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
-import { CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
-import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
-import { finalize } from 'rxjs';
-import { Router } from '@angular/router';
-import { ROUTES } from '../../../shared/utils/constant';
-import { CollectionItemDialogComponent } from '../collection-item-dialog/collection-item-dialog.component';
-import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
+import { ROUTES } from '../../../shared/utils/constant';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 
 @Component({
   selector: 'collection-item-data-view',
   standalone: true,
   imports: [
-    CommonModule,
     CollectionItemIconPipe,
+    CommonModule,
     DataViewModule,
     FloatingMenuComponent,
     IntersectionDirective,
+    TimeAgoPipe,
   ],
   providers: [DialogService],
   templateUrl: './collection-item-data-view.component.html',

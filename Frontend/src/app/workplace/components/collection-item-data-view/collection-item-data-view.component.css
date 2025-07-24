@@ -25,15 +25,28 @@ button {
 
 .item {
   display: flex;
-  background-color: var(--main-gray-900);
-  border: 1px solid var(--main-gray-700);
-  border-radius: 0.5rem;
-  padding: 1rem;
+  padding: .75rem 1rem;
   transition: background-color 0.3s ease;
+  margin-top: .75rem;
+  border-bottom: 1px solid var(--main-gray-800);
 }
 
 .item:hover {
   background-color: var(--main-gray-800);
+}
+
+.item-icon {
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  margin-right: .75rem;
+  font-size: 1rem;
+  background-color: rgb(31 41 55 / 1);
+}
+.item-icon i.fa-note-sticky {
+  color: rgb(192 132 252 / 1);
+}
+.item-icon i.fa-folder {
+  color: rgb(129 140 248 / 1);
 }
 
 .grid > div {
@@ -55,18 +68,18 @@ button {
   color: #ffffff !important;
 }
 
-@keyframes pulse {
-    50% {
-        opacity: .5
-    }
-
-  }
 .search-background-icon {
   inset: -.25rem;
   border-radius: 9999px;
   background-color: #a855f733;
   animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
   filter: blur(12px);
+}
+
+@keyframes pulse {
+    50% {
+        opacity: .5
+    }
 }
 
 .search-icon {
@@ -78,8 +91,4 @@ button {
 .search-icon .fa {
   font-size: 48px;
   color: rgb(192 132 252 / 1);
-}
-
-.favorite {
-  color: var(--main-purple-color) !important;
 }

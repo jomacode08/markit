@@ -27,8 +27,6 @@
 .floating-button button:hover {
   cursor: pointer;
   transform: translate(0, 0) rotate(0) skewX(0) skewY(0) scaleX(1.05) scaleY(1.05);
-  box-shadow: 0 10px 15px -3px rgba(168, 85, 247, 0.2),
-              0 4px 6px -2px rgba(168, 85, 247, 0.2);
 }
 
 .floating-button button span {
