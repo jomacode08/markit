@@ -14,6 +14,7 @@ namespace markit.Domain.Entities
         public bool IsFavorite { get; set; }
         public string? DocumentId { get; set; }
         public DateTime? LastSync {  get; set; }
+        public string? Emoji { get; set; }
 
         public virtual Collection? Parent { get; set; }
         public virtual Creator? Creator { get; set; }

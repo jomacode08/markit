@@ -14,6 +14,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
     public class CreateMarkCommand : IRequest<MarkViewModel>
     {
         public string Name { get; set; } = string.Empty;
+        public string? Emoji { get; set; }
         public int CreatorId { get; set; }
         public int CollectionId { get; set; }
         public List<BlockViewModel> Blocks { get; set; } = new();

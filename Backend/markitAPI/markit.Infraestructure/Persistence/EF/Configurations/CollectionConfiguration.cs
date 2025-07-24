@@ -18,6 +18,11 @@ namespace markit.Infraestructure.Persistence.EF.Configurations
                 .WithOne(m => m.Collection)
                 .IsRequired()
                 .HasForeignKey(m => m.CollectionId);
+
+            builder.Property(c => c.Emoji)
+                .HasMaxLength(2)
+                .IsUnicode()
+                .UseCollation("Latin1_General_100_CI_AS_SC");
         }
     }
 }

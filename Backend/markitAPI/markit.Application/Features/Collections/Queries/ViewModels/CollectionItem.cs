@@ -9,6 +9,7 @@
         public int TypeId { get; set; }
         public string Preview {  get; set; } = string.Empty;
         public bool IsFavorite { get; set; }
+        public string? Emoji { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

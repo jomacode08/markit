@@ -7,6 +7,7 @@
         public bool IsMain { get; set; }
         public int? ParentId { get; set; }
         public int CreatorId { get; set; }
+        public string? Emoji { get; set; }
 
         public List<CollectionPath>? Path { get; set; }
         public List<CollectionItem>? CollectionItems { get; set; }

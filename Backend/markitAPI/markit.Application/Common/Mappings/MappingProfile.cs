@@ -53,6 +53,10 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.CreatedDate)
                 )
                 .ForMember(
+                    dest => dest.Emoji,
+                    opt => opt.MapFrom(src => src.Emoji)
+                )
+                .ForMember(
                     dest => dest.Preview,
                     opt => opt.MapFrom(src => src.Marks != null 
                     ? $"{ src.Marks.Count } marks" 
@@ -192,6 +196,10 @@ namespace markit.Application.Mappings
                         ? Utilities.GetMostRecentBlockDate(src.Blocks)
                         : src.UpdatedDate
                     )
+                )
+                .ForMember(
+                    dest => dest.Emoji,
+                    opt => opt.MapFrom(src => src.Emoji)
                 )
                 .ForMember(
                     dest => dest.Preview,

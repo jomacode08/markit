@@ -14,6 +14,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string? Emoji { get; set; }
         public int CreatorId { get; set; }
     }
 

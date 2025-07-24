@@ -15,6 +15,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         public string Name { get; set; } = string.Empty;
         public bool IsMain { get; set; }
         public int CreatorId { get; set; }
+        public string? Emoji { get; set; }
         public int? ParentId { get; set; }
 
         public void Deconstruct( out string name,out int creatorId, out int? parentId )

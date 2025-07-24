@@ -14,6 +14,7 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string? Emoji { get; set; }
         public int CreatorId { get; set; }
     }
 
@@ -44,6 +45,7 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 mark.Name = request.Name;
+                mark.Emoji = request.Emoji;
                 await UpdateMarkAsync(mark);
                 await CreateDocumentBackgroundJob(mark);
                 var markViewModel = _mapper.Map<MarkViewModel>(mark);
