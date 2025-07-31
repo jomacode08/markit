@@ -1,6 +1,9 @@
-﻿using markit.Application.Helpers;
+﻿using System;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.AppUser;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,10 +24,11 @@ namespace markit.Infraestructure.Persistence.EF
             {
                 var context = scope.ServiceProvider.GetRequiredService<MarkitDbContext>();
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<object>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
                 try
                 {
-                    await MarkitDbContextSeed.SeedAsync(context, userDefaultSettings);
+                    await MarkitDbContextSeed.SeedAsync(context,userManager, userDefaultSettings);
                 }
                 catch (Exception ex)
                 {

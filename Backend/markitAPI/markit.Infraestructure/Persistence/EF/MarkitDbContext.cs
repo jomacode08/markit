@@ -39,9 +39,7 @@ namespace markit.Infraestructure.Persistence.EF
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new UserConfiguration(_userDefaultSettings));
             builder.ApplyConfiguration(new RoleConfiguration());
-            builder.ApplyConfiguration(new UserRoleConfiguration(_userDefaultSettings));
             builder.ApplyConfiguration(new CollectionConfiguration());
             builder.ApplyConfiguration(new MarkConfiguration());
 
