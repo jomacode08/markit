@@ -339,14 +339,17 @@ button {
   }
 
   .p-dialog-header {
+    font-size: 1.125rem;
     color: #ffffff;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
+    border-bottom: 1px solid var(--main-gray-700);
   }
 
   .p-dialog-content {
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
+    padding: 2rem 1.5rem;
   }
 }
 
@@ -392,7 +395,7 @@ button {
   padding: 0;
 }
 .p-component-overlay {
-  background-color: rgb(18, 18, 18, 0.4);
+  background-color: rgb(18, 18, 18, 0.4) !important;
 }
 
 /** Chips */
@@ -445,9 +448,31 @@ button {
   stroke: #ab93e0 !important;
 }
 
+/** Overlay panel **/
+.p-overlaypanel {
+  background: var(--main-gray-800);
+}
+.p-overlaypanel .p-overlaypanel-content {
+  padding: .5rem !important;
+}
+.p-overlaypanel:after,
+.p-overlaypanel:before,
+.p-overlaypanel.p-overlaypanel-flipped:after,
+.p-overlaypanel.p-overlaypanel-flipped:before {
+  display: none !important;
+}
+
 /** Utils */
 .h-50 {
   height: 50% !important;
+}
+
+.emoji {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  margin-left:  -4px;  /* Adjust as needed */
+  margin-right: -4px; /* Adjust as needed */
 }
 
 .lined-background {
@@ -458,4 +483,11 @@ button {
     var(--main-gray-700) 5px,
     var(--main-gray-700) 6px
   );
+}
+
+.fa-folder {
+  color: rgb(129 140 248 / 1);
+}
+.fa-note-sticky {
+  color: rgb(192 132 252 / 1);
 }

@@ -42,12 +42,6 @@ button {
   font-size: 1rem;
   background-color: rgb(31 41 55 / 1);
 }
-.item-icon i.fa-note-sticky {
-  color: rgb(192 132 252 / 1);
-}
-.item-icon i.fa-folder {
-  color: rgb(129 140 248 / 1);
-}
 
 .grid > div {
   display: flex;
@@ -87,7 +81,6 @@ button {
   padding: 1rem;
   background-color: var(--main-gray-900)
 }
-
 .search-icon .fa {
   font-size: 48px;
   color: rgb(192 132 252 / 1);

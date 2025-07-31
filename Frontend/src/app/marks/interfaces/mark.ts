@@ -9,6 +9,7 @@ export interface Mark {
     createdDate ?: Date;
     links     ?: Link[];
     blocks    : Block[];
+    emoji     ?: string;
     
     collectionName ?: string;
     requiresSync   ?: boolean;

@@ -2,4 +2,57 @@ button {
   border: none;
   cursor: pointer;
   padding: 0;
+  padding: .5rem 1rem;
+  border-radius: .375rem;
+  transition: .3s ease;
+}
+
+button#createBtn {
+  background-color: rgb(147 51 234 / 1);
+}
+button#createBtn:hover {
+  background-color: rgb(126 34 206 / 1);
+}
+button#createBtn:disabled {
+  background-color: var(--main-gray-800);
+  color: rgb(255, 255, 255, 0.6);
+  cursor: default;
+}
+button#cancelBtn {
+  background-color: rgb(31 41 55 / 1);
+}
+button#cancelBtn:hover {
+  background-color: rgb(55 65 81 / 1);
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(31 41 55 / 1);
+}
+
+.icon-container, .item-name input {
+  padding: .5rem .75rem;
+  border-radius: .375rem;
+}
+
+.item-name input {
+  border: 1px solid var(--main-gray-700) !important;
+}
+.item-name input::placeholder {
+  color: rgb(255, 255, 255, 0.6);
+}
+
+.item-name, .item-emoji {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+.item-name input {
+  color: #ffffff;
+  background-color: var(--main-black-color);
+  width: 100%;
+  border: none;
 }

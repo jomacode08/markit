@@ -3,42 +3,65 @@
     (submit)="onSubmit()"
     autocomplete="off"
 >
-    <div class="flex align-items-center gap-3">
-        <!-- Icon -->
-        <div class="text-2xl">
-            <i [class]="(this.currentCollectionItem.type | collectionItemIcon)"></i>
+    <!-- Name input -->
+    <div class="item-name">
+        <label for="name" class="text-sm font-medium text-gray-300 mb-2">Name</label>
+        <input
+            #nameInput
+            id="name"
+            autocomplete="off"
+            formControlName="name"
+            maxlength="255"
+            pInputText
+            type="text"
+            placeholder="Enter name..."
+        />
+        <!-- Validation name error message -->
+        <div *ngIf="isInvalidField('name')" class="mt-1">
+            <shared-error-field [validationField]="getValidationField('name', 'masc', 'name title')" />
         </div>
-        <!-- Name Input -->
-        <div class="w-full font-semibold">
-            <input
-                id="name"
-                class="transparent w-full px-2 py-1 bg-black-alpha-30 text-white-alpha-60"
-                formControlName="name"
-                maxlength="255"
-                pInputText
-                type="text"
+    </div>
+
+    <!-- Emoji picker -->
+    <div class="item-emoji">
+        <label for="emoji" class="text-sm font-medium text-gray-300 mb-2">Icon</label>        
+        <div class="icon-container">
+            <app-emoji-picker
+                #emoji
+                [defaultIconClass]="defaultPickerIconClass"
+                [currentEmoji]="currentCollectionItem.emoji"
+                (emojiClick)="setEmoji($event)"
+                (emojiDeleted)="setEmoji(undefined)"
             />
         </div>
-        <!-- Submit button -->
-        <div class="flex justify-content-center">
-            <button *ngIf="!submit else spinnerTemplate" type="submit">
-                <span class="fa-solid fa-check text-green-400 text-lg"></span>
-            </button>
-        </div>
     </div>
 
-    <!-- Validation name error message -->
-    <div *ngIf="isInvalidField('name')" class="mt-2">
-        <shared-error-field [validationField]="getValidationField('name', 'masc', 'name title')" />
+    <div class="w-full flex justify-content-end mt-5 gap-2">
+        <!-- Cancel button -->
+        <button
+            id="cancelBtn"
+            type="button"
+            aria-label="cancel"
+            (click)="onCancel()"
+        >
+            Cancel
+        </button>
+        <!-- Submit button -->
+        <button
+            id="createBtn"
+            type="submit"
+            aria-label="create"
+            [disabled]="submit"
+        >
+            <div class="flex justify-content-center align-items-center">
+                <span [ngClass]="{ 'mr-2': submit }" >Save</span>
+                @if (submit) {
+                    <p-progressSpinner
+                        [style]="{ display: 'flex', width: '1rem', height: '1rem' }"
+                        strokeWidth="4"
+                    ></p-progressSpinner>
+                }
+            </div>
+        </button>
     </div>
 </form>
-
-<!-- Loading spinner template -->
-<ng-template #spinnerTemplate>
-    <div class="flex justify-content-center">
-        <p-progressSpinner
-            [style]="{ width: '1.5rem', height: '1.5rem' }"
-            strokeWidth="4"
-        ></p-progressSpinner>
-    </div>
-</ng-template>

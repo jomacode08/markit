@@ -1,0 +1,28 @@
+:host {
+    display: block;
+}
+button {
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+button span {
+    transition: 0.3s ease;
+}
+button span:hover {
+    color: rgb(255, 255, 255, 0.8);
+}
+
+#emoji {
+    font-size: 1.125rem;
+}
+#defaultIcon {
+    font-size: 1.5rem;
+}
+
+.picker-header {
+    border-bottom: 1px solid var(--main-gray-700);
+    display: flex;
+    justify-content: end;
+    padding: 0 .5rem .5rem .5rem;
+}

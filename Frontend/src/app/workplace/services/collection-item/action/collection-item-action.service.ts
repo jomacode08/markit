@@ -14,20 +14,22 @@ export class CollectionItemActionService {
     return `${ environment.baseApiUrl }/${ type === CollectionItemType.Collection ? 'collections' : 'marks' }`;
   };
 
-  private readonly CREATE_INITIAL_COLLECTION = (name: string, collectionId: number) => {
+  private readonly CREATE_INITIAL_COLLECTION = (name: string, collectionId: number, emoji ?: string) => {
     return {
       id: 0,
       name,
+      emoji,
       parentId : collectionId,
       isMain: false,
     } as Collection;
   };
 
-  private readonly CREATE_INITIAL_MARK = (name: string, collectionId: number) => {
+  private readonly CREATE_INITIAL_MARK = (name: string, collectionId: number, emoji ?: string) => {
     return {
       id : 0,
       name,
       collectionId,
+      emoji,
       creatorId : 0,
       blocks: [
         {
@@ -42,21 +44,22 @@ export class CollectionItemActionService {
   constructor(private http: HttpClient) {}
 
   public createEmptyCollection(item : CollectionItem): Observable<Collection> {
-    const { name, collectionId, type } = item;
-    const collection : Collection = this.CREATE_INITIAL_COLLECTION(name, collectionId);
+    const { name, collectionId, type, emoji } = item;
+    const collection : Collection = this.CREATE_INITIAL_COLLECTION(name, collectionId, emoji);
     return this.http.post<Collection>(`${ this.BASE_URL(type) }/create`, collection);
   }
 
   public createEmptyMark(item : CollectionItem): Observable<Mark> {
-    const { name, collectionId, type } = item;
-    const mark : Mark = this.CREATE_INITIAL_MARK(name, collectionId);
+    const { name, collectionId, type, emoji } = item;
+    const mark : Mark = this.CREATE_INITIAL_MARK(name, collectionId, emoji);
     return this.http.post<Mark>(`${ this.BASE_URL(type) }/create`, mark);
   }
 
   public rename( item: CollectionItem ): Observable<Collection | Mark> {
     const bodyRequest = {
-        Id: item.typeId,
-        name: item.name
+      Id: item.typeId,
+      name: item.name,
+      emoji : item.emoji
     };
 
     return this.http.patch<Collection | Mark>(`${ this.BASE_URL(item.type) }/rename`, bodyRequest);
@@ -64,8 +67,9 @@ export class CollectionItemActionService {
 
   public updateFavoriteStatus(item : CollectionItem): Observable<boolean> {
     const bodyRequest = {
-        Id : item.typeId,
-        IsFavorite : !item.isFavorite,
+      Id : item.typeId,
+      IsFavorite : !item.isFavorite,
+      emoji: item.emoji,
     };
     return this.http.patch<boolean>(`${ this.BASE_URL(item.type) }/favorite`, bodyRequest);
   }

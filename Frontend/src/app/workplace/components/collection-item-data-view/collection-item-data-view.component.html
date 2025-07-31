@@ -27,7 +27,12 @@
                     <!-- Name and Description -->
                     <div class="col-12 mb-3 md:col-6 md:m-0">
                         <span class="item-icon">
-                            <i [class]="(item.type | collectionItemIcon)"></i>
+                            @if (item.emoji) {
+                                <span class="emoji">{{ item.emoji }}</span>
+                            }
+                            @else {
+                                <i [class]="(item.type | collectionItemIcon)"></i>
+                            }
                         </span>
                         <div class="flex flex-column">
                             <span class="w-full font-medium text-base">

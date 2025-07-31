@@ -6,21 +6,21 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { CollectionItem, CollectionItemAction, CollectionItemType } from './../../interfaces/collection-item';
-import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
+import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker/emoji-picker.component';
 
 @Component({
   selector: 'app-collection-item-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    CollectionItemIconPipe,
     ErrorFieldComponent,
     ReactiveFormsModule,
-    ProgressSpinnerModule
-  ],
+    ProgressSpinnerModule,
+    EmojiPickerComponent,
+],
   templateUrl: './collection-item-dialog.component.html',
   styleUrl: './collection-item-dialog.component.css',
 })
@@ -33,8 +33,10 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
     type         : new FormControl<CollectionItemType>(CollectionItemType.Collection),
     typeId       : new FormControl<number | undefined>(undefined),
     collectionId : new FormControl<number | undefined>(undefined),
+    emoji        : new FormControl<string | undefined>(undefined),
   });
 
+  public defaultPickerIconClass ?: string;
   public action = signal<CollectionItemAction | null>(null);
 
   get currentCollectionItem(): CollectionItem {
@@ -53,7 +55,12 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   ngOnInit(): void {
     this.setFormValues(this.config.data.collectionItem);
     this.action.set(this.config.data.action);
+    this.defaultPickerIconClass = this.currentCollectionItem.type === CollectionItemType.Collection 
+      ? 'fa-regular fa-folder'
+      : 'fa-regular fa-note-sticky';
   }
+
+  public onCancel = () => this.ref.close();
 
   public onSubmit(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
@@ -116,6 +123,9 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   }
 
   //* Utils
+  public setEmoji = (emoji ?: string) => {
+    this.form.controls['emoji'].setValue(emoji);
+  };
   private setFormValues(collectionItem: CollectionItem): void {
     this.form.reset(collectionItem);
   }

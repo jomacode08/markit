@@ -35,7 +35,12 @@
                                 <button type="button" class="recent-mark" (click)="onRecentMarkBtnClick(mark.id)">
                                     <div class="mark-description">
                                         <div class="icon">
-                                            <i class="fa-regular fa-note-sticky"></i>
+                                            @if (mark.emoji) {
+                                                <span class="emoji">{{ mark.emoji }}</span>
+                                            }
+                                            @else {
+                                                <i class="fa-regular fa-note-sticky"></i>
+                                            }
                                         </div>
                                         <div class="naming">
                                             <div class="font-medium text-base">{{ mark.name }}</div>
@@ -68,7 +73,12 @@
                                 @for (collection of report.starredCollections; track $index) {
                                     <div class="col-6 md:col-3">
                                         <button type="button" class="access" (click)="onStarredCollectionBtnClick(collection.id)">
-                                            <span class="fa-regular fa-folder text-xl mb-2 text-yellow-400"></span>
+                                            @if (collection.emoji) {
+                                                <span class="emoji text-xl mb-2">{{ collection.emoji }}</span>
+                                            }
+                                            @else {
+                                                <span class="fa-regular fa-folder text-xl mb-2"></span>
+                                            }
                                             <div>{{ collection.name }}</div>
                                         </button>
                                     </div>

@@ -33,6 +33,7 @@
     "@tiptap/extension-text-align": "^2.11.2",
     "@tiptap/extension-underline": "^2.11.2",
     "@tiptap/starter-kit": "^2.10.4",
+    "emoji-picker-element": "^1.26.3",
     "lottie-web": "^5.12.2",
     "lowlight": "^3.3.0",
     "ngx-tiptap": "^11.1.0",

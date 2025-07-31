@@ -33,7 +33,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return {
       header,
       width  : '25rem',
-      modal  : true,
       closable: false,
       dismissableMask: true,
       styleClass : 'custom-dialog',

@@ -6,11 +6,13 @@ export interface Collection {
     isMain : boolean;
     creatorId ?: number;
     parentId  ?: number;
-    collectionItems ?: CollectionItem[]
-    path ?: CollectionPath[]
+    emoji ?: string;
+    collectionItems ?: CollectionItem[];
+    path ?: CollectionPath[];
 }
 
 export interface CollectionPath {
     collectionId: number;
     name: string;
+    emoji ?: string;
 }

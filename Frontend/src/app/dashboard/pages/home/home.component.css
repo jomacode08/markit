@@ -91,9 +91,8 @@ button.recent-mark > .mark-description {
   padding: .5rem .75rem;
   border-radius: .5rem;
   margin-right: .75rem;
-  font-size: 1rem;
+  font-size: 1.15rem;
   background-color: rgb(31 41 55 / 1);
-  color: rgb(192 132 252 / 1);
 }
 
 .quick-access {
@@ -145,4 +144,3 @@ button.access:hover {
   text-align: start;
   color: rgba(255, 255, 255, 0.6);
 }
-

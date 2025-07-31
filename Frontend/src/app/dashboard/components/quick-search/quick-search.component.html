@@ -50,7 +50,7 @@
             </div>
             @for (mark of searchResults()?.markDocuments; track $index) {
                 <div class="item-result" (click)="navigateToMarkViewer(mark.markId)">
-                    <span class="fa-regular fa-file mr-2"></span>
+                    <span class="fa-regular fa-sticky-note mr-2"></span>
                     <div [innerHTML]="mark.name" class="name formatted"></div>
                 </div>
             }

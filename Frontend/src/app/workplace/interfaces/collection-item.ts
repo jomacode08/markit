@@ -10,6 +10,7 @@ export interface CollectionItem {
     updatedAt?: Date;
     //* Utility properties
     updating?: boolean;
+    emoji?: string;
 }
 
 export enum CollectionItemType {
@@ -18,7 +19,7 @@ export enum CollectionItemType {
 }
 
 export enum CollectionItemAction {
-    Add = 'Add',
+    Add = 'New',
     Rename = 'Rename',
     Delete = 'Delete'
 }

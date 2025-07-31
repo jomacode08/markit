@@ -44,7 +44,8 @@ namespace markit.Application.Common.Helpers
                 path.Add(new CollectionPath
                 {
                     CollectionId = collectionId,
-                    Name = pathNames[i]
+                    Name = pathNames[i],
+                    Emoji = i.Equals(pathIds.Length - 1) ? collection.Emoji : null
                 });
             }
 

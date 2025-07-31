@@ -8,9 +8,14 @@
             [ngClass]="{ 'ml-0' : $index === 0 }"
             (click)="navigate(segment.collectionId, $index)"
         >
-            <span [ngClass]="{ 'active' : segment.collectionId === currentIdCollection() }">
-                {{ segment.name }}
-            </span>
+            @if (segment.collectionId === currentIdCollection()) {
+                <span class="active">
+                    {{ segment.emoji }} {{ segment.name }}
+                </span>
+            }
+            @else {
+                <span>{{ segment.name }}</span>
+            }
         </button>
         <span *ngIf="$index != pathSegments().length - 1" class="fa fa-angle-right separator"></span>
     }
