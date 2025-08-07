@@ -3,59 +3,17 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 65px;
+    height: 50px;
     padding: 0.75rem 2rem;
-}
-
-button#new-mark-btn {
-    cursor: pointer; 
-    border: none;
-    padding: 2px;
-    border-radius: 8px;
-    div {
-        height: 100%;
-        background-color: #121212;
-        padding: 0 1rem;
-        display: flex;
-        align-items: center;
-        border-radius: 6px;
-    }
 }
 
 .brand-title {
     display: flex;
     align-items: center;
-    font-size: 1.80rem;
-    padding-right: 1rem;
+    font-size: 1.5rem;
 }
 
 .brand {
     font-family: 'PlayfairDisplay';
     font-weight: 500;
-}
-
-.gradient-background {
-    background: linear-gradient(330deg,#199d77,#9606cf,#c78051,#52de57);
-    background-size: 240% 240%;
-    animation: gradient-animation 8s ease infinite;
-}
-@keyframes gradient-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-
-@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-    #main-bar {
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      background-color: rgb(18, 18, 18, 0.5);
-    }
 }

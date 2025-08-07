@@ -57,7 +57,6 @@ export class MainBarComponent {
   @Output()
   public onShowSearchSidebar = new EventEmitter<void>();
 
-  public onNewMarkButtonClick = () => this.navigate(ROUTES.MARKS_NEW);
   public onAvatarClick = () => this.navigate(ROUTES.PROFILE);
 
   private navigate( path: string ): void {
