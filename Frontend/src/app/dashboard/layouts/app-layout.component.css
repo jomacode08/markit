@@ -1,9 +1,14 @@
-header {
-  width: 100%;
-  position: sticky;
-  top: 0;
+#main-bar-container {
   z-index: 1000;
-  background-color: var(--main-black-color);
+  background-color: var(--main-gray-900);
+}
+
+#main-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1 1 auto;
+  padding: 2rem 1rem;
 }
 
 footer {
@@ -15,13 +20,6 @@ footer {
 .text-gradient {
   color: transparent !important;
   background-clip: text;
+  -webkit-background-clip: text;
   background-image: linear-gradient(to right, #c084fc, #6366f1);
-}
-
-#main-container {
-  max-width: 80rem;
-  margin: 0 auto;
-  width: 100%;
-  flex: 1 1 auto;
-  padding: 1rem;
 }

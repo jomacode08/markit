@@ -289,7 +289,6 @@ button {
     display: flex;
     justify-content: center;
     background-color: rgba(47, 47, 47, 0.9);
-    border: 1px solid var(--main-gray-700);
     padding: 0.5rem 2rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(15px);

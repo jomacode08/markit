@@ -7,7 +7,7 @@ section.hero {
   margin-bottom: 1.5rem;
   border-radius: 1rem;
   border: 1px solid #6b21a84d;
-  background-image: linear-gradient(to bottom right, rgb(88 28 135 / .4) , #111827);
+  background-image: linear-gradient(to right, rgb(88 28 135 / .4), rgb(49 46 129 / .4));
 }
 
 button {
