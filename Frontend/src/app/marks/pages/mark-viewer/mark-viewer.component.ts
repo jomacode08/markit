@@ -1,6 +1,6 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, ViewChild, signal, OnInit } from '@angular/core';
+import { Component, ViewChild, signal, OnInit, computed } from '@angular/core';
 import { delay, Observable, of, retry, RetryConfig, Subject, throwError, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -78,6 +78,9 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   // Block carousel  
   @ViewChild('blockCarousel') private carousel !: Carousel;
   public currentBlockIndex = signal<number>(0);
+  public currentBlock = computed<Block>(() => {
+    return this.currentBlocks.at(this.currentBlockIndex()).value as Block;
+  });
   
   //* Form
   public saveState  = signal<SaveState>(SaveState.idle);
@@ -85,9 +88,11 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   public form = new FormGroup({
     id       : new FormControl<number>(0),
     name     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
-    blocks   : new FormArray<FormGroup>([]),
+    collectionId : new FormControl<number>(0),
     collectionName : new FormControl<string>(''),
+    emoji : new FormControl<string>(''),
     requiresSync : new FormControl<boolean>(false),
+    blocks   : new FormArray<FormGroup>([]),
   });
 
   //* Getters
@@ -147,8 +152,7 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   public onEditorSelected = (editor : Editor) => this.editor.set(editor);
 
   public onEditorValueChanged(content: string) {
-    const { id } = this.currentBlocks.at(this.currentBlockIndex()).value as Block;
-    this.updateBlockContentWithRetry(id, content);
+    this.updateBlockContentWithRetry(this.currentBlock().id, content);
   }
 
   public onCancel(): void {
@@ -163,15 +167,12 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
     if (event.page != null) this.currentBlockIndex.set(event.page);
   }
 
-  public onCarouselIndicatorButtonClick(index: number): void {
-    index > this.currentBlockIndex()
-      ? this.carousel.navForward(new MouseEvent('click'), index)
-      : this.carousel.navBackward(new MouseEvent('click'), index);  
-    this.currentBlockIndex.set(index);
-  }
-
   public onErrorSavingButtonClick(): void {
     this.updateMarkWithRetry(this.currentMark);
+  }
+
+  public onCollectionBtnClick(): void {
+    this.redirectToUrl(ROUTES.COLLECTION_SEE(this.currentMark.collectionId));
   }
 
   public openBlockMenuDialog( blocks : Block[] ) {

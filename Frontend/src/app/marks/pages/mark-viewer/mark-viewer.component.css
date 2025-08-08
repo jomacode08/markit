@@ -1,12 +1,34 @@
-footer {
-  display: flex;
+#markMenuBar {
   position: fixed;
-  bottom: 0px;
-  left: 0px;
-  border-top: 1px solid var(--main-gray-700);
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
   background-color: var(--main-black-color);
-  width: 100%;
-  height: 2rem;
+  z-index: 999;
+  padding: .375rem 1rem;
+
+  .separator {
+    color: rgb(255, 255, 255, 0.3);
+  }
+  .item {
+    color: rgb(255, 255, 255, 0.81);
+    font-weight: 400;
+    padding: .125rem 0.25rem;
+    border: none;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+  }
+  .item.collection:hover {
+    cursor: pointer;
+    background-color: var(--main-gray-700);
+  }
+}
+
+#newBlockButton {
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
 }
 
 .add-block {
@@ -42,16 +64,6 @@ footer {
 .divider {
   margin: 0.5rem 0;
   border: solid 1px var(--main-gray-700);
-}
-
-.block-indicators {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.block-indicators > button {
-  display: flex;
 }
 
 .autosave-indicators {

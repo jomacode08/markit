@@ -1,3 +1,8 @@
+:root {
+    --main-bar-width-md  : 3.5rem;
+    --main-bar-heigth-sm : 3.5rem;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -51,6 +56,7 @@ a {
     #main-bar-container {
         height: 100vh;
         position: sticky;
+        width: var(--main-bar-width-md);
         top: 0;
         border-right: 1px solid var(--main-gray-700);
 
@@ -64,7 +70,12 @@ a {
                 border-top: 1px solid var(--main-gray-700);
             }
         }
-
+    }
+    #markMenuBar {
+        top: 0;
+        right: 0;
+        gap: 1rem;
+        width: calc(100vw - var(--main-bar-width-md));
     }
     .card {
         height: 50%;
@@ -79,6 +90,14 @@ a {
     #form-container {
         height: 100vh;
     }
+    #markMenuBar {
+        width: 100vw;
+        bottom: 0;
+        left: 0;
+        justify-content: space-between;
+        border-top: 1px solid var(--main-gray-700);
+        background-color: var(--main-gray-900) !important;
+    }
     #main-bar-container {
         width: 100%;
         position: sticky;
@@ -88,7 +107,7 @@ a {
 
         nav{
             width: 100%;
-            height: 50px;
+            height: var(--main-bar-heigth-sm);
             padding: 0.75rem 1rem;
         }
     }

@@ -9,9 +9,10 @@ nav {
     justify-content: space-between;
 }
 
-.brand {
+.brand, .profile {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .brand-title {
