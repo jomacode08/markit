@@ -13,7 +13,7 @@ namespace markit.Application.Common.Helpers
             string content = firstBlock?.Content ?? "";
             int previewMaxLength = 40;
 
-            if (content.Length == 0) return GeneralConstant.Marks.MARK_DEFAULT_PREVIEW;
+            if (content.Length == 0) return GeneralConstant.Marks.MARK_PLACEHOLDER;
 
             // Find the first closable html tag in the block content.
             string firstTagElement = Regex.Match(content, "<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*>(.*?)<\\/\\1>").Value;

@@ -26,10 +26,7 @@
                     {{ currentMark.collectionName }}
                 </button>
                 <span class="separator">/</span>
-                <span class="item">
-                    {{ currentMark.emoji }}
-                    {{ currentMark.name }}
-                </span>
+                <span class="item">{{ currentMark.emoji }}{{ currentMark.name }}</span>
             </div>
             <!-- Auto save indicators -->
             <div class="autosave-indicators">        
@@ -58,21 +55,22 @@
             [formGroup]="form"
             autocomplete="off"
         >
-        <!-- Header -->
-        <div class="header mb-5">
-            <!-- Mark Name -->
-            <div class="title">
-                {{ currentMark.name }}
+            <!-- Header -->
+            <div id="markHeader" class="md:mt-4">
+                <app-emoji-picker
+                    defaultIconClass="fa-regular fa-note-sticky"
+                    [currentEmoji]="currentMark.emoji"
+                    (emojiClick)="onEmojiSelected($event)"
+                    (emojiDeleted)="onEmojiDeleted()"
+                />
+                <input 
+                    id="markName"
+                    type="text" 
+                    formControlName="inputName"
+                    [placeholder]="MARK_NAME_PLACEHOLDER"
+                    (input)="onMarkNameInputChanged($event)"
+                >
             </div>
-
-            <div class="divider lined-background">&nbsp;</div>
-
-            <!-- Related mark information -->
-            <div class="chips">
-                <p-chip [label]="currentMark.collectionName" icon="fa fa-folder"></p-chip>
-                <p-chip [label]="creatorName" icon="fa fa-glasses"></p-chip>
-            </div>
-        </div>
             <!-- Blocks -->
             <ng-container formArrayName="blocks">
                 <p-carousel

@@ -13,11 +13,8 @@ button span:hover {
     color: rgb(255, 255, 255, 0.8);
 }
 
-#emoji {
-    font-size: 1.125rem;
-}
-#defaultIcon {
-    font-size: 1.5rem;
+#emoji, #defaultIcon {
+    font-size: 1.75rem;
 }
 
 .picker-header {
@@ -25,4 +22,8 @@ button span:hover {
     display: flex;
     justify-content: end;
     padding: 0 .5rem .5rem .5rem;
+}
+
+#defaultIcon.fa-smile {
+    color: rgb(255, 255, 255, 0.8)
 }

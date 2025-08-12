@@ -11,7 +11,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
     public class UpdateMarkCommand : IRequest<MarkViewModel>
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string InputName { get; set; } = string.Empty;
         public string? Emoji { get; set; }
         public List<BlockViewModel> Blocks { get; set; } = new();
     }

@@ -6,6 +6,7 @@ namespace markit.Application.Features.Marks.Queries.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string InputName { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public int CollectionId { get; set; }
         public string CollectionName {  get; set; } = string.Empty;

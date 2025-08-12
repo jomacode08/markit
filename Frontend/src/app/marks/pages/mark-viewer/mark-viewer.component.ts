@@ -1,11 +1,11 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, ViewChild, signal, OnInit, computed } from '@angular/core';
-import { delay, Observable, of, retry, RetryConfig, Subject, throwError, timer } from 'rxjs';
+import { Component, signal, OnInit, computed, OnDestroy } from '@angular/core';
+import { debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, throwError, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
-import { Carousel, CarouselModule, CarouselPageEvent } from 'primeng/carousel';
+import { CarouselModule, CarouselPageEvent } from 'primeng/carousel';
 import { ChipModule } from 'primeng/chip';
 import { Editor } from '@tiptap/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -25,6 +25,7 @@ import { CustomMessageService } from '../../../shared/services/custom-message.se
 import { DEFAULT_BLOCK_NAME } from '../../../shared/utils/constant';
 import { DEFAULT_MARK_NAME, ROUTES } from '../../../shared/utils/constant';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker/emoji-picker.component';
 import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
@@ -45,6 +46,7 @@ enum SaveState {
     ButtonModule,
     CarouselModule,
     ChipModule,
+    EmojiPickerComponent,
     CommonModule,
     FloatingActionButtonComponent,
     FloatingMenuComponent,
@@ -57,11 +59,12 @@ enum SaveState {
   templateUrl: './mark-viewer.component.html',
   styleUrl: './mark-viewer.component.css',
 })
-export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
+export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   //* Configuration
   private blockMenuDialogRef: DynamicDialogRef | undefined;
   private editor = signal<Editor | undefined>(undefined);
   // Constants
+  public readonly MARK_NAME_PLACEHOLDER : string = 'New mark';
   private readonly MARKID_PARAM_NAME : string = 'id';
   private readonly SEE_MARK_ROUTE : string = 'marks/see';
   private readonly ERROR_RETRY_SETTINGS = {
@@ -76,21 +79,23 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
   public isFloatingMenuVisible : boolean = false;
   public textFormattingOptions: FloatingMenuOption[] = [];
   // Block carousel  
-  @ViewChild('blockCarousel') private carousel !: Carousel;
   public currentBlockIndex = signal<number>(0);
   public currentBlock = computed<Block>(() => {
     return this.currentBlocks.at(this.currentBlockIndex()).value as Block;
   });
   
   //* Form
+  private markNameInputDebouncer = new Subject<string>();
+  private markNameInputDebounceSub ?: Subscription;
   public saveState  = signal<SaveState>(SaveState.idle);
   public creatorName ?: string;
   public form = new FormGroup({
     id       : new FormControl<number>(0),
-    name     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
+    name : new FormControl<string>(""),
+    inputName     : new FormControl<string>("My new mark 🎉", [Validators.required, Validators.maxLength(255)]),
     collectionId : new FormControl<number>(0),
     collectionName : new FormControl<string>(''),
-    emoji : new FormControl<string>(''),
+    emoji : new FormControl<string|undefined>(undefined),
     requiresSync : new FormControl<boolean>(false),
     blocks   : new FormArray<FormGroup>([]),
   });
@@ -133,6 +138,14 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
       },
       error: (error) => this.handleError(error)
     });
+
+    this.markNameInputDebounceSub = this.handleMarkNameInputDebounce();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.markNameInputDebounceSub) {
+      this.markNameInputDebounceSub.unsubscribe();
+    }
   }
 
   public canDeactivate(): CanDeactivateType {
@@ -173,6 +186,21 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
 
   public onCollectionBtnClick(): void {
     this.redirectToUrl(ROUTES.COLLECTION_SEE(this.currentMark.collectionId));
+  }
+
+  public onEmojiSelected(emoji: string) {
+    this.currentMark.emoji = emoji;
+    this.updateMarkWithRetry(this.currentMark);
+  } 
+  
+  public onEmojiDeleted() {
+    this.currentMark.emoji = undefined;
+    this.updateMarkWithRetry(this.currentMark);
+  }
+
+  public onMarkNameInputChanged(event: Event) {
+    let name = (event.target as HTMLInputElement).value;
+    this.markNameInputDebouncer.next(name);
   }
 
   public openBlockMenuDialog( blocks : Block[] ) {
@@ -280,7 +308,8 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
     this.markService.update(mark)
     .pipe(
       // Error retry with exponential backoff
-      retry(this.getErrorRetryConfig())
+      retry(this.getErrorRetryConfig()),
+      delay(500),
     )
     .subscribe({
       next:  (mark)  => {
@@ -296,6 +325,19 @@ export class MarkViewerComponent implements OnInit, CanComponentDeactivate {
       },
       // After maximum retries, set error state and buffer unsaved data.
       error: ()  => this.saveChangesLocally()
+    });
+  }
+
+  private handleMarkNameInputDebounce(): Subscription {
+    const DEBOUNCE_TIME_IN_MILLI_SECONDS = 1000;
+    return this.markNameInputDebouncer
+    .pipe(debounceTime(DEBOUNCE_TIME_IN_MILLI_SECONDS))
+    .subscribe((name) => {
+      let mark = {
+        ...this.currentMark,
+        name,
+      } as Mark;
+      this.updateMarkWithRetry(mark);
     });
   }
 

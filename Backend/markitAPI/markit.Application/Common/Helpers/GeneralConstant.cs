@@ -29,7 +29,7 @@
         public static class Marks
         {
             public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
-            public static readonly string MARK_DEFAULT_PREVIEW = "New mark";
+            public static readonly string MARK_PLACEHOLDER = "New mark";
             public static readonly string MAIN_COLLECTION_NAME = "My marks";
         }
 

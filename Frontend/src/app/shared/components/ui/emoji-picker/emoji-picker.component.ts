@@ -2,7 +2,6 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHE
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import 'emoji-picker-element';
 import { Picker } from 'emoji-picker-element';
-import { EmojiClickEvent } from 'emoji-picker-element/shared';
 
 @Component({
   selector: 'app-emoji-picker',
@@ -14,7 +13,7 @@ import { EmojiClickEvent } from 'emoji-picker-element/shared';
   <!-- Picker button -->
   <button type="button" aria-label="emoji picker" (click)="panel.toggle($event)">
     @if (currentEmoji()) {
-      <span id="emoji" class="text-2xl">{{ currentEmoji() }}</span>
+      <span id="emoji">{{ currentEmoji() }}</span>
     }
     @else {
       <span id="defaultIcon" [class]="defaultIconClass() ?? 'fa-regular fa-smile'"></span>
@@ -46,7 +45,6 @@ export class EmojiPickerComponent implements AfterViewInit {
     const picker : Picker = this.emojiPickerRef.nativeElement;
     picker.addEventListener(
       'emoji-click', (event: any) => {
-        console.log(event);
         this.emojiClick.emit(event.detail.emoji.unicode);
         this.panelRef.toggle(new Event('click'));
       }

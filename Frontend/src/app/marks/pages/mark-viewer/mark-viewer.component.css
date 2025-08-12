@@ -7,20 +7,43 @@
   z-index: 999;
   padding: .375rem 1rem;
 
-  .separator {
-    color: rgb(255, 255, 255, 0.3);
+  .mark-breadcrumb {
+    .separator {
+      color: rgb(255, 255, 255, 0.3);
+      padding: 0 .25rem;
+    }
+    .item {
+      color: rgb(255, 255, 255, 0.81);
+      font-weight: 400;
+      padding: .125rem 0.25rem;
+      border: none;
+      border-radius: 0.25rem;
+      transition: background-color 0.2s ease;
+    }
+    .item.collection:hover {
+      cursor: pointer;
+      background-color: var(--main-gray-700);
+    }
   }
-  .item {
-    color: rgb(255, 255, 255, 0.81);
-    font-weight: 400;
-    padding: .125rem 0.25rem;
+}
+
+#markHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  input#markName {
+    width: 100%;
     border: none;
-    border-radius: 0.25rem;
-    transition: background-color 0.2s ease;
+    font-family: 'PlayfairDisplay';
+    font-size: 1.75rem;
+    font-weight: 500;
+    background-color: var(--main-black-color);
+    color: #ffffff;
+    padding: 0;
   }
-  .item.collection:hover {
-    cursor: pointer;
-    background-color: var(--main-gray-700);
+
+  input#markName::placeholder {
+    color: rgb(255, 255, 255, 0.6) !important;
   }
 }
 
@@ -44,21 +67,6 @@
 }
 .add-block:hover {
   color: var(--main-purple-color);
-}
-
-.title {
-  border: 1px solid var(--main-gray-700);
-  padding: 0.5rem 1rem;
-  font-family: 'PlayfairDisplay';
-  font-weight: 600;
-  font-size: 1.75rem;
-  cursor: default;
-}
-
-.chips {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
 }
 
 .divider {
