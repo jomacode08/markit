@@ -102,6 +102,18 @@ namespace markit.Application.Mappings
                 });
 
             CreateMap<UpdateMarkCommand, Mark>()
+                .ForMember(
+                    dest => dest.NameLess,
+                    opt  => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.Name))
+                )
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt.MapFrom(
+                        src => string.IsNullOrWhiteSpace(src.Name) 
+                            ? GeneralConstant.Marks.MARK_DEFAULT_PREVIEW 
+                            : src.Name
+                    )
+                )
                 // Ignore Blocks initially due to AutoMapper replace the existent collection with the new one.
                 // This could provocate data loss, it's better to mapping the collection manually.
                 .ForMember(dest => dest.Blocks, opt => opt.Ignore())
