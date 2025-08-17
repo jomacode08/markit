@@ -58,16 +58,16 @@ a {
         position: sticky;
         width: var(--main-bar-width-md);
         top: 0;
-        border-right: 1px solid var(--main-gray-700);
+        border-right: 1px solid var(--border-color);
 
         nav {
             height: 100%;
             flex-direction: column;
             .brand {
-                border-bottom: 1px solid var(--main-gray-700);
+                border-bottom: 1px solid var(--border-color);
             }
             .profile {
-                border-top: 1px solid var(--main-gray-700);
+                border-top: 1px solid var(--border-color);
             }
         }
     }
@@ -95,15 +95,14 @@ a {
         bottom: 0;
         left: 0;
         justify-content: space-between;
-        border-top: 1px solid var(--main-gray-700);
-        background-color: var(--main-gray-900) !important;
+        border-top: 1px solid var(--border-color);
     }
     #main-bar-container {
         width: 100%;
         position: sticky;
         top: 0;
-        background-color: var(--main-black-color);
-        border-bottom: 1px solid var(--main-gray-700);
+        background-color: var(--paper-bg);
+        border-bottom: 1px solid var(--border-color);
 
         nav{
             width: 100%;

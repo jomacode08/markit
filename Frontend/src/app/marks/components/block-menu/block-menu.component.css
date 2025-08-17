@@ -3,9 +3,9 @@
 }
 
 .block-list {
-  border: 1px solid var(--main-gray-700);
+  border: 1px solid var(--surface-border);
   border-radius: 8px;
-  background-color: var(--main-gray-800);
+  background-color: var(--surface-3);
 }
 
 .block-item {
@@ -17,11 +17,11 @@
 }
 
 .block-item:not(:first-child) {
-  border-top: solid 1px var(--main-gray-700);
+  border-top: solid 1px var(--surface-border);
 }
 
 .block-name {
-  color: rgb(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   width: 100%;
 }
 
@@ -33,10 +33,10 @@
 .block-name input.transparent {
   width: 100%;
   padding: 0.5rem !important;
-  background-color: var(--main-black-color);
-  color: rgba(255, 255, 255, 0.6);
+  background-color: var(--paper-bg);
+  color: var(--text-secondary);
 }
 
 .block-name input.transparent:disabled {
-  background-color: var(--main-gray-800);
+  background-color: var(--surface-3);
 }

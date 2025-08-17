@@ -5,19 +5,6 @@ button {
 
 .filter-container {
   padding: 4px;
-  background-color: #262626;
   margin-bottom: 1rem;
   border-radius: 16px;
-}
-
-.filter-container .filter {
-  padding: 0.5rem 0.75rem;
-  color: rgba(255, 255, 255, 0.60);
-  border-radius: 12px;
-}
-
-.filter-container .filter.active {
-  border: 1px solid var(--main-gray-700);
-  color: #ffffff;
-  font-weight: 500;
 }

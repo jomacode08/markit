@@ -1,6 +1,6 @@
 <section class="hero">
-    <h1 class="text-3xl font-bold m-0 mb-2">Welcome back!</h1>
-    <p class="text-gray-300 mb-4">Pick up where you left off or create something new</p>
+    <h1>Welcome back!</h1>
+    <p>Pick up where you left off or create something new</p>
     <div class="flex flex-wrap gap-3"> 
         <button type="button" class="new-item mark-btn" (click)="onNewMarkBtnClick()">
             <i class="fa-regular fa-pen-to-square"></i>
@@ -100,30 +100,30 @@
                 </div>
                 <div class="grid statistics">
                     <div class="col-12">
-                        <div class="stat-container">
-                            <div class="text-sm text-white-alpha-60 mb-2">Total marks</div>
+                        <div class="stat-container highlight-primary">
+                            <div class="text-sm  mb-2">Total marks</div>
                             <div id="marksCount" class="text-3xl font-bold">{{ report.stats.marksCount }}</div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="stat-container">
-                            <div class="text-sm text-white-alpha-60 mb-2">Total collections</div>
+                            <div class="text-sm  mb-2">Total collections</div>
                             <div id="collectionsCount" class="text-3xl font-bold">{{ report.stats.collectionsCount }}</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-container">
-                            <div class="text-sm text-white-alpha-60 mb-2">New this week</div>
+                            <div class="text-sm  mb-2">New this week</div>
                             <div class="text-3xl font-bold">
                                 <span id="weekMarksCount">{{ report.stats.weekMarksCount }}</span>
-                                <span *ngIf="report.stats.weekMarksCount > 0" class="fa-solid fa-fire text-red-400 text-2xl ml-2"></span>
+                                <span *ngIf="true" class="fa-solid fa-fire text-red-400 text-2xl ml-2"></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="stat-container">
+                        <div class="stat-container" [ngClass]="{'highlight-success': report.stats.todayMarksCount > 0}">
                             <div class="mb-2">
-                                <span class="text-sm text-white-alpha-60 mr-2">New today</span>
+                                <span class="text-sm  mr-2">New today</span>
                             </div>
                             <div
                                 class="text-3xl font-bold"
@@ -148,15 +148,15 @@
 
 <ng-template #noRecentMarksTemplate>
     <div id="noRecentMarks" class="flex flex-column align-items-center">
-        <span class="fa-regular fa-file-lines p-3 text-2xl text-white-alpha-60"></span>
+        <span class="fa-regular fa-file-lines p-3 text-2xl "></span>
         <h2 class="m-0 mb-2 text-lg font-medium">No recent marks</h2>
-        <p class="m-0 max-w-20rem text-center text-white-alpha-60 font-light">You haven't created any marks yet. Start creating your first mark.</p>
+        <p class="m-0 max-w-20rem text-center  font-light">You haven't created any marks yet. Start creating your first mark.</p>
     </div>
 </ng-template>
 <ng-template #noStarredCollectionsTemplate>
     <div id="noStarredCollections" class="flex flex-column align-items-center">
-        <span class="fa-regular fa-folder p-3 text-2xl text-white-alpha-60"></span>
+        <span class="fa-regular fa-folder p-3 text-2xl "></span>
         <h2 class="m-0 mb-2 text-lg font-medium">No starred collections</h2>
-        <p class="m-0 max-w-20rem text-center text-white-alpha-60 font-light">Add collections to favorites for quick access to your most important marks.</p>
+        <p class="m-0 max-w-20rem text-center  font-light">Add collections to favorites for quick access to your most important marks.</p>
     </div>
 </ng-template>

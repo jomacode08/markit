@@ -9,7 +9,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         <lord-icon 
             trigger="loop" 
             src="/animated-icons/spinner-three-dots.json" 
-            colors="primary:#dcc1ff" 
+            colors="primary:#845ef7" 
             style="height: 8rem; width: 8rem;"
         ></lord-icon>
     </div>

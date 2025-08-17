@@ -5,7 +5,6 @@
     --surface-d: #e5e7eb;
     --surface-e: #ffffff;
     --surface-f: #ffffff;
-    --text-color: #4b5563;
     --surface-0: #ffffff;
     --surface-50: #f9fafb;
     --surface-100: #f3f4f6;
@@ -34,12 +33,10 @@
     --surface-section: #ffffff;
     --surface-card: #ffffff;
     --surface-overlay: #ffffff;
-    --surface-border: #dfe7ef;
     --surface-hover: #f6f9fc;
     --focus-ring: 0 0 0 0.2rem #BFDBFE;
     --maskbg: rgba(0, 0, 0, 0.4);
     --highlight-bg: #EFF6FF;
-    --highlight-text-color: #1D4ED8;
     color-scheme: light;
   }
   
@@ -185,13 +182,13 @@
     color: #9BA0AB;
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker .ql-picker-label:hover {
-    color: var(--main-purple-color);
+    color: var(--purple-200);
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker .ql-picker-label:hover .ql-stroke {
-    stroke:  var(--main-purple-color);
+    stroke:  var(--purple-200);
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker .ql-picker-label:hover .ql-fill {
-    fill:  var(--main-purple-color);
+    fill:  var(--purple-200);
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
     color: #9BA0AB;
@@ -213,7 +210,7 @@
     color: #9BA0AB;
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options .ql-picker-item:hover {
-    color: var(--main-purple-hover-color);
+    color: var(--purple-300);
     background: #f3f4f6;
   }
   .p-editor-container .p-editor-toolbar.ql-snow .ql-picker.ql-expanded:not(.ql-icon-picker) .ql-picker-item {
@@ -234,35 +231,35 @@
   }
   .p-editor-container .ql-snow.ql-toolbar button:hover,
   .p-editor-container .ql-snow.ql-toolbar button:focus {
-    color: var(--main-purple-hover-color);
+    color: var(--purple-300);
   }
   .p-editor-container .ql-snow.ql-toolbar button:hover .ql-stroke,
   .p-editor-container .ql-snow.ql-toolbar button:focus .ql-stroke {
-    stroke: var(--main-purple-hover-color);
+    stroke: var(--purple-300);
   }
   .p-editor-container .ql-snow.ql-toolbar button:hover .ql-fill,
   .p-editor-container .ql-snow.ql-toolbar button:focus .ql-fill {
-    fill: var(--main-purple-hover-color);
+    fill: var(--purple-300);
   }
   .p-editor-container .ql-snow.ql-toolbar button.ql-active,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-label.ql-active,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-item.ql-selected {
-    color: var(--main-purple-color);
+    color: var(--purple-200);
   }
   .p-editor-container .ql-snow.ql-toolbar button.ql-active .ql-stroke,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
-    stroke: var(--main-purple-color);
+    stroke: var(--purple-200);
   }
   .p-editor-container .ql-snow.ql-toolbar button.ql-active .ql-fill,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill {
-    fill: var(--main-purple-color);
+    fill: var(--purple-200);
   }
   .p-editor-container .ql-snow.ql-toolbar button.ql-active .ql-picker-label,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-picker-label,
   .p-editor-container .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-picker-label {
-    color: var(--main-purple-color);
+    color: var(--purple-200);
   }
   
   @layer primeng {

@@ -4,20 +4,17 @@
         font-size: 3rem;
     }
     .p-dialog {
-        background: var(--main-purple-color);
+        background: var(--surface-overlay-1);
         border-radius: 1rem;
         padding: 2rem;
     }
     .confirm-dialog-header, .confirm-dialog-content {
         text-align: center;
     }
-    .confirm-dialog-header, .confirm-dialog-content, .confirm-dialog-footer {
-        color: var(--main-black-color);
-    }
     .confirm-dialog-icon {
         display: flex;
         justify-content: center;
-        color: var(--main-gray-800);
+        color: var(--yellow-500);
         font-size: 4rem;
         margin-bottom: 1.5rem;
     }
@@ -30,20 +27,21 @@
     .confirm-dialog-content {
         font-size: 1rem;
         margin-bottom: 2rem;
+        color: var(--text-secondary);
     }
     .confirm-dialog-footer {
         display: flex;
         justify-content: space-around;
     }
     .confirm-dialog-footer > .p-button:first-child {
-        color: var(--main-purple-color);
-        background-color: var(--main-gray-800);
+        color: var(--text-primary);
+        background-color: var(--accent-color);
     }
     .confirm-dialog-footer > .p-button:last-child {
-        color: var(--main-gray-800);
+        color: var(--text-secondary);
     }
     .p-dialog .confirm-dialog-footer .p-button {
-        border: solid 1px var(--main-gray-800);
+        border: solid 1px var(--border-color);
         border-radius: 1.5rem;
         padding: 0.5rem;
         width: 45%;
@@ -58,29 +56,32 @@
     
     //** Toast **/
     .p-toast .p-toast-message {
-        background-color: var(--main-gray-800);
-        border-left: solid 10px;
         color: #ffffff;
+        border: 1px solid;
     }
     .p-toast .p-toast-message.p-toast-message-error {
-        border-left-color: #ff5757;
+        background-color: var(--highlight-surface-red);
+        border-color: var(--highlight-border-red);
     }
     .p-toast .p-toast-message.p-toast-message-info {
-        border-left-color: var(--main-purple-color);
+        background-color: var(--highlight-surface-blue);
+        border-color: var(--highlight-border-blue);
     }
     .p-toast .p-toast-message.p-toast-message-success {
-        border-left-color: #1ea97c;
+        background-color: var(--highlight-surface-green);
+        border-color: var(--highlight-border-green);
     }
     .p-toast .p-toast-message.p-toast-message-warn {
-        border-left-color: #cc8925;
+        background-color: var(--highlight-surface-amber);
+        border-color: var(--highlight-border-amber);
     }
     .p-toast-icon-close {
-        color: #FFFFFF;
+        color: var(--text-secondary);
     }
     .p-toast-summary {
         font-weight: 600;
     }
     .p-toast-detail {
-        color: rgb(255, 255, 255, 0.6);
+        color: var(--text-secondary);
     }
 }

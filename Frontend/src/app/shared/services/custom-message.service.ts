@@ -31,7 +31,7 @@ export class CustomMessageService {
   public showGeneralSuccess(detail: string): void {
     const message: CustomMessage = {
       type: MessageType.success,
-      title: 'Operación exitosa',
+      title: 'Success',
       message: detail
     }
     this.showCustom(message);
@@ -40,7 +40,7 @@ export class CustomMessageService {
   public showGeneralError(detail: string): void {
     const message: CustomMessage = {
       type: MessageType.error,
-      title: 'Favor de verificar:',
+      title: 'Warning',
       message: detail
     }
     this.showCustom(message);

@@ -7,7 +7,7 @@ button {
 }
 button:hover:enabled {
   span.fa {
-    color: #ffffff;
+    color: var(--text-primary);
   }
 }
 button:disabled {
@@ -31,10 +31,10 @@ span.label {
   gap: 1.5rem;
 }
 .active {
-  color: var(--main-purple-color) !important;
+  color: var(--secondary-accent) !important;
 }
 .scroll-container::-webkit-scrollbar {
   height: 6px;
   border-radius: 3px;
-  background: var(--main-gray-800);
+  background: var(--paper-bg);
 }

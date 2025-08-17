@@ -4,7 +4,7 @@
   padding-left: 0.5px;
 }
 .tiptap p.is-editor-empty:first-child::before {
-  color: var(--light-gray-color);
+  color: rgb(255, 255, 255, 0.4);
   font-style: italic;
   content: attr(data-placeholder);
   float: left;
@@ -16,39 +16,17 @@
   outline: none !important;
 }
 
-/** Background block colors **/
-.neutral {
-  background-color: var(--main-gray-800);
-}
-.purple {
-  background-color: #E8DCF9;
-}
-.red {
-  background-color: #EDCAC0;
-}
-.transparent {
-  background-color: transparent;
-  color: #ffffff;
-  padding: 0;
-}
-
-.neutral, .purple, .red {
-  .p-skeleton {
-    background-color: var(--light-gray-color) !important;
-  }
-}
-
 /** Editor Marks */
 .tiptap {
   h1,h2,h3 {
-    border: 1px solid var(--main-gray-700);
+    border: 1px solid var(--surface-border);
     padding: 0.5rem 1rem;
     font-family: 'PlayfairDisplay';
   }
 
   hr {
     border: none;
-    border-top: 1px solid var(--main-gray-700);
+    border-top: 1px solid var(--surface-border);
     margin: 2rem 0;
   }
 
@@ -56,7 +34,7 @@
     border-radius: 0.4rem;
     box-decoration-break: clone;
     padding: 0.1rem 0.3rem;
-    color: var(--main-black-color) !important;
+    color: var(--paper-bg) !important;
   }
 
   ul,ol {
@@ -97,7 +75,7 @@
       width:  1.5rem;
       background-color: transparent;
       appearance: none;
-      border: 1px solid var(--main-gray-700);
+      border: 1px solid var(--surface-border);
     }
 
     input[type="checkbox"]:checked {
@@ -111,11 +89,11 @@
 
   /* Link styles */
   a {
-    color: var(--main-purple-color);
+    color: var(--secondary-accent);
     cursor: pointer;
 
     &:hover {
-      color: var(--main-purple-hover-color);
+      color: var(--secondary-accent-hover);
     }
   }
 }
@@ -123,14 +101,12 @@
 /** Code Styling */
 /* Base styles */
 pre {
-  background: #1f1f1f;
-  color: #f5f5f5;
-  /* font-family: 'JetBrainsMono', monospace; */
+  background: var(--surface-1);
   font-family: 'Fira Code', monospace;
   font-size: 0.95rem;
   line-height: 1.6;
   padding: 1em;
-  border: 1px solid var(--main-gray-700);
+  border: 1px solid var(--surface-border);
   overflow-x: auto;
 
   code {

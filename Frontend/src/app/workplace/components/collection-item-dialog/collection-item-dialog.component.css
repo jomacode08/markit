@@ -8,51 +8,53 @@ button {
 }
 
 button#createBtn {
-  background-color: rgb(147 51 234 / 1);
+  background-color: var(--accent-color);
 }
 button#createBtn:hover {
-  background-color: rgb(126 34 206 / 1);
+  background-color: var(--accent-hover);
 }
 button#createBtn:disabled {
-  background-color: var(--main-gray-800);
-  color: rgb(255, 255, 255, 0.6);
+  background-color: var(--surface-2);
+  color: var(--text-secondary);
   cursor: default;
 }
 button#cancelBtn {
-  background-color: rgb(31 41 55 / 1);
+  background-color: var(--surface-2);
+  color: var(--text-secondary);
 }
 button#cancelBtn:hover {
-  background-color: rgb(55 65 81 / 1);
+  background-color: var(--surface-1);
+}
+
+label {
+  color: var(--text-secondary);
 }
 
 .icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(31 41 55 / 1);
+  background-color: var(--surface-1);
+  border: 1px solid var(--surface-border);
 }
 
 .icon-container, .item-name input {
   padding: .5rem .75rem;
   border-radius: .375rem;
 }
-
 .item-name input {
-  border: 1px solid var(--main-gray-700) !important;
+  border: 1px solid var(--surface-border) !important;
+  color: var(--text-primary);
+  background-color: var(--surface-1);
+  width: 100%;
+  border: none;
 }
 .item-name input::placeholder {
-  color: rgb(255, 255, 255, 0.6);
+  color: var(--text-secondary)
 }
-
 .item-name, .item-emoji {
   display: flex;
   flex-direction: column;
   width: 100%;
   margin-bottom: 1.5rem;
-}
-.item-name input {
-  color: #ffffff;
-  background-color: var(--main-black-color);
-  width: 100%;
-  border: none;
 }

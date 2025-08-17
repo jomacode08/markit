@@ -31,7 +31,7 @@ interface WeekDayBar {
           pButton
           aria-label="activity-bar"
           type="button" 
-          class="bar bg-purple-500"
+          class="bar"
           tooltipPosition="left"
           [pTooltip]="bar.value | markActivity" 
           [style.height.px]="bar.height"
@@ -47,12 +47,13 @@ interface WeekDayBar {
       display: block;
     }
     .bar {
-      width: 1rem !important;
-      border-radius: .25rem !important;
-      margin-bottom: .25rem !important;
-      padding: 0!important;
+      width: 1rem;
+      border-radius: .25rem;
+      margin-bottom: .25rem;
+      padding: 0;
       border: none;
       cursor: pointer;
+      background-color: var(--accent-color);
     }
     .bar-label {
       font-size: .75rem;

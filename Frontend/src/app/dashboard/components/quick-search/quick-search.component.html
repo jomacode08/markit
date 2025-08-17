@@ -33,24 +33,24 @@
     >
         <!-- Collection documents -->
         <div *ngIf="showCollections()" class="mb-2 fadein animation-duration-200">
-            <div class="py-3 text-sm font-light text-white-alpha-60">
+            <div class="py-3 text-sm font-light text-secondary">
                 COLLECTIONS ({{ searchResults()?.collectionDocuments?.length }})
             </div>
             @for (collection of searchResults()?.collectionDocuments; track $index) {
                 <div class="item-result" (click)="navigateToCollectionExplorer(collection.collectionId)">
-                    <span class="fa-regular fa-folder mr-2"></span>
+                    <span class="collection-icon fa-regular fa-folder mr-2"></span>
                     <div [innerHTML]="collection.name" class="name formatted"></div>
                 </div>
             }
         </div>
         <!-- Mark documents -->
         <div *ngIf="showMarks()" class="mb-3 fadein animation-duration-200">
-            <div class="py-2 text-sm font-light text-white-alpha-60">
+            <div class="py-2 text-sm font-light text-secondary">
                 MARKS ({{ searchResults()?.markDocuments?.length }})
             </div>
             @for (mark of searchResults()?.markDocuments; track $index) {
                 <div class="item-result" (click)="navigateToMarkViewer(mark.markId)">
-                    <span class="fa-regular fa-sticky-note mr-2"></span>
+                    <span class="mark-icon fa-regular fa-note-sticky mr-2"></span>
                     <div [innerHTML]="mark.name" class="name formatted"></div>
                 </div>
             }
@@ -68,13 +68,13 @@
             @case (searchStateEnum.finished) {
                 <div class="flex flex-column">
                     <i class="fa fa-search purple-highlight"></i>
-                    <p class="m-0 mt-4 font-medium text-white-alpha-90">No results found</p>
+                    <p class="m-0 mt-4 font-medium text-secondary">No results found</p>
                     <p class="m-0 mt-2">Try a different search term</p>
                 </div>
             }
             @case (searchStateEnum.error) {
                 <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
-                <p class="m-0 mt-4 font-medium text-white-alpha-90">Something went wrong.</p>
+                <p class="m-0 mt-4 font-medium text-secondary">Something went wrong.</p>
                 <p class="m-0 mt-2">Feel free to contact us if refreshing doesn't fix things.</p>
             }
         }

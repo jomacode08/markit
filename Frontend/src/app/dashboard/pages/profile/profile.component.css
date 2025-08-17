@@ -3,7 +3,6 @@
 }
 
 #edit-icon {
-  color: var(--main-purple-color);
   cursor: pointer;
   border-radius: 25px;
   padding: 12px;
@@ -11,7 +10,7 @@
 }
 
 #edit-icon:hover {
-  background-color: var(--main-gray-700);
+  background-color: var(--surface-1);
 }
 
 .p-avatar {

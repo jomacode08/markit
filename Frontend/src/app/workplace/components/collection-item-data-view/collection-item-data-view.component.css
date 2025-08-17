@@ -5,7 +5,7 @@ button {
 
 .filter-container {
   padding: 4px;
-  background-color: #262626;
+  background-color: var(--surface-1);
   margin-bottom: 1rem;
   border-radius: 16px;
 }
@@ -13,13 +13,13 @@ button {
 .filter-container .filter {
   font-size: 1rem;
   padding: 0.5rem 0.75rem;
-  color: rgba(255, 255, 255, 0.60);
+  color: var(--text-secondary);
   border-radius: 12px;
 }
 
 .filter-container .filter.active {
-  border: 1px solid var(--main-gray-700);
-  color: #ffffff;
+  color: var(--text-primary);
+  background-color: var(--surface-3);
   font-weight: 500;
 }
 
@@ -28,11 +28,12 @@ button {
   padding: .75rem 1rem;
   transition: background-color 0.3s ease;
   margin-top: .75rem;
-  border-bottom: 1px solid var(--main-gray-800);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .item:hover {
-  background-color: var(--main-gray-800);
+  background-color: var(--surface-1);
+  cursor: pointer;
 }
 
 .item-icon {
@@ -40,7 +41,7 @@ button {
   border-radius: .5rem;
   margin-right: .75rem;
   font-size: 1rem;
-  background-color: rgb(31 41 55 / 1);
+  background-color: var(--highlight-surface-blue);
 }
 
 .grid > div {
@@ -59,7 +60,7 @@ button {
 }
 
 .actions-container button:hover span {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
 }
 
 .search-background-icon {
@@ -79,7 +80,7 @@ button {
 .search-icon {
   border-radius: 9999px;
   padding: 1rem;
-  background-color: var(--main-gray-900)
+  background-color: var(--paper-bg)
 }
 .search-icon .fa {
   font-size: 48px;

@@ -1,6 +1,6 @@
 #main-bar-container {
   z-index: 1000;
-  background-color: var(--main-gray-900);
+  background-color: var(--surface-1);
 }
 
 #main-container {
@@ -14,7 +14,7 @@
 footer {
   text-align: center;
   padding: 1rem;
-  border: 1px solid var(--main-gray-700);
+  border: 1px solid var(--border-color);
 }
 
 .text-gradient {
