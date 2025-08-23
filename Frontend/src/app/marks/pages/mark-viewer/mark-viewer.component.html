@@ -2,53 +2,84 @@
     <!-- Form -->
     <section class="container">
         <nav id="markMenuBar">
-            <!-- New block button -->
-            <button
-                id="newBlockButton"
-                type="button"
-                pTooltip="Block options"
-                tooltipPosition="top"
-                (click)="openBlockMenuDialog(this.currentBlocks.value)"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                    <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
-                    <path d="m3.528 7.294l8.18 4.544a.6.6 0 0 0 .583 0l8.209-4.56M12 21v-9"/></g>
-                </svg>
-            </button>
-            <!-- Breadcrumb -->
-            <div class="mark-breadcrumb">
-                <button
-                    type="button"
-                    aria-label="collection"
-                    class="item collection"
-                    (click)="onCollectionBtnClick()"
-                >
-                    {{ currentMark.collectionName }}
-                </button>
-                <span class="separator">/</span>
-                <span class="item">{{ currentMark.emoji }}{{ currentMark.name }}</span>
-            </div>
-            <!-- Auto save indicators -->
-            <div class="autosave-indicators">        
-                <ng-container [ngSwitch]="saveState()">
-                    <div *ngSwitchCase="saveStateType.saving" class="status">
-                        <span class="fa fa-arrows-rotate spinner"></span>
-                        <span class="hidden md:block">Saving...</span>
-                    </div>
-                    <div *ngSwitchCase="saveStateType.saved" class="status">
-                        <span class="fa fa-check saved"></span>
-                        <span class="hidden md:block">Saved</span>
-                    </div>
+            <div class="flex gap-2">
+                <!-- Breadcrumb -->
+                <div class="mark-breadcrumb max-w-16rem sm:max-w-25rem md:max-w-30rem lg:max-w-max">
                     <button
-                        *ngSwitchCase="saveStateType.error"
                         type="button"
-                        class="status cursor-pointer hover:text-white-alpha-90 border-none"
-                        (click)="onErrorSavingButtonClick()"
+                        aria-label="collection"
+                        class="item collection"
+                        (click)="onCollectionBtnClick()"
                     >
-                        <span class="fa fa-triangle-exclamation error"></span>
-                        <span class="hidden md:block">Error saving (click to retry)</span>
+                        {{ currentMark.collectionName }}
                     </button>
-                </ng-container>
+                    <span class="separator">/</span>
+                    <span class="item">{{ currentMark.emoji }}{{ currentMark.name }}</span>
+                </div>
+                <!-- Auto save indicators -->
+                <div class="autosave-indicators">        
+                    <ng-container [ngSwitch]="saveState()">
+                        <div *ngSwitchCase="saveStateType.saving" class="status">
+                            <span class="fa fa-arrows-rotate spinner"></span>
+                            <span class="hidden md:block">Saving...</span>
+                        </div>
+                        <div *ngSwitchCase="saveStateType.saved" class="status">
+                            <span class="fa fa-check saved"></span>
+                            <span class="hidden md:block">Saved</span>
+                        </div>
+                        <button
+                            *ngSwitchCase="saveStateType.error"
+                            type="button"
+                            class="status cursor-pointer hover:text-white-alpha-90 border-none"
+                            (click)="onErrorSavingButtonClick()"
+                            >
+                            <span class="fa fa-triangle-exclamation error"></span>
+                            <span class="hidden md:block">Error saving (click to retry)</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <!-- Block title -->
+                <span class="text-secondary hidden md:inline">
+                    {{ currentBlock.title }}
+                </span>
+                <!-- Block navigators -->
+                <div class="navigators flex align-items-center gap-3">
+                    <button
+                        type="button"
+                        aria-label="Navigate to left"
+                        pTooltip="Go to left"
+                        tooltipPosition="top"
+                        [disabled]="this.currentBlockIndex() === 0"
+                        (click)="navigateBackward()"
+                    >
+                        <span class="fa-solid fa-angle-left"></span>
+                    </button>
+                    <button
+                        type="button"
+                        aria-label="Navigate to right"
+                        pTooltip="Go to right"
+                        tooltipPosition="top"
+                        [disabled]="this.currentBlockIndex() === this.currentBlocks.length - 1"
+                        (click)="navigateForward()"
+                    >
+                        <span class="fa-solid fa-angle-right"></span>
+                    </button>
+                </div>
+                <!-- New block button -->
+                <button
+                    id="newBlockButton"
+                    type="button"
+                    aria-label="Block menu"
+                    pTooltip="Block menu"
+                    (click)="openBlockMenuDialog(this.currentBlocks.value)"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="#e9ecef" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                        <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
+                        <path d="m3.528 7.294l8.18 4.544a.6.6 0 0 0 .583 0l8.209-4.56M12 21v-9"/></g>
+                    </svg>
+                </button>
             </div>
         </nav>
         <form
@@ -71,17 +102,15 @@
                     (input)="onMarkNameInputChanged($event)"
                 >
             </div>
-            <!-- Blocks -->
+            <!-- Blocks gallery -->
             <ng-container formArrayName="blocks">
-                <p-carousel
-                    #blockCarousel
+                <p-galleria
+                    #blockGalleria
+                    id="blockGalleria"
                     [value]="currentBlocks.controls"
-                    [numVisible]="1"
-                    [numScroll]="1"
-                    [circular]="false"
-                    [showNavigators]="false"
                     [showIndicators]="false"
-                    (onPage)="onCarouselScroll($event)"
+                    [showThumbnails]="false"
+                    [activeIndex]="currentBlockIndex()"
                 >
                     <ng-template let-block pTemplate="item">
                         <div [formGroup]="castAbstractControlToFormGroup(block)">
@@ -92,8 +121,8 @@
                                 (onValueChange)="onEditorValueChanged($event)"
                             />
                         </div>
-                    </ng-template>            
-                </p-carousel>
+                    </ng-template>   
+                </p-galleria>
             </ng-container>
         </form>
     </section>

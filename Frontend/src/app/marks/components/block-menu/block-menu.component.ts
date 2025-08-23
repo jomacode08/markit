@@ -13,6 +13,16 @@ export interface EditableBlock extends Block {
   editable: boolean;
 };
 
+export interface SharedData {
+  blocks: Block[],
+  currentBlockId: number
+}
+
+export interface OnCloseResponse {
+  blocks: Block[];
+  selectedBlockId ?: number;
+}
+
 @Component({
   selector: 'app-block-menu',
   standalone: true,
@@ -27,6 +37,7 @@ export interface EditableBlock extends Block {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlockMenuComponent implements OnInit {
+  public currentBlockId ?: number;
   public blocks = signal<EditableBlock[]>([]);
   public canSaveChanges = computed<boolean>(() => {
     return !this.blocks().some(block => block.editable);
@@ -37,12 +48,14 @@ export class BlockMenuComponent implements OnInit {
     private ref: DynamicDialogRef,
     private messageService: CustomMessageService,
   ) {
-    this.validateSharedData(this.config.data);
+    this.validateSharedData(this.config.data.shared);
   }
 
   //** Lyfecycle
   ngOnInit(): void {
-    this.setBlocks(this.config.data?.blocks);
+    const sharedData = this.config.data.shared as SharedData;
+    this.setBlocks(sharedData.blocks);
+    this.currentBlockId = sharedData.currentBlockId;
   }
 
   //** Events
@@ -89,13 +102,31 @@ export class BlockMenuComponent implements OnInit {
     this.blocks().splice(index);
   }
 
+  public onSelectBlock(selectedBlockId: number): void {
+    if (selectedBlockId > 0){
+      const onCloseResponse : OnCloseResponse = {
+        blocks: this.blocks(),
+        selectedBlockId 
+      }
+      this.ref.close(onCloseResponse);
+    }
+  }
+
   public onSaveChangesButtonClick(): void {
-    this.ref.close(this.blocks() as Block[]);
+    const onCloseResponse : OnCloseResponse = {
+      blocks: this.blocks()
+    }
+    this.ref.close(onCloseResponse);
+  }
+
+  public onCancel(): void {
+    this.ref.close();
   }
 
   //* Utils
-  private validateSharedData( sharedData: any ): void {
+  private validateSharedData( sharedData: SharedData ): void {
     if (!sharedData.blocks) this.handleMissingDataError('blocks');
+    if (!sharedData.currentBlockId) this.handleMissingDataError('currentBlockId');
   }
 
   private handleMissingDataError( requiredDataName: string ): void {

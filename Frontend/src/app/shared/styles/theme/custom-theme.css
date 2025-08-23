@@ -20,11 +20,13 @@
     --surface-border: rgba(255, 255, 255, 0.12);
     --surface-border-hover: rgba(255, 255, 255, 0.18);
     /* Highlight surfaces - subtle colored backgrounds */
+    --highlight-surface-red: rgba(239, 68, 68, 0.15);
     --highlight-surface-purple: rgba(132, 94, 247, 0.15);
     --highlight-surface-green: rgba(16, 185, 129, 0.15);
     --highlight-surface-blue: rgba(59, 130, 246, 0.15);
     --highlight-surface-amber: rgba(245, 158, 11, 0.15);
     /* Highlight borders - for additional emphasis */
+    --highlight-border-red: rgba(239, 68, 68, 0.3);
     --highlight-border-purple: rgba(132, 94, 247, 0.3);
     --highlight-border-green: rgba(16, 185, 129, 0.3);
     --highlight-border-blue: rgba(59, 130, 246, 0.3);
@@ -171,12 +173,12 @@ button {
   z-index: 1;
 }
 
+.p-button:focus {
+  box-shadow: none;
+}
 .p-button.floating-button {
   border: none;
   opacity: 0.9;
-}
-.p-button.floating-button:focus {
-  box-shadow: none;
 }
 
 
@@ -399,6 +401,13 @@ button {
 .p-overlaypanel.p-overlaypanel-flipped:after,
 .p-overlaypanel.p-overlaypanel-flipped:before {
   display: none !important;
+}
+
+/** Galleria **/
+#blockGalleria{
+  .p-galleria-item {
+    display: block;
+  }
 }
 
 /** Utils */

@@ -5,7 +5,7 @@ import { debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subsc
 import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
-import { CarouselModule, CarouselPageEvent } from 'primeng/carousel';
+import { GalleriaModule } from 'primeng/galleria';
 import { ChipModule } from 'primeng/chip';
 import { Editor } from '@tiptap/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -16,7 +16,7 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Block } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
-import { BlockMenuComponent } from '../../components/block-menu/block-menu.component';
+import { BlockMenuComponent, OnCloseResponse } from '../../components/block-menu/block-menu.component';
 import { BlockService } from '../../services/block.service';
 import { CanComponentDeactivate, CanDeactivateType } from '../../../auth/guards/can-deactivate/can-component-deactivate';
 import { createTextFormattingOptions } from '../../interfaces/text-formatting-options';
@@ -31,6 +31,7 @@ import { FloatingMenuComponent } from '../../../shared/components/layout/floatin
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { Mark } from '../../interfaces/mark';
 import { MarkService } from '../../services/mark.service';
+import { SharedData } from './../../components/block-menu/block-menu.component';
 
 enum SaveState {
   idle,
@@ -44,9 +45,9 @@ enum SaveState {
   imports: [
     BlockComponent,
     ButtonModule,
-    CarouselModule,
     ChipModule,
     EmojiPickerComponent,
+    GalleriaModule,
     CommonModule,
     FloatingActionButtonComponent,
     FloatingMenuComponent,
@@ -78,11 +79,8 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public floatingMenuOptions : FloatingMenuOption[] = [];
   public isFloatingMenuVisible : boolean = false;
   public textFormattingOptions: FloatingMenuOption[] = [];
-  // Block carousel  
+  // Block gallery  
   public currentBlockIndex = signal<number>(0);
-  public currentBlock = computed<Block>(() => {
-    return this.currentBlocks.at(this.currentBlockIndex()).value as Block;
-  });
   
   //* Form
   private markNameInputDebouncer = new Subject<string>();
@@ -103,6 +101,9 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   //* Getters
   get currentMark(): Mark {
     return this.form.value as Mark;
+  }
+  get currentBlock(): Block {
+    return this.currentBlocks.at(this.currentBlockIndex()).value as Block;
   }
   get currentBlocks() {
     return this.form.get('blocks') as FormArray;
@@ -165,7 +166,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public onEditorSelected = (editor : Editor) => this.editor.set(editor);
 
   public onEditorValueChanged(content: string) {
-    this.updateBlockContentWithRetry(this.currentBlock().id, content);
+    this.updateBlockContentWithRetry(this.currentBlock.id, content);
   }
 
   public onCancel(): void {
@@ -174,10 +175,6 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   public onTextFormattingButtonClick( ): void {
     this.changeFloatingMenuState(this.textFormattingOptions);
-  }
-
-  public onCarouselScroll( event: CarouselPageEvent ): void {
-    if (event.page != null) this.currentBlockIndex.set(event.page);
   }
 
   public onErrorSavingButtonClick(): void {
@@ -212,17 +209,34 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       dismissableMask : true,
       styleClass : 'custom-dialog',
       data: {
-        blocks : structuredClone(blocks)
+        shared : {
+          blocks: structuredClone(blocks),
+          currentBlockId: this.currentBlock.id
+        } as SharedData
       }
     });
 
-    this.blockMenuDialogRef.onClose.subscribe(async ( blocks ?: Block[] ) => {
-      this.blockMenuDialogRef = undefined;
-      if (blocks) {
-        await this.setBlocks(blocks);
-        this.updateMarkWithRetry(this.currentMark);
-      }
-    });
+    this.blockMenuDialogRef.onClose
+    .subscribe(async ( response: OnCloseResponse ) => 
+      await this.handleOnCloseBlockMenu(response)
+    );
+  }
+
+  private async handleOnCloseBlockMenu(response: OnCloseResponse): Promise<void> {
+    // Clean dialog reference
+    this.blockMenuDialogRef = undefined;
+    if (response == null) return;
+    // A new block was selected
+    if (response.selectedBlockId != null) {
+      const selectedBlockIndex = this.currentMark.blocks.findIndex(b => b.id === response.selectedBlockId);
+      this.currentBlockIndex.set(selectedBlockIndex);
+      return;
+    }
+    // Apply block changes
+    if (response.blocks) {
+      await this.setBlocks(response.blocks);
+      this.updateMarkWithRetry(this.currentMark);
+    }
   }
 
   public openUnsavedChangesDialog( accept: () => void ): void {
@@ -232,6 +246,16 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       icon: 'fa fa-warning',
       accept
     });
+  }
+
+  public navigateForward(): void {
+    if (this.currentBlockIndex() === this.currentBlocks.length - 1) return;
+    this.currentBlockIndex.update(current => current + 1);
+  }
+
+  public navigateBackward(): void {
+    if (this.currentBlockIndex() === 0) return;
+    this.currentBlockIndex.update(current => current - 1);
   }
 
   //* Form
@@ -348,6 +372,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
         id: [block.id, Validators.required],
         content: [block.content, Validators.required],
         title: [block.title, Validators.required],
+        createdDate: [block.createdDate],
       })
     );
 
