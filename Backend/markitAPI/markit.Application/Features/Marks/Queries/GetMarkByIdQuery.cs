@@ -10,6 +10,7 @@ namespace markit.Application.Features.Marks.Queries
     public class GetMarkByIdQuery : IRequest<MarkViewModel>
     {
         public int Id { get; set; }
+        public int CreatorId {  get; set; }
     }
 
     public class GetMarkByIdQueryHandler : IRequestHandler<GetMarkByIdQuery, MarkViewModel>
@@ -27,6 +28,9 @@ namespace markit.Application.Features.Marks.Queries
         {
             Mark? mark = await _unitOfWork.markRepository.GetWithOrderedBlocks(request.Id)
                 ?? throw new NotFoundException("Mark", request.Id);
+
+            if (mark.Collection?.CreatorId != request.CreatorId)
+                throw new NotFoundException("Mark", request.Id);
 
             return _mapper.Map<MarkViewModel>(mark);
         }

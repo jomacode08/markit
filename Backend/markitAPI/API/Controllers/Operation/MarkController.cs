@@ -28,8 +28,16 @@ namespace markit.API.Controllers.Operation
 
         [HttpGet]
         [Route("getById/{Id}")]
-        public async Task<MarkViewModel> GetById([FromRoute] GetMarkByIdQuery query)
-            => await _mediator.Send(query);
+        public async Task<MarkViewModel> GetById(int id)
+        {
+            var query = new GetMarkByIdQuery
+            {
+                Id = id,
+                CreatorId = _sessionService.GetCreatorId()
+            };
+
+            return await _mediator.Send(query);
+        }
 
         [HttpGet]
         [Route("getByCurrentSession")]
