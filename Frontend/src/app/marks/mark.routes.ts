@@ -8,15 +8,6 @@ export const MARK_ROUTES: Routes = [
         redirectTo: '/collections'
     },
     {
-        path: 'new',
-        title: '',
-        data: { breadcrumb : 'New' },
-        canDeactivate: [canDeactivateGuard],
-        loadComponent: () =>
-            import('./pages/mark-viewer/mark-viewer.component')
-        .then(c => c.MarkViewerComponent)
-    },
-    {
         path: 'see/:id',
         title: '',
         data: { breadcrumb : 'See' },

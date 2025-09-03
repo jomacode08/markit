@@ -1,0 +1,20 @@
+<button
+    type="button"
+    aria-label="Navigate to left"
+    pTooltip="Go to left"
+    tooltipPosition="top"
+    [disabled]="blockIndex() === 0"
+    (click)="onNavigateBackwardBtnClick()"
+>
+    <span class="fa-solid fa-angle-left"></span>
+</button>
+<button
+    type="button"
+    aria-label="Navigate to right"
+    pTooltip="Go to right"
+    tooltipPosition="top"
+    [disabled]="blockIndex() === blocksLength() - 1"
+    (click)="onNavigateForwardBtnClick()"
+>
+    <span class="fa-solid fa-angle-right"></span>
+</button>

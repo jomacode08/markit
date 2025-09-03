@@ -1,0 +1,19 @@
+<ng-container [ngSwitch]="saveState()">
+    <div *ngSwitchCase="saveStateType.saving" class="status">
+        <span class="fa fa-arrows-rotate spinner"></span>
+        <span class="hidden md:block">Saving...</span>
+    </div>
+    <div *ngSwitchCase="saveStateType.saved" class="status">
+        <span class="fa fa-check saved"></span>
+        <span class="hidden md:block">Saved</span>
+    </div>
+    <button
+        *ngSwitchCase="saveStateType.error"
+        type="button"
+        class="status cursor-pointer hover:text-white-alpha-90 border-none"
+        (click)="onRetrySave.emit()"
+        >
+        <span class="fa fa-triangle-exclamation error"></span>
+        <span class="hidden md:block">Error saving (click to retry)</span>
+    </button>
+</ng-container>

@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+button:disabled {
+  color: var(--text-secondary);
+  cursor: default;
+}

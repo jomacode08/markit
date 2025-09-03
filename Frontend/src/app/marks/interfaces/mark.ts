@@ -11,6 +11,7 @@ export interface Mark {
     blocks    : Block[];
     emoji     ?: string;
     
+    inputName ?: string;
     collectionName ?: string;
     requiresSync   ?: boolean;
 }

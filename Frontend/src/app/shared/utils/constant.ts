@@ -6,7 +6,6 @@ export const MAIN_COLLECTION_PARAM : string = 'my-marks';
 
 export const ROUTES = {
     // Marks
-    MARKS_NEW: '/marks/new',
     MARKS_SEE: (id: number) => `/marks/see/${ id }`,
     
     // Workplace

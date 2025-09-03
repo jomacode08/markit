@@ -1,79 +1,41 @@
-<ng-container *ngIf="currentMark.id > 0 else skeleton">
-    <!-- Form -->
+@defer(when mark$ | async) {
     <section class="container">
+        <!-- Mark menu bar -->
         <nav id="markMenuBar">
             <div class="flex gap-2">
                 <!-- Breadcrumb -->
-                <div class="mark-breadcrumb max-w-16rem sm:max-w-25rem md:max-w-30rem lg:max-w-max">
-                    <button
-                        type="button"
-                        aria-label="collection"
-                        class="item collection"
-                        (click)="onCollectionBtnClick()"
-                    >
-                        {{ currentMark.collectionName }}
-                    </button>
-                    <span class="separator">/</span>
-                    <span class="item">{{ currentMark.emoji }}{{ currentMark.name }}</span>
+                <div class="max-w-16rem sm:max-w-25rem md:max-w-30rem lg:max-w-max">
+                    <mark-breadcrumb
+                        [markName]="currentMark().name"
+                        [collectionName]="currentMark().collectionName ?? notFoundPlaceHolder"
+                        [collectionId]="currentMark().collectionId"
+                        [emoji]="currentMark().emoji"
+                    />
                 </div>
-                <!-- Auto save indicators -->
-                <div class="autosave-indicators">        
-                    <ng-container [ngSwitch]="saveState()">
-                        <div *ngSwitchCase="saveStateType.saving" class="status">
-                            <span class="fa fa-arrows-rotate spinner"></span>
-                            <span class="hidden md:block">Saving...</span>
-                        </div>
-                        <div *ngSwitchCase="saveStateType.saved" class="status">
-                            <span class="fa fa-check saved"></span>
-                            <span class="hidden md:block">Saved</span>
-                        </div>
-                        <button
-                            *ngSwitchCase="saveStateType.error"
-                            type="button"
-                            class="status cursor-pointer hover:text-white-alpha-90 border-none"
-                            (click)="onErrorSavingButtonClick()"
-                            >
-                            <span class="fa fa-triangle-exclamation error"></span>
-                            <span class="hidden md:block">Error saving (click to retry)</span>
-                        </button>
-                    </ng-container>
-                </div>
+                <!-- Auto save indicator -->
+                <mark-autosave-indicator
+                    [saveState]="saveState()"
+                    (onRetrySave)="retryMarkSave()"
+                />
             </div>
             <div class="flex gap-3">
                 <!-- Block title -->
                 <span class="text-secondary hidden md:inline">
-                    {{ currentBlock.title }}
+                    {{ currentBlock().title }}
                 </span>
-                <!-- Block navigators -->
-                <div class="navigators flex align-items-center gap-3">
-                    <button
-                        type="button"
-                        aria-label="Navigate to left"
-                        pTooltip="Go to left"
-                        tooltipPosition="top"
-                        [disabled]="this.currentBlockIndex() === 0"
-                        (click)="navigateBackward()"
-                    >
-                        <span class="fa-solid fa-angle-left"></span>
-                    </button>
-                    <button
-                        type="button"
-                        aria-label="Navigate to right"
-                        pTooltip="Go to right"
-                        tooltipPosition="top"
-                        [disabled]="this.currentBlockIndex() === this.currentBlocks.length - 1"
-                        (click)="navigateForward()"
-                    >
-                        <span class="fa-solid fa-angle-right"></span>
-                    </button>
-                </div>
+                <!-- Navigators -->
+                 <block-navigator
+                    [blockIndex]="currentBlockIndex()"
+                    [blocksLength]="currentMark().blocks.length"
+                    (positionChanged)="updateBlockIndex($event)"
+                 />
                 <!-- New block button -->
                 <button
                     id="newBlockButton"
                     type="button"
                     aria-label="Block menu"
                     pTooltip="Block menu"
-                    (click)="openBlockMenuDialog(this.currentBlocks.value)"
+                    (click)="openBlockMenuDialog(this.currentMark().blocks)"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="#e9ecef" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                         <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
@@ -82,15 +44,16 @@
                 </button>
             </div>
         </nav>
+        <!-- Form -->
         <form
-            [formGroup]="form"
+            [formGroup]="markForm"
             autocomplete="off"
         >
             <!-- Header -->
             <div id="markHeader" class="md:mt-4">
                 <app-emoji-picker
                     defaultIconClass="fa-regular fa-note-sticky"
-                    [currentEmoji]="currentMark.emoji"
+                    [currentEmoji]="currentMark().emoji"
                     (emojiClick)="onEmojiSelected($event)"
                     (emojiDeleted)="onEmojiDeleted()"
                 />
@@ -98,7 +61,7 @@
                     id="markName"
                     type="text" 
                     formControlName="inputName"
-                    [placeholder]="MARK_NAME_PLACEHOLDER"
+                    [placeholder]="markNamePlaceHolder"
                     (input)="onMarkNameInputChanged($event)"
                 >
             </div>
@@ -107,14 +70,14 @@
                 <p-galleria
                     #blockGalleria
                     id="blockGalleria"
-                    [value]="currentBlocks.controls"
+                    [value]="markForm.controls.blocks.controls"
                     [showIndicators]="false"
                     [showThumbnails]="false"
                     [activeIndex]="currentBlockIndex()"
                 >
                     <ng-template let-block pTemplate="item">
-                        <div [formGroup]="castAbstractControlToFormGroup(block)">
-                            <marks-block     
+                        <div [formGroup]="block">
+                            <marks-block
                                 formControlName="content"
                                 [title]="block.value['title']"
                                 (onEditorSelected)="onEditorSelected($event)"
@@ -126,7 +89,6 @@
             </ng-container>
         </form>
     </section>
-
     <!-- Floating font menu button -->
     <shared-floating-action-button 
         iconClass="fa fa-font"
@@ -134,13 +96,11 @@
     />
     <!-- Floating menu -->
     <shared-floating-menu
-        [options]="floatingMenuOptions"
-        [visible]="isFloatingMenuVisible"
+        [options]="floatingMenuOptions()"
+        [visible]="isFloatingMenuVisible()"
     />
-</ng-container>
-
-<!-- Loading skeleton template -->
-<ng-template #skeleton>
+} @placeholder {
+    <!-- Loading skeleton template -->
     <div class="container mt-6">
         <div class="w-full mb-5">
             <p-skeleton height="3rem"/>
@@ -157,4 +117,4 @@
             </div>
         </div>
     </div>
-</ng-template>
+}
