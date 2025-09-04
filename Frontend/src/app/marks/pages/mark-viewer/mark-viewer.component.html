@@ -21,11 +21,11 @@
             <div class="flex gap-3">
                 <!-- Block title -->
                 <span class="text-secondary hidden md:inline">
-                    {{ currentBlock().title }}
+                    {{ currentBlock()?.title }}
                 </span>
                 <!-- Navigators -->
                  <block-navigator
-                    [blockIndex]="currentBlockIndex()"
+                    [blockIndex]="currentGalleryBlockIndex()"
                     [blocksLength]="currentMark().blocks.length"
                     (positionChanged)="updateBlockIndex($event)"
                  />
@@ -73,7 +73,7 @@
                     [value]="markForm.controls.blocks.controls"
                     [showIndicators]="false"
                     [showThumbnails]="false"
-                    [activeIndex]="currentBlockIndex()"
+                    [activeIndex]="currentGalleryBlockIndex()"
                 >
                     <ng-template let-block pTemplate="item">
                         <div [formGroup]="block">
@@ -81,7 +81,7 @@
                                 formControlName="content"
                                 [title]="block.value['title']"
                                 (onEditorSelected)="onEditorSelected($event)"
-                                (onValueChange)="onEditorValueChanged($event)"
+                                (onValueChange)="onEditorValueChanged(block.value['id'], $event)"
                             />
                         </div>
                     </ng-template>   

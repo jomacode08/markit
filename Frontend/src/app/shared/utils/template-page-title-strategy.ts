@@ -10,7 +10,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
 
     override updateTitle(snapshot: RouterStateSnapshot): void {
         const title = this.buildTitle(snapshot);
-        if (title !== undefined) {
+        if (title != null && title.trim().length > 0) {
             this.title.setTitle(`Mark it - ${title}`);
         }
     }

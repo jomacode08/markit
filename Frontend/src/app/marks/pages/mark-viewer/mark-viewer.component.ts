@@ -1,8 +1,8 @@
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, takeUntil, tap, throwError, timer } from 'rxjs';
+import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, signal, OnInit, computed, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
@@ -84,20 +84,15 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   //* State management
   protected mark$ : Observable<Mark | null>;
   private markNameInputDebouncer = new Subject<string>();
-  public currentMark = signal<Mark>(this.mapFormToMark(this.markForm.getRawValue()));
-  public currentBlock = computed<Block>(() => {
-    const mark = this.mapFormToMark(this.markForm.getRawValue());
-    const block = mark.blocks.at(this.currentBlockIndex());
-    if (!block) throw new Error('Current block not found');
-    return block;
-  });
+  public currentMark = signal<Mark>(this.markForm.getRawValue() as Mark);
+  public currentBlock = signal<Block|undefined>(undefined);
 
   //* Floating menu
   public floatingMenuOptions = signal<FloatingMenuOption[]>([]);
   public isFloatingMenuVisible = signal<boolean>(false);
 
   //* Block gallery  
-  public currentBlockIndex = signal<number>(0);
+  public currentGalleryBlockIndex = signal<number>(0);
 
   //* Getters
   get markNamePlaceHolder(): string {
@@ -118,10 +113,17 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     private router: Router,
     private toastService: MessageService,
   ) {
-    this.mark$ = this.fetchMark().pipe(
-      tap(mark => this.initializeForm(mark)),
+    this.mark$ = this.activatedRoute.params
+    .pipe(
+      // Get the markId param and fetch mark data
+      switchMap((params) => {
+        const markId = this.getValidMarkId(params.id);
+        return this.fetchMark(markId);
+      }),
+      // Initialize form and check mark sync.
       tap(mark => {
-        if (mark.requiresSync) this.updateMarkWithRetry()
+        this.initializeForm(mark);
+        if (mark.requiresSync) this.updateMarkWithRetry();
       }),
       catchError(error => {
         this.redirectOnError();
@@ -157,8 +159,8 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   //* Events
   public onEditorSelected = (editor : Editor) => this.editor.set(editor);
 
-  public onEditorValueChanged(content: string) {
-    this.updateBlockContentWithRetry(this.currentBlock().id, content);
+  public onEditorValueChanged(blockId: number, content: string) {
+    this.updateBlockContentWithRetry(blockId, content);
   }
 
   public onCancel(): void {
@@ -199,7 +201,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       data: {
         shared : {
           blocks: structuredClone(blocks),
-          currentBlockId: this.currentBlock().id
+          currentBlockId: this.currentBlock()?.id
         } as SharedData
       }
     });
@@ -216,8 +218,10 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     if (response == null) return;
     // A new block was selected
     if (response.selectedBlockId != null) {
-      const selectedBlockIndex = this.currentMark().blocks.findIndex(b => b.id === response.selectedBlockId);
-      this.currentBlockIndex.set(selectedBlockIndex);
+      const currentMark = this.currentMark();
+      const selectedBlockIndex = currentMark.blocks.findIndex(b => b.id === response.selectedBlockId);
+      this.currentBlock.update(() => currentMark.blocks[selectedBlockIndex]);
+      this.currentGalleryBlockIndex.update(() => selectedBlockIndex);
       return;
     }
     // Apply block changes
@@ -238,38 +242,26 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   //* Form
   private initializeForm(mark: Mark): void {
-    this.setBlocks(mark.blocks);
     this.markForm.reset(mark);
+    this.setBlocks(mark.blocks);
+    this.currentGalleryBlockIndex.update(() => 0);
+    this.currentBlock.update(() => mark.blocks[0]);
   }
 
   private subscribeToFormChanges(): Subscription {
     return this.markForm.valueChanges
     .pipe(takeUntil(this.destroy$))
     .subscribe(changes => {
-      this.currentMark.update(current => changes as Mark)
+      this.currentMark.update(current => changes as Mark);
     });
   }
 
   private redirectOnError(): void {
-    this.redirectToUrl(this.currentRouteService.previousSuccessfulUrl() ?? ROUTES.MY_MARKS);
-  }
-
-  private mapFormToMark(formValue: any): Mark {
-    return {
-      ...formValue,
-      blocks: formValue.blocks.map((block: any): Block => ({
-        id: block.id,
-        title: block.title,
-        // Add other Block properties as needed
-      }))
-    };
+    this.redirectToUrl(ROUTES.ERROR);
   }
 
   //* Marks
-  private fetchMark(): Observable<Mark> {
-    const markId = this.getIdFromUrlParam();
-    if (markId == null) return throwError(() => new Error('The markId is invalid'));
-    // Check if the mark is in local storage to return it.
+  private fetchMark(markId : number): Observable<Mark> {
     const localMark = this.markService.getMarkFromLocalStorage(markId);
     if (localMark) return of(localMark);
     return this.getMarkById(markId);
@@ -352,14 +344,16 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   //* UTILS
-  public updateBlockIndex = (newIndex: number) => this.currentBlockIndex.update(c => newIndex);
+  public updateBlockIndex = (newIndex: number) => this.currentGalleryBlockIndex.update(c => newIndex);
   private setSaveState = (state: SaveState) => this.saveState.set(state);
   private redirectToUrl = (url: string) => this.router.navigate([url]);
 
-  private getIdFromUrlParam(): number | null {
-    const markId = this.activatedRoute.snapshot.paramMap.get(MARK_VIEWER_CONSTANTS.MARKID_PARAM_NAME);
-    if (markId == null || isNaN(Number(markId))) return null;
-    return Number(markId);
+
+  private getValidMarkId(markIdParam: string): number {
+    if (markIdParam == null || isNaN(Number(markIdParam))) {
+      throw new Error("The markId is invalid");
+    }
+    return Number(markIdParam);
   }
 
   private changeFloatingMenuState(): void {

@@ -2,7 +2,7 @@ import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Editor } from "@tiptap/core";
 import { FormBuilder } from "@angular/forms";
-import { of, RetryConfig, throwError } from "rxjs";
+import { BehaviorSubject, of, RetryConfig, throwError } from "rxjs";
 
 import { MessageService } from "primeng/api";
 
@@ -28,16 +28,8 @@ describe('MarkViewerComponent', () => {
     let mockMarkService : jasmine.SpyObj<MarkService>;
     let mockMessageService : jasmine.SpyObj<MessageService>;
     let mockRouter : jasmine.SpyObj<Router>;
-
-    const mockMarkId = 123;
-    const mockActivatedRoute = {
-        snapshot: {
-            paramMap: convertToParamMap({
-                id: mockMarkId.toString()
-            })
-        }
-    };
-
+    let params: BehaviorSubject<{ id: string }>;
+    
     let mockMark : Mark = {
         id: 123,
         name : 'Test mark',
@@ -75,6 +67,7 @@ describe('MarkViewerComponent', () => {
         mockEditor = {} as Editor;
 
         // Set initial flow mock values
+        params = new BehaviorSubject({ id: mockMark.id.toString() });
         mockMarkService.getMarkFromLocalStorage.and.returnValue(null);
         mockMarkService.getById.and.returnValue(of(mockMark));
         mockDialogService.open.and.returnValue(mockDialogRef);
@@ -94,7 +87,9 @@ describe('MarkViewerComponent', () => {
                 { provide: MessageService, useValue: mockMessageService },
                 {
                     provide: ActivatedRoute,
-                    useValue : mockActivatedRoute
+                    useValue : {
+                        params: params.asObservable()
+                    }
                 },
             ]
         }).compileComponents();
@@ -137,7 +132,7 @@ describe('MarkViewerComponent', () => {
             const blockId = mockMark.blocks[0].id;
             mockBlockService.updateContent.and.returnValue(of({ id: blockId, title: 'Test', content: newContent, createdDate: new Date() }));
             
-            component.onEditorValueChanged(newContent);
+            component.onEditorValueChanged(blockId, newContent);
             tick(500);
 
             expect(mockBlockService.updateContent).toHaveBeenCalledWith(blockId, newContent);
@@ -146,10 +141,11 @@ describe('MarkViewerComponent', () => {
 
         it('should save changes locally on block update failure', fakeAsync(() => {
             const newContent = 'New content';
+            const blockId = mockMark.blocks[0].id;
             spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
             mockBlockService.updateContent.and.returnValue(throwError(() => new Error('Update failed')));
             
-            component.onEditorValueChanged(newContent);
+            component.onEditorValueChanged(blockId, newContent);
             tick(1000); // Wait for retries.
 
             expect(component.saveState()).toBe(SaveState.error);
@@ -211,7 +207,7 @@ describe('MarkViewerComponent', () => {
         it('should update block index', () => {
             const newIndex = 1;
             component.updateBlockIndex(newIndex);
-            expect(component.currentBlockIndex()).toBe(newIndex);
+            expect(component.currentGalleryBlockIndex()).toBe(newIndex);
         });
     });
 });

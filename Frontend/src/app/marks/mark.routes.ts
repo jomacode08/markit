@@ -9,7 +9,6 @@ export const MARK_ROUTES: Routes = [
     },
     {
         path: 'see/:id',
-        title: '',
         data: { breadcrumb : 'See' },
         canDeactivate: [canDeactivateGuard],
         loadComponent: () =>

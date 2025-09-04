@@ -53,7 +53,7 @@ input {
 
 .block-item:hover {
   cursor: pointer;
-  background-color: var(--surface-3);
+  background-color: var(--surface-1);
 }
 
 button.block-info {

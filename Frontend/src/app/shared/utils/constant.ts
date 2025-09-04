@@ -16,6 +16,7 @@ export const ROUTES = {
     
     // Others
     NOT_FOUND: '/not-found',
+    ERROR: '/error',
     HOME_URL: '/dashboard',
     PROFILE: '/dashboard/profile',
 };
