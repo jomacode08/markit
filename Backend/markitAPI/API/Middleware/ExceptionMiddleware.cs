@@ -62,6 +62,13 @@ namespace markit.API.Middleware
                         break;
                     }
 
+                    case UnauthorizedAccessException unauthorizedAccessException:
+                    {
+                        statusCode = HttpStatusCode.Unauthorized;
+                        customResponse = new(statusCode, unauthorizedAccessException.Message, ex.StackTrace);
+                        break;
+                    }
+
                     // Errores internos
                     default:
                     {

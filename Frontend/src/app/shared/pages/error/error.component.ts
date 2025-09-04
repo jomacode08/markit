@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CurrentRouteService } from '../../services/current-route.service';
 
 @Component({
-  selector: 'app-not-found',
+  selector: 'app-error',
   standalone: true,
   imports: [RouterLink],
   template: `
     <div class="error-container">
       <div class="error-content">
-        <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>The page you are looking for doesn't exist or has been moved.</p>
+        <h1>500</h1>
+        <h2>Something Went Wrong</h2>
+        <p>We're experiencing some technical difficulties. Please try again later.</p>
         <button routerLink="/">
           Go to Home
         </button>
@@ -39,9 +40,9 @@ import { RouterLink } from '@angular/router';
     h1 {
       font-size: 6rem !important;
       margin: 0;
-      background: #009FFF;
-      background: -webkit-linear-gradient(to right, #ec2F4B, #009FFF);
-      background: linear-gradient(to right, #ec2F4B, #009FFF);
+      background: #8A2387;
+      background: -webkit-linear-gradient(to right, #F27121, #E94057, #8A2387);
+      background: linear-gradient(to right, #F27121, #E94057, #8A2387);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
@@ -58,6 +59,16 @@ import { RouterLink } from '@angular/router';
       margin-bottom: 2rem;
     }
 
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .general-button {
+      min-width: 150px;
+    }
+
     button {
       cursor: pointer;  
       font-size: 1rem;
@@ -65,8 +76,8 @@ import { RouterLink } from '@angular/router';
       padding: .5rem;
       color: var(--text-secondary);
       border-radius: .25rem;
-      border: 1px solid var(--highlight-border-purple);
-      background-color: var(--highlight-surface-purple);
+      border: 1px solid var(--highlight-border-red);
+      background-color: var(--highlight-surface-red);
       transition: 0.3s all ease;
     }
     button:hover {
@@ -74,4 +85,4 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class NotFoundComponent {}
+export class ErrorComponent {}

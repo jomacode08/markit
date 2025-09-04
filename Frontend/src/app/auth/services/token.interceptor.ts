@@ -44,14 +44,20 @@ export class TokenInterceptor implements HttpInterceptor {
         }
 
         switch (statusCode) {
-          case HttpStatusCode.ServiceUnavailable:
-            window.location.reload();
-            break;
-
           case HttpStatusCode.Unauthorized: {
+            this.router.navigate(['/auth/unauthorized'])
             this.authService.logout();
             break;
           }
+
+          case HttpStatusCode.BadRequest: {
+            this.showValidationMessage(error.errors);
+            break;
+          }
+
+          case HttpStatusCode.ServiceUnavailable:
+            window.location.reload();
+            break;
 
           case HttpStatusCode.Forbidden:
             this.router.navigate(['/auth/unauthorized'])
@@ -61,17 +67,11 @@ export class TokenInterceptor implements HttpInterceptor {
             this.showErrorMessage(this.generalError);
             break;
 
-          case HttpStatusCode.BadRequest: {
-            this.showValidationMessage(error.errors);
-            break;
-          }
-
           default:
           {
             this.showErrorMessage(error.message ?? this.generalError);
             break;
           }
-
         }
         
         return throwError(() => new Error(error.message));

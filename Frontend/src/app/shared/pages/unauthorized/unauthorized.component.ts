@@ -2,17 +2,17 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-not-found',
+  selector: 'app-unauthorized',
   standalone: true,
   imports: [RouterLink],
   template: `
     <div class="error-container">
       <div class="error-content">
-        <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>The page you are looking for doesn't exist or has been moved.</p>
-        <button routerLink="/">
-          Go to Home
+        <h1>401</h1>
+        <h2>Unauthorized Access</h2>
+        <p>You don't have permission to access this resource.</p>
+        <button routerLink="/auth/login">
+          Go to Login
         </button>
       </div>
     </div>
@@ -39,9 +39,9 @@ import { RouterLink } from '@angular/router';
     h1 {
       font-size: 6rem !important;
       margin: 0;
-      background: #009FFF;
-      background: -webkit-linear-gradient(to right, #ec2F4B, #009FFF);
-      background: linear-gradient(to right, #ec2F4B, #009FFF);
+      background: #654ea3;
+      background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);
+      background: linear-gradient(to right, #eaafc8, #654ea3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
@@ -54,8 +54,8 @@ import { RouterLink } from '@angular/router';
     }
 
     p {
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
     }
 
     button {
@@ -74,4 +74,4 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class NotFoundComponent {}
+export class UnauthorizedComponent { }

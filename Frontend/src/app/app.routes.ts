@@ -1,8 +1,12 @@
 import { Routes } from '@angular/router';
-import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
 import { IsAuthenticatedActivateGuard, IsAuthenticatedMatchGuard } from './auth/guards/auth.guard';
 
 export const routes: Routes = [
+    {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+    },
     {
         path: 'auth',
         loadComponent: () => 
@@ -41,16 +45,25 @@ export const routes: Routes = [
             import('./workplace/workplace.routes').then(r => r.WORKPLACE_ROUTES)
     },
     {
-        path: 'not-found',
-        component: NotFoundComponent
+        path: 'error',
+        loadComponent: () => 
+            import('../app/shared/pages/error/error.component')
+            .then(c => c.ErrorComponent)
     },
     {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
+        path: 'not-found',
+        loadComponent: () => 
+            import('../app/shared/pages/not-found/not-found.component')
+            .then(c => c.NotFoundComponent)
+    },
+    {
+        path: 'unauthorized',
+        loadComponent: () => 
+            import('../app/shared/pages/unauthorized/unauthorized.component')
+            .then(c => c.UnauthorizedComponent)
     },
     {
         path: '**',
         redirectTo: 'not-found'
-    }
+    },
 ];
