@@ -1,10 +1,9 @@
-import { catchError, map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { AuthService } from '../../auth/services/auth.service';
 import { CollectionDocument } from '../interfaces/search/documents/collection-document';
-import { CustomMessageService } from '../../shared/services/custom-message.service';
 import { MarkDocument } from '../interfaces/search/documents/mark-document';
 import { MEILISEARCH } from '../../shared/utils/constant';
 import { meiliSearchEnvironment } from '../../../environments/environment';
@@ -20,6 +19,7 @@ export enum SearchFilters {
 @Injectable({ providedIn: 'root' })
 export class SearchService {
     private readonly SEARCH_LIMIT: number = 10;
+    private readonly GLOBAL_FILTER: string = 'enabled = true';
 
     constructor(
         private http: HttpClient,
@@ -91,6 +91,7 @@ export class SearchService {
         return {
             indexUid,
             q: query,
+            filter : this.GLOBAL_FILTER,
             limit: this.SEARCH_LIMIT,
             attributesToHighlight: [searchableAttribute],
             highlightPreTag: "<span>",

@@ -160,7 +160,11 @@ namespace markit.Application.Mappings
             CreateMap<Mark, MarkViewModel>()
                 .ForMember(
                     dest => dest.Blocks,
-                    opt => opt.MapFrom(src => src.Blocks)
+                    opt => opt.MapFrom(
+                        src => src.Blocks != null
+                        ? src.Blocks.OrderBy(b => b.Order).ToList()
+                        : new List<Block>()
+                    )
                 )
                 .ForMember(
                     dest => dest.CreatorId,
