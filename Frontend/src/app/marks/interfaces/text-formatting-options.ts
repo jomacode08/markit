@@ -117,38 +117,74 @@ export function createTextFormattingOptions( editor: Signal<Editor | undefined> 
       icon: 'fa fa-highlighter',
       children: [
         {
-          label: 'Yellow',
+          label: 'Purple',
           icon: 'fa fa-circle',
-          color: "#f5f378",
-          command: () => editor()?.chain().focus().toggleHighlight({ color: '#f5f378' }).run(),
+          color: "#6a468d",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#6a468d' }).run(),
           isActive: () => {
             return isNodeMarkActive(editor(), {
               name: 'highlight',
-              color: "#f5f378"
+              color: "#6a468d"
             })
           },
         },
         {
-          label: 'Purple',
+          label: 'Blue',
           icon: 'fa fa-circle',
-          color: "#dcc1ff",
-          command: () => editor()?.chain().focus().toggleHighlight({ color: '#dcc1ff' }).run(),
+          color: "#005080",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#005080' }).run(),
           isActive: () => {
             return isNodeMarkActive(editor(), {
               name: 'highlight',
-              color: "#dcc1ff"
+              color: "#005080"
+            })
+          },
+        },
+        {
+          label: 'Gold',
+          icon: 'fa fa-circle',
+          color: "#b5a04f",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#b5a04f' }).run(),
+          isActive: () => {
+            return isNodeMarkActive(editor(), {
+              name: 'highlight',
+              color: "#b5a04f"
+            })
+          },
+        },
+        {
+          label: 'Forest',
+          icon: 'fa fa-circle',
+          color: "#006400",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#006400' }).run(),
+          isActive: () => {
+            return isNodeMarkActive(editor(), {
+              name: 'highlight',
+              color: "#006400"
+            })
+          },
+        },
+        {
+          label: 'Garent',
+          icon: 'fa fa-circle',
+          color: "#9a2a2a",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#9a2a2a' }).run(),
+          isActive: () => {
+            return isNodeMarkActive(editor(), {
+              name: 'highlight',
+              color: "#9a2a2a"
             })
           },
         },
         {
           label: 'Orange',
           icon: 'fa fa-circle',
-          color: "#ec704b",
-          command: () => editor()?.chain().focus().toggleHighlight({ color: '#ec704b' }).run(),
+          color: "#a0522d",
+          command: () => editor()?.chain().focus().toggleHighlight({ color: '#a0522d' }).run(),
           isActive: () => {
             return isNodeMarkActive(editor(), {
               name: 'highlight',
-              color: "#ec704b"
+              color: "#a0522d"
             })
           },
         },

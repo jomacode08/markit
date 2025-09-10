@@ -19,9 +19,24 @@
 /** Editor Marks */
 .tiptap {
   h1,h2,h3 {
-    border: 1px solid var(--surface-border);
-    padding: 0.5rem 1rem;
-    font-family: 'PlayfairDisplay';
+    border-bottom: 1px solid var(--surface-border);
+    padding: 0.5rem 0;
+  }
+
+  h1 {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+  }
+  h2 {
+    font-weight: 600;
+  }
+  h3 {
+    font-weight: 500;
+  }
+
+  p {
+    margin: .25rem 0;
+    color: #ced4da !important;
   }
 
   hr {
@@ -31,19 +46,21 @@
   }
 
   mark {
-    border-radius: 0.4rem;
     box-decoration-break: clone;
-    padding: 0.1rem 0.3rem;
-    color: var(--paper-bg) !important;
+    padding: 0 .25rem;
   }
 
   ul,ol {
     padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    margin: 1.25rem 1rem 1.25rem 0.25rem;
 
     li p {
       margin-top: 0.15em;
-      margin-bottom: 1em;
+      margin-bottom: .25em;
+    }
+    li::marker {
+      color: var(--text-secondary);
+      font-weight: bold;
     }
   }
   ul[data-type="taskList"] {
@@ -54,7 +71,6 @@
     li {
       align-items: flex-start;
       display: flex;
-
 
       > label {
         flex: 0 0 auto;

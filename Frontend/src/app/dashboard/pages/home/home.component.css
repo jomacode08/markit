@@ -212,7 +212,6 @@ button.access:hover {
 }
 
 .small-text {
-  font-weight: 300;
   font-size: .75rem;
   text-align: start;
   color: var(--text-secondary);
