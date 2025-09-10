@@ -58,7 +58,6 @@ input {
 
 button.block-info {
   width: 100%;
-  font-family: 'WorkSans' !important;
   padding: 0.5rem 0 !important;
   text-align: start;
   color: var(--text-primary);

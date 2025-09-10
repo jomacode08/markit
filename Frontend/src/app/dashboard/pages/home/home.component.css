@@ -120,7 +120,6 @@ button.view-all:hover {
 }
 
 button.recent-mark {
-  font-family: 'WorkSans' !important;
   width: 100%;
   display: flex;
   cursor: pointer;
@@ -164,7 +163,6 @@ button.recent-mark>.mark-description {
 }
 
 .quick-access button.access {
-  font-family: 'WorkSans' !important;
   display: flex;
   width: 100%;
   height: 100%;
