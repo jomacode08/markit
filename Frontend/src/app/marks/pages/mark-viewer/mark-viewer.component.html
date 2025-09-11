@@ -27,7 +27,7 @@
                  <block-navigator
                     [blockIndex]="currentGalleryBlockIndex()"
                     [blocksLength]="currentMark().blocks.length"
-                    (positionChanged)="updateBlockIndex($event)"
+                    (positionChanged)="modifyActiveBlock($event)"
                  />
                 <!-- New block button -->
                 <button

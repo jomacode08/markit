@@ -220,8 +220,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     if (response.selectedBlockId != null) {
       const currentMark = this.currentMark();
       const selectedBlockIndex = currentMark.blocks.findIndex(b => b.id === response.selectedBlockId);
-      this.currentBlock.update(() => currentMark.blocks[selectedBlockIndex]);
-      this.currentGalleryBlockIndex.update(() => selectedBlockIndex);
+      this.modifyActiveBlock(selectedBlockIndex);
       return;
     }
     // Apply block changes
@@ -244,8 +243,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   private initializeForm(mark: Mark): void {
     this.markForm.reset(mark);
     this.setBlocks(mark.blocks);
-    this.currentGalleryBlockIndex.update(() => 0);
-    this.currentBlock.update(() => mark.blocks[0]);
+    this.modifyActiveBlock(0);
   }
 
   private subscribeToFormChanges(): Subscription {
@@ -344,10 +342,15 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   //* UTILS
-  public updateBlockIndex = (newIndex: number) => this.currentGalleryBlockIndex.update(c => newIndex);
   private setSaveState = (state: SaveState) => this.saveState.set(state);
   private redirectToUrl = (url: string) => this.router.navigate([url]);
-
+  
+  public modifyActiveBlock(newIndex: number) {
+    const currentMark = this.currentMark();
+    if (newIndex < 0 || newIndex >= currentMark.blocks.length) return;
+    this.currentGalleryBlockIndex.update(c => newIndex);
+    this.currentBlock.update(c => currentMark.blocks[newIndex]);
+  }
 
   private getValidMarkId(markIdParam: string): number {
     if (markIdParam == null || isNaN(Number(markIdParam))) {
