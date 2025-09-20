@@ -1,0 +1,33 @@
+@switch (currentAuthState()) {
+    @case ('authorized') {
+        <div class="message-container success-message">
+            <div class="message-icon">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div class="message-content">
+                <h2 class="message-title">Authorization Successful!</h2>
+                <p class="message-description">
+                    Redirecting you to the application...
+                </p>
+            </div>
+        </div>
+    }
+    @default {
+        <div class="message-container error-message">
+            <div class="message-icon">
+                <i class="fa-solid fa-exclamation-triangle"></i>
+            </div>
+            <div class="message-content">
+                <h2 class="message-title">Authorization Failed</h2>
+                <p class="message-description">
+                    Something went wrong during the authentication process. Please try again or contact us if the issue persists.
+                </p>
+                @if (currentAuthState() === 'error') {
+                    <p class="message-detail">
+                        <span class="text-red-400 font-semibold">Error: </span>{{ this.errorMessage() }}
+                    </p>
+                }
+            </div>
+        </div>
+    }
+}

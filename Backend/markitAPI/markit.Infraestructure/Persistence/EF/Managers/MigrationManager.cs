@@ -12,7 +12,7 @@ namespace markit.Infraestructure.Persistence.EF
 {
     public static class MigrationManager
     {
-        private static readonly string userDefaultSectionName = GeneralConstant.Configuration.userDefaultSectionName;
+        private static readonly string userDefaultSectionName = GeneralConstant.Configuration.USER_DEFAULT_SECTION_NAME;
         public async static Task<WebApplication> SeedDatabase(this WebApplication webApplication,
             IConfiguration configuration)
         {

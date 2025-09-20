@@ -6,8 +6,8 @@ namespace markit.Infraestructure.Security.Services
 {
     public class SessionService : ISessionService
     {
-        private readonly string EmailClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-        private readonly string UserIdClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+        private const string EMAIL_CLAIM_TYPE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+        private const string USER_ID_CLAIM_TYPE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         private readonly IHttpContextAccessor _contextAccessor;
 
         public SessionService(IHttpContextAccessor contextAccessor)
@@ -19,21 +19,27 @@ namespace markit.Infraestructure.Security.Services
         {
             if (_contextAccessor.HttpContext == null) return null;
 
-            string? email = _contextAccessor.HttpContext.User.FindFirst(EmailClaimType)?.Value;
-            string? userId = _contextAccessor.HttpContext.User.FindFirst(UserIdClaimType)?.Value;
+            string? email = _contextAccessor.HttpContext.User.FindFirst(EMAIL_CLAIM_TYPE)?.Value;
+            string? userId = _contextAccessor.HttpContext.User.FindFirst(USER_ID_CLAIM_TYPE)?.Value;
 
             if (email == null || userId == null) return null;
 
             return $"{email} - ID:{ userId }";
         }
 
+        public string GetUserId()
+        {
+            return _contextAccessor.HttpContext?.User.FindFirst(USER_ID_CLAIM_TYPE)?.Value
+                ?? throw new InvalidOperationException("The current session doesn't have the required nameidentifier claim.");
+        }
+
         public int GetCreatorId()
         {
-            string creatorIdStr = _contextAccessor.HttpContext?.User.FindFirst(CustomClaimType.CreatorId)?.Value
-                ?? throw new ArgumentNullException(CustomClaimType.CreatorId);
+            string creatorIdClaim = _contextAccessor.HttpContext?.User.FindFirst(CustomClaimType.CreatorId)?.Value
+                ?? throw new InvalidOperationException("The current session doesn't have the required creatorId claim.");
 
-            if (!int.TryParse(creatorIdStr, out int creatorId))
-                throw new FormatException();
+            if (!int.TryParse(creatorIdClaim, out int creatorId))
+                throw new FormatException($"The creatorId claim doesn't have the right format ");
             
             return creatorId;
         }

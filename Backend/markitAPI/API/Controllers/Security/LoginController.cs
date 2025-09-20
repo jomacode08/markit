@@ -1,7 +1,9 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication;
-using markit.Application.Models.Authentication.Google;
+using markit.Application.Models.Authentication.AppUser;
+using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace markit.API.Controllers.Seguridad
@@ -11,11 +13,24 @@ namespace markit.API.Controllers.Seguridad
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly ILoginService _loginService;
+        private readonly IExternalLoginService _externalLoginService;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly SessionService _sessionService;
 
-        public LoginController(IAuthService authService)
+        private const string EXTERNAL_AUTHENTICATION_TYPE = "AuthenticationTypes.Federation";
+
+        public LoginController(
+            ILoginService loginService,
+            IExternalLoginService externalLoginService,
+            SessionService sessionService,
+            SignInManager<AppUser> signInManager
+        )
         {
-            _authService = authService;
+            _loginService = loginService;
+            _signInManager = signInManager;
+            _sessionService = sessionService;
+            _externalLoginService = externalLoginService;
         }
 
         [AllowAnonymous]
@@ -23,15 +38,21 @@ namespace markit.API.Controllers.Seguridad
         [Route("authenticate")]
         public async Task<AuthResponse> Authenticate(AuthRequest request)
         {
-            return await _authService.Login(request);
+            return await _loginService.Login(request);
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        [Route("authenticateByGoogle")]
-        public async Task<AuthResponse> AuthenticateByGoogle(GoogleAuthRequest request)
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
         {
-            return await _authService.LoginByGoogle(request);
+            if (User == null || User.Identity == null) return Unauthorized();
+            
+            if (User.Identity.IsAuthenticated) {
+                await _externalLoginService.RemoveExternalTokens(_sessionService.GetUserId());
+                await _signInManager.SignOutAsync();
+            }
+
+            return Ok();
         }
     }
 }

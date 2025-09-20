@@ -58,7 +58,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
 
         private async Task AddSystemAccess(CreateCreatorCommand request, int creatorId)
         {
-            CreateAppUserRequest user = new(
+            AppUserRequest user = new(
                 request.Email,
                 request.Password,
                 request.FirstName,

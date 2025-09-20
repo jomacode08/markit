@@ -5,12 +5,6 @@ export const environment = {
     // baseApiUrl: 'https://your-domain/api'
 }
 
-export const googleOAuthEnvironment = {
-    clientId : '',
-    clientSecret : '',
-    redirectUri : '',
-}
-
 export const meiliSearchEnvironment = {
     serverUrl : ''
 }

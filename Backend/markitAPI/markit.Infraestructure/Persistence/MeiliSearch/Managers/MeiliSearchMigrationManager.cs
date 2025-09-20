@@ -12,7 +12,7 @@ namespace markit.Infraestructure.Persistence.MeiliSearch.Managers
         public async static Task<WebApplication> SeedIndexes(this WebApplication app, IConfiguration configuration)
         {
             var settings = new MeiliSearchAuthSettings();
-            configuration.Bind(GeneralConstant.Configuration.meiliSearchSettingsName, settings);
+            configuration.Bind(GeneralConstant.Configuration.MEILISEARCH_SECTION_NAME, settings);
 
             using (var scope = app.Services.CreateScope())
             {

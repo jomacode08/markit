@@ -4,11 +4,12 @@
     {
         public static class Configuration
         {
-            public static readonly string jwtSectionName = "JwtSettings";
-            public static readonly string connStringSectionName = "ConnectionString";
-            public static readonly string userDefaultSectionName = "UserDefaultSettings";
-            public static readonly string googleAuthSectionName = "GoogleAuthSettings";
-            public static readonly string meiliSearchSettingsName = "MeiliSearchSettings";
+            public static readonly string JWT_SECTION_NAME = "JwtSettings";
+            public static readonly string CONN_STRING_SECTION_NAME = "ConnectionString";
+            public static readonly string USER_DEFAULT_SECTION_NAME = "UserDefaultSettings";
+            public static readonly string GOOGLE_AUTH_SECTION_NAME = "GoogleAuthSettings";
+            public static readonly string MEILISEARCH_SECTION_NAME = "MeiliSearchSettings";
+            public static readonly string SPA_SECTION_NAME = "SpaSettings";
         }
 
         public static class Role

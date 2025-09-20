@@ -3,12 +3,12 @@ import { computed, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { Mark } from '../interfaces/mark';
+import { MARKS_STORAGE_KEY } from '../../shared/utils/constant';
 
 @Injectable({providedIn: 'root'})
 export class MarkService {
     public marks = computed(() => this.getMarksFromLocalStorage());
     private readonly baseUrl: string = `${ environment.baseApiUrl }/marks`;
-    private readonly LOCAL_STORAGE_MARKS_KEY : string = 'local-marks';
 
     constructor(private http: HttpClient) { }
 
@@ -46,7 +46,7 @@ export class MarkService {
     }
 
     private getMarksFromLocalStorage(): Mark[] {
-        const marksDataJson = localStorage.getItem(this.LOCAL_STORAGE_MARKS_KEY);
+        const marksDataJson = localStorage.getItem(MARKS_STORAGE_KEY);
         
         if (!marksDataJson) return [];
         
@@ -55,7 +55,7 @@ export class MarkService {
 
     private setMarksInLocalStorage(marks: Mark[]): void {
         const marksDataJson = JSON.stringify(marks);
-        localStorage.setItem(this.LOCAL_STORAGE_MARKS_KEY, marksDataJson);
+        localStorage.setItem(MARKS_STORAGE_KEY, marksDataJson);
     }
 
     // * === API MARKS === *//

@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using markit.Application.Contracts.Authentication.Google;
-using markit.Infraestructure.Security.Services.Google;
 using markit.Application.Models.Authentication.Google;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication.AppUser;
@@ -24,17 +22,15 @@ using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
 using Hangfire;
 using markit.Infraestructure.Persistence.MeiliSearch.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using static markit.Application.Helpers.GeneralConstant.Configuration;
+using Microsoft.AspNetCore.Authentication;
 
 namespace markit.Infraestructure
 {
     public static class InfraestructureServiceRegistration
     {
-        private static readonly string jwtSectionName = GeneralConstant.Configuration.jwtSectionName;
-        private static readonly string connStringSectionName = GeneralConstant.Configuration.connStringSectionName;
-        private static readonly string userDefaultSectionName = GeneralConstant.Configuration.userDefaultSectionName;
-        private static readonly string googleAuthSectionName = GeneralConstant.Configuration.googleAuthSectionName;
-        private static readonly string meiliSearchSectionName = GeneralConstant.Configuration.meiliSearchSettingsName;
-
         public static IServiceCollection AddInfraestructureServices(this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -48,27 +44,22 @@ namespace markit.Infraestructure
 
         public static IServiceCollection AddDataBasePersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            string connString = configuration.GetConnectionString(connStringSectionName) ?? "";
+            string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
 
-            // Mapear clase UserDefaultSettings contra la configuración incluida en AppSettings.json
+            // Bind UserDefaultSettings configuration data
             var userDefaultSettings = new UserDefaultSettings();
-            services.Configure<UserDefaultSettings>(configuration.GetSection(userDefaultSectionName));
-            configuration.Bind(userDefaultSectionName, userDefaultSettings);
+            services.Configure<UserDefaultSettings>(configuration.GetSection(USER_DEFAULT_SECTION_NAME));
+            configuration.Bind(USER_DEFAULT_SECTION_NAME, userDefaultSettings);
 
-            // Conexión Base de datos
+            // Database connection
             services.AddDbContext<MarkitDbContext>(
                 options => options
                     .UseSqlServer(connString)
                     .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))
             );
 
-            // Agregar Context Accesor usado en el Session Service
             services.AddHttpContextAccessor();
-
-            // Inyección del servicio de sesión
             services.AddTransient<SessionService>();
-
-            // Inyección de UnitOfWork y Repositorio genérico
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
@@ -79,8 +70,8 @@ namespace markit.Infraestructure
         {
             // Bind auth settings configuration data
             var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
-            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(meiliSearchSectionName));
-            configuration.Bind(meiliSearchSectionName, meiliSearchAuthSettings);
+            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(MEILISEARCH_SECTION_NAME));
+            configuration.Bind(MEILISEARCH_SECTION_NAME, meiliSearchAuthSettings);
 
             // Inject repositories
             services.AddScoped<IDocumentRepository<CollectionDocument>, DocumentRepository<CollectionDocument>>(provider =>
@@ -100,26 +91,31 @@ namespace markit.Infraestructure
 
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            // Mapear clase JwtSettings, GoogleAuthSettings contra la configuración incluida en AppSettings.json
+            // Bind configuration data classes
             var jwtSettings = new JwtSettings();
-            services.Configure<JwtSettings>(configuration.GetSection(jwtSectionName));
-            configuration.Bind(jwtSectionName, jwtSettings);
+            services.Configure<JwtSettings>(configuration.GetSection(JWT_SECTION_NAME));
+            configuration.Bind(JWT_SECTION_NAME, jwtSettings);
 
             var googleAuthSettings = new GoogleAuthSettings();
-            services.Configure<GoogleAuthSettings>(configuration.GetSection(googleAuthSectionName));
-            configuration.Bind(googleAuthSectionName, googleAuthSettings);
+            services.Configure<GoogleAuthSettings>(configuration.GetSection(GOOGLE_AUTH_SECTION_NAME));
+            configuration.Bind(GOOGLE_AUTH_SECTION_NAME, googleAuthSettings);
 
-            // Configurar Identity con la clase personalizada de Usuario
+            var spaSettings = new SpaSettings();
+            services.Configure<SpaSettings>(configuration.GetSection(SPA_SECTION_NAME));
+            configuration.Bind(SPA_SECTION_NAME, spaSettings);
+
+            // Identity configuration
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<MarkitDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Inyección de services de autentificación
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IGoogleAuthenticationService, GoogleAuthenticationService>();
+            // Inject authentication services
             services.AddTransient<IAppUserService, AppUserService>();
+            services.AddTransient<IJwtService, JwtService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IExternalLoginService, ExternalLoginService>();
 
-            // Congigurar Autentificación
+            // Configurate authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -138,9 +134,19 @@ namespace markit.Infraestructure
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
+            })
+            // Add external login providers
+            .AddGoogle(options =>
+            {
+                options.ClientId = googleAuthSettings.ClientId;
+                options.ClientSecret = googleAuthSettings.ClientSecret;
+                options.SaveTokens = true;
+                options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+                options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+                options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
             });
 
-            // Configuración de password
+            // Password configuration
             services.Configure<IdentityOptions>(options => {
                 options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = true;
@@ -154,7 +160,7 @@ namespace markit.Infraestructure
 
         public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
         {
-            string connString = configuration.GetConnectionString(connStringSectionName) ?? "";
+            string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
             services.AddHangfire(config => config.UseSqlServerStorage(connString));
             services.AddHangfireServer();
             return services;

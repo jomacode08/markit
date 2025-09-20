@@ -1,8 +1,7 @@
 ﻿namespace markit.Application.Models.Authentication.Enums
 {
-    public enum AccessType
+    public enum LoginProvider
     {
-        Internal = 1,
-        External = 2
+        Google = 1,
     }
 }

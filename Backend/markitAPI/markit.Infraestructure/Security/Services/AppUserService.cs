@@ -20,7 +20,7 @@ namespace markit.Infraestructure.Security.Services
             _roleManager = roleManager;
         }
 
-        public async Task CreateIdentityUser(CreateAppUserRequest request, int creatorId)
+        public async Task CreateIdentityUser(AppUserRequest request, int creatorId)
         {
             // Validate the existency of the user
             AppUser? userInDatabase = await _userManager.FindByEmailAsync(request.Email);
@@ -41,10 +41,10 @@ namespace markit.Infraestructure.Security.Services
                 Picture = request.Picture,
                 AccessType = request.AccessType,
                 CreatedDate = DateTime.UtcNow,
-                EmailConfirmed = request.AccessType == AccessType.Google
+                EmailConfirmed = request.AccessType == AccessType.External
             };
 
-            IdentityResult registrationResult = identityUser.AccessType == AccessType.Google
+            IdentityResult registrationResult = identityUser.AccessType == AccessType.External
                 ? await _userManager.CreateAsync(identityUser)
                 : await _userManager.CreateAsync(identityUser, request.Password!);
 
@@ -72,7 +72,6 @@ namespace markit.Infraestructure.Security.Services
 
             await _userManager.UpdateAsync(appUser);
         }
-
 
         public AppUser GetAppUserByCreatorId(int creatorId)
         {

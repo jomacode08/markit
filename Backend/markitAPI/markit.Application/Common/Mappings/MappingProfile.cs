@@ -65,7 +65,7 @@ namespace markit.Application.Mappings
 
             // Creators
             CreateMap<CreateCreatorCommand, Creator>();
-            CreateMap<CreateAppUserRequest, CreateCreatorCommand>();
+            CreateMap<AppUserRequest, CreateCreatorCommand>();
 
             CreateMap<UpdateCreatorCommand, Creator>()
                 .ForMember(

@@ -15,10 +15,10 @@ export const AUTH_ROUTES: Routes = [
             .then(c => c.LoginComponent)
     },
     {
-        path: 'status',
+        path: 'redirect',
         canActivate: [IsNotAuthenticatedActivateGuard],
         loadComponent: () =>
-            import('./pages/loader/loader.component')
-            .then(c => c.LoaderComponent)
+            import('./pages/redirect/redirect.component')
+            .then(c => c.RedirectComponent)
     }
 ]

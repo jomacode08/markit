@@ -9,9 +9,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { AuthRequest } from '../interfaces/auth-request';
 import { AuthResponse } from '../interfaces/auth-response';
 import { AuthStatus } from '../interfaces/auth-status.enum';
-import { GoogleAuthRequest } from '../interfaces/google/google-auth-request';
 import { UserInfo } from './../interfaces/user-info';
-import { MEILISEARCH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
+import { MARKS_STORAGE_KEY, MEILISEARCH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -45,24 +44,21 @@ export class AuthService {
       );
   }
 
-  public loginByGoogle(googleTokenId: string): Observable<AuthResponse> {
-    const googleSignRequest: GoogleAuthRequest = {
-      tokenId: googleTokenId
-    };
-    return this.http.post<AuthResponse>(`${ this.baseUrl }/authenticateByGoogle`, googleSignRequest)
-      .pipe(
-        tap((authData) => this.setAuthentication(authData))
-      );
+  public externalAuthLogin(auth: AuthResponse) {
+    this.setAuthentication(auth);
   }
-
+  
   public logout(): void {
-    this._token.set(null);
-    this._meiliSearchToken.set(null);
-    this._currentUser.set(null);
-    this._authStatus.set(AuthStatus.notAuthenticated);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-    localStorage.removeItem(MEILISEARCH_TOKEN_STORAGE_KEY);
-    this.router.navigate(['auth']);
+    this.logoutFromApi().subscribe(() => {
+      this._token.set(null);
+      this._meiliSearchToken.set(null);
+      this._currentUser.set(null);
+      this._authStatus.set(AuthStatus.notAuthenticated);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      localStorage.removeItem(MEILISEARCH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(MARKS_STORAGE_KEY);
+      this.router.navigate(['auth']);
+    });
   }
 
   public isTokenAvailable(): boolean {
@@ -98,6 +94,10 @@ export class AuthService {
       ? AuthStatus.authenticated
       : AuthStatus.notAuthenticated
     );
+  }
+
+  private logoutFromApi(): Observable<void> {
+    return this.http.post<void>(`${ this.baseUrl }/logout`, {});
   }
 
   private setTokenInLocalStorage(token: string, key: string): void {
