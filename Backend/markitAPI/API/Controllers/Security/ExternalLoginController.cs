@@ -1,8 +1,10 @@
 ﻿using markit.Application.Contracts.Authentication;
+using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 
 namespace markit.API.Controllers.Security
@@ -12,9 +14,11 @@ namespace markit.API.Controllers.Security
     public class ExternalLoginController : ControllerBase
     {
         private readonly IExternalLoginService _externalLoginService;
-        public ExternalLoginController(IExternalLoginService externalLoginService)
+        private readonly SpaSettings _spaSettings;
+        public ExternalLoginController(IExternalLoginService externalLoginService, IOptions<SpaSettings> spaSettings)
         {
             _externalLoginService = externalLoginService;
+            _spaSettings = spaSettings.Value;
         }
 
         [AllowAnonymous]
@@ -30,6 +34,14 @@ namespace markit.API.Controllers.Security
         {
             string redirectUrl = await _externalLoginService.Callback(LoginProvider.Google);
             return Redirect(redirectUrl);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("access-denied")]
+        public IActionResult AccessDenied()
+        {
+            string spaLoginFailureUrl = $"{_spaSettings.BaseUrl}/auth/redirect?error=access_denied";
+            return Redirect(spaLoginFailureUrl);
         }
 
         private ChallengeResult Initiate(LoginProvider loginProvider)

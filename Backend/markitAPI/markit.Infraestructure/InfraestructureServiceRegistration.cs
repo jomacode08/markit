@@ -141,6 +141,7 @@ namespace markit.Infraestructure
                 options.ClientId = googleAuthSettings.ClientId;
                 options.ClientSecret = googleAuthSettings.ClientSecret;
                 options.SaveTokens = true;
+                options.AccessDeniedPath = "/api/external-login/access-denied";
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
                 options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
