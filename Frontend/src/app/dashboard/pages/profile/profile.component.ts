@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, type OnInit } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Component, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { delay, Observable, tap } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { CalendarModule } from 'primeng/calendar';
@@ -28,13 +28,12 @@ import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/ge
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent extends ValidatorErrorField implements OnInit {
-  //* Services
-  private creatorService  = inject(CreatorService);
-  private messageService  = inject(CustomMessageService);
-
   //** Form
+  public maxBirthDate ?: Date;
+  public minBirthDate ?: Date;
   public form = new FormGroup({
     id        : new FormControl<number>(0),
     firstName : new FormControl<string>('', [Validators.required, Validators.maxLength(100), Validators.pattern('[a-zA-Z\u00C0-\u024F ]*')]),
@@ -42,57 +41,49 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
     gender    : new FormControl<Gender | null>(null, [Validators.required]),
     birthDate : new FormControl<string>('', [Validators.required])
   });
-
-  public get currentCreator(): Creator {
-    return this.form.value as Creator;
-  }
+  //** State management
+  public creator$ : Observable<Creator>;
+  public submit = signal<boolean>(false);
   
   public get Gender(): typeof Gender {
     return Gender;
   }
 
-  public get birthDate(): string {
-    return this.creatorInSession?.birthDate?.split("/")
-    .reverse()
-    .join("/") ?? '';
+  constructor(
+    private creatorService: CreatorService,
+    private messageService: CustomMessageService
+  ) {
+    super();
+    this.creator$ = this.creatorService
+    .getByCurrentSession()
+    .pipe(
+      tap((creator) => {
+        this.form.reset(creator);
+      }),
+    );
   }
-  
-  //* Configuration
-  public creatorInSession ?: Creator;
-  public pictureUrl   ?: string;
-  public maxBirthDate ?: Date;
-  public minBirthDate ?: Date;
-  public submit: boolean = false;
-  public showForm: boolean = false;
 
   public async ngOnInit(): Promise<void> {
-    // Initialize range birth date values
-    this.maxBirthDate = new Date();
-    this.minBirthDate = new Date();
-    this.minBirthDate.setFullYear( this.maxBirthDate.getFullYear() - 100 );
-
-    // Initialize form
-    const creator = await this.getCreator();
-    this.creatorInSession = creator;
-    this.form.reset(creator);
-    this.pictureUrl = creator.picture?.replace("s96-c", "s300-c");
+    this.initializeBirthDateRange();
   }
 
   public onSubmitForm(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
     this.setSubmit(true);
-    this.updateCreator(this.currentCreator);
+    this.updateCreator(this.form.getRawValue() as Creator);
   }
 
-  private async getCreator(): Promise<Creator> {
-    return firstValueFrom(this.creatorService.getByCurrentSession());
+  public convertToLargerImageUrl(url: string): string | null {
+    return url.replace("s96-c", "s300-c");
   }
 
   private updateCreator(creator: Creator): void {
-    this.creatorService.update(creator).subscribe({
+    this.creatorService.update(creator)
+    .pipe(delay(500))
+    .subscribe({
       next : (creator) => {
         this.setSubmit(false);
-        this.creatorInSession = creator;
+        this.form.reset(creator);
         this.messageService.showGeneralSuccess("Creator updated successfully");
       },
       error : () => {
@@ -101,6 +92,11 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
     });
   }
 
-  public setShowForm = (state: boolean) => this.showForm = state;
-  private setSubmit = (state: boolean) => this.submit = state;
+  private initializeBirthDateRange(): void {
+    this.maxBirthDate = new Date();
+    this.minBirthDate = new Date();
+    this.minBirthDate.setFullYear( this.maxBirthDate.getFullYear() - 100 );
+  }
+
+  private setSubmit = (state: boolean) => this.submit.update(() => state);
 }

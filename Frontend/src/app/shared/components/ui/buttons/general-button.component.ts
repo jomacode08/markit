@@ -26,7 +26,6 @@ export type SeverityButton = "primary" | "secondary" | "cancel";
         <div class="py-2 px-3">
             {{ label }}
         </div>
-        <lord-icon *ngIf="disabled" trigger="loop" src="/animated-icons/spinner-three-dots.json" style="height: 2rem; width: 2rem;"/>
     </p-button>
   `
 })

@@ -1,162 +1,124 @@
-<div class="container">
-    <!-- User Presentation -->
-     <div class="grid my-5">
-        <!-- Picture -->
-        <div class="col-12 md:col-5 flex justify-content-center">
-            <div class="p-avatar">
-                @if( pictureUrl  ) {
-                    <img class="border-circle" [src]="pictureUrl" alt="user picture" referrerpolicy="no-referrer">
-                }
-            </div>
-        </div>
-        <!-- Welcome text -->
-        <div class="col-12 md:col-7 flex align-items-center justify-content-center md:border-left-1">
-            <p class="text-3xl font-light">
-                <span>Hello, </span>
-                <span class="font-semibold md:mr-3">{{ creatorInSession?.firstName }}</span>
-                <i id="edit-icon" class="fa-solid fa-pencil" (click)="setShowForm(true)"></i>
-            </p>
-        </div>
-     </div>
-
-    <!-- General Information Section -->
-    <p-divider align="left" type="solid">
-        <span class="text-xl font-playfair">General information</span>
-    </p-divider>
-    <div class="grid" *ngIf="!showForm">
-        <div class="col-12 pb-0 md:col-6 md:p-2">
-            <p>
-                <i class="fa-solid fa-user mr-2"></i>
-                <span class="font-semibold mr-3">Name: </span>
-                {{ creatorInSession?.firstName }} {{ creatorInSession?.lastName }}
-            </p>
-            <p class="mb-0 md:my-3">
-                <i class="fa-solid fa-calendar mr-2"></i>
-                <span class="font-semibold mr-3">Birth Date:</span>
-                {{ birthDate | date}}
-            </p>
-        </div>
-        <div class="col-12 pt-0 md:col-6 md:p-2">
-            <p>
-                <i class="fa-solid fa-envelope mr-2"></i>
-                <span class="font-semibold mr-3">Email:</span>
-                {{ creatorInSession?.email }}
-            </p>
-            <p>
-                <i class="fa-solid fa-thumbtack mr-2"></i>
-                <span class="font-semibold mr-3">Member since:</span>
-                {{ creatorInSession?.createdDate | date }}
-            </p>
-        </div>
-    </div>
-
-    <!-- Form -->
-    <form
-        *ngIf="showForm"
-        [formGroup]="form"
-        (submit)="onSubmitForm()"
-        autocomplete="off"
-    >
-        <!-- First Name -->
-        <div class="field">
-            <label for="firstName" class="text-lg">First Name</label>
-            <input 
-                id="firstName"
-                pInputText
-                formControlName="firstName"
-                type="text"
-                placeholder="First Name"
-                class="square w-full"
-                autocomplete="off"
-            />
-            <shared-error-field
-                *ngIf="isInvalidField('firstName')"
-                [validationField]="getValidationField('firstName', 'masc', 'first name')">
-            </shared-error-field>              
-        </div>
-        <!-- Last Name -->
-        <div class="field">
-            <label for="lastName" class="text-lg">Last Name</label>
-            <input 
-                id="lastName"
-                pInputText
-                formControlName="lastName"
-                type="text"
-                placeholder="Last Name"
-                class="square w-full"
-                autocomplete="off"
-            />
-            <shared-error-field
-                *ngIf="isInvalidField('lastName')"
-                [validationField]="getValidationField('lastName', 'masc', 'last name')">
-            </shared-error-field>              
-        </div>
-        <!-- Birth Date -->
-        <div class="field">
-            <label for="birthDate" class="text-lg">Birth Date</label>
-            <p-calendar
-                styleClass="w-full"
-                formControlName="birthDate"
-                inputId="birthDate"
-                inputStyleClass="square"
-                dateFormat="dd/mm/yy"
-                dataType="string"
-                [maxDate]="maxBirthDate"
-                [minDate]="minBirthDate"
-                [iconDisplay]="'input'"
-                [showIcon]="true"
-            />
-            <shared-error-field
-            *ngIf="isInvalidField('birthDate')"
-            [validationField]="getValidationField('birthDate', 'masc', 'birth date')"
-            ></shared-error-field>
-        </div>
-        <!-- Gender -->
-        <div class="field mb-6">
-            <label for="birthDate" class="text-lg">Gender</label>
-            <div class="flex gap-5">
-                <div>
-                    <p-radioButton
-                        [value]="Gender.Female"
-                        inputId="female"
-                        formControlName="gender">
-                    </p-radioButton>
-                    <label for="female" class="ml-2">Female</label>
-                </div>
-                <div>
-                    <p-radioButton
-                        [value]="Gender.Male"
-                        inputId="male"
-                        formControlName="gender">
-                    </p-radioButton>
-                    <label for="male" class="ml-2">Male</label>
+@if (creator$ | async; as creator) {
+    <div class="container">
+        <!-- User Presentation -->
+        <div class="grid my-5">
+            <!-- Picture -->
+            <div class="col-12 md:col-5 flex justify-content-center">
+                <div class="p-avatar">
+                    @if (creator.picture) {
+                        <img class="border-circle" [src]="convertToLargerImageUrl(creator.picture)" alt="user picture" referrerpolicy="no-referrer">
+                    }
                 </div>
             </div>
-            <shared-error-field
-                *ngIf="isInvalidField('gender')"
-                [validationField]="getValidationField('gender', 'masc')"
-            ></shared-error-field>                
+            <!-- Welcome text -->
+            <div class="col-12 md:col-7 md:border-left-1 welcome-box">
+                <p class="text-3xl font-light">
+                    <span>👋 Hello, </span>
+                    <span class="font-semibold md:mr-3">{{ creator.firstName }}</span>
+                </p>
+            </div>
         </div>
-        <!-- Submit Button -->
-        <div class="grid">
-            <div class="col-12 md:col-6">
+    
+        <p-divider align="left" type="solid">
+            <span class="text-xl font-playfair">General information</span>
+        </p-divider>
+    
+        <!-- Form -->
+        <form
+            [formGroup]="form"
+            (submit)="onSubmitForm()"
+            autocomplete="off"
+        >
+            <!-- First Name -->
+            <div class="field">
+                <label for="firstName">First Name</label>
+                <input 
+                    id="firstName"
+                    pInputText
+                    formControlName="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    class="square w-full"
+                    autocomplete="off"
+                />
+                <shared-error-field
+                    *ngIf="isInvalidField('firstName')"
+                    [validationField]="getValidationField('firstName', 'masc', 'first name')">
+                </shared-error-field>              
+            </div>
+            <!-- Last Name -->
+            <div class="field">
+                <label for="lastName">Last Name</label>
+                <input 
+                    id="lastName"
+                    pInputText
+                    formControlName="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    class="square w-full"
+                    autocomplete="off"
+                />
+                <shared-error-field
+                    *ngIf="isInvalidField('lastName')"
+                    [validationField]="getValidationField('lastName', 'masc', 'last name')">
+                </shared-error-field>              
+            </div>
+            <!-- Birth Date -->
+            <div class="field">
+                <label for="birthDate">Birth Date</label>
+                <p-calendar
+                    styleClass="w-full"
+                    formControlName="birthDate"
+                    inputId="birthDate"
+                    inputStyleClass="square"
+                    dateFormat="dd/mm/yy"
+                    dataType="string"
+                    [maxDate]="maxBirthDate"
+                    [minDate]="minBirthDate"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                />
+                <shared-error-field
+                *ngIf="isInvalidField('birthDate')"
+                [validationField]="getValidationField('birthDate', 'masc', 'birth date')"
+                ></shared-error-field>
+            </div>
+            <!-- Gender -->
+            <div class="field mb-6">
+                <label>Gender</label>
+                <div class="flex gap-5">
+                    <div>
+                        <p-radioButton
+                            [value]="Gender.Female"
+                            inputId="female"
+                            formControlName="gender">
+                        </p-radioButton>
+                        <label for="female" class="ml-2">Female</label>
+                    </div>
+                    <div>
+                        <p-radioButton
+                            [value]="Gender.Male"
+                            inputId="male"
+                            formControlName="gender">
+                        </p-radioButton>
+                        <label for="male" class="ml-2">Male</label>
+                    </div>
+                </div>
+                <shared-error-field
+                    *ngIf="isInvalidField('gender')"
+                    [validationField]="getValidationField('gender', 'masc')"
+                ></shared-error-field>                
+            </div>
+            <!-- Submit Button -->
+            <div class="w-full md:w-12rem">
                 <shared-general-button
                     severity="primary"
-                    label="Edit"
+                    label="Update profile"
                     icon="fa fa-pencil"
                     [submit]="true"
-                    [disabled]="submit"
+                    [disabled]="submit()"
                 ></shared-general-button>
             </div>
-            <div class="col-12 md:col-6">
-                <shared-general-button
-                    severity="cancel"
-                    label="Cancel"
-                    icon="fa-solid fa-angles-left"
-                    [disabled]="submit"
-                    (click)="setShowForm(false)"
-                ></shared-general-button>
-            </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
+}

@@ -11,7 +11,7 @@ export interface Creator {
 }
 
 export enum Gender {
-    Female = "Female",
-    Male   = "Male",
-    Other  = "Other"
+    Female = "female",
+    Male   = "male",
+    Other  = "other"
 }

@@ -2,18 +2,19 @@
   display: block;
 }
 
-#edit-icon {
-  cursor: pointer;
-  border-radius: 25px;
-  padding: 12px;
-  font-size: 0.9em;
-}
-
-#edit-icon:hover {
-  background-color: var(--surface-1);
+label {
+  font-weight: 600;
+  font-size: .85rem;
 }
 
 .p-avatar {
   width: 200px;
   height: 200px;
+}
+
+.welcome-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--surface-border-hover);
 }
