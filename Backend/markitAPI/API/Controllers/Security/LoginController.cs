@@ -16,21 +16,21 @@ namespace markit.API.Controllers.Seguridad
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly SessionService _sessionService;
-
-        private const string EXTERNAL_AUTHENTICATION_TYPE = "AuthenticationTypes.Federation";
 
         public LoginController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
             SessionService sessionService,
-            SignInManager<AppUser> signInManager
-        )
+            SignInManager<AppUser> signInManager,
+            UserManager<AppUser> userManager)
         {
             _loginService = loginService;
             _signInManager = signInManager;
             _sessionService = sessionService;
             _externalLoginService = externalLoginService;
+            _userManager = userManager;
         }
 
         [AllowAnonymous]
@@ -53,6 +53,24 @@ namespace markit.API.Controllers.Seguridad
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("signin-methods")]
+        public async Task<SignInMethods> GetSignInMethods()
+        {
+            AppUser? user = await _userManager.GetUserAsync(User) 
+                ?? throw new UnauthorizedAccessException();
+
+            bool hasEmail = user.Email != null;
+            bool hasPassword = await _userManager.HasPasswordAsync(user);
+            List<ExternalSignInMethod> externalSignInMethods = await _externalLoginService.GetExternalSignInMethods(user);
+
+            return new SignInMethods(
+                hasEmail,
+                hasPassword,
+                externalSignInMethods
+            );
         }
     }
 }

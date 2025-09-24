@@ -85,6 +85,7 @@ button {
   align-items: center;
   border-radius: 0.375rem;
   padding: 0;
+  font-size: .85rem;
 }
 .general-button:disabled {
   background-color: var(--surface-1);
@@ -384,7 +385,7 @@ button {
 
 /** Calendar **/
 .p-datepicker {
-  min-width: none;
+  min-width: 0;
   background-color: var(--surface-2);
   color: var(--text-primary);
 
@@ -395,6 +396,12 @@ button {
   }
   .p-datepicker-other-month {
     color: var(--text-secondary);
+  }
+  table {
+    font-size: .85rem;
+  }
+  table td {
+    padding: 0.20rem !important;
   }
 }
 .p-datepicker table td > span.p-highlight,

@@ -84,7 +84,7 @@
                 ></shared-error-field>
             </div>
             <!-- Gender -->
-            <div class="field mb-6">
+            <div class="field mb-5">
                 <label>Gender</label>
                 <div class="flex gap-5">
                     <div>
@@ -110,15 +110,24 @@
                 ></shared-error-field>                
             </div>
             <!-- Submit Button -->
-            <div class="w-full md:w-12rem">
-                <shared-general-button
-                    severity="primary"
-                    label="Update profile"
-                    icon="fa fa-pencil"
-                    [submit]="true"
-                    [disabled]="submit()"
-                ></shared-general-button>
-            </div>
+             <div class="flex justify-content-end">
+                 <div class="w-full md:w-12rem">
+                     <shared-general-button
+                         severity="primary"
+                         label="Update profile"
+                         icon="fa fa-pencil"
+                         [submit]="true"
+                         [disabled]="submit()"
+                     ></shared-general-button>
+                 </div>
+             </div>
         </form>
+
+        <p-divider align="left" type="solid">
+            <span class="text-xl font-playfair">Sign in methods</span>
+        </p-divider>
+        
+        <!-- Signin methods -->
+        <profile-signin-methods/>
     </div>
 }

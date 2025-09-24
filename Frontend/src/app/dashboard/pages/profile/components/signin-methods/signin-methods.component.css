@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.rounded-card {
+  height: 100%;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+}
+
+.card-item:not(:first-child){
+  border-top: 1px solid var(--surface-border);
+}
+
+.card-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+
+  .item-description {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .item-description i {
+    font-size: 1.25rem;
+  }
+}

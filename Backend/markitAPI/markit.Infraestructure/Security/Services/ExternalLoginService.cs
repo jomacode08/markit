@@ -2,11 +2,13 @@
 using AutoMapper;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Google;
 using markit.Application.Exceptions;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Google;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +23,7 @@ namespace markit.Infraestructure.Security.Services
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly IJwtService _authService;
+        private readonly IGoogleApiService _googleApiService;
         private readonly SpaSettings _spaSettings;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
@@ -34,6 +37,7 @@ namespace markit.Infraestructure.Security.Services
             IMapper mapper,
             IJwtService authService,
             IOptions<SpaSettings> spaSettings,
+            IGoogleApiService googleApiService,
             SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager)
         {
@@ -42,6 +46,7 @@ namespace markit.Infraestructure.Security.Services
             _mapper = mapper;
             _authService = authService;
             _spaSettings = spaSettings.Value;
+            _googleApiService = googleApiService;
             _signInManager = signInManager;
             _userManager = userManager;
         }
@@ -94,6 +99,21 @@ namespace markit.Infraestructure.Security.Services
             return properties;
         }
 
+        public async Task<List<ExternalSignInMethod>> GetExternalSignInMethods(AppUser user)
+        {
+            List<ExternalSignInMethod> externalSignInMethods = [];
+            IList<UserLoginInfo> logins = await _userManager.GetLoginsAsync(user);
+
+            foreach (UserLoginInfo login in logins)
+            {
+                LoginProvider loginProvider = Utilities.GetLoginProviderFromName(login.LoginProvider);
+                string identifier = await GetExternalIdentifier(loginProvider, user);
+                externalSignInMethods.Add(new ExternalSignInMethod(loginProvider, identifier));
+            }
+
+            return externalSignInMethods;
+        }
+
         public async Task RemoveExternalTokens(string userId)
         {
             AppUser user = await _userManager.FindByIdAsync(userId)
@@ -125,6 +145,18 @@ namespace markit.Infraestructure.Security.Services
                 token.Value
             );
         }
+
+        private async Task<string> GetExternalIdentifier(LoginProvider provider, AppUser user)
+        {
+            if (provider.Equals(LoginProvider.Google))
+            {
+                GoogleProfileData? profileData = await _googleApiService.GetUserProfile(user);
+                return profileData?.Email ?? "Not-found";
+            }
+
+            throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}");
+        }
+
         #endregion
 
         #region Utilities

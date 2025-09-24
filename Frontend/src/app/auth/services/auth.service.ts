@@ -11,6 +11,7 @@ import { AuthResponse } from '../interfaces/auth-response';
 import { AuthStatus } from '../interfaces/auth-status.enum';
 import { UserInfo } from './../interfaces/user-info';
 import { MARKS_STORAGE_KEY, MEILISEARCH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
+import { SignInMethods } from '../interfaces/signin-methods';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -47,7 +48,7 @@ export class AuthService {
   public externalAuthLogin(auth: AuthResponse) {
     this.setAuthentication(auth);
   }
-  
+
   public logout(): void {
     this.logoutFromApi().subscribe(() => {
       this._token.set(null);
@@ -59,6 +60,10 @@ export class AuthService {
       localStorage.removeItem(MARKS_STORAGE_KEY);
       this.router.navigate(['auth']);
     });
+  }
+
+  public getSignInMethods(): Observable<SignInMethods> {
+    return this.http.get<SignInMethods>(`${ this.baseUrl }/signin-methods`);
   }
 
   public isTokenAvailable(): boolean {

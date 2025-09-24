@@ -1,6 +1,8 @@
 ﻿using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Helpers;
+using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
+using Serilog;
 using System.Text.RegularExpressions;
 
 namespace markit.Application.Common.Helpers
@@ -56,6 +58,15 @@ namespace markit.Application.Common.Helpers
         {
             if (blocks.Count == 0) return null;
             return blocks.OrderBy(b => b.UpdatedDate).Last().UpdatedDate;
+        }
+
+        public static LoginProvider GetLoginProviderFromName(string providerName)
+        {
+            return providerName switch
+            {
+                "Google" => LoginProvider.Google,
+                _ => throw new InvalidOperationException($"Invalid or not implemented login provider: { providerName }"),
+            };
         }
     }
 }

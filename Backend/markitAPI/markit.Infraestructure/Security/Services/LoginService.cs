@@ -4,7 +4,6 @@ using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
 using markit.Application.Contracts.Authentication;
-using Meilisearch;
 
 namespace markit.Infraestructure.Security.Services
 {

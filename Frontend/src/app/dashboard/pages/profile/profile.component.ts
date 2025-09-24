@@ -13,6 +13,7 @@ import { ValidatorErrorField } from '../../../shared/utils/validator-error-field
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
+import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +26,7 @@ import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/ge
     GeneralButtonComponent,
     RadioButtonModule,
     ReactiveFormsModule,
+    SigninMethodsComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
