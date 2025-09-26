@@ -143,6 +143,7 @@ namespace markit.Infraestructure
             {
                 options.ClientId = googleAuthSettings.ClientId;
                 options.ClientSecret = googleAuthSettings.ClientSecret;
+                options.AccessType = "offline";
                 options.SaveTokens = true;
                 options.AccessDeniedPath = "/api/external-login/access-denied";
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");

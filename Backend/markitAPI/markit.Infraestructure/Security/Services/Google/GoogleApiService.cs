@@ -1,48 +1,66 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using markit.Application.Common.Helpers;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.PeopleService.v1;
+using Google.Apis.PeopleService.v1.Data;
+using Google.Apis.Services;
 using markit.Application.Contracts.Google;
 using markit.Application.Models.Authentication.AppUser;
-using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Authentication.Google;
 using markit.Application.Models.Google;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.Extensions.Options;
 namespace markit.Infraestructure.Security.Services.Google
 {
     public class GoogleApiService : IGoogleApiService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly GoogleAuthSettings _googleAuthSettings;
 
-        private const string ACCESS_TOKEN_NAME = "access_token";
-        private static readonly JsonSerializerOptions s_writeOptions = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        public GoogleApiService(UserManager<AppUser> userManager)
+        public GoogleApiService(UserManager<AppUser> userManager, IOptions<GoogleAuthSettings> googleAuthSettings)
         {
             _userManager = userManager;
+            _googleAuthSettings = googleAuthSettings.Value;
         }
 
-        public async Task<GoogleProfileData?> GetUserProfile(AppUser user)
+        public async Task<GoogleProfileData> GetUserProfile(AppUser user)
         {
-            const string USERINFO_ENDPOINT_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
-            HttpClient client = await AuthorizeCall(user);
+            UserCredential credential = await CreateUserCredentialAsync(user);
 
-            var response = await client.GetAsync(USERINFO_ENDPOINT_URL);
-            response.EnsureSuccessStatusCode();
-            string jsonDataString = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<GoogleProfileData>(jsonDataString, s_writeOptions);
+            PeopleServiceService peopleService = new(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "markit"
+            });
+
+            var request = peopleService.People.Get("people/me");
+            request.PersonFields = "names,emailAddresses,photos";
+            Person person = await request.ExecuteAsync();
+
+            return new GoogleProfileData(
+                person.Names?.FirstOrDefault()?.DisplayName ?? "not-found",
+                person.EmailAddresses?.FirstOrDefault()?.Value ?? "not-found",
+                person.Photos?.FirstOrDefault()?.Url
+            );
         }
 
-        private async Task<HttpClient> AuthorizeCall(AppUser user)
+        private async Task<UserCredential> CreateUserCredentialAsync(AppUser user)
         {
-            string accessToken = await _userManager.GetAuthenticationTokenAsync(user, LoginProvider.Google.GetName(), ACCESS_TOKEN_NAME)
-                ?? throw new InvalidOperationException("Google account not linked or access token not found");
+            GoogleTokenStore tokenStore = new(_userManager, user.Id);
 
-            HttpClient client = new();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            return client;
+            GoogleAuthorizationCodeFlow flow = new(new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = new ClientSecrets
+                {
+                    ClientId = _googleAuthSettings.ClientId,
+                    ClientSecret = _googleAuthSettings.ClientSecret
+                },
+                DataStore = tokenStore
+            });
+
+            TokenResponse tokenResponse = await tokenStore.GetAsync<TokenResponse>(user.Id)
+                ?? throw new InvalidOperationException("It wasn't possible to provide a valid google token-response");
+            return new UserCredential(flow, user.Id, tokenResponse);
         }
     }
 }

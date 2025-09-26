@@ -10,6 +10,6 @@ namespace markit.Application.Contracts.Authentication
         Task<string> Callback(LoginProvider loginProvider);
         AuthenticationProperties GetExternalAuthenticationProperties(LoginProvider provider, string redirectUrl);
         Task<List<ExternalSignInMethod>> GetExternalSignInMethods(AppUser user); 
-        Task RemoveExternalTokens(string userId);
+        Task RemoveExternalTokens(AppUser user);
     }
 }

@@ -1,4 +1,5 @@
-﻿using markit.Application.Contracts.Authentication;
+﻿using System.Reflection.Metadata.Ecma335;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Infraestructure.Security.Services;
@@ -48,7 +49,9 @@ namespace markit.API.Controllers.Seguridad
             if (User == null || User.Identity == null) return Unauthorized();
             
             if (User.Identity.IsAuthenticated) {
-                await _externalLoginService.RemoveExternalTokens(_sessionService.GetUserId());
+                AppUser? user = await _userManager.GetUserAsync(User);
+                if (user == null) return NotFound();
+                await _externalLoginService.RemoveExternalTokens(user);
                 await _signInManager.SignOutAsync();
             }
 
