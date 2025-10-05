@@ -177,20 +177,28 @@ namespace markit.Infraestructure.Security.Services
             AppUser? user = await GetUser(userId);
             UserLoginInfo loginToRemove = await ValidateLoginRevoke(user, provider);
 
-            using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
+            bool accessRevoked = provider switch
             {
+                LoginProvider.Google => await _googleApiService.RevokeAccessAsync(user),
+                _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
+            };
+
+            if (!accessRevoked) throw new CustomValidationException("Revoke login failed: it wasn't possible to revoke provider access");
+
+            try
+            {
+                using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 await RemoveIdentifierClaim(provider, user);
                 await _userManager.RemoveLoginAsync(user, provider.GetName(), loginToRemove.ProviderKey);
-                bool accessRevoked = provider switch
-                {
-                    LoginProvider.Google => await _googleApiService.RevokeAccessAsync(user),
-                    _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
-                };
-
-                if (!accessRevoked) throw new CustomValidationException("Revoke login failed: it wasn't possible to revoke provider access");
                 scope.Complete();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to update account with userId: {{ID}} settings. The external access has been removed. {{reason}}", [userId, ex.Message]);
+                throw;
+            }
         }
+
 
         #endregion
 
