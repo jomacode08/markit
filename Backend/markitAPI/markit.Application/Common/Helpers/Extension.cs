@@ -9,5 +9,11 @@ namespace markit.Application.Common.Helpers
             return Enum.GetName(typeof(LoginProvider), loginProvider)
                 ?? throw new InvalidOperationException();
         }
+
+        public static string GetName(this LoginPurpose loginPurpose)
+        {
+            return Enum.GetName(typeof(LoginPurpose), loginPurpose)
+                ?? throw new InvalidOperationException();
+        }
     }
 }

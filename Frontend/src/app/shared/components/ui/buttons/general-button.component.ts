@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 
-export type SeverityButton = "primary" | "secondary" | "cancel";
+export type SeverityButton = "primary" | "secondary" | "success" | "danger";
 
 @Component({
     selector: 'shared-general-button',

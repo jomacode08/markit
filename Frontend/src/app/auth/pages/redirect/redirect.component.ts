@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { RedirectResponse, RedirectUrlParams } from '../../interfaces/redirect';
 import { AuthResponse } from '../../interfaces/auth-response';
+import { PopupService } from '../../../shared/services/popup.service';
 
 export type AuthProcessState = 'idle' | 'authorized' | 'error';
 
@@ -17,31 +19,24 @@ export type AuthProcessState = 'idle' | 'authorized' | 'error';
   styleUrl: './redirect.component.css',
 })
 export class RedirectComponent implements OnInit {
-  private activatedRoute = inject(ActivatedRoute);
-  
-  private readonly AUTH_PARAMS = {
-    token : 'token',
-    meiliToken : 'meiliToken',
-    error: 'error',
-  }
-
   public errorMessage = signal<string>('');
   public currentAuthState = signal<AuthProcessState>('idle');
 
+  constructor(
+    private poupService: PopupService,
+    private activatedRoute : ActivatedRoute,
+  ) {}
+
   public async ngOnInit(): Promise<void> {
-    const params = await this.getUrlParams();
-    this.handleAuthRedirect(params);
+    const redirectParams: RedirectUrlParams = await this.getUrlParams();
+    this.handleRedirect(redirectParams);
   }
 
-  private handleAuthRedirect(params: Params): void {
+  private handleRedirect(params: RedirectUrlParams): void {
     if (!this.isRedirectValid(params))
-    return this.handleError(params[this.AUTH_PARAMS.error]);
+      return this.handleError(params.error ?? 'External login failed.');
 
-    this.sendAuthResponse(
-      params[this.AUTH_PARAMS.token],
-      params[this.AUTH_PARAMS.meiliToken]
-    );
-
+    this.sendRedirectResponse(params);
     this.setAuthState('authorized');
   }
 
@@ -50,25 +45,36 @@ export class RedirectComponent implements OnInit {
     this.setAuthState('error');
   }
 
-  private async getUrlParams(): Promise<Params> {
-    return firstValueFrom(this.activatedRoute.queryParams);
+  private async getUrlParams(): Promise<RedirectUrlParams> {
+    const params = await firstValueFrom(this.activatedRoute.queryParams);
+    return params as RedirectUrlParams;
   }
 
-  private sendAuthResponse(token: string, meiliSearchToken: string): void {
-    const authResponse : AuthResponse = {
-      token,
-      meiliSearchToken
+  private sendRedirectResponse(params: RedirectUrlParams): void {
+    const { state, purpose, token, meiliToken } = params;
+    let auth : AuthResponse | undefined = undefined;
+
+    if (purpose === 'sign-in') {
+      auth = { token, meiliSearchToken: meiliToken } as AuthResponse;
     }
-    window.opener.postMessage(authResponse);
+
+    this.poupService.sendMessageToOpener({
+      state,
+      auth
+    } as RedirectResponse);
   }
 
-  private isRedirectValid(params: Params): boolean {
-    const { token, meiliToken, error } = this.AUTH_PARAMS;
-    const hasError: boolean = params[error] != null;
-    const hasValidTokens: boolean = [params[token], params[meiliToken]]
-      .every((token : string | null) => token != null && token.trim().length > 0);
+  private isRedirectValid(params: RedirectUrlParams): boolean {
+    const { state, purpose, token, meiliToken, error } = params;
+    if (state === 'failure' || error != undefined) return false;
 
-    return hasValidTokens && !hasError;
+    if (purpose === 'sign-in') {
+      const hasValidTokens: boolean = [token, meiliToken]
+        .every((token : string | undefined) => token != undefined && token.trim().length > 0);
+      return hasValidTokens;
+    }
+
+    return true;
   }
 
   private setAuthState = (status: AuthProcessState) => this.currentAuthState.update(() => status);

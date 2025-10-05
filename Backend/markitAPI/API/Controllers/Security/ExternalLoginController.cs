@@ -1,11 +1,15 @@
-﻿using markit.Application.Contracts.Authentication;
+﻿using System.Threading.Tasks;
+using markit.Application.Common.Helpers;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
+using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Extensions;
 
 namespace markit.API.Controllers.Security
 {
@@ -14,44 +18,130 @@ namespace markit.API.Controllers.Security
     public class ExternalLoginController : ControllerBase
     {
         private readonly IExternalLoginService _externalLoginService;
+        private readonly IMemoryCache _cache;
         private readonly SpaSettings _spaSettings;
-        public ExternalLoginController(IExternalLoginService externalLoginService, IOptions<SpaSettings> spaSettings)
+        private readonly SessionService _sessionService;
+
+        public ExternalLoginController(
+            IExternalLoginService externalLoginService,
+            IOptions<SpaSettings> spaSettings,
+            IMemoryCache cache,
+            SessionService sessionService)
         {
             _externalLoginService = externalLoginService;
             _spaSettings = spaSettings.Value;
+            _sessionService = sessionService;
+            _cache = cache;
+        }
+
+        [HttpGet("generate-link-token")]
+        public IActionResult GenerateLinkToken()
+        {
+            var userId = _sessionService.GetUserId();
+            var token = Guid.NewGuid().ToString();
+            _cache.Set(token, userId, TimeSpan.FromMinutes(2));
+            return Ok(new { token });
         }
 
         [AllowAnonymous]
-        [HttpGet("initiate-google")]
-        public IActionResult InitiateGoogle()
+        [HttpGet("initiate-login")]
+        public IActionResult InitiateLogin(LoginProvider provider)
         {
-            return Initiate(LoginProvider.Google);
+            return InitiateChallenge(provider, purpose: LoginPurpose.SignIn);
         }
 
         [AllowAnonymous]
-        [HttpGet("callback-google")]
-        public async Task<IActionResult> CallbackGoogle()
+        [HttpGet("initiate-link-account")]
+        public IActionResult InitiateLinkAccount(LoginProvider provider, string token)
         {
-            string redirectUrl = await _externalLoginService.Callback(LoginProvider.Google);
+            string? userId = GetUserIdFromLinkToken(token);
+            if (userId == null) return BadRequest("Invalid or expired link token.");
+
+            return InitiateChallenge(
+                provider, 
+                purpose: LoginPurpose.LinkAccount,
+                userId: userId
+            );
+        }
+
+        [AllowAnonymous]
+        [HttpGet("callback-login")]
+        public async Task<IActionResult> CallbackLogin(LoginProvider provider)
+        {
+            string redirectUrl = await _externalLoginService.LoginCallback(provider);
             return Redirect(redirectUrl);
         }
+
+        [AllowAnonymous]
+        [HttpGet("callback-link-account")]
+        public async Task<IActionResult> CallbackLinkAccount(LoginProvider provider)
+        {
+            string redirectUrl = await _externalLoginService.LinkAccountCallback(provider);
+            return Redirect(redirectUrl);
+        }
+
+        [Authorize]
+        [HttpDelete("{provider}")]
+        public async Task<IActionResult> RemoveLogin(LoginProvider provider)
+        {
+            await _externalLoginService.RemoveLogin(_sessionService.GetUserId(), provider);
+            return Ok();
+        }
+
 
         [AllowAnonymous]
         [HttpGet("access-denied")]
         public IActionResult AccessDenied()
         {
-            string spaLoginFailureUrl = $"{_spaSettings.BaseUrl}/auth/redirect?error=access_denied";
+            string spaLoginFailureUrl = $"{_spaSettings.BaseUrl}/auth/redirect?state=failure&error=access_denied";
             return Redirect(spaLoginFailureUrl);
         }
 
-        private ChallengeResult Initiate(LoginProvider loginProvider)
+        private ChallengeResult InitiateChallenge(LoginProvider provider, LoginPurpose purpose, string? userId = null)
         {
-            // The url to redirect after the auth middleware successfully handle the external login from google
-            string? redirectUrl = Url.Action(nameof(CallbackGoogle), "ExternalLogin", null, Request.Scheme);
+            // The url to redirect after the auth middleware successfully handle the external login operation.
+            string? redirectUrl = GetRedirectUrl(provider, purpose);
             if (string.IsNullOrEmpty(redirectUrl)) throw new FormatException("The redirectUrl doesn't have the correct format");
-            // Build authentication properties and return a 302 Redirect to google login's page. 
-            AuthenticationProperties properties = _externalLoginService.GetExternalAuthenticationProperties(loginProvider, redirectUrl);
-            return Challenge(properties, loginProvider.GetDisplayName());
+
+            AuthenticationProperties properties = _externalLoginService.ConfigureAuthenticationProperties(
+                provider,
+                purpose,
+                redirectUrl,
+                userId
+            );
+
+            return Challenge(properties, provider.GetName());
+        }
+
+        private string? GetRedirectUrl(LoginProvider provider, LoginPurpose purpose)
+        {
+            string? action = purpose switch
+            {
+                LoginPurpose.SignIn => nameof(CallbackLogin),
+                LoginPurpose.LinkAccount => nameof(CallbackLinkAccount),
+                _ => default,
+            };
+
+            if (action == null) return default;
+
+            return Url.Action(
+                action,
+                controller: "ExternalLogin",
+                values: new { provider = provider.GetName() },
+                protocol: Request.Scheme
+            );
+        }
+
+        private string? GetUserIdFromLinkToken(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return default;
+            if (_cache.TryGetValue(token, out string? value) && !string.IsNullOrEmpty(value))
+            {
+                _cache.Remove(token);
+                return value;
+            }
+
+            return default;
         }
     }
 }

@@ -7,9 +7,11 @@ namespace markit.Application.Contracts.Authentication
 {
     public interface IExternalLoginService
     {
-        Task<string> Callback(LoginProvider loginProvider);
-        AuthenticationProperties GetExternalAuthenticationProperties(LoginProvider provider, string redirectUrl);
         Task<List<ExternalSignInMethod>> GetExternalSignInMethods(AppUser user); 
-        Task RemoveExternalTokens(AppUser user);
+        Task<string> LoginCallback(LoginProvider loginProvider);
+        Task<string> LinkAccountCallback(LoginProvider loginProvider);
+        AuthenticationProperties ConfigureAuthenticationProperties(LoginProvider provider, LoginPurpose purpose, string redirectUrl, string? currentUserId);
+        Task RemoveExternalTokens(string userId);
+        Task RemoveLogin(string userId, LoginProvider provider);
     }
 }

@@ -5,6 +5,7 @@ namespace markit.Application.Contracts.Google
 {
     public interface IGoogleApiService
     {
-        Task<GoogleProfileData> GetUserProfile(AppUser user);
+        Task<GoogleProfileData> GetUserProfileAsync(AppUser user);
+        Task<bool> RevokeAccessAsync(AppUser user);
     }
 }

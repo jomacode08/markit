@@ -22,8 +22,6 @@ using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
 using Hangfire;
 using markit.Infraestructure.Persistence.MeiliSearch.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using static markit.Application.Helpers.GeneralConstant.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using markit.Application.Contracts.Google;
@@ -159,6 +157,9 @@ namespace markit.Infraestructure
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
             });
+
+            // Configure login provider clients for httpClient
+            services.AddHttpClient<GoogleApiService>();
 
             return services;
         }

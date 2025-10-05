@@ -22,6 +22,11 @@ export const ROUTES = {
     PROFILE: '/dashboard/profile',
 };
 
+export const POPUP_NAMES = {
+    SIGN_IN : 'sign-in',
+    LINK_ACCOUNT : 'link-account'
+}
+
 export const MEILISEARCH = {
     COLLECTION_INDEX_UID : 'collections',
     COLLECTION_SEARCHABLE_ATTRIBUTE_NAME : 'name',

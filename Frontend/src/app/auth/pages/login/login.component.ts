@@ -1,19 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { PasswordModule } from 'primeng/password';
 
 import { AuthRequest } from '../../interfaces/auth-request';
 import { AuthService } from '../../services/auth.service';
+import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
+import { ExternalLoginService } from '../../services/external-login.service';
+import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
+import { LoginProvider, LoginPurpose } from '../../interfaces/signin-methods';
+import { POPUP_NAMES } from '../../../shared/utils/constant';
+import { PopupService } from '../../../shared/services/popup.service';
+import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
-import { CustomMessageService } from '../../../shared/services/custom-message.service';
-import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
-import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { environment } from '../../../../environments/environment';
-import { AuthResponse } from '../../interfaces/auth-response';
 
 @Component({
   selector: 'app-login',
@@ -29,41 +32,36 @@ import { AuthResponse } from '../../interfaces/auth-response';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent extends ValidatorErrorField {
-  private authService        = inject(AuthService);
-  private router             = inject(Router);
-  private validatorService   = inject(ValidatorService);
-  private messageService     = inject(CustomMessageService);
-  
-  private readonly POPUP_WINDOW_SIZES = {
-    height: 600,
-    width: 450,
-  };
-
-  public form = new FormGroup({
-    email:       new FormControl<string>('', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validatorService.emailPattern)]),
-    password:    new FormControl<string>('', [Validators.required]),
-  });
-  
+export class LoginComponent extends ValidatorErrorField {  
   //* Configuration
-  private readonly GOOGLE_AUTH_START_URL = `${ environment.baseApiUrl }/external-login/initiate-google`;
-  private popUpWindow : Window | null = null;
   public submit: boolean = false;
   public showLoginForm: boolean = false;
+  public form : FormGroup<{
+    email    : FormControl<string>,
+    password : FormControl<string>
+  }>;
 
   public get authRequest(): AuthRequest {
     return this.form.value as AuthRequest;
   }
 
-  //* Events
-  @HostListener('window:message', ['$event'])
-  private listenForExternalAuthResponse(event: MessageEvent): void {
-    const authResponse = event.data as AuthResponse;
-    this.authService.externalAuthLogin(authResponse);
-    this.confirmSession();
-    this.popUpWindow?.close();
+  constructor(
+    private authService : AuthService,
+    private externalLoginService : ExternalLoginService,
+    private fb : FormBuilder,
+    private messageService: CustomMessageService,
+    private popupService : PopupService,
+    private router : Router,
+    private validator : ValidatorService,
+  ) {
+    super()
+    this.form = this.fb.nonNullable.group({
+      email    : ['', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validator.emailPattern)]],
+      password : ['', Validators.required]
+    });
   }
 
+  //* Events
   public onSignIn = (): void => { this.showLoginForm = true; }
 
   public onLogin(): void {
@@ -76,7 +74,7 @@ export class LoginComponent extends ValidatorErrorField {
   }
 
   public onGoogleLogin(): void {
-    this.showAuthenticationPopup(this.GOOGLE_AUTH_START_URL);
+    this.openAuthPopUp(LoginProvider.Google);
   }
 
   //* Methods
@@ -88,42 +86,45 @@ export class LoginComponent extends ValidatorErrorField {
     });
   }
 
+  private openAuthPopUp(provider: LoginProvider): void {
+    this.setSubmit(true);
+    // Get the initiation url of the login provider. 
+    this.externalLoginService.getLoginUrlForProvider(provider, LoginPurpose.SignIn)
+    .subscribe({
+      next: url => {
+        // Open a new popup window with the authorization page.
+        this.popupService.open({
+          name: POPUP_NAMES.SIGN_IN,
+          url,
+          close: () => this.setSubmit(false),
+        });
+        // Listen for the redirect message response.
+        this.listenForAuthRedirect();
+      },
+      error: () => this.setSubmit(false)
+    });
+  }
+
+  private listenForAuthRedirect(): void {
+    this.popupService.listenForMessagesFrom(POPUP_NAMES.SIGN_IN).subscribe(
+      (event) => {
+        const response = event.data as RedirectResponse;
+        if (response.state === 'success' && response.auth != null) {
+          this.authService.externalAuthLogin(response.auth);
+          this.confirmSession();
+        }
+        this.popupService.close(POPUP_NAMES.SIGN_IN);
+      }
+    );
+  }
+
   private confirmSession(): void {
     this.setSubmit(false);
     this.router.navigate(['dashboard']);
     this.messageService.showGeneralSuccess("Successful login!");
   }
 
-  //* Utils
   private setSubmit(state: boolean): void {
     this.submit = state;
-  }
-
-  private buildCenteredPopupParams(): string {
-    const { width, height } = this.POPUP_WINDOW_SIZES;
-
-    const dualScreenLeft = window.screenLeft ?? window.screenX;
-    const dualScreenTop  = window.screenTop ?? window.screenY;
-    const screenWidth    = window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
-    const windowHeight   = window.innerHeight ?? document.documentElement.clientHeight ?? screen.height;
-  
-    const systemZoom = screenWidth / window.screen.availWidth;
-    const left       = (screenWidth - width) / 2 / systemZoom + dualScreenLeft;
-    const top        = (windowHeight - height) / 2 / systemZoom + dualScreenTop;
-  
-    return `width=${ width / systemZoom }, height=${ height / systemZoom }, top=${ top }, left=${ left }`;
-  }
-
-  private showAuthenticationPopup(url: string): void {
-    const windowFeatures = this.buildCenteredPopupParams();
-    this.popUpWindow = window.open(url, '_blank', windowFeatures);
-    this.setSubmit(true);
-    // Check if the window is closed
-    const intervalId = setInterval(() => {
-      if (this.popUpWindow?.closed) {
-        clearInterval(intervalId);
-        this.setSubmit(false);
-      }
-    }, 100);
   }
 }

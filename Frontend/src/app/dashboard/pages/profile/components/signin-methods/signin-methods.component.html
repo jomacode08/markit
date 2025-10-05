@@ -1,25 +1,25 @@
 @if (signInMethods$ | async; as signInMethods) {
     <div class="rounded-card">
         <!-- Email -->
-        <section class="card-item">
-            <div class="item-description">
+        <article class="card-item">
+            <header class="item-description">
                 <i class="fa-regular fa-at"></i>
                 <div>
                     <div class="font-semibold">Email</div>
                     <div class="font-light text-sm text-secondary">{{ currentEmail }}</div>
                 </div>
-            </div>
-            <div class="action">
+            </header>
+            <footer class="action">
                 <shared-general-button
                     label="Change"
                     severity="secondary"
                     [disabled]="true"
                     />
-            </div>
-        </section>
+            </footer>
+        </article>
         <!-- Password -->
-        <section class="card-item">
-            <div class="item-description">
+        <article class="card-item">
+            <header class="item-description">
                 <i class="fa-solid fa-key"></i>
                 <div>
                     <div class="font-semibold">Password</div>
@@ -27,33 +27,45 @@
                         {{ signInMethods.hasPassword ? 'Configurated' : 'Not configurated' }}
                     </div>
                 </div>
-            </div>
-            <div class="action">
+            </header>
+            <footer class="action">
                 <shared-general-button
                     [label]="signInMethods.hasPassword ? 'Change':'Configure'"
                     [disabled]="true"
                     severity="secondary"
                 />
-            </div>
-        </section>
-        <!-- Google -->
-        <section class="card-item">
-            <div class="item-description">
-                <i class="fa-brands fa-google"></i>
-                <div>
-                    <div class="font-semibold">Google</div>
-                    <div class="font-light text-sm text-secondary">
-                        {{ googleMethod ? googleMethod.identifier : 'Not configurated' }}
+            </footer>
+        </article>
+        <!-- External Methods -->
+        @for (externalMethod of signInMethods.externalSignMethods; track $index) {
+            <article class="card-item">
+                <header class="item-description">
+                    <i [class]="externalMethod.loginProvider | loginProviderIcon"></i>
+                    <div>
+                        <div class="font-semibold">{{ externalMethod.loginProvider | titlecase}}</div>
+                        <div class="font-light text-sm text-secondary">
+                            {{ externalMethod.configured ? externalMethod.identifier : 'Not configured' }}
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="action">
-                <shared-general-button
-                    [label]="googleMethod ? 'Change':'Configure'"
-                    [disabled]="true"
-                    severity="secondary"
-                />
-            </div>
-        </section>
+                </header>
+                <footer class="action">
+                    @if (externalMethod.configured) {                        
+                        <shared-general-button
+                            label="Remove"
+                            severity="danger"
+                            [disabled]="submibt()"
+                            (click)="onRemoveLogin(externalMethod)"
+                        />
+                    }@else {                        
+                        <shared-general-button
+                            label="Configure"
+                            severity="secondary"
+                            [disabled]="submibt()"
+                            (click)="onConfigureLogin(externalMethod)"
+                        />
+                    }
+                </footer>
+            </article>
+        }
     </div>
 }

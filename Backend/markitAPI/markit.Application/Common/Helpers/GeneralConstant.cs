@@ -12,6 +12,12 @@
             public static readonly string SPA_SECTION_NAME = "SpaSettings";
         }
 
+        public static class AuthenticationItems
+        {
+            public static readonly string LOGIN_PURPOSE_KEY = "LoginPurpose";
+            public static readonly string CURRENT_USERID_KEY = "CurrentUserId";
+        }
+
         public static class Role
         {
             public const string admin = "Admin";

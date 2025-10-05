@@ -6,9 +6,15 @@ export interface SignInMethods {
 
 export interface ExternalSignInMethod {
     loginProvider : LoginProvider,
-    identifier: string,
+    identifier ?: string,
+    configured: boolean,
 }
 
 export enum LoginProvider {
     Google = "google"
+}
+
+export enum LoginPurpose {
+    SignIn = "signIn",
+    LinkAccount = "linkAccount"
 }

@@ -119,13 +119,19 @@ button {
 .secondary-button:hover, .secondary-button:focus {
   background-color: var(--highlight-border-blue);
 }
-
-.cancel-button {
-  background-color: var(--paper-bg);
-  color: #ffffff;
+.success-button {
+  background-color: var(--highlight-surface-green);
+  border-color: var(--highlight-border-green);
 }
-.cancel-button:hover, .cancel-button:focus {
-  background-color: var(--surface-1);
+.success-button:hover, .success-button:focus {
+  background-color: var(--highlight-border-green);
+}
+.danger-button {
+  background-color: var(--highlight-surface-red);
+  border-color: var(--highlight-border-red);
+}
+.danger-button:hover, .danger-button:focus {
+  background-color: var(--highlight-border-red);
 }
   
 

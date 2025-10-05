@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using markit.Application.Contracts.Authentication;
+﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Infraestructure.Security.Services;
@@ -23,15 +22,15 @@ namespace markit.API.Controllers.Seguridad
         public LoginController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
-            SessionService sessionService,
             SignInManager<AppUser> signInManager,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager,
+            SessionService sessionService)
         {
             _loginService = loginService;
             _signInManager = signInManager;
-            _sessionService = sessionService;
             _externalLoginService = externalLoginService;
             _userManager = userManager;
+            _sessionService = sessionService;
         }
 
         [AllowAnonymous]
@@ -49,9 +48,7 @@ namespace markit.API.Controllers.Seguridad
             if (User == null || User.Identity == null) return Unauthorized();
             
             if (User.Identity.IsAuthenticated) {
-                AppUser? user = await _userManager.GetUserAsync(User);
-                if (user == null) return NotFound();
-                await _externalLoginService.RemoveExternalTokens(user);
+                await _externalLoginService.RemoveExternalTokens(_sessionService.GetUserId());
                 await _signInManager.SignOutAsync();
             }
 

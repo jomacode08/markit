@@ -53,9 +53,7 @@ namespace markit.Infraestructure.Security.Services.Google
         {
             AppUser? user = await _userManager.FindByIdAsync(_userId);
             if (user == null) return;
-
-            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, REFRESH_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, key);
         }
 
         /// <summary>
@@ -89,10 +87,17 @@ namespace markit.Infraestructure.Security.Services.Google
         /// </summary>
         public async Task ClearAsync()
         {
-            await DeleteAsync<object>(_userId);
+            AppUser? user = await _userManager.FindByIdAsync(_userId);
+            if (user == null) return;
+
+            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, REFRESH_TOKEN_NAME);
         }
 
-        public async Task ClearForLogout(AppUser user)
+        /// <summary>
+        /// Clears only short-lived tokens for the user.
+        /// </summary>
+        public async Task ClearShortLived(AppUser user)
         {
             await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME);
         }

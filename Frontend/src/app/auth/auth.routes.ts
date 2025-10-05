@@ -16,7 +16,6 @@ export const AUTH_ROUTES: Routes = [
     },
     {
         path: 'redirect',
-        canActivate: [IsNotAuthenticatedActivateGuard],
         loadComponent: () =>
             import('./pages/redirect/redirect.component')
             .then(c => c.RedirectComponent)
