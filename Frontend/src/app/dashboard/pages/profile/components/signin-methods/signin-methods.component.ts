@@ -59,6 +59,7 @@ export class SigninMethodsComponent {
     const { loginProvider, identifier } = signInMethod;
     const DIALOG_HEADER = `Remove ${ loginProvider } login`;
     const CONFIRMATION_MESSAGE = `Do you want to unlink your account: ${ identifier }?`;
+    this.setSubmit(true);
     this.messageService.showConfirmationDialog({
       header: DIALOG_HEADER,
       message: CONFIRMATION_MESSAGE,

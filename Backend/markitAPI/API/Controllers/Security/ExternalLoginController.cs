@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using markit.Application.Common.Helpers;
-using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
 using markit.Infraestructure.Security.Services;
@@ -76,7 +76,7 @@ namespace markit.API.Controllers.Security
         [HttpGet("callback-link-account")]
         public async Task<IActionResult> CallbackLinkAccount(LoginProvider provider)
         {
-            string redirectUrl = await _externalLoginService.LinkAccountCallback(provider);
+            string redirectUrl = await _externalLoginService.LinkCallback(provider);
             return Redirect(redirectUrl);
         }
 
@@ -84,7 +84,7 @@ namespace markit.API.Controllers.Security
         [HttpDelete("{provider}")]
         public async Task<IActionResult> RemoveLogin(LoginProvider provider)
         {
-            await _externalLoginService.RemoveLogin(_sessionService.GetUserId(), provider);
+            await _externalLoginService.Remove(_sessionService.GetUserId(), provider);
             return Ok();
         }
 
@@ -103,7 +103,7 @@ namespace markit.API.Controllers.Security
             string? redirectUrl = GetRedirectUrl(provider, purpose);
             if (string.IsNullOrEmpty(redirectUrl)) throw new FormatException("The redirectUrl doesn't have the correct format");
 
-            AuthenticationProperties properties = _externalLoginService.ConfigureAuthenticationProperties(
+            AuthenticationProperties properties = _externalLoginService.GetAuthenticationProperties(
                 provider,
                 purpose,
                 redirectUrl,

@@ -7,5 +7,6 @@ namespace markit.Application.Contracts.Google
     {
         Task<GoogleProfileData> GetUserProfileAsync(AppUser user);
         Task<bool> RevokeAccessAsync(AppUser user);
+        Task ClearShortLivedTokensAsync(AppUser user);
     }
 }

@@ -66,6 +66,12 @@ namespace markit.Infraestructure.Security.Services.Google
             return true;
         }
 
+        public async Task ClearShortLivedTokensAsync(AppUser user)
+        {
+            GoogleTokenStore tokenStore = new(_userManager, user.Id);
+            await tokenStore.ClearShortLived(user);
+        }
+
         private async Task<bool> RevokeTokensAsync(AppUser user)
         {
             // By revoking the google refresh_token, it will revoke all the access tokens too.

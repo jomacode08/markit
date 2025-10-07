@@ -26,6 +26,8 @@ using static markit.Application.Helpers.GeneralConstant.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using markit.Application.Contracts.Google;
 using markit.Infraestructure.Security.Services.Google;
+using markit.Infraestructure.Security.Services.ExternalLogin;
+using markit.Application.Contracts.Authentication.ExternalLogin;
 
 namespace markit.Infraestructure
 {
@@ -110,11 +112,13 @@ namespace markit.Infraestructure
                 .AddDefaultTokenProviders();
 
             // Inject authentication services
-            services.AddTransient<IAppUserService, AppUserService>();
-            services.AddTransient<IJwtService, JwtService>();
-            services.AddTransient<ILoginService, LoginService>();
+            services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<IGoogleApiService, GoogleApiService>();
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IExternalIdentifierService, ExternalIdentifierService>();
+            services.AddScoped<IExternalTokenService, ExternalTokenService>();
             services.AddTransient<IExternalLoginService, ExternalLoginService>();
-            services.AddTransient<IGoogleApiService, GoogleApiService>();
 
             // Configurate authentication
             services.AddAuthentication(options =>

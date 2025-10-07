@@ -1,4 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Infraestructure.Security.Services;
@@ -15,6 +16,7 @@ namespace markit.API.Controllers.Seguridad
     {
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
+        private readonly IExternalTokenService _externalTokenService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly SessionService _sessionService;
@@ -22,6 +24,7 @@ namespace markit.API.Controllers.Seguridad
         public LoginController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
+            IExternalTokenService externalTokenService,
             SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             SessionService sessionService)
@@ -29,6 +32,7 @@ namespace markit.API.Controllers.Seguridad
             _loginService = loginService;
             _signInManager = signInManager;
             _externalLoginService = externalLoginService;
+            _externalTokenService = externalTokenService;
             _userManager = userManager;
             _sessionService = sessionService;
         }
@@ -48,7 +52,7 @@ namespace markit.API.Controllers.Seguridad
             if (User == null || User.Identity == null) return Unauthorized();
             
             if (User.Identity.IsAuthenticated) {
-                await _externalLoginService.RemoveExternalTokens(_sessionService.GetUserId());
+                await _externalTokenService.ClearShortLivedAsync(_sessionService.GetUserId());
                 await _signInManager.SignOutAsync();
             }
 
@@ -64,7 +68,7 @@ namespace markit.API.Controllers.Seguridad
 
             bool hasEmail = user.Email != null;
             bool hasPassword = await _userManager.HasPasswordAsync(user);
-            List<ExternalSignInMethod> externalSignInMethods = await _externalLoginService.GetExternalSignInMethods(user);
+            List<ExternalSignInMethod> externalSignInMethods = await _externalLoginService.GetByUser(user);
 
             return new SignInMethods(
                 hasEmail,

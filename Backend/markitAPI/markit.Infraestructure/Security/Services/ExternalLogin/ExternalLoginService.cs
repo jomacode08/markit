@@ -3,13 +3,13 @@ using System.Transactions;
 using AutoMapper;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.Google;
 using markit.Application.Exceptions;
 using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
-using markit.Infraestructure.Security.Services.Google;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.Infraestructure.Security.Services
+namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
     public class ExternalLoginService : IExternalLoginService
     {
@@ -26,11 +26,14 @@ namespace markit.Infraestructure.Security.Services
         private readonly IMapper _mapper;
         private readonly IJwtService _authService;
         private readonly IGoogleApiService _googleApiService;
+        private readonly IExternalIdentifierService _externalIdentifierService;
+        private readonly IExternalTokenService _externalTokenService;
         private readonly SpaSettings _spaSettings;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
-        private readonly string spaRedirectUrl;
+        private readonly LoginProvider[] _providers;
+        private readonly string _spaRedirectUrl;
 
         public ExternalLoginService
         (
@@ -40,6 +43,8 @@ namespace markit.Infraestructure.Security.Services
             IJwtService authService,
             IOptions<SpaSettings> spaSettings,
             IGoogleApiService googleApiService,
+            IExternalIdentifierService externalIdentifierService,
+            IExternalTokenService externalTokenService,
             SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager)
         {
@@ -49,23 +54,25 @@ namespace markit.Infraestructure.Security.Services
             _authService = authService;
             _spaSettings = spaSettings.Value;
             _googleApiService = googleApiService;
+            _externalIdentifierService = externalIdentifierService;
+            _externalTokenService = externalTokenService;
             _signInManager = signInManager;
             _userManager = userManager;
 
-            spaRedirectUrl = $"{_spaSettings.BaseUrl}/auth/redirect";
+            _spaRedirectUrl = $"{_spaSettings.BaseUrl}/auth/redirect";
+            _providers = [LoginProvider.Google];
         }
 
         #region Public
-        public async Task<List<ExternalSignInMethod>> GetExternalSignInMethods(AppUser user)
+        public async Task<List<ExternalSignInMethod>> GetByUser(AppUser user)
         {
-            LoginProvider[] providers = [LoginProvider.Google];
             List<ExternalSignInMethod> externalSignInMethods = [];
             IList<UserLoginInfo> logins = await _userManager.GetLoginsAsync(user);
 
-            foreach (LoginProvider provider in providers)
+            foreach (LoginProvider provider in _providers)
             {
                 bool configured = logins.Any(l => l.LoginProvider.Equals(provider.GetName()));
-                string? identifier = configured ? await GetExternalIdentifier(provider, user) : default;
+                string? identifier = configured ? await _externalIdentifierService.GetAsync(provider, user) : default;
                 externalSignInMethods.Add(
                     new ExternalSignInMethod(
                         provider,
@@ -76,6 +83,25 @@ namespace markit.Infraestructure.Security.Services
             }
 
             return externalSignInMethods;
+        }
+
+        public AuthenticationProperties GetAuthenticationProperties(
+            LoginProvider provider,
+            LoginPurpose purpose,
+            string redirectUrl,
+            string? currentUserId
+        )
+        {
+            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider.GetName(), redirectUrl);
+            properties.Items.Add(AuthenticationItems.LOGIN_PURPOSE_KEY, purpose.GetName());
+            properties.AllowRefresh = true;
+
+            if (purpose.Equals(LoginPurpose.LinkAccount) && currentUserId != null)
+            {
+                properties.Items.Add(AuthenticationItems.CURRENT_USERID_KEY, currentUserId);
+            }
+
+            return properties;
         }
 
         public async Task<string> LoginCallback(LoginProvider provider)
@@ -104,15 +130,15 @@ namespace markit.Infraestructure.Security.Services
                 scope.Complete();
                 // === Transaction end === 
 
-                return $"{spaRedirectUrl}?state=success&purpose=sign-in&token={auth.Token}&meiliToken={auth.MeiliSearchToken}";
+                return $"{_spaRedirectUrl}?state=success&purpose=sign-in&token={auth.Token}&meiliToken={auth.MeiliSearchToken}";
             }
             catch (Exception ex)
             {
-                return LogAndRedirectError(ex.Message, spaRedirectUrl);
+                return LogAndRedirectError(ex.Message, _spaRedirectUrl);
             }
         }
 
-        public async Task<string> LinkAccountCallback(LoginProvider provider)
+        public async Task<string> LinkCallback(LoginProvider provider)
         {
             try
             {
@@ -135,44 +161,18 @@ namespace markit.Infraestructure.Security.Services
                         await HandleProviderTokens(loginInfo.AuthenticationTokens, provider, user);
                         scope.Complete();
                     }
-                    return $"{spaRedirectUrl}?state=success&purpose=link";
+                    return $"{_spaRedirectUrl}?state=success&purpose=link";
                 }
 
                 throw new InvalidOperationException("Invalid or missed authentication properties.");
             }
             catch (Exception ex)
             {
-                return LogAndRedirectError(ex.Message, spaRedirectUrl);
+                return LogAndRedirectError(ex.Message, _spaRedirectUrl);
             }
         }
 
-        public AuthenticationProperties ConfigureAuthenticationProperties(
-            LoginProvider provider,
-            LoginPurpose purpose,
-            string redirectUrl,
-            string? currentUserId
-        )
-        {
-            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider.GetName(), redirectUrl);
-            properties.Items.Add(AuthenticationItems.LOGIN_PURPOSE_KEY, purpose.GetName());
-            properties.AllowRefresh = true;
-
-            if (purpose.Equals(LoginPurpose.LinkAccount) && currentUserId != null)
-            {
-                properties.Items.Add(AuthenticationItems.CURRENT_USERID_KEY, currentUserId);
-            }
-
-            return properties;
-        }
-
-        public async Task RemoveExternalTokens(string userId)
-        {
-            AppUser user = await GetUser(userId);
-            GoogleTokenStore tokenStore = new(_userManager, user.Id);
-            await tokenStore.ClearShortLived(user);
-        }
-
-        public async Task RemoveLogin(string userId, LoginProvider provider)
+        public async Task Remove(string userId, LoginProvider provider)
         {
             AppUser? user = await GetUser(userId);
             UserLoginInfo loginToRemove = await ValidateLoginRevoke(user, provider);
@@ -188,27 +188,20 @@ namespace markit.Infraestructure.Security.Services
             try
             {
                 using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                await RemoveIdentifierClaim(provider, user);
+                await _externalIdentifierService.Remove(provider, user);
                 await _userManager.RemoveLoginAsync(user, provider.GetName(), loginToRemove.ProviderKey);
                 scope.Complete();
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to update account with userId: {{ID}} settings. The external access has been removed. {{reason}}", [userId, ex.Message]);
+                _logger.LogError($"Failed to update account settings with userId: {{ID}}. The external access has been removed. {{reason}}", [userId, ex.Message]);
                 throw;
             }
         }
 
-
         #endregion
 
         #region Helpers
-        private async Task CreateCreator(AppUserRequest request)
-        {
-            CreateCreatorCommand command = _mapper.Map<CreateCreatorCommand>(request);
-            await _mediator.Send(command);
-        }
-
         private async Task<ExternalLoginInfo> GetAndValidateLoginInfo()
         {
             return await _signInManager.GetExternalLoginInfoAsync()
@@ -243,119 +236,26 @@ namespace markit.Infraestructure.Security.Services
             if (userWithLogin != null && userWithLogin.Id != userId) throw new CustomValidationException("The account is already linked by another user.");
         }
 
+        private async Task CreateCreator(AppUserRequest request)
+        {
+            CreateCreatorCommand command = _mapper.Map<CreateCreatorCommand>(request);
+            await _mediator.Send(command);
+        }
+
         private async Task HandleProviderTokens(
             IEnumerable<AuthenticationToken> providerTokens,
             LoginProvider provider,
             AppUser user
         )
         {
-            IEnumerable<AuthenticationToken> operativeTokens = GetOperativeTokens(provider, providerTokens);
-            await StoreTokens(provider, user, operativeTokens);
-        }
-
-        private async Task StoreTokens(LoginProvider provider, AppUser user, IEnumerable<AuthenticationToken> tokens)
-        {
-            foreach (AuthenticationToken token in tokens) {
-                await _userManager.SetAuthenticationTokenAsync(
-                    user,
-                    provider.GetName(),
-                    token.Name,
-                    token.Value
-                );
-            }
-        }
-
-        private static IEnumerable<AuthenticationToken> GetOperativeTokens(LoginProvider provider, IEnumerable<AuthenticationToken> authenticationTokens)
-        {
-            string[] token_names_to_find = provider switch
-            {
-                LoginProvider.Google => ["access_token", "refresh_token"],
-                _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
-            };
-
-            IEnumerable<AuthenticationToken> foundedTokens = authenticationTokens
-                .Where(t => token_names_to_find.Contains(t.Name));
-
-            if (!foundedTokens.Any())
-                throw new InvalidOperationException($"The tokens weren't provided by the login provider: {provider.GetName()}");
-
-            return foundedTokens;
-        }
-
-        private async Task<Claim?> GetIdentifierClaim(LoginProvider provider, AppUser user)
-        {
-            string type = $"urn:{provider.GetName().ToLower()}:identifier";
-            return (await _userManager.GetClaimsAsync(user))
-                .FirstOrDefault(c => c.Type.Equals(type));
-        }
-
-        private async Task CreateIdentifierClaim(LoginProvider provider, AppUser user, string identifier)
-        {
-            string type = $"urn:{provider.GetName().ToLower()}:identifier";
-            await _userManager.AddClaimAsync(user, new Claim(type, identifier));
-        }
-
-        private async Task RemoveIdentifierClaim(LoginProvider provider, AppUser user)
-        {
-            Claim? identifierClaim = await GetIdentifierClaim(provider, user);
-
-            if (identifierClaim != null)
-            {
-                await _userManager.RemoveClaimAsync(user, identifierClaim);
-            }
-        }
-
-        private async Task<string> GetExternalIdentifier(LoginProvider provider, AppUser user)
-        {
-            Claim? identifierClaim = await GetIdentifierClaim(provider, user);
-            // Checking if the user has an identifier claim for the provider to return it.
-            if (identifierClaim != null) return identifierClaim.Value;
-
-            // Otherwise, get it from the provider.
-            string identifier = provider switch
-            {
-                LoginProvider.Google => (await _googleApiService.GetUserProfileAsync(user)).Email,
-                _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
-            };
-
-            await CreateIdentifierClaim(provider, user, identifier);
-            return identifier;
+            IEnumerable<AuthenticationToken> operativeTokens = _externalTokenService.FilterOperative(provider, providerTokens);
+            await _externalTokenService.StoreAsync(provider, user, operativeTokens);
         }
 
         private static AppUserRequest MapAppUserRequest(IEnumerable<Claim> claims, LoginProvider loginProvider)
         {
-            switch (loginProvider)
-            {
-                case LoginProvider.Google:
-                    return ParseGoogleClaimsToAppUserRequest(claims);
-                default:
-                    {
-                        throw new InvalidOperationException($"Invalid login provider: {loginProvider.GetName()}");
-                    }
-            }
-        }
-
-        private static AppUserRequest ParseGoogleClaimsToAppUserRequest(IEnumerable<Claim> claims)
-        {
-            string email = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"))?.Value)
-            ?? throw new InvalidOperationException("The required 'emailaddress' claim was not provided by the external google login provider.");
-
-            string givenName = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"))?.Value)
-            ?? throw new InvalidOperationException("The required 'givenname' claim was not provided by the external google login provider.");
-
-            string surName = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"))?.Value)
-            ?? throw new InvalidOperationException("The required 'surname' claim was not provided by the external google login provider.");
-
-            string? picture = (claims.FirstOrDefault(c => c.Type.Equals("urn:google:picture"))?.Value);
-
-            return new AppUserRequest(
-                email,
-                password: null,
-                givenName,
-                surName,
-                picture,
-                AccessType.External
-            );
+            ExternalAppUserGenerator generator = new(claims);
+            return generator.Generate(loginProvider);
         }
 
         private string LogAndRedirectError(string message, string spaRedirectUrl)
