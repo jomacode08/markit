@@ -18,7 +18,8 @@ export class LoginProviderIconPipe implements PipeTransform {
         switch (provider) {
             case LoginProvider.Google:
                 return 'fa-brands fa-google'
-        
+            case LoginProvider.GitHub:
+                return 'fa-brands fa-github'
             default:
                 return 'fa-solid fa-question'
         }

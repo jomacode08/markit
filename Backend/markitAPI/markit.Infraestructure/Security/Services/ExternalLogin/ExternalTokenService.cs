@@ -20,23 +20,6 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             _userManager = userManager;
         }
 
-        public IEnumerable<AuthenticationToken> FilterOperative(LoginProvider provider, IEnumerable<AuthenticationToken> authenticationTokens)
-        {
-            string[] token_names_to_find = provider switch
-            {
-                LoginProvider.Google => ["access_token", "refresh_token"],
-                _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
-            };
-
-            IEnumerable<AuthenticationToken> foundedTokens = authenticationTokens
-                .Where(t => token_names_to_find.Contains(t.Name));
-
-            if (!foundedTokens.Any())
-                throw new InvalidOperationException($"The tokens weren't provided by the login provider: {provider.GetName()}");
-
-            return foundedTokens;
-        }
-
         public async Task ClearShortLivedAsync(string userId)
         {
             AppUser user = await _userManager.FindByIdAsync(userId)
@@ -46,7 +29,9 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
 
         public async Task StoreAsync(LoginProvider provider, AppUser user, IEnumerable<AuthenticationToken> tokens)
         {
-            foreach (AuthenticationToken token in tokens)
+            IEnumerable<AuthenticationToken> foundedTokens = ValidateTokens(provider, tokens);
+
+            foreach (AuthenticationToken token in foundedTokens)
             {
                 await _userManager.SetAuthenticationTokenAsync(
                     user,
@@ -55,6 +40,19 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                     token.Value
                 );
             }
+        }
+
+        public static IEnumerable<AuthenticationToken> ValidateTokens(LoginProvider provider, IEnumerable<AuthenticationToken> authenticationTokens)
+        {
+            string[] token_names_to_find = ["access_token", "refresh_token", "expires_at"];
+
+            IEnumerable<AuthenticationToken> foundedTokens = authenticationTokens
+                .Where(t => token_names_to_find.Contains(t.Name));
+
+            if (!foundedTokens.Any())
+                throw new InvalidOperationException($"The tokens weren't provided by the login provider: {provider.GetName()}");
+
+            return foundedTokens;
         }
     }
 }

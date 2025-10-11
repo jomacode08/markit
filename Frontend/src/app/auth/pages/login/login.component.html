@@ -75,10 +75,21 @@
             <div class="w-full mx-auto mb-3">
                 <shared-general-button
                     severity="secondary"
-                    label="Sign in with google"
+                    label="Sign in with Google"
                     icon="fa-brands fa-google"
                     [disabled]="submit"
                     (click)="onGoogleLogin()"
+                ></shared-general-button>
+            </div>
+
+             <!-- GitHub Button -->
+            <div class="w-full mx-auto mb-3">
+                <shared-general-button
+                    severity="secondary"
+                    label="Sign in with GitHub"
+                    icon="fa-brands fa-github"
+                    [disabled]="submit"
+                    (click)="onGithubLogin()"
                 ></shared-general-button>
             </div>
         </div>

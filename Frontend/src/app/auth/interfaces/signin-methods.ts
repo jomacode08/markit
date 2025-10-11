@@ -6,12 +6,14 @@ export interface SignInMethods {
 
 export interface ExternalSignInMethod {
     loginProvider : LoginProvider,
+    providerName : string,
     identifier ?: string,
     configured: boolean,
 }
 
 export enum LoginProvider {
-    Google = "google"
+    Google = "google",
+    GitHub = "gitHub"
 }
 
 export enum LoginPurpose {

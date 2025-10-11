@@ -3,5 +3,6 @@
     public enum LoginProvider
     {
         Google = 1,
+        GitHub = 2,
     }
 }

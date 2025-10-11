@@ -4,6 +4,7 @@ using AutoMapper;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
 using markit.Application.Exceptions;
 using markit.Application.Features.Creators.Commands.CreateCreator;
@@ -26,6 +27,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         private readonly IMapper _mapper;
         private readonly IJwtService _authService;
         private readonly IGoogleApiService _googleApiService;
+        private readonly IGitHubApiService _gitHubApiService;
         private readonly IExternalIdentifierService _externalIdentifierService;
         private readonly IExternalTokenService _externalTokenService;
         private readonly SpaSettings _spaSettings;
@@ -43,6 +45,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             IJwtService authService,
             IOptions<SpaSettings> spaSettings,
             IGoogleApiService googleApiService,
+            IGitHubApiService gitHubApiService,
             IExternalIdentifierService externalIdentifierService,
             IExternalTokenService externalTokenService,
             SignInManager<AppUser> signInManager,
@@ -54,13 +57,14 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             _authService = authService;
             _spaSettings = spaSettings.Value;
             _googleApiService = googleApiService;
+            _gitHubApiService = gitHubApiService;
             _externalIdentifierService = externalIdentifierService;
             _externalTokenService = externalTokenService;
             _signInManager = signInManager;
             _userManager = userManager;
 
             _spaRedirectUrl = $"{_spaSettings.BaseUrl}/auth/redirect";
-            _providers = [LoginProvider.Google];
+            _providers = [LoginProvider.Google, LoginProvider.GitHub];
         }
 
         #region Public
@@ -75,11 +79,12 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 string? identifier = configured ? await _externalIdentifierService.GetAsync(provider, user) : default;
                 externalSignInMethods.Add(
                     new ExternalSignInMethod(
-                        provider,
+                        LoginProvider: provider,
+                        ProviderName: provider.GetName(),
                         identifier,
                         configured
                     )
-                );
+                ); 
             }
 
             return externalSignInMethods;
@@ -180,6 +185,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             bool accessRevoked = provider switch
             {
                 LoginProvider.Google => await _googleApiService.RevokeAccessAsync(user),
+                LoginProvider.GitHub => await _gitHubApiService.RevokeAccessAsync(user),
                 _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
             };
 
@@ -248,8 +254,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             AppUser user
         )
         {
-            IEnumerable<AuthenticationToken> operativeTokens = _externalTokenService.FilterOperative(provider, providerTokens);
-            await _externalTokenService.StoreAsync(provider, user, operativeTokens);
+            await _externalTokenService.StoreAsync(provider, user, providerTokens);
         }
 
         private static AppUserRequest MapAppUserRequest(IEnumerable<Claim> claims, LoginProvider loginProvider)

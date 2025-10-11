@@ -77,6 +77,10 @@ export class LoginComponent extends ValidatorErrorField {
     this.openAuthPopUp(LoginProvider.Google);
   }
 
+  public onGithubLogin(): void {
+    this.openAuthPopUp(LoginProvider.GitHub);
+  }
+
   //* Methods
   private login(): void {
     this.authService.login(this.authRequest)

@@ -28,6 +28,9 @@ using markit.Application.Contracts.Google;
 using markit.Infraestructure.Security.Services.Google;
 using markit.Infraestructure.Security.Services.ExternalLogin;
 using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Models.Authentication.GitHub;
+using markit.Application.Contracts.GitHub;
+using markit.Infraestructure.Security.Services.GitHub;
 
 namespace markit.Infraestructure
 {
@@ -102,6 +105,10 @@ namespace markit.Infraestructure
             services.Configure<GoogleAuthSettings>(configuration.GetSection(GOOGLE_AUTH_SECTION_NAME));
             configuration.Bind(GOOGLE_AUTH_SECTION_NAME, googleAuthSettings);
 
+            var githubAuthSettings = new GitHubAuthSettings();
+            services.Configure<GitHubAuthSettings>(configuration.GetSection(GITHUB_AUTH_SECTION_NAME));
+            configuration.Bind(GITHUB_AUTH_SECTION_NAME, githubAuthSettings);
+
             var spaSettings = new SpaSettings();
             services.Configure<SpaSettings>(configuration.GetSection(SPA_SECTION_NAME));
             configuration.Bind(SPA_SECTION_NAME, spaSettings);
@@ -114,6 +121,7 @@ namespace markit.Infraestructure
             // Inject authentication services
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IGoogleApiService, GoogleApiService>();
+            services.AddScoped<IGitHubApiService, GitHubApiService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IExternalIdentifierService, ExternalIdentifierService>();
@@ -151,6 +159,15 @@ namespace markit.Infraestructure
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
                 options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+            })
+            .AddGitHub(options =>
+            {
+                options.ClientId = githubAuthSettings.ClientId;
+                options.ClientSecret = githubAuthSettings.ClientSecret;
+                options.SaveTokens = true;
+                options.AccessDeniedPath = "/api/external-login/access-denied";
+                options.Scope.Add("read:user");
+                options.Scope.Add("user:email");
             });
 
             // Password configuration
@@ -164,6 +181,7 @@ namespace markit.Infraestructure
 
             // Configure login provider clients for httpClient
             services.AddHttpClient<GoogleApiService>();
+            services.AddHttpClient<GitHubApiService>();
 
             return services;
         }

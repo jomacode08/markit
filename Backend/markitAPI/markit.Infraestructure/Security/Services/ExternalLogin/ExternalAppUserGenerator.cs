@@ -7,27 +7,34 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
     public class ExternalAppUserGenerator(IEnumerable<Claim> claims)
     {
+        private const string IDENTITY_CLAIM_NAMESPACE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims";
+        private const string EMAIL_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/emailaddress";
+        private const string CLAIMS_NOT_FOUNDED_ERROR_MESSAGE = "Required claims missing or invalid";
+
         public AppUserRequest Generate(LoginProvider provider)
         {
             return provider switch
             {
                 LoginProvider.Google => GenerateForGoogle(),
+                LoginProvider.GitHub => GenerateForGitHub(),
                 _ => throw new InvalidOperationException($"Invalid login provider: {provider.GetName()}")
             };
         }
 
         private AppUserRequest GenerateForGoogle()
         {
-            string email = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"))?.Value)
-            ?? throw new InvalidOperationException("The required 'emailaddress' claim was not provided by the external google login provider.");
+            const string GIVENNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givenname";
+            const string SURNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givennameme";
+            const string PICTURE_CLAIM_TYPE = "urn:google:picture";
 
-            string givenName = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"))?.Value)
-            ?? throw new InvalidOperationException("The required 'givenname' claim was not provided by the external google login provider.");
+            string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
+            string? givenName = GetClaimValue(GIVENNAME_CLAIM_TYPE);
+            string? surName = GetClaimValue(SURNAME_CLAIM_TYPE);
+            string? picture = GetClaimValue(PICTURE_CLAIM_TYPE);
 
-            string surName = (claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"))?.Value)
-            ?? throw new InvalidOperationException("The required 'surname' claim was not provided by the external google login provider.");
-
-            string? picture = claims.FirstOrDefault(c => c.Type.Equals("urn:google:picture"))?.Value;
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(givenName) || string.IsNullOrEmpty(surName)) {
+                throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
+            }
 
             return new AppUserRequest(
                 email,
@@ -37,6 +44,35 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 picture,
                 AccessType.External
             );
+        }
+
+        private AppUserRequest GenerateForGitHub()
+        {
+            const string USER_NAME_CLAIM_TYPE = $"{IDENTITY_CLAIM_NAMESPACE}/name";
+            const string NAME_CLAIM_TYPE = "urn:github:name";
+            const string DEFAULT_LAST_NAME = "Markit";
+
+            string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
+            string? name = GetClaimValue(NAME_CLAIM_TYPE);
+            string? userName = GetClaimValue(USER_NAME_CLAIM_TYPE);
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(userName)) {
+                throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
+            }
+
+            return new AppUserRequest(
+                email,
+                password: null,
+                firstName: name,
+                lastName: DEFAULT_LAST_NAME,
+                picture: null,
+                AccessType.External
+            );
+        }
+
+        private string? GetClaimValue(string claimType)
+        {
+            return claims.FirstOrDefault(c => c.Type.Equals(claimType))?.Value;
         }
     }
 }

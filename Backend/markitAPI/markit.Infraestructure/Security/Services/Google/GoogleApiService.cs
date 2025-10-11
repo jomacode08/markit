@@ -6,10 +6,12 @@ using Google.Apis.PeopleService.v1.Data;
 using Google.Apis.Services;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Google;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Authentication.Google;
 using markit.Application.Models.Google;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -75,12 +77,10 @@ namespace markit.Infraestructure.Security.Services.Google
         private async Task<bool> RevokeTokensAsync(AppUser user)
         {
             // By revoking the google refresh_token, it will revoke all the access tokens too.
-            const string TOKEN_NAME_TO_REVOKE = "refresh_token";
-
             string token = await _userManager.GetAuthenticationTokenAsync(
                 user, 
                 loginProvider: LoginProvider.Google.GetName(),
-                tokenName: TOKEN_NAME_TO_REVOKE
+                tokenName: GeneralConstant.ExternalToken.ACCESS_TOKEN_NAME
             ) ?? throw new InvalidOperationException("It wasn't possible to retrieve a valid google token");
 
             FormUrlEncodedContent content = new([
@@ -103,9 +103,9 @@ namespace markit.Infraestructure.Security.Services.Google
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new BadHttpRequestException($"Token http revocation request failed: {ex.Message}");
             }
         }
 

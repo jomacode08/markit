@@ -45,7 +45,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
         switch (statusCode) {
           case HttpStatusCode.Unauthorized: {
-            this.router.navigate(['/auth/unauthorized'])
             this.authService.logout();
             break;
           }

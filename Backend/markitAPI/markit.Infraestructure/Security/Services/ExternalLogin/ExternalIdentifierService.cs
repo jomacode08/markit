@@ -5,18 +5,25 @@ using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Google;
+using markit.Application.Contracts.GitHub;
 
 namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
     public class ExternalIdentifierService : IExternalIdentifierService
     {
         private readonly IGoogleApiService _googleApiService;
+        private readonly IGitHubApiService _gitHubApiService;
         private readonly UserManager<AppUser> _userManager;
 
-        public ExternalIdentifierService(UserManager<AppUser> userManager, IGoogleApiService googleApiService)
+        public ExternalIdentifierService(
+            UserManager<AppUser> userManager,
+            IGoogleApiService googleApiService,
+            IGitHubApiService gitHubApiService
+        )
         {
             _userManager = userManager;
             _googleApiService = googleApiService;
+            _gitHubApiService = gitHubApiService;
         }
 
         public async Task<string> GetAsync(LoginProvider provider, AppUser user)
@@ -29,6 +36,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             string identifier = provider switch
             {
                 LoginProvider.Google => (await _googleApiService.GetUserProfileAsync(user)).Email,
+                LoginProvider.GitHub => (await _gitHubApiService.GetProfileAsync(user)).UserName,
                 _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
             };
 

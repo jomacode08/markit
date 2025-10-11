@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
@@ -7,7 +6,6 @@ using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 

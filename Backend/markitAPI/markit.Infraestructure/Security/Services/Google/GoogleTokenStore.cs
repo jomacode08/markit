@@ -1,9 +1,11 @@
-﻿using Google.Apis.Auth.OAuth2.Responses;
+﻿using System.Transactions;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using markit.Application.Common.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
+using static markit.Application.Helpers.GeneralConstant.ExternalToken;
 
 namespace markit.Infraestructure.Security.Services.Google
 {
@@ -16,8 +18,7 @@ namespace markit.Infraestructure.Security.Services.Google
         private readonly UserManager<AppUser> _userManager;
         private readonly string _userId;
         private readonly string _providerName;
-        private const string ACCESS_TOKEN_NAME = "access_token";
-        private const string REFRESH_TOKEN_NAME = "refresh_token";
+
 
         public GoogleTokenStore(UserManager<AppUser> userManager, string userId)
         {
@@ -38,6 +39,13 @@ namespace markit.Infraestructure.Security.Services.Google
             if (value is TokenResponse token)
             {
                 await _userManager.SetAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME, token.AccessToken);
+
+                if (token.ExpiresInSeconds != null)
+                {
+                    DateTime expiresAt = DateTime.UtcNow.AddSeconds((double)token.ExpiresInSeconds);
+                    await _userManager.SetAuthenticationTokenAsync(user, _providerName, EXPIRES_AT_TOKEN_NAME, expiresAt.ToString("O"));
+                }
+
                 // Google only provides a refresh token on the first consent, so it might be null on subsequent logins.
                 if (!string.IsNullOrEmpty(token.RefreshToken))
                 {
@@ -90,8 +98,11 @@ namespace markit.Infraestructure.Security.Services.Google
             AppUser? user = await _userManager.FindByIdAsync(_userId);
             if (user == null) return;
 
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME);
             await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, REFRESH_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, EXPIRES_AT_TOKEN_NAME);
+            scope.Complete();
         }
 
         /// <summary>
@@ -99,7 +110,10 @@ namespace markit.Infraestructure.Security.Services.Google
         /// </summary>
         public async Task ClearShortLived(AppUser user)
         {
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, ACCESS_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(user, _providerName, EXPIRES_AT_TOKEN_NAME);
+            scope.Complete();
         }
     }
 }

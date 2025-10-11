@@ -42,7 +42,7 @@
                 <header class="item-description">
                     <i [class]="externalMethod.loginProvider | loginProviderIcon"></i>
                     <div>
-                        <div class="font-semibold">{{ externalMethod.loginProvider | titlecase}}</div>
+                        <div class="font-semibold">{{ externalMethod.providerName }}</div>
                         <div class="font-light text-sm text-secondary">
                             {{ externalMethod.configured ? externalMethod.identifier : 'Not configured' }}
                         </div>
