@@ -6,17 +6,24 @@ using markit.Application.Common.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using markit.Application.Exceptions;
+using markit.Application.Contracts.GitHub;
 
 namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
     public class ExternalTokenService : IExternalTokenService
     {
         private readonly IGoogleApiService _googleApiService;
+        private readonly IGitHubApiService _gitHubApiService;
         private readonly UserManager<AppUser> _userManager;
 
-        public ExternalTokenService(IGoogleApiService googleApiService, UserManager<AppUser> userManager)
+        public ExternalTokenService(
+            IGoogleApiService googleApiService,
+            IGitHubApiService gitHubApiService,
+            UserManager<AppUser> userManager
+        )
         {
             _googleApiService = googleApiService;
+            _gitHubApiService = gitHubApiService;
             _userManager = userManager;
         }
 
@@ -25,6 +32,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             AppUser user = await _userManager.FindByIdAsync(userId)
                 ?? throw new NotFoundException("Users", userId);
             await _googleApiService.ClearShortLivedTokensAsync(user);
+            await _gitHubApiService.ClearShortLivedTokensAsync(user);
         }
 
         public async Task StoreAsync(LoginProvider provider, AppUser user, IEnumerable<AuthenticationToken> tokens)

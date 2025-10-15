@@ -105,15 +105,9 @@ namespace markit.Infraestructure.Security.Services.GitHub
         {
             ArgumentNullException.ThrowIfNull(authSettings);
             string? refreshToken = await GetAsync(REFRESH_TOKEN_NAME);
-            string? currentToken = await GetAsync(ACCESS_TOKEN_NAME);
 
             if (string.IsNullOrEmpty(refreshToken))
                 throw new UnauthorizedAccessException("No refresh token available");
-
-            if (!await IsAuthorizationExpiredAsync())
-            {
-                return currentToken ?? throw new UnauthorizedAccessException("No access token available");
-            }
 
             GitHubClient client = new(new ProductHeaderValue(authSettings.AppName));
             OauthTokenRenewalRequest tokenRenewalRequest = new(

@@ -12,6 +12,7 @@ using Octokit;
 using Microsoft.Extensions.Logging;
 using static markit.Application.Helpers.GeneralConstant.ExternalToken;
 using Microsoft.AspNetCore.Http;
+using markit.Application.Exceptions;
 
 namespace markit.Infraestructure.Security.Services.GitHub
 {
@@ -52,13 +53,14 @@ namespace markit.Infraestructure.Security.Services.GitHub
 
         public async Task<bool> RevokeAccessAsync(AppUser user)
         {
-            bool tokensRevoked = await RevokeTokensAsync(user);
+            bool tokensRevoked = await RevokeTokensAsync(user.Id);
             if (tokensRevoked)
             {
                 GitHubTokenStore tokenStore = new(_userManager, user.Id);
                 await tokenStore.ClearAsync();
+                return true;
             }
-            return true;
+            return false;
         }
 
         public async Task ClearShortLivedTokensAsync(AppUser user)
@@ -103,9 +105,12 @@ namespace markit.Infraestructure.Security.Services.GitHub
             };
         }
 
-        private async Task<bool> RevokeTokensAsync(AppUser user)
+        private async Task<bool> RevokeTokensAsync(string userId)
         {
-            string accessToken = await GetAndValidateAccessToken(user.Id);
+            GitHubTokenStore tokenStore = new(_userManager, userId);
+            string accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME)
+                ?? await tokenStore.RefreshAuthorizationAsync(_settings);
+
             string requestUri = $"/applications/{_settings.ClientId}/grant";
             string appNameSanitized = _settings.AppName.Trim().Replace("-", string.Empty);
 

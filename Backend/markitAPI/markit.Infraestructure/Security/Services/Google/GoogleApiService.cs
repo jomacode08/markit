@@ -6,6 +6,7 @@ using Google.Apis.PeopleService.v1.Data;
 using Google.Apis.Services;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Google;
+using markit.Application.Exceptions;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
@@ -23,6 +24,7 @@ namespace markit.Infraestructure.Security.Services.Google
         private readonly UserManager<AppUser> _userManager;
         private readonly GoogleAuthSettings _googleAuthSettings;
         private readonly HttpClient _httpClient;
+
         public GoogleApiService(
             ILogger<GoogleApiService> logger,
             IOptions<GoogleAuthSettings> googleAuthSettings,
@@ -64,8 +66,9 @@ namespace markit.Infraestructure.Security.Services.Google
                 // Remove tokens from the store.
                 GoogleTokenStore tokenStore = new(_userManager, user.Id);
                 await tokenStore.ClearAsync();
+                return true;
             }
-            return true;
+            return false;
         }
 
         public async Task ClearShortLivedTokensAsync(AppUser user)
@@ -76,15 +79,11 @@ namespace markit.Infraestructure.Security.Services.Google
 
         private async Task<bool> RevokeTokensAsync(AppUser user)
         {
-            // By revoking the google refresh_token, it will revoke all the access tokens too.
-            string token = await _userManager.GetAuthenticationTokenAsync(
-                user, 
-                loginProvider: LoginProvider.Google.GetName(),
-                tokenName: GeneralConstant.ExternalToken.ACCESS_TOKEN_NAME
-            ) ?? throw new InvalidOperationException("It wasn't possible to retrieve a valid google token");
+            string refreshToken = await GetRefreshToken(user) 
+                ?? throw new UnauthorizedAccessException("Token refresh was not found");
 
             FormUrlEncodedContent content = new([
-                new KeyValuePair<string, string>("token", token)
+                new KeyValuePair<string, string>("token", refreshToken)
             ]);
 
             try
@@ -124,8 +123,17 @@ namespace markit.Infraestructure.Security.Services.Google
             });
 
             TokenResponse tokenResponse = await tokenStore.GetAsync<TokenResponse>(user.Id)
-                ?? throw new InvalidOperationException("It wasn't possible to provide a valid google token-response");
+                ?? throw new UnauthorizedAccessException("It wasn't possible to provide a valid google token-response");
             return new UserCredential(flow, user.Id, tokenResponse);
+        }
+
+        private async Task<string?> GetRefreshToken(AppUser user)
+        {
+            return await _userManager.GetAuthenticationTokenAsync(
+                user,
+                loginProvider: LoginProvider.Google.GetName(),
+                tokenName: GeneralConstant.ExternalToken.REFRESH_TOKEN_NAME
+            );
         }
     }
 }
