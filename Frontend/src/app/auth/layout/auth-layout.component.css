@@ -1,3 +1,153 @@
+#auth-background-container {
+    background-color: var(--paper-bg);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+#auth-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-grow: 1;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 10;
+}
 
-  
-  
+.purple-gradient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image: linear-gradient(to bottom right, #1a1b1e , #1a1b1e , #2d1b40);
+    opacity: .8;
+    z-index: 0;
+}
+
+.shape {
+    position: fixed;
+    border: 1px solid #a855f733;
+    opacity: .5;
+}
+.shape.solid {
+    background-color: #a855f733;
+}
+.triangle-md, .triangle-sm{
+    width: 0px;
+    height: 0px;
+    border-top: 0px;
+}
+.triangle-md {
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom-width: 35px;
+}
+.triangle-sm {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom-width: 25px;
+}
+.circle {
+    border-radius: 9999px;
+}
+
+.-rotate-12 {
+    transform: rotate(-12deg);
+}
+.rotate-12 {
+    transform: rotate(12deg);
+}
+.rotate-30 {
+    transform: rotate(30deg);
+}
+.rotate-45 {
+    transform: rotate(45deg);
+}
+
+.top-10 {
+    top: 10%;
+}
+.top-15 {
+    top: 15%;
+}
+.top-25 {
+    top: 25%;
+}
+.top-30 {
+    top: 30%;
+}
+.top-40 {
+    top: 40%;
+}
+.top-50 {
+    top: 50%;
+}
+.top-60 {
+    top: 60%;
+}
+.top-70 {
+    top: 70%;
+}
+
+.bottom-10 {
+    bottom: 10%;
+}
+.bottom-15 {
+    bottom: 15%;
+}
+.bottom-20 {
+    bottom: 20%;
+}
+.bottom-30 {
+    bottom: 30%;
+}
+.bottom-40 {
+    bottom: 40%;
+}
+
+.right-5 {
+    right: 5%;
+}
+.right-8 {
+    right: 8%;
+}
+.right-10 {
+    right: 10%;
+}
+.right-15 {
+    right: 15%;
+}
+.right-20 {
+    right: 20%;
+}
+.right-25 {
+    right: 25%;
+}
+.right-30 {
+    right: 30%;
+}
+
+.left-5 {
+    left: 5%;
+}
+.left-8 {
+    left: 8%;
+}
+.left-10 {
+    left: 10%;
+}
+.left-15 {
+    left: 15%;
+}
+.left-20 {
+    left: 20%;
+}
+.left-25 {
+    left: 25%;
+}
+.left-30 {
+    left: 30%;
+}

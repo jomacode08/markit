@@ -1,114 +1,93 @@
-    <div class="grid">
-        <!-- Login Form -->
-        <div id="form-container" class="col-12 bg-main-purple p-7 flex flex-column justify-content-center md:col-6">
-            <!-- Label -->
-            <h1 class="text-5xl text-main-black text-center font-playfair font-semibold mb-8 md:mb-5">Welcome <span class="text-main-black">back.</span></h1>
-
-            <img id="books-img" *ngIf="!showLoginForm" class="mb-8 md:mb-5" src="svg/work.svg" alt="space man"/>
-
-            <!-- Sign in Button -->
-            <div *ngIf="!showLoginForm" class="w-full mb-3 mx-auto">
-                <shared-general-button
-                    severity="primary"
-                    label="Sign in"
-                    (click)="onSignIn()"
-                ></shared-general-button>
-            </div>
-
-            <!-- Login form -->
-            <form
-                *ngIf="showLoginForm"
-                [formGroup]="form"
-                (submit)="onLogin()"
-                autocomplete="off"
-            >
-                <div class="flex flex-column mx-auto mb-3">
-                    <div class="field">
-                        <!-- Email -->
-                        <label for="email" class="text-lg text-main-black mb-2">Email</label>
-                        <input 
-                            id="email"
-                            pInputText
-                            formControlName="email"
-                            type="text"
-                            placeholder="Email address"
-                            class="rounded w-full"
-                            autocomplete="off"
-                        >
-                        <shared-error-field
-                            *ngIf="isInvalidField('email')"
-                            [validationField]="getValidationField('email', 'masc')">
-                        </shared-error-field>
-                    </div>
-                    <div class="field mb-5">
-                        <!-- Password -->
-                        <label for="password" class="text-lg text-main-black mb-2">Password</label>
-                        <p-password
-                            inputId="password"
-                            formControlName="password"
-                            placeholder="Password"
-                            styleClass="w-full"
-                            inputStyleClass="rounded w-full"
-                            autocomplete="off "
-                            [toggleMask]="true"
-                            [feedback]="false"
-                        >
-                        </p-password>
-                        <shared-error-field
-                            *ngIf="isInvalidField('password')"
-                            [validationField]="getValidationField('password', 'masc')">
-                        </shared-error-field>
-                    </div>
-                    <!-- Login submit -->
-                    <div>
-                        <shared-general-button
-                            severity="primary"
-                            label="Login"
-                            [disabled]="submit"
-                            [submit]="true"
-                        ></shared-general-button>
-                    </div>
+<div class="w-full max-w-28rem">
+    <h1 class="text-5xl text-center font-playfair font-semibold m-0">Welcome back.</h1>
+    <p class="font-light text-center text-sm text-secondary mb-5">Organize your thoughts. Amplify your productivity.</p>
+    <article class="shadow-5 p-4 md:p-5">
+        <!-- Login form -->
+        <form
+            [formGroup]="form"
+            (submit)="onLogin()"
+            autocomplete="off"
+        >
+            <div class="flex flex-column mx-auto mb-3">
+                <div class="field">
+                    <!-- Email -->
+                    <label for="email" class="text-sm text-secondary mb-2">Email</label>
+                    <input 
+                        id="email"
+                        pInputText
+                        formControlName="email"
+                        type="text"
+                        placeholder="Email address"
+                        class="rounded w-full"
+                        autocomplete="off"
+                    >
+                    <shared-error-field
+                        *ngIf="isInvalidField('email')"
+                        [validationField]="getValidationField('email', 'masc')">
+                    </shared-error-field>
                 </div>
-            </form>
-
-             <!-- Google Button -->
-            <div class="w-full mx-auto mb-3">
-                <shared-general-button
-                    severity="secondary"
-                    label="Sign in with Google"
-                    icon="fa-brands fa-google"
-                    [disabled]="submit"
-                    (click)="onGoogleLogin()"
-                ></shared-general-button>
-            </div>
-
-             <!-- GitHub Button -->
-            <div class="w-full mx-auto mb-3">
-                <shared-general-button
-                    severity="secondary"
-                    label="Sign in with GitHub"
-                    icon="fa-brands fa-github"
-                    [disabled]="submit"
-                    (click)="onGithubLogin()"
-                ></shared-general-button>
-            </div>
-        </div>
-
-        <!-- Auth Cards -->
-        <div class="col-12 p-0 display flex flex-column md:col-6 md:gap-4 md:pl-3">
-            <div class="card bg-main-orange">
-                <!-- Question label -->
-                    <p class="font-playfair text-main-black text-4xl m-0 z-1">Did you find something <span class="font-semibold text-5xl">interesting?</span></p>
-                <!-- Searching icon -->
-                <i id="search-icon-white" class="absolute fa-solid fa-magnifying-glass text-main-black text-8xl"></i>
-                <i id="search-icon-black" class="absolute fa-solid fa-magnifying-glass text-main-black text-8xl"></i>
-            </div>
-            <div class="card brand md:border-1">
-                <div class="flex align-items-center justify-content-center">
-                    <p class="m-0 mr-3">Mark it</p>
-                    <lord-icon trigger="in" src="/animated-icons/spinner-horizontal-dashed-circle.json" colors="primary:#f5f378" style="height: 4rem; width: 4rem;"></lord-icon>
+                <div class="field mb-5">
+                    <!-- Password -->
+                    <label for="password" class="text-sm text-secondary mb-2">Password</label>
+                    <p-password
+                        inputId="password"
+                        formControlName="password"
+                        placeholder="Password"
+                        styleClass="w-full"
+                        inputStyleClass="rounded w-full"
+                        autocomplete="off "
+                        [toggleMask]="true"
+                        [feedback]="false"
+                    >
+                    </p-password>
+                    <shared-error-field
+                        *ngIf="isInvalidField('password')"
+                        [validationField]="getValidationField('password', 'masc')">
+                    </shared-error-field>
+                </div>
+                <!-- Login submit -->
+                <div>
+                    <shared-general-button
+                        severity="primary"
+                        label="Login"
+                        [disabled]="submit()"
+                        [submit]="true"
+                    ></shared-general-button>
                 </div>
             </div>
-        </div>
-    </div>
-    
+        </form>
+        <footer class="mt-4">
+            <!-- Divider -->
+            <div class="relative mb-4">
+                <div class="divider">
+                    <div class="w-full border-1"></div>
+                </div>
+                <div class="divider-label">
+                    <span class="px-2">Or continue with</span>
+                </div>
+            </div>
+            <div class="grid">
+                <!-- Google Button -->
+                <div class="col-12 md:col-6">
+                    <shared-general-button
+                        severity="secondary"
+                        label="Google"
+                        icon="fa-brands fa-google"
+                        [disabled]="submit()"
+                        (click)="onGoogleLogin()"
+                    ></shared-general-button>
+                </div>
+                <!-- GitHub Button -->
+                <div class="col-12 md:col-6">
+                    <shared-general-button
+                        severity="secondary"
+                        label="GitHub"
+                        icon="fa-brands fa-github"
+                        [disabled]="submit()"
+                        (click)="onGithubLogin()"
+                    ></shared-general-button>
+                </div>
+            </div>
+        </footer>
+    </article>
+</div>

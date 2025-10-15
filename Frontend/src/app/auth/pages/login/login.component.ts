@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -30,12 +30,11 @@ import { ValidatorService } from '../../../shared/services/validator.service';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent extends ValidatorErrorField {  
-  //* Configuration
-  public submit: boolean = false;
-  public showLoginForm: boolean = false;
+  public submit = signal<boolean>(false);
   public form : FormGroup<{
     email    : FormControl<string>,
     password : FormControl<string>
@@ -62,8 +61,6 @@ export class LoginComponent extends ValidatorErrorField {
   }
 
   //* Events
-  public onSignIn = (): void => { this.showLoginForm = true; }
-
   public onLogin(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -129,6 +126,6 @@ export class LoginComponent extends ValidatorErrorField {
   }
 
   private setSubmit(state: boolean): void {
-    this.submit = state;
+    this.submit.set(state)
   }
 }

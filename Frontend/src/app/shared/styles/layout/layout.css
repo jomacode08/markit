@@ -77,9 +77,6 @@ a {
         gap: 1rem;
         width: calc(100vw - var(--main-bar-width-md));
     }
-    .card {
-        height: 50%;
-    }
     .floating-button {
         right: 30% !important;
         bottom: 7.5rem !important;
@@ -109,8 +106,5 @@ a {
             height: var(--main-bar-heigth-sm);
             padding: 0.75rem 1rem;
         }
-    }
-    .card {
-        min-height: 16rem;
     }
 }

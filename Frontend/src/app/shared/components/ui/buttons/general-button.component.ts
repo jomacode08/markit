@@ -19,7 +19,7 @@ export type SeverityButton = "primary" | "secondary" | "success" | "danger";
         styleClass="general-button {{ severity }}-button up-down-transition"
     >
         <!-- Icon -->
-        <div *ngIf="icon" class="py-2 pl-3">
+        <div *ngIf="icon" class="py-2 pl-3 text-lg">
             <i [class]="icon"></i>
         </div>
         <!-- Label -->
