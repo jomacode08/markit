@@ -24,7 +24,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         private AppUserRequest GenerateForGoogle()
         {
             const string GIVENNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givenname";
-            const string SURNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givennameme";
+            const string SURNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/surname";
             const string PICTURE_CLAIM_TYPE = "urn:google:picture";
 
             string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
