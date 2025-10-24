@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LinkProtocolOptions } from './../../../../../node_modules/@tiptap/extension-link/dist/link.d';
 
@@ -21,6 +21,7 @@ import { common, createLowlight } from 'lowlight'
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, Subject } from 'rxjs';
+import GistBlockExtension from '../../extensions/gist-block.extension';
 
 type UriValidationContext = {
   defaultValidate: (url: string) => boolean;
@@ -53,6 +54,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
   @Output() public onValueChange = new EventEmitter<string>();
+  private injector = inject(Injector);
   
   private debouncer = new Subject<string>();
   public input: string = "";
@@ -87,6 +89,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
         nested: true,
       }),
       Underline,
+      GistBlockExtension(this.injector)
     ]
   });
 

@@ -208,6 +208,12 @@ export function createTextFormattingOptions( editor: Signal<Editor | undefined> 
       command: () => editor()?.chain().focus().toggleTaskList().run(),
       isActive: () => isNodeMarkActive(editor(), { name: 'taskList' }),
     },
+    {
+      label: 'Gist',
+      icon: 'fa-brands fa-github',
+      command: () => editor()?.chain().focus().insertGistBlock().run(),
+      isActive: () => isNodeMarkActive(editor(), { name: 'gistBlock' }),
+    },
   ];
 };
 

@@ -1,0 +1,35 @@
+<form
+    [formGroup]="form"
+    (submit)="onLoadGistFromUrl()"
+    autocomplete="off"
+>
+    <div class="flex flex-column p-3">
+        <label class="text-sm mb-2" for="url">
+            <span class="fa-solid fa-code mr-2"></span>
+            Load Gist from URL
+        </label>
+        <div class="grid">
+            <div class="col-12 md:col-9">
+                <input
+                    id="url"
+                    formControlName="url"
+                    type="text"
+                    placeholder="https://gist.github.com/username/..."
+                    class="w-full"
+                    autocomplete="off"
+                >
+            </div>
+            <div class="col-12 md:col-3">
+                <shared-general-button
+                    label="Load Gist"
+                    severity="primary"
+                    [submit]="true"
+                />
+            </div>
+        </div>
+        <shared-error-field
+            *ngIf="isInvalidField('url')"
+            [validationField]="getValidationField('url', 'masc')"
+        />
+    </div>
+</form>

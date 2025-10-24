@@ -68,6 +68,9 @@ input {
 }
 
 /**Typography**/
+.text-primary {
+  color: var(--text-primary);
+}
 .text-secondary {
   color: var(--text-secondary);
 }

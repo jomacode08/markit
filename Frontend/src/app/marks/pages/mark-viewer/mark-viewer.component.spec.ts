@@ -45,7 +45,13 @@ describe('MarkViewerComponent', () => {
                 title: 'New block',
                 content: '',
                 createdDate: new Date()
-            }
+            },
+            {
+                id: 23,
+                title: 'New block 2',
+                content: '',
+                createdDate: new Date()
+            },
         ]
     };
 
@@ -206,7 +212,7 @@ describe('MarkViewerComponent', () => {
 
         it('should update block index', () => {
             const newIndex = 1;
-            component.updateBlockIndex(newIndex);
+            component.modifyActiveBlock(newIndex);
             expect(component.currentGalleryBlockIndex()).toBe(newIndex);
         });
     });

@@ -7,6 +7,7 @@ export class ValidatorService {
     public rfcPattern : string = '^[A-Z&Ñ]{3,4}[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{2}[0-9A]$';
     public emailPattern : string = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
     public passwordPattern : string = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    public gistUrlPattern : string = '^https:\/\/gist\.github\.com\/[a-zA-Z0-9-]+\/[a-fA-F0-9]+$';
     //#endregion
 
     /**
@@ -72,5 +73,4 @@ export class ValidatorService {
             return null;
         }
     }
-
 }

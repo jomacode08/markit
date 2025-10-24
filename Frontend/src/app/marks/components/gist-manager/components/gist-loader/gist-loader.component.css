@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+span.fa-code {
+  color: var(--accent-color);
+}

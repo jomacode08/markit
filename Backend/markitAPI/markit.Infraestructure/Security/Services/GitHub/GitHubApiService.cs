@@ -12,7 +12,7 @@ using Octokit;
 using Microsoft.Extensions.Logging;
 using static markit.Application.Helpers.GeneralConstant.ExternalToken;
 using Microsoft.AspNetCore.Http;
-using markit.Application.Exceptions;
+using markit.Application.Features.Gists.Queries.ViewModels;
 
 namespace markit.Infraestructure.Security.Services.GitHub
 {
@@ -22,7 +22,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
         private readonly GitHubAuthSettings _settings;
         private readonly UserManager<AppUser> _userManager;
         private readonly HttpClient _httpClient;
-        
+
         private readonly LoginProvider githubProvider;
         private GitHubClient? _client;
 
@@ -38,17 +38,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
             _httpClient = httpClient;
             githubProvider = LoginProvider.GitHub;
             _httpClient.BaseAddress = new Uri("https://api.github.com");
-        }
-
-        public async Task<GitHubProfileData> GetProfileAsync(AppUser user)
-        {
-            GitHubClient client = await GetOrCreateClient(user);
-            var githubUser = await client.User.Current();
-            return new GitHubProfileData(
-                UserName: githubUser.Login,
-                Name: githubUser.Name,
-                Email: githubUser.Email
-            );
         }
 
         public async Task<bool> RevokeAccessAsync(AppUser user)
@@ -67,6 +56,61 @@ namespace markit.Infraestructure.Security.Services.GitHub
         {
             GitHubTokenStore tokenStore = new(_userManager, user.Id);
             await tokenStore.ClearShortLived();
+        }
+
+        public async Task<GitHubProfileData> GetProfileAsync(AppUser user)
+        {
+            GitHubClient client = await GetOrCreateClient(user);
+            var githubUser = await client.User.Current();
+            return new GitHubProfileData(
+                UserName: githubUser.Login,
+                Name: githubUser.Name,
+                Email: githubUser.Email
+            );
+        }
+
+        public async Task<GistViewModel> GetGistById(string gistId, AppUser user)
+        {
+            Gist gist;
+            GitHubClient client = await GetOrCreateClient(user);
+
+            try
+            {
+                gist = await client.Gist.Get(gistId);
+            }
+            catch (NotFoundException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+            catch (ForbiddenException ex) {
+                throw new InvalidOperationException(ex.Message);
+            }
+
+            List<GistFileViewModel> gistFilesVm = new(gist.Files.Count);
+            foreach (GistFile file in gist.Files.Values) {
+                gistFilesVm.Add(new GistFileViewModel(
+                    file.Filename,
+                    file.Type,
+                    file.Content,
+                    file.RawUrl,
+                    file.Language
+                ));
+            }
+
+            string title = gistFilesVm.Count != 0
+                ? gistFilesVm[0].FileName
+                : $"gist:{gist.Id}";
+
+            return new GistViewModel(
+                Url: gist.HtmlUrl,
+                Id: gist.Id,
+                Title: title,
+                Description: gist.Description,
+                Author: gist.Owner.Login,
+                CreatedAt: gist.CreatedAt.DateTime,
+                Files: gistFilesVm
+            );
+
         }
 
         #region helpers

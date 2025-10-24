@@ -1,0 +1,24 @@
+<div class="gist-card" [ngClass]="{ 'selected' : this.selected}" tiptapDraggable>
+    @defer (when gist() != undefined) {
+        <gist-viewer [gist]="gist()!" />
+    }
+    @placeholder {
+        @switch (managerState()) {
+            @case (managerStates.idle) {
+                <gist-loader (onGistSelected)="onGistSelected($event)"/>
+            }
+            @case (managerStates.loading) {
+                <div class="p-3 text-sm">
+                    <span class="fa fa-solid fa-spinner mr-2 text-base spinner"></span>                    
+                    <span class="text-secondary">loading...</span>
+                </div>
+            }
+            @default {
+                <div class="p-3 text-sm">
+                    <span class="fa-solid fa-triangle-exclamation mr-2 text-base text-yellow-400"></span>
+                    Something went wrong: {{ (errorMessage() | lowercase) ?? 'please try again' }}.
+                </div>
+            }
+        }
+    }
+</div>

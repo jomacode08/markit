@@ -20,7 +20,7 @@ namespace markit.Application.Mappings
     {
         public MappingProfile()
         {
-            // Collections
+            #region Collections
             CreateMap<CreateCollectionCommand, Collection>();
             CreateMap<UpdateCollectionCommand, Collection>();
             CreateMap<Collection, CollectionViewModel>()
@@ -62,8 +62,9 @@ namespace markit.Application.Mappings
                     ? $"{ src.Marks.Count } marks" 
                     : GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW)
                 );
+            #endregion
 
-            // Creators
+            #region Creators
             CreateMap<CreateCreatorCommand, Creator>();
             CreateMap<AppUserRequest, CreateCreatorCommand>();
 
@@ -78,12 +79,14 @@ namespace markit.Application.Mappings
                     dest => dest.BirthDate,
                     opt  => opt.MapFrom(src => src.BirthDate.ToString())
                 );
+            #endregion
 
-            // Blocks
+            #region Blocks
             CreateMap<BlockViewModel, Block>();
             CreateMap<Block, BlockViewModel>();
+            #endregion
 
-            // Marks
+            #region Marks
             CreateMap<CreateMarkCommand, Mark>()
                 .ForMember(dest => dest.Blocks, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
@@ -225,6 +228,7 @@ namespace markit.Application.Mappings
                     dest => dest.Preview,
                     opt => opt.MapFrom(src => Utilities.CreateMarkPreview(src))
                 );
+            #endregion
         }
     }
 }
