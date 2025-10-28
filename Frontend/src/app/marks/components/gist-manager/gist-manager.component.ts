@@ -58,7 +58,6 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   }
 
   public onGistSelected(gistId: string): void {
-    this.setManagerState(ManagerStates.loading);
     this.fetchGist(gistId);
   }
   
@@ -88,6 +87,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   }
 
   private fetchGist(gistId: string): void {
+    this.setManagerState(ManagerStates.loading);
     this.gistService.getById(gistId)
     .subscribe((response : GistResponse | null) => {
       if (response?.gist != null) {

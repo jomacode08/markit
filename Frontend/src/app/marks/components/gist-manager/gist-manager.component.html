@@ -13,7 +13,7 @@
                     <span class="text-secondary">loading...</span>
                 </div>
             }
-            @default {
+            @case (managerStates.error) {
                 <div class="p-3 text-sm">
                     <span class="fa-solid fa-triangle-exclamation mr-2 text-base text-yellow-400"></span>
                     Something went wrong: {{ (errorMessage() | lowercase) ?? 'please try again' }}.
