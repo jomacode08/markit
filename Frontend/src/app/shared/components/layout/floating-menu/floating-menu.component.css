@@ -22,18 +22,26 @@ span.label {
   color: #7f7f7f;
   margin-top: 0.25rem;
 }
+.active {
+  color: var(--secondary-accent) !important;
+}
 
 .scroll-container {
   display: flex;
   white-space: nowrap;
-  overflow-x: auto;
+  overflow: auto;
   gap: 1.5rem;
 }
-.active {
-  color: var(--secondary-accent) !important;
+/* Firefox */
+.scroll-container {
+  scrollbar-width: auto;
+  scrollbar-color: #6a6779 #2A253F;
 }
+/*Chromium*/
 .scroll-container::-webkit-scrollbar {
   height: 6px;
-  border-radius: 3px;
-  background: var(--paper-bg);
+  background-color: #2A253F;
+}
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #6a6779;
 }
