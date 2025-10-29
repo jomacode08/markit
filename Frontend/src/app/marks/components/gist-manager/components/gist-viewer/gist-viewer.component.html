@@ -2,7 +2,7 @@
     <header>
         <h2 class="text-sm font-normal mb-2">
             <span class="fa-solid fa-code mr-2"></span>
-            {{ gist().title }}
+            {{ gist().files[currentFileIndex()].fileName }}
         </h2>
         <div class="flex flex-wrap gap-3 text-sm text-secondary font-light">
             <div class="flex align-items-center gap-2">
@@ -13,13 +13,20 @@
                 <span class="fa-regular fa-calendar"></span>
                 {{ gist().createdAt | date: 'shortDate'}}
             </div>
-            <div class="flex align-items-center gap-2">
-                <span class="fa-regular fa-file-lines"></span>
-                {{ gist().files.length }} file(s)
-            </div>
+            <button
+                id="fileBtn"
+                aria-label="Files"
+                type="button"
+                (click)="openGistPickerDialog()"
+            >
+                <div class="flex align-items-center gap-2">
+                    <span class="fa-regular fa-file-lines"></span>
+                    {{ gist().files.length }} file(s)
+                </div>
+            </button>
         </div>
     </header>
     <body>
-        <pre>{{ gist() | json }}</pre>
+        <pre>{{ gist().files[currentFileIndex()] | json }}</pre>
     </body>
 </article>
