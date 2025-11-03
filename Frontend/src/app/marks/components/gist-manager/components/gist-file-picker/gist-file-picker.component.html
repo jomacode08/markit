@@ -1,19 +1,14 @@
 <div class="files-list">
     @for (file of files; track $index) {
-        <div class="file-item">
+        <div class="file-item" [ngClass]="{'active' : $index === this.fileSelectedIndex}">
             <button
                 aria-label="select file"
                 type="button"
                 class="file-info"
                 (click)="onFileSelected($index)"
             >
-                <div
-                    [ngClass]="{ 'active' : $index === fileSelectedIndex }" 
-                    class="file-name"
-                >
-                    <span class="fa-solid fa-code mr-1"></span>
-                    {{ file.fileName }}
-                </div>
+                <div class="file-numerator">{{ $index + 1 }}</div>
+                <div class="file-name">{{ file.fileName }}</div>
                 <div class="file-description">{{ file.type }}, {{ file.language }}</div>
             </button>
         </div>

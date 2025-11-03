@@ -21,7 +21,7 @@ export class GistViewerComponent {
   private gistPickerDialogRef: DynamicDialogRef | undefined;
   private gistPickerDialogConfig = computed<DynamicDialogConfig>(() => {
     return {
-      header: 'Gist Files',
+      header: 'Gist files',
       width: '30rem',
       modal: true,
       closable: false,
