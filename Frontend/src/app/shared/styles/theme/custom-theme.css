@@ -386,6 +386,30 @@ button {
   display: none !important;
 }
 
+/** Panel **/
+p-panel.selected {
+  .p-panel {
+    border-color: var(--surface-border-hover);
+  }
+}
+.p-panel {
+  border: solid 1px var(--surface-border);
+  border-radius: 6px;
+  background-color: var(--surface-1);
+}
+.p-panel-content {
+  padding: 0;
+}
+.p-panel-header, .p-panel-content {
+  border-radius: 0px;
+  border: none;
+  background-color: transparent;
+}
+.p-panel-header-icon {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
 /** Galleria **/
 #blockGalleria{
   .p-galleria-item {

@@ -2,6 +2,6 @@
   display: block;
 }
 
-span.fa-code {
-  color: var(--accent-color);
+.load-container {
+  padding: 0 1.25rem 1.25rem 1.25rem;
 }

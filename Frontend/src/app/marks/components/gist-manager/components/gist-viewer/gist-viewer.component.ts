@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { CodeEditor } from '@acrodata/code-editor';
@@ -21,7 +21,10 @@ import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GistViewerComponent implements OnInit {
+  //* Inputs & Outputs
   public gist = input.required<Gist>();
+  @Output() public onFileChanged = new EventEmitter<string>();
+  //* State management
   protected file = signal<GistFile | undefined>(undefined);
   //* GistPicker dynamic dialog
   private gistPickerDialogRef: DynamicDialogRef | undefined;
@@ -78,7 +81,10 @@ export class GistViewerComponent implements OnInit {
     .subscribe((selectedFileId : string) => {
       const file = this.gist().files
         .find(f => f.id === selectedFileId);
-      if (file) this.file.update(() => file);
+      if (file) {
+        this.file.update(() => file);
+        this.onFileChanged.emit(file?.fileName);
+      }
     });
   }
 }

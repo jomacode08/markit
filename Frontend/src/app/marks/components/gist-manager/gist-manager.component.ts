@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
-import { LowerCasePipe, NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
+import { NgClass } from '@angular/common';
 
 import { AngularNodeViewComponent, NgxTiptapModule } from 'ngx-tiptap';
+import { PanelModule } from 'primeng/panel';
 
 import { GistLoaderComponent } from './components/gist-loader/gist-loader.component';
 import { GistViewerComponent } from './components/gist-viewer/gist-viewer.component';
 import { ManagerStates } from './interfaces/manager-states';
 import { GistService } from '../../services/gist.service';
 import { Gist, GistResponse, GistResponseStatus } from './interfaces/gist';
+import { GistManagerIconPipe } from './pipes/gist-manager-icon.pipe';
 
 type NodeAttributes = {
   [key:string] : string | null
@@ -21,7 +23,8 @@ type NodeAttributes = {
     GistLoaderComponent,
     GistViewerComponent,
     NgClass,
-    LowerCasePipe,
+    PanelModule,
+    GistManagerIconPipe,
 ],
   templateUrl: './gist-manager.component.html',
   styleUrl: './gist-manager.component.css',
@@ -34,7 +37,22 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   };
   protected managerState = signal<ManagerStates>(ManagerStates.idle);
   protected gist = signal<Gist | undefined>(undefined);
+  protected currentFileName = signal<string | undefined>(undefined);
   protected errorMessage = signal<string | undefined>(undefined);
+
+  protected header = computed<string>(() => {
+    switch (this.managerState()) {
+      case ManagerStates.idle:
+        return 'Load Gist from URL';
+      case ManagerStates.active:
+        return this.currentFileName() ?? 'Not found';
+      case ManagerStates.loading:
+        return 'Loading';
+      default:
+        return 'Something went wrong'
+    }
+  });
+
   //* Since a AngularNodeViewComponent doesn't render @Inputs properties with Nodes Attributes,
   //* It's necessary to do it mannualy, getting them from node.attrs.
   protected inputId ?: string;
@@ -57,8 +75,12 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
     if (this.inputId) this.fetchGist(this.inputId);
   }
 
-  public onGistSelected(gistId: string): void {
+  public onGistLoaded(gistId: string): void {
     this.fetchGist(gistId);
+  }
+
+  public onFileChanged(name: string): void {
+    this.currentFileName.update(() => name);
   }
   
   private setManagerState = (state: ManagerStates) => this.managerState.set(state); 
@@ -93,6 +115,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
       if (response?.gist != null) {
         const { gist } = response;
         this.gist.set(gist);
+        this.currentFileName.set(gist.title);
         this.updateAttributes({
           gistId: gist.id,
           title: gist.title

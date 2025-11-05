@@ -2,12 +2,6 @@
   display: block;
 }
 
-h2 {
-  border: none;
-  padding: 0;
-  margin: 0 0 .75rem 0;
-}
-
 button#fileBtn {
   border: none;
   cursor: pointer;
@@ -18,12 +12,8 @@ button#fileBtn:hover {
   color: var(--accent-color);
 }
 
-span.fa-code {
-  color: var(--accent-color);
-}
-
 header {
-  padding: 1rem;
+  padding: 0 1.25rem 1rem 1.25rem;
   border-bottom: 1px solid var(--surface-border);
 }
 

@@ -1,24 +1,32 @@
-<div class="gist-card" [ngClass]="{ 'selected' : this.selected}" tiptapDraggable>
+<p-panel
+    styleClass="mb-2"
+    [ngClass]="{ 'selected' : this.selected}"
+    [toggleable]="true"
+    tiptapDraggable
+>
+    <!-- Header -->
+    <ng-template pTemplate="header">
+        <h2 class="text-sm font-normal border-none m-0">
+            <span [class]="'header-icon mr-2 ' + (managerState() | GistManagerIcon)"></span>
+            {{ this.header() }}
+        </h2>
+    </ng-template>
+    <!-- Body -->
     @defer (when gist() != undefined) {
-        <gist-viewer [gist]="gist()!" />
+        <gist-viewer [gist]="gist()!" (onFileChanged)="onFileChanged($event)"/>
     }
     @placeholder {
         @switch (managerState()) {
             @case (managerStates.idle) {
-                <gist-loader (onGistSelected)="onGistSelected($event)"/>
-            }
-            @case (managerStates.loading) {
-                <div class="p-3 text-sm">
-                    <span class="fa fa-solid fa-spinner mr-2 text-base spinner"></span>                    
-                    <span class="text-secondary">loading...</span>
-                </div>
+                <gist-loader (onGistLoaded)="onGistLoaded($event)"/>
             }
             @case (managerStates.error) {
-                <div class="p-3 text-sm">
-                    <span class="fa-solid fa-triangle-exclamation mr-2 text-base text-yellow-400"></span>
-                    <span class="text-secondary">{{ (errorMessage()) ?? 'Something went wrong, please try again.' }}</span>
+                <div class="error-container text-sm">
+                    <span class="text-secondary">
+                        {{ (errorMessage()) ?? "We're experiencing some unexpected difficulties. Please try again later." }}
+                    </span>
                 </div>
             }
         }
     }
-</div>
+</p-panel>

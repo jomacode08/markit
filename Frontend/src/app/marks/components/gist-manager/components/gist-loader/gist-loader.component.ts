@@ -25,7 +25,7 @@ import { ValidatorService } from '../../../../../shared/services/validator.servi
 })
 export class GistLoaderComponent extends ValidatorErrorField {
   @Output()
-  private onGistSelected = new EventEmitter<string>();
+  private onGistLoaded = new EventEmitter<string>();
   private readonly GIST_UUID_EXTRACTION_PATTERN = new RegExp('(?:\/([a-fA-F0-9]+))$')
 
   public form : FormGroup<{
@@ -49,7 +49,7 @@ export class GistLoaderComponent extends ValidatorErrorField {
     }
     const gistId = this.extractGistIdFromUrl(this.form.getRawValue().url);
     if (gistId != null){
-      this.onGistSelected.emit(gistId);
+      this.onGistLoaded.emit(gistId);
     }
   }
 
