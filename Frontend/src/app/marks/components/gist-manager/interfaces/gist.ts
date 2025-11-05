@@ -20,6 +20,7 @@ export interface Gist {
 }
 
 export interface GistFile {
+    id : string,
     fileName : string,
     type : string,
     content : string,

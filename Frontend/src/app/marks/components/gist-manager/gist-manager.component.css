@@ -10,7 +10,7 @@
 }
 
 .gist-card.selected {
-  border-color: var(--highlight-border-purple);
+  border-color: var(--surface-border-hover);
 }
 
 .spinner {

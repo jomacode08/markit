@@ -73,7 +73,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
         {
             Gist gist;
             GitHubClient client = await GetOrCreateClient(user);
-
+            
             try
             {
                 gist = await client.Gist.Get(gistId);
@@ -89,6 +89,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
             List<GistFileViewModel> gistFilesVm = new(gist.Files.Count);
             foreach (GistFile file in gist.Files.Values) {
                 gistFilesVm.Add(new GistFileViewModel(
+                    Id: Guid.NewGuid().ToString(),
                     file.Filename,
                     file.Type,
                     file.Content,

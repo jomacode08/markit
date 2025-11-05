@@ -11,6 +11,7 @@
     );
 
     public record GistFileViewModel(
+        string Id,
         string FileName,
         string Type,
         string Content,

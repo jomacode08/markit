@@ -7,7 +7,7 @@ import { GistFile } from '../../interfaces/gist';
 
 export interface GistFilePickerSharedData {
   files : GistFile[],
-  fileSelectedIndex : number;
+  activeFileId : string
 }
 
 @Component({
@@ -20,21 +20,21 @@ export interface GistFilePickerSharedData {
 })
 export class GistFilePickerComponent {
   protected files: GistFile[];
-  protected fileSelectedIndex : number;
+  protected selectedFileId : string;
 
   constructor(
-      private config: DynamicDialogConfig,
-      private ref: DynamicDialogRef
+    private config: DynamicDialogConfig,
+    private ref: DynamicDialogRef,
   ) {
     const data = this.config.data.shared as GistFilePickerSharedData;
     this.validateSharedData(data);
-    const { files, fileSelectedIndex } = data;
+    const { files, activeFileId } = data;
     this.files = files;
-    this.fileSelectedIndex = fileSelectedIndex;
+    this.selectedFileId = activeFileId;
   }
 
-  public onFileSelected(index: number): void {
-    this.ref.close(index);
+  public onFileSelected(fileId : string): void {
+    this.ref.close(fileId);
   }
 
   public onCancel(): void {
@@ -50,14 +50,8 @@ export class GistFilePickerComponent {
       this.handleMissingDataError('files (must be a non-empty array)');
     }
 
-    const isValidIndex = typeof data.fileSelectedIndex === 'number' 
-      && !isNaN(data.fileSelectedIndex)
-      && data.fileSelectedIndex >= 0 
-      && data.fileSelectedIndex < data.files.length;
-
-    if (!isValidIndex) {
-      this.handleMissingDataError(`fileSelectedIndex (must be between 0 and ${data.files.length - 1})`);
-    }
+    if (!data.activeFileId || data.activeFileId.trim().length === 0)
+      this.handleMissingDataError('activeFile');
   }
 
   private handleMissingDataError( requiredDataName: string ): void {

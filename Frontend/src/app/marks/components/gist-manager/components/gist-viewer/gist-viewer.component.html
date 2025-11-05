@@ -2,7 +2,7 @@
     <header>
         <h2 class="text-sm font-normal mb-2">
             <span class="fa-solid fa-code mr-2"></span>
-            {{ gist().files[currentFileIndex()].fileName }}
+            {{ file()?.fileName }}
         </h2>
         <div class="flex flex-wrap gap-3 text-sm text-secondary font-light">
             <div class="flex align-items-center gap-2">
@@ -27,6 +27,18 @@
         </div>
     </header>
     <body>
-        <pre>{{ gist().files[currentFileIndex()] | json }}</pre>
+        <code-editor
+            #gistEditor
+            indentWithTab="true"
+            [ngModel]="file()?.content"
+            [languages]="languages"
+            [theme]="codeEditorOptions().theme"
+            [setup]="codeEditorOptions().setup"
+            [disabled]="codeEditorOptions().disabled"
+            [readonly]="codeEditorOptions().readonly"
+            [placeholder]="codeEditorOptions().placeHolder"
+            [language]="codeEditorOptions().language"
+            [extensions]="cmExtensions"
+        />        
     </body>
 </article>

@@ -1,23 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { DatePipe, JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
+import { CodeEditor } from '@acrodata/code-editor';
 import { DynamicDialogRef, DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { languages } from '@codemirror/language-data';
 
-import { Gist } from '../../interfaces/gist';
+import { Gist, GistFile } from '../../interfaces/gist';
 import { GistFilePickerComponent, GistFilePickerSharedData } from '../gist-file-picker/gist-file-picker.component';
+import { FormsModule } from '@angular/forms';
+import { CodeEditorOptions } from '../../interfaces/code-editor/code-editor-options';
+import { Extension } from '@codemirror/state';
+import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme';
 
 @Component({
   selector: 'gist-viewer',
   standalone: true,
-  imports: [JsonPipe, DatePipe],
+  imports: [FormsModule, DatePipe, CodeEditor],
   templateUrl: './gist-viewer.component.html',
   styleUrl: './gist-viewer.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GistViewerComponent {
+export class GistViewerComponent implements OnInit {
   public gist = input.required<Gist>();
-  protected currentFileIndex = signal<number>(0);
-  //* GistPicker dynamic dialog configuration
+  protected file = signal<GistFile | undefined>(undefined);
+  //* GistPicker dynamic dialog
   private gistPickerDialogRef: DynamicDialogRef | undefined;
   private gistPickerDialogConfig = computed<DynamicDialogConfig>(() => {
     return {
@@ -30,30 +36,49 @@ export class GistViewerComponent {
       data : {
         shared : {
           files : this.gist().files,
-          fileSelectedIndex : this.currentFileIndex(),
+          activeFileId : this.file()?.id,
         } as GistFilePickerSharedData
       }
     }
   });
+  //* Code editor
+  public languages = languages;
+  public codeEditorOptions = computed<CodeEditorOptions>(
+    () => {
+      return {
+        disabled : false,
+        readonly : true,
+        theme : 'dark',
+        setup: 'basic',
+        placeHolder : 'Your code here...',
+        language : this.file()?.language,
+      } as CodeEditorOptions
+    }
+  );
+  public cmExtensions: Extension[] = [
+    customDarkTheme
+  ];
 
   constructor(private dialogService: DialogService) {}
+
+  ngOnInit(): void {
+    this.file.set(this.gist().files[0]);
+  }
   
   public openGistPickerDialog() { 
     this.gistPickerDialogRef = this.dialogService.open(
       GistFilePickerComponent,
       this.gistPickerDialogConfig(),
     );
+    this.handleGistPickerDialogClose();
+  }
   
-    this.gistPickerDialogRef.onClose
-    .subscribe((selectedFileIndex : number) => {
-      if (this.isValidIndex(selectedFileIndex)) {
-        this.currentFileIndex.update(() => selectedFileIndex);
-      }
+  private handleGistPickerDialogClose(): void {
+    this.gistPickerDialogRef?.onClose
+    .subscribe((selectedFileId : string) => {
+      const file = this.gist().files
+        .find(f => f.id === selectedFileId);
+      if (file) this.file.update(() => file);
     });
   }
-
-  private isValidIndex = (index: number): boolean => typeof index === 'number'
-    && !isNaN(index)
-    && index >= 0
-    && index < this.gist().files.length;
 }
