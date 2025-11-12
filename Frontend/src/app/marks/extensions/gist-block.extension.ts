@@ -49,7 +49,14 @@ const GistBlockExtension = (injector : Injector): Node => {
       },
 
       addNodeView() {
-         return AngularNodeViewRenderer(GistManagerComponent, { injector })
+         return AngularNodeViewRenderer(GistManagerComponent, {
+            injector,
+            // This ensures external changes
+            // Tiptap will destroy and initialize the component.
+            update: ({ oldNode, newNode }) => {
+               return false;
+            },
+         })
       },
 
       addCommands() {
