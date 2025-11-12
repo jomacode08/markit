@@ -20,12 +20,15 @@ import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme'
   styleUrl: './gist-viewer.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GistViewerComponent implements OnInit {
+export class GistViewerComponent {
   //* Inputs & Outputs
   public gist = input.required<Gist>();
   @Output() public onFileChanged = new EventEmitter<string>();
   //* State management
-  protected file = signal<GistFile | undefined>(undefined);
+  private currentFileIndex = signal<number>(0);
+  protected file = computed<GistFile | undefined>(() => {
+    return this.gist().files.at(this.currentFileIndex());
+  });
   //* GistPicker dynamic dialog
   private gistPickerDialogRef: DynamicDialogRef | undefined;
   private gistPickerDialogConfig = computed<DynamicDialogConfig>(() => {
@@ -63,10 +66,6 @@ export class GistViewerComponent implements OnInit {
   ];
 
   constructor(private dialogService: DialogService) {}
-
-  ngOnInit(): void {
-    this.file.set(this.gist().files[0]);
-  }
   
   public openGistPickerDialog() { 
     this.gistPickerDialogRef = this.dialogService.open(
@@ -79,12 +78,10 @@ export class GistViewerComponent implements OnInit {
   private handleGistPickerDialogClose(): void {
     this.gistPickerDialogRef?.onClose
     .subscribe((selectedFileId : string) => {
-      const file = this.gist().files
-        .find(f => f.id === selectedFileId);
-      if (file) {
-        this.file.update(() => file);
-        this.onFileChanged.emit(file?.fileName);
-      }
+      const fileindex = this.gist().files
+        .findIndex(f => f.id === selectedFileId);
+      this.currentFileIndex.update(() => fileindex);
+      this.onFileChanged.emit(this.file()?.fileName);
     });
   }
 }

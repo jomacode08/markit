@@ -11,6 +11,18 @@
             {{ this.header() }}
         </h2>
     </ng-template>
+    <!-- Icon buttons -->
+    <ng-template pTemplate="icons">
+        <button
+            class="p-panel-header-icon"
+            type="button"
+            aria-label="Reload"
+            [disabled]="managerState() != managerStates.active"
+            (click)="onReloadButtonClick()"
+        >
+            <span class="fa fa-arrows-rotate"></span>    
+        </button>
+    </ng-template>
     <!-- Body -->
     @defer (when gist() != undefined) {
         <gist-viewer [gist]="gist()!" (onFileChanged)="onFileChanged($event)"/>

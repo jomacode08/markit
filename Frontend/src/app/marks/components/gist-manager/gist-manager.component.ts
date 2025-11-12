@@ -82,6 +82,14 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   public onFileChanged(name: string): void {
     this.currentFileName.update(() => name);
   }
+
+  public onReloadButtonClick(): void {
+    const gist = this.gist();
+    if (gist != undefined) {
+      this.gistService.clearCacheItem(gist.id);
+      this.fetchGist(gist.id);
+    }
+  }
   
   private setManagerState = (state: ManagerStates) => this.managerState.set(state); 
 
