@@ -17,6 +17,8 @@
             class="p-panel-header-icon"
             type="button"
             aria-label="Reload"
+            pTooltip="Reload"
+            tooltipPosition="top"
             [disabled]="managerState() != managerStates.active"
             (click)="onReloadButtonClick()"
         >

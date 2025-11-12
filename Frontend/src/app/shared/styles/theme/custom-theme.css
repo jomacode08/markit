@@ -408,6 +408,10 @@ p-panel.selected {
 .p-panel-header-icon {
   color: var(--text-secondary);
   font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.p-panel-header-icon:hover {
+  color: var(--accent-color);
 }
 
 /** Galleria **/

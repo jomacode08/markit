@@ -1,21 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { CodeEditor } from '@acrodata/code-editor';
 import { DynamicDialogRef, DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { Extension } from '@codemirror/state';
 import { languages } from '@codemirror/language-data';
+import { TooltipModule } from 'primeng/tooltip';
 
+import { CodeEditorOptions } from '../../interfaces/code-editor/code-editor-options';
+import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme';
 import { Gist, GistFile } from '../../interfaces/gist';
 import { GistFilePickerComponent, GistFilePickerSharedData } from '../gist-file-picker/gist-file-picker.component';
-import { FormsModule } from '@angular/forms';
-import { CodeEditorOptions } from '../../interfaces/code-editor/code-editor-options';
-import { Extension } from '@codemirror/state';
-import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme';
 
 @Component({
   selector: 'gist-viewer',
   standalone: true,
-  imports: [FormsModule, DatePipe, CodeEditor],
+  imports: [FormsModule, DatePipe, CodeEditor, TooltipModule],
   templateUrl: './gist-viewer.component.html',
   styleUrl: './gist-viewer.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

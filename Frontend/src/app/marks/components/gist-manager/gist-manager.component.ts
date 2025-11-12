@@ -3,6 +3,7 @@ import { NgClass } from '@angular/common';
 
 import { AngularNodeViewComponent, NgxTiptapModule } from 'ngx-tiptap';
 import { PanelModule } from 'primeng/panel';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { GistLoaderComponent } from './components/gist-loader/gist-loader.component';
 import { GistViewerComponent } from './components/gist-viewer/gist-viewer.component';
@@ -25,6 +26,7 @@ type NodeAttributes = {
     NgClass,
     PanelModule,
     GistManagerIconPipe,
+    TooltipModule,
 ],
   templateUrl: './gist-manager.component.html',
   styleUrl: './gist-manager.component.css',
