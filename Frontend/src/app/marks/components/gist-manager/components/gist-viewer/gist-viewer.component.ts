@@ -79,10 +79,12 @@ export class GistViewerComponent {
   private handleGistPickerDialogClose(): void {
     this.gistPickerDialogRef?.onClose
     .subscribe((selectedFileId : string) => {
-      const fileindex = this.gist().files
-        .findIndex(f => f.id === selectedFileId);
-      this.currentFileIndex.update(() => fileindex);
-      this.onFileChanged.emit(this.file()?.fileName);
+      if (selectedFileId) {
+        const fileindex = this.gist().files
+          .findIndex(f => f.id === selectedFileId);
+        this.currentFileIndex.update(() => fileindex);
+        this.onFileChanged.emit(this.file()?.fileName);
+      }
     });
   }
 }
