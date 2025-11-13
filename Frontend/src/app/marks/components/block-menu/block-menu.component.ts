@@ -83,23 +83,21 @@ export class BlockMenuComponent implements OnInit {
     });
   }
 
-  public onDeleteBlockButtonClick( index: number ): void {
-    const block = this.blocks().at(index);
-    if (block === undefined) throw Error(`The block with index: ${ index } doesn't exist.`);
-
+  public onDeleteBlockButtonClick( blockId: number ): void {
+    const block = this.blocks().find(b => b.id === blockId);
+    if (block === undefined) throw Error(`The block with id: ${ blockId } doesn't exist.`);
     // The block has content, show a warning to the user.
     if (block.content && block.content.length > 0) {
       this.messageService.showConfirmationDialog({
         message: "Do you want to delete this block?. You won't be able to get it back later. ",
         header: 'Delete block',
         icon: 'fa fa-warning',
-        accept: () => this.blocks().splice(index)
+        accept: () => this.removeBlock(blockId),
       });
       return;
     }
-
     // Otherwise the block is empty so it can be deleted.
-    this.blocks().splice(index);
+    this.removeBlock(blockId);
   }
 
   public onSelectBlock(selectedBlockId: number): void {
@@ -136,6 +134,10 @@ export class BlockMenuComponent implements OnInit {
 
   private setBlocks( blocks: Block[] ): void {
     this.blocks.set( blocks as EditableBlock[] );
+  }
+
+  private removeBlock( blockId: number ): void {
+    this.blocks.update(current => current.filter(b => b.id != blockId));
   }
 
   private setFocusToInputElement( elementId: string ): void {
