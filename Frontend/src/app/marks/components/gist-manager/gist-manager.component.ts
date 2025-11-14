@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AngularNodeViewComponent, NgxTiptapModule } from 'ngx-tiptap';
 import { PanelModule } from 'primeng/panel';
@@ -32,7 +33,7 @@ type NodeAttributes = {
   styleUrl: './gist-manager.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GistManagerComponent extends AngularNodeViewComponent implements OnInit {
+export class GistManagerComponent extends AngularNodeViewComponent implements OnInit, OnDestroy {
   private readonly NODE_ATTRIBUTES_NAMES = {
     gistId : 'gistId',
     title : 'title',
@@ -59,6 +60,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   //* It's necessary to do it mannualy, getting them from node.attrs.
   protected inputId ?: string;
   protected inputTitle ?: string;
+  private destroy$ = new Subject<void>();
 
   get managerStates(): typeof ManagerStates {
     return ManagerStates;
@@ -69,12 +71,21 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   }
 
   public ngOnInit(): void {
+    this.initializeFromNode();
+  }
+
+  private initializeFromNode(): void {
     const attributes = this.getNodeAttributes();
     //* Only set input values when the attributes object has a value.
     if (attributes === null) return this.setManagerState(ManagerStates.error);
     this.setInputs(attributes);
     //* The component will fetch a gist when a valid ID is received.
     if (this.inputId) this.fetchGist(this.inputId);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public onGistLoaded(gistId: string): void {
@@ -121,6 +132,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   private fetchGist(gistId: string): void {
     this.setManagerState(ManagerStates.loading);
     this.gistService.getById(gistId)
+    .pipe(takeUntil(this.destroy$))
     .subscribe((response : GistResponse | null) => {
       if (response?.gist != null) {
         const { gist } = response;
