@@ -1,4 +1,4 @@
-<div class="files-list">
+<div class="modal-body files-list">
     @for (file of files; track $index) {
         <div class="file-item" [ngClass]="{'active' : file.id === selectedFileId}">
             <button
@@ -7,8 +7,10 @@
                 class="file-info"
                 (click)="onFileSelected(file.id)"
             >
-                <div class="file-numerator">{{ $index + 1 }}</div>
-                <div class="file-name">{{ file.fileName }}</div>
+                <div class="flex align-items-center">
+                    <div class="file-numerator">{{ $index + 1 }}</div>
+                    <div class="file-name">{{ file.fileName }}</div>
+                </div>
                 <div class="file-description">{{ file.type }}, {{ file.language }}</div>
             </button>
         </div>

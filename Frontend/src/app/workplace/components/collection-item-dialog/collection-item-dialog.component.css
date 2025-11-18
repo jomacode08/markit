@@ -7,25 +7,6 @@ button {
   transition: .3s ease;
 }
 
-button#createBtn {
-  background-color: var(--accent-color);
-}
-button#createBtn:hover {
-  background-color: var(--accent-hover);
-}
-button#createBtn:disabled {
-  background-color: var(--surface-2);
-  color: var(--text-secondary);
-  cursor: default;
-}
-button#cancelBtn {
-  background-color: var(--surface-2);
-  color: var(--text-secondary);
-}
-button#cancelBtn:hover {
-  background-color: var(--surface-1);
-}
-
 label {
   color: var(--text-secondary);
 }

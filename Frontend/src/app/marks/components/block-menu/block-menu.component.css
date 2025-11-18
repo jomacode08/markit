@@ -18,27 +18,23 @@ input {
   color: var(--text-primary);
 }
 
-#addBtn {
+#addBlockBtn {
+  width: 100%;
+  text-align: start;
+  color: var(--text-secondary);
+  padding: 0;
+  padding: 0.5rem;
   transition: 0.3s all ease;
-  border: solid 1px var(--surface-border);
   span {
-    color: var(--green-500)
+    color: var(--text-secondary)
   }
 }
-#addBtn:hover {
-  background-color: var(--surface-1);
-}
-#saveBtn {
-  background-color: var(--accent-color);
-}
-#saveBtn:hover {
-  background-color: var(--accent-hover);
-}
-#cancelBtn {
-  color: var(--text-secondary);
-}
-#cancelBtn:hover {
-  background-color: var(--surface-1);
+#addBlockBtn:hover {
+  color: var(--text-primary);
+  span {
+    transition: 0.3s all ease;
+    color: var(--green-400)
+  }
 }
 
 .block-item {
@@ -47,13 +43,17 @@ input {
   align-items: center;
   gap: 1rem;
   padding: 0.5rem;
+  margin-bottom: .5rem;
   transition: 0.3s all ease;
-  border-bottom: solid 1px var(--surface-border);
+  border-radius: .5rem;
+}
+.block-item.active {
+  background-color: var(--surface-2);
 }
 
-.block-item:hover {
+#addBlockBtn:hover, .block-item:hover {
   cursor: pointer;
-  background-color: var(--surface-1);
+  background-color: var(--surface-2);
 }
 
 button.block-info {
@@ -64,19 +64,13 @@ button.block-info {
 
   .block-date {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
 
   .block-title {
+    font-size: .875rem;
+    font-weight: 400;
     margin-bottom: .25rem;
-  }
-
-  .block-title.active {
-    display: inline-block;
-    padding: .25rem;
-    border-radius: 6px;
-    background-color: var(--highlight-surface-purple);
-    border: 1px solid var(--highlight-border-purple);
   }
 }
 

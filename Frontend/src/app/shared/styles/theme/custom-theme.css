@@ -282,18 +282,17 @@ button {
   border: 1px solid var(--surface-border);
   border-radius: 0.5rem;
   .p-dialog-header, .p-dialog-content {
-    background-color: var(--surface-2);
+    background-color: var(--surface-1);
   }
 
   .p-dialog-header {
-    font-family: 'PlayFairDisplay';
     padding: 1rem;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
     border-bottom: 1px solid var(--surface-border);
 
     .p-dialog-title {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       font-weight: 500;
       color: var(--text-primary);
     }
@@ -302,7 +301,34 @@ button {
   .p-dialog-content {
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
-    padding: 2rem 1.5rem;
+    padding: 0;
+  }
+
+  .modal-body, .modal-footer {
+    padding: 1rem 1.5rem;
+    background-color: var(--paper-bg);
+  }
+  .modal-footer {
+    background-color: var(--surface-1);
+    border-top: 1px solid var(--surface-border);
+  }
+
+  #saveBtn {
+    background-color: var(--accent-color);
+  }
+  #saveBtn:hover {
+    background-color: var(--accent-hover);
+  }
+  #saveBtn:disabled {
+    background-color: var(--surface-2);
+    color: var(--text-secondary);
+    cursor: default;
+  }
+  #cancelBtn {
+    color: var(--text-secondary);
+  }
+  #cancelBtn:hover {
+    background-color: var(--surface-2);
   }
 }
 

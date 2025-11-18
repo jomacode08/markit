@@ -3,40 +3,42 @@
     (submit)="onSubmit()"
     autocomplete="off"
 >
-    <!-- Name input -->
-    <div class="item-name">
-        <label for="name" class="text-sm font-medium mb-2">Name</label>
-        <input
-            #nameInput
-            id="name"
-            autocomplete="off"
-            formControlName="name"
-            maxlength="255"
-            pInputText
-            type="text"
-            placeholder="Enter name..."
-        />
-        <!-- Validation name error message -->
-        <div *ngIf="isInvalidField('name')" class="mt-1">
-            <shared-error-field [validationField]="getValidationField('name', 'masc', 'name title')" />
-        </div>
-    </div>
-
-    <!-- Emoji picker -->
-    <div class="item-emoji">
-        <label for="emoji" class="text-sm font-medium mb-2">Icon</label>        
-        <div class="icon-container">
-            <app-emoji-picker
-                #emoji
-                [defaultIconClass]="defaultPickerIconClass"
-                [currentEmoji]="currentCollectionItem.emoji"
-                (emojiClick)="setEmoji($event)"
-                (emojiDeleted)="setEmoji(undefined)"
+    <div class="modal-body">
+        <!-- Name input -->
+        <div class="item-name">
+            <label for="name" class="text-sm font-medium mb-2">Name</label>
+            <input
+                #nameInput
+                id="name"
+                autocomplete="off"
+                formControlName="name"
+                maxlength="255"
+                pInputText
+                type="text"
+                placeholder="Enter name..."
             />
+            <!-- Validation name error message -->
+            <div *ngIf="isInvalidField('name')" class="mt-1">
+                <shared-error-field [validationField]="getValidationField('name', 'masc', 'name title')" />
+            </div>
+        </div>
+
+        <!-- Emoji picker -->
+        <div class="item-emoji">
+            <label for="emoji" class="text-sm font-medium mb-2">Icon</label>        
+            <div class="icon-container">
+                <app-emoji-picker
+                    #emoji
+                    [defaultIconClass]="defaultPickerIconClass"
+                    [currentEmoji]="currentCollectionItem.emoji"
+                    (emojiClick)="setEmoji($event)"
+                    (emojiDeleted)="setEmoji(undefined)"
+                />
+            </div>
         </div>
     </div>
 
-    <div class="w-full flex justify-content-end mt-5 gap-2">
+    <div class="modal-footer w-full flex justify-content-end gap-2">
         <!-- Cancel button -->
         <button
             id="cancelBtn"
@@ -48,7 +50,7 @@
         </button>
         <!-- Submit button -->
         <button
-            id="createBtn"
+            id="saveBtn"
             type="submit"
             aria-label="create"
             [disabled]="submit"
