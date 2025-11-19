@@ -2,6 +2,8 @@
     styleClass="mb-2 fadein animation-duration-500"
     [ngClass]="{ 'selected' : this.selected}"
     [toggleable]="true"
+    [collapsed]="!gist() && managerState() === managerStates.active"
+    (collapsedChange)="onPanelToggle($event)"
     tiptapDraggable
 >
     <!-- Header -->
@@ -20,7 +22,7 @@
             aria-label="Reload"
             pTooltip="Reload"
             tooltipPosition="top"
-            [disabled]="managerState() != managerStates.active"
+            [disabled]="!gist() && managerState() === managerStates.active"
             (click)="onReloadButtonClick()"
         >
             <span class="fa fa-arrows-rotate"></span>    
@@ -33,7 +35,7 @@
     @placeholder {
         @switch (managerState()) {
             @case (managerStates.idle) {
-                <gist-loader (onGistLoaded)="onGistLoaded($event)"/>
+                <gist-loader (onGistSelected)="onGistSelected($event)"/>
             }
             @case (managerStates.error) {
                 <div class="error-container text-sm">

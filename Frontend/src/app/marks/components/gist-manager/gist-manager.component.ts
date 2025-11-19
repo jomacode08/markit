@@ -10,7 +10,7 @@ import { GistLoaderComponent } from './components/gist-loader/gist-loader.compon
 import { GistViewerComponent } from './components/gist-viewer/gist-viewer.component';
 import { ManagerStates } from './interfaces/manager-states';
 import { GistService } from '../../services/gist.service';
-import { Gist, GistResponse, GistResponseStatus } from './interfaces/gist';
+import { Gist, GistResponse } from './interfaces/gist';
 import { GistManagerIconPipe } from './pipes/gist-manager-icon.pipe';
 
 type NodeAttributes = {
@@ -48,7 +48,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
       case ManagerStates.idle:
         return 'Load Gist from URL';
       case ManagerStates.active:
-        return this.currentFileName() ?? 'Not found';
+        return this.currentFileName() ?? '';
       case ManagerStates.loading:
         return 'Loading';
       default:
@@ -71,16 +71,15 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   }
 
   public ngOnInit(): void {
-    this.initializeFromNode();
+    this.loadAttributesFromNode();
+    this.loadGistFromCache();
   }
 
-  private initializeFromNode(): void {
+  private loadAttributesFromNode(): void {
     const attributes = this.getNodeAttributes();
     //* Only set input values when the attributes object has a value.
     if (attributes === null) return this.setManagerState(ManagerStates.error);
     this.setInputs(attributes);
-    //* The component will fetch a gist when a valid ID is received.
-    if (this.inputId) this.fetchGist(this.inputId);
   }
 
   public ngOnDestroy(): void {
@@ -88,7 +87,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
     this.destroy$.complete();
   }
 
-  public onGistLoaded(gistId: string): void {
+  public onGistSelected(gistId: string): void {
     this.fetchGist(gistId);
   }
 
@@ -101,6 +100,12 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
     if (gist != undefined) {
       this.gistService.clearCacheItem(gist.id);
       this.fetchGist(gist.id);
+    }
+  }
+
+  public onPanelToggle(collapsed: boolean): void {
+    if (!collapsed && !this.gist() && this.inputId) {
+      this.fetchGist(this.inputId);
     }
   }
   
@@ -133,21 +138,34 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
     this.setManagerState(ManagerStates.loading);
     this.gistService.getById(gistId)
     .pipe(takeUntil(this.destroy$))
-    .subscribe((response : GistResponse | null) => {
-      if (response?.gist != null) {
-        const { gist } = response;
-        this.gist.set(gist);
-        this.currentFileName.set(gist.title);
-        this.updateAttributes({
-          gistId: gist.id,
-          title: gist.title
-        });
+    .subscribe((response: GistResponse | null) => {
+      if (!response || !response.gist) {
+        this.setManagerState(ManagerStates.error);
+        this.errorMessage.update(() => response?.errorMessage);
+        return;
       }
-      this.setManagerState(response?.status === GistResponseStatus.success
-        ? ManagerStates.active
-        : ManagerStates.error
-      );
-      this.errorMessage.update(() => response?.errorMessage)
+      const { gist } = response;
+      this.setUpGistState(response.gist);
+      this.updateAttributes({
+        gistId: gist.id,
+        title: gist.title
+      });
     });
+  }
+
+  private loadGistFromCache(): void {
+    //* When the custom inputs have valid values, that means the component can retrieve a gist.
+    //* First, try to retrieve it from cache and set it.
+    //* Otherwise the gist will be fetched when the user interact with it.
+    if (this.inputId && this.inputTitle) {
+      const gistFromMemory = this.gistService.getGistFromCache(this.inputId);
+      this.setUpGistState(gistFromMemory ?? undefined);
+    }
+  }
+  
+  private setUpGistState(gist: Gist | undefined): void {
+    this.gist.set(gist);
+    this.currentFileName.set(gist?.title ?? this.inputTitle);
+    this.setManagerState(ManagerStates.active);
   }
 }
