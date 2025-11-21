@@ -17,17 +17,17 @@ namespace markit.Infraestructure.Security.Services.GitHub
     public class GitHubTokenStore
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly string _userId;
         private readonly LoginProvider _provider;
+        private readonly AppUser _user;
 
         public GitHubTokenStore(
             UserManager<AppUser> userManager,
-            string userId
+            AppUser user
         )
         {
             _userManager = userManager;
-            _userId = userId;
             _provider = LoginProvider.GitHub;
+            _user = user;
         }
 
         /// <summary>
@@ -37,8 +37,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
         /// <returns>The token value if found; otherwise, null.</returns>
         public async Task<string?> GetAsync(string key)
         {
-            AppUser user = await GetUserAsync();
-            return await _userManager.GetAuthenticationTokenAsync(user, _provider.GetName(), key);
+            return await _userManager.GetAuthenticationTokenAsync(_user, _provider.GetName(), key);
         }
 
         /// <summary>
@@ -135,12 +134,10 @@ namespace markit.Infraestructure.Security.Services.GitHub
         /// </summary>
         public async Task ClearAsync()
         {
-            AppUser user = await GetUserAsync();
-
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _provider.GetName(), ACCESS_TOKEN_NAME);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _provider.GetName(), REFRESH_TOKEN_NAME);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _provider.GetName(), EXPIRES_AT_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), ACCESS_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), REFRESH_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), EXPIRES_AT_TOKEN_NAME);
             scope.Complete();
         }
 
@@ -150,25 +147,16 @@ namespace markit.Infraestructure.Security.Services.GitHub
         /// </summary>
         public async Task ClearShortLived()
         {
-            AppUser user = await GetUserAsync();
-
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _provider.GetName(), ACCESS_TOKEN_NAME);
-            await _userManager.RemoveAuthenticationTokenAsync(user, _provider.GetName(), EXPIRES_AT_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), ACCESS_TOKEN_NAME);
+            await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), EXPIRES_AT_TOKEN_NAME);
             scope.Complete();
         }
 
         #region Helpers
-        private async Task<AppUser> GetUserAsync()
-        {
-            return await _userManager.FindByIdAsync(_userId)
-                ?? throw new Application.Exceptions.NotFoundException("Users", _userId);
-        }
-
         private async Task StoreAsync(string key, string value)
         {
-            AppUser user = await GetUserAsync();
-            await _userManager.SetAuthenticationTokenAsync(user, _provider.GetName(), key, value);
+            await _userManager.SetAuthenticationTokenAsync(_user, _provider.GetName(), key, value);
         }
         #endregion
     }

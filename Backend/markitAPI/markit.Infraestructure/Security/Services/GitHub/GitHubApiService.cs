@@ -42,10 +42,10 @@ namespace markit.Infraestructure.Security.Services.GitHub
 
         public async Task<bool> RevokeAccessAsync(AppUser user)
         {
-            bool tokensRevoked = await RevokeTokensAsync(user.Id);
+            bool tokensRevoked = await RevokeTokensAsync(user);
             if (tokensRevoked)
             {
-                GitHubTokenStore tokenStore = new(_userManager, user.Id);
+                GitHubTokenStore tokenStore = new(_userManager, user);
                 await tokenStore.ClearAsync();
                 return true;
             }
@@ -54,7 +54,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
 
         public async Task ClearShortLivedTokensAsync(AppUser user)
         {
-            GitHubTokenStore tokenStore = new(_userManager, user.Id);
+            GitHubTokenStore tokenStore = new(_userManager, user);
             await tokenStore.ClearShortLived();
         }
 
@@ -122,9 +122,9 @@ namespace markit.Infraestructure.Security.Services.GitHub
             return _client;
         }
 
-        private async Task<string> GetAndValidateAccessToken(string userId)
+        private async Task<string> GetAndValidateAccessToken(AppUser user)
         {
-            GitHubTokenStore tokenStore = new(_userManager, userId);
+            GitHubTokenStore tokenStore = new(_userManager, user);
             string accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME)
                 ?? throw new UnauthorizedAccessException("No access token found");
 
@@ -142,7 +142,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
             var loginInfo = await _userManager.GetLoginsAsync(user);
             UserLoginInfo gitHubLogin = loginInfo.FirstOrDefault(l => l.LoginProvider == githubProvider.ToString())
                 ?? throw new UnauthorizedAccessException("GitHub login not found for the user");
-            string accessToken = await GetAndValidateAccessToken(user.Id);
+            string accessToken = await GetAndValidateAccessToken(user);
 
             return new GitHubClient(new Octokit.ProductHeaderValue(_settings.AppName))
             {
@@ -150,9 +150,9 @@ namespace markit.Infraestructure.Security.Services.GitHub
             };
         }
 
-        private async Task<bool> RevokeTokensAsync(string userId)
+        private async Task<bool> RevokeTokensAsync(AppUser user)
         {
-            GitHubTokenStore tokenStore = new(_userManager, userId);
+            GitHubTokenStore tokenStore = new(_userManager, user);
             string accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME)
                 ?? await tokenStore.RefreshAuthorizationAsync(_settings);
 
