@@ -71,20 +71,8 @@ namespace markit.Infraestructure.Security.Services.GitHub
 
         public async Task<GistViewModel> GetGistById(string gistId, AppUser user)
         {
-            Gist gist;
             GitHubClient client = await GetOrCreateClient(user);
-            
-            try
-            {
-                gist = await client.Gist.Get(gistId);
-            }
-            catch (NotFoundException ex)
-            {
-                throw new InvalidOperationException(ex.Message);
-            }
-            catch (ForbiddenException ex) {
-                throw new InvalidOperationException(ex.Message);
-            }
+            Gist gist = await client.Gist.Get(gistId);
 
             List<GistFileViewModel> gistFilesVm = new(gist.Files.Count);
             foreach (GistFile file in gist.Files.Values) {
@@ -111,7 +99,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
                 CreatedAt: gist.CreatedAt.DateTime,
                 Files: gistFilesVm
             );
-
         }
 
         #region helpers
@@ -128,22 +115,19 @@ namespace markit.Infraestructure.Security.Services.GitHub
             string accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME)
                 ?? throw new UnauthorizedAccessException("No access token found");
 
-            if (await tokenStore.IsAuthorizationExpiredAsync())
+            if (await tokenStore.IsAuthorizationExpiredAsync(accessToken))
             {
                 accessToken = await tokenStore.RefreshAuthorizationAsync(_settings);
             }
 
-            await tokenStore.ValidateTokenAuthorization(accessToken, _settings);
-            return accessToken;
+            return await tokenStore.ValidateTokenAuthorization(accessToken, _settings)
+                ? accessToken 
+                : throw new InvalidOperationException("Invalid or unauthorized GitHub access token.");
         }
 
         private async Task<GitHubClient> CreateOAuthClient(AppUser user)
         {
-            var loginInfo = await _userManager.GetLoginsAsync(user);
-            UserLoginInfo gitHubLogin = loginInfo.FirstOrDefault(l => l.LoginProvider == githubProvider.ToString())
-                ?? throw new UnauthorizedAccessException("GitHub login not found for the user");
             string accessToken = await GetAndValidateAccessToken(user);
-
             return new GitHubClient(new Octokit.ProductHeaderValue(_settings.AppName))
             {
                 Credentials = new Credentials(accessToken, AuthenticationType.Oauth)

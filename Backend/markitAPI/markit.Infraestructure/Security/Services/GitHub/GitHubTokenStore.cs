@@ -7,7 +7,6 @@ using markit.Application.Models.Authentication.GitHub;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant.ExternalToken;
 
-
 namespace markit.Infraestructure.Security.Services.GitHub
 {
     /// <summary>
@@ -46,12 +45,11 @@ namespace markit.Infraestructure.Security.Services.GitHub
         /// <returns>
         /// True if the authorization is expired, missing, or will expire within 5 minutes; otherwise, false.
         /// </returns>
-        public async Task<bool> IsAuthorizationExpiredAsync()
+        public async Task<bool> IsAuthorizationExpiredAsync(string accessToken)
         {
-            string? accessToken = await GetAsync(ACCESS_TOKEN_NAME);
             string? expiresAtStr = await GetAsync(EXPIRES_AT_TOKEN_NAME);
-
-            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(expiresAtStr)) return true;
+            if (string.IsNullOrEmpty(expiresAtStr) || string.IsNullOrEmpty(accessToken))
+                throw new InvalidOperationException("No access token information found");
 
             if (DateTime.TryParse(expiresAtStr, out var expiresAt))
             {
@@ -59,21 +57,27 @@ namespace markit.Infraestructure.Security.Services.GitHub
                 return DateTime.UtcNow >= expiresAt.AddMinutes(-5);
             }
 
-            return true;
+            throw new FormatException("The stored experation token date has an invalid format");
         }
 
         /// <summary>
         /// Determines whether a given token has a valid GitHub API authorization.
         /// </summary>
+        /// <param name="token">The GitHub access token to validate.</param>
+        /// <param name="authSettings">The GitHub authentication settings.</param>
         /// <returns>
-        /// True if the authorization is valid.
+        /// True if the authorization is valid; false if unauthorized.
         /// </returns>
-        /// <exception cref="UnauthorizedAccessException">
-        /// Thrown when the validation process fails.
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="token"/> or <paramref name="authSettings"/> is null or empty.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the validation process fails with an unexpected error.
         /// </exception>
         public async Task<bool> ValidateTokenAuthorization(string token, GitHubAuthSettings authSettings)
         {
-            ArgumentNullException.ThrowIfNull(authSettings);
+            ArgumentNullException.ThrowIfNull(token, nameof(token));
+            ArgumentNullException.ThrowIfNull(authSettings, nameof(authSettings));
             GitHubClient client = new(new ProductHeaderValue(authSettings.AppName))
             {
                 Credentials = new Credentials(authSettings.ClientId, authSettings.ClientSecret)
@@ -81,14 +85,33 @@ namespace markit.Infraestructure.Security.Services.GitHub
 
             try
             {
-                await client.Authorization.CheckApplicationAuthentication(authSettings.ClientId, token);
+                ApplicationAuthorization? authorization = await client.Authorization.CheckApplicationAuthentication(
+                    authSettings.ClientId,
+                    accessToken: token
+                );
+                return authorization != null;
             }
-            catch (ApiException)
+            catch (ApiException ex)
             {
-                throw new UnauthorizedAccessException("Bad GitHub credentials");
+                throw new InvalidOperationException(
+                    $"GitHub token validation failed with status code {ex.StatusCode}: {ex.Message}",
+                    ex
+                );
             }
-
-            return true;
+            catch (HttpRequestException ex)
+            {
+                throw new InvalidOperationException(
+                    "GitHub token validation failed due to network error.",
+                    ex
+                );
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new InvalidOperationException(
+                    "GitHub token validation request timed out.",
+                    ex
+                );
+            }
         }
 
         /// <summary>
@@ -125,7 +148,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
             await StoreAsync(ACCESS_TOKEN_NAME, response.AccessToken);
             await StoreAsync(REFRESH_TOKEN_NAME, response.RefreshToken);
             await StoreAsync(EXPIRES_AT_TOKEN_NAME, expiresAt.ToString("O"));
-
             return response.AccessToken;
         }
 
@@ -140,7 +162,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
             await _userManager.RemoveAuthenticationTokenAsync(_user, _provider.GetName(), EXPIRES_AT_TOKEN_NAME);
             scope.Complete();
         }
-
 
         /// <summary>
         /// Removes all short-lived stored GitHub authentication tokens for the user.

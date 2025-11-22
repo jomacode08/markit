@@ -5,6 +5,7 @@ using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Gists.Queries
 {
@@ -16,11 +17,17 @@ namespace markit.Application.Features.Gists.Queries
 
     public class GetGistByIdQueryHandler : IRequestHandler<GetGistByIdQuery, GistResponse>
     {
+        private ILogger<GetGistByIdQueryHandler> _logger;
         private readonly IGitHubApiService _gitHubApiService;
         private readonly IExternalLoginService _externalLoginService;
 
-        public GetGistByIdQueryHandler(IGitHubApiService gitHubApiService, IExternalLoginService externalLoginService)
+        public GetGistByIdQueryHandler(
+            ILogger<GetGistByIdQueryHandler> logger,
+            IGitHubApiService gitHubApiService,
+            IExternalLoginService externalLoginService
+        )
         {
+            _logger = logger;
             _gitHubApiService = gitHubApiService;
             _externalLoginService = externalLoginService;
         }
@@ -42,8 +49,9 @@ namespace markit.Application.Features.Gists.Queries
                 response.Gist = gist;
                 return response;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
+                _logger.LogError("GitHub gist retrieval process failed: {Message}", [ex.Message]);
                 response.Status = GistResponseStatus.Failure;
                 response.ErrorMessage = ex.Message;
                 return response;
