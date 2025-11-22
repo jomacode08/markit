@@ -25,10 +25,16 @@ button {
 
 .item {
   display: flex;
-  padding: .75rem 1rem;
   transition: background-color 0.3s ease;
   margin-top: .75rem;
   border-bottom: 1px solid var(--border-color);
+
+  button {
+    padding: .75rem 0 .75rem 1rem;
+  }
+  div.actions-container {
+    padding: .75rem 1rem .75rem 0;
+  }
 }
 
 .item:hover {

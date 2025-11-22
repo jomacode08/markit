@@ -23,7 +23,13 @@
         @for ( item of items; track $index) {
             <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item">
                 <!-- Collection Item Information -->
-                <div (click)="onItemSelected(item)" class="grid grid-nogutter w-full">
+                <button
+                    type="button"
+                    id="collectionItemBtn"
+                    aria-label="See collection item"
+                    (click)="onItemSelected(item)"
+                    class="grid grid-nogutter w-full"
+                >
                     <!-- Name and Description -->
                     <div class="col-12 mb-3 md:col-6 md:m-0">
                         <span class="item-icon">
@@ -47,7 +53,7 @@
                     <div class="col-12 md:col-6 text-sm text-white-alpha-60">
                         {{ item.updatedAt ?? item.createdAt | timeAgo }}
                     </div>
-                </div>
+                </button>
                 <!-- General actions -->
                 <div class="actions-container flex-column md:flex-row">
                     <!-- Favorite -->
