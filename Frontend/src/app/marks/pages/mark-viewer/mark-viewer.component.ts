@@ -228,6 +228,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     if (response.blocks) {
       await this.setBlocks(response.blocks);
       this.updateMarkWithRetry();
+      this.modifyActiveBlock(this.currentBlockIndex());
     }
   }
 
