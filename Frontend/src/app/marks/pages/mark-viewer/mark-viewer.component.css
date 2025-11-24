@@ -1,3 +1,9 @@
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
 #markMenuBar {
   position: fixed;
   display: flex;
@@ -33,8 +39,8 @@
   align-items: center;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  padding: 0;
+#markBlock *, .flex-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }

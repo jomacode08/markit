@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -86,13 +86,11 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   private markNameInputDebouncer = new Subject<string>();
   public currentMark = signal<Mark>(this.markForm.getRawValue() as Mark);
   public currentBlock = signal<Block|undefined>(undefined);
+  public currentBlockIndex = signal<number>(0);
 
   //* Floating menu
   public floatingMenuOptions = signal<FloatingMenuOption[]>([]);
   public isFloatingMenuVisible = signal<boolean>(false);
-
-  //* Block gallery  
-  public currentGalleryBlockIndex = signal<number>(0);
 
   //* Getters
   get markNamePlaceHolder(): string {
@@ -159,8 +157,11 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   //* Events
   public onEditorSelected = (editor : Editor) => this.editor.set(editor);
 
-  public onEditorValueChanged(blockId: number, content: string) {
-    this.updateBlockContentWithRetry(blockId, content);
+  public onEditorValueChanged(content: string) {
+    const block = this.currentBlock();
+    if (block) {
+      this.updateBlockContentWithRetry(block.id, content);
+    }
   }
 
   public onCancel(): void {
@@ -240,6 +241,10 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   //* Form
+  public getCurrentBlockFormGroup() {
+    const blocks = this.markForm.get('blocks') as FormArray;
+    return blocks.at(this.currentBlockIndex()) as FormGroup;
+  }
   private initializeForm(mark: Mark): void {
     this.markForm.reset(mark);
     this.setBlocks(mark.blocks);
@@ -348,7 +353,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public modifyActiveBlock(newIndex: number) {
     const currentMark = this.currentMark();
     if (newIndex < 0 || newIndex >= currentMark.blocks.length) return;
-    this.currentGalleryBlockIndex.update(c => newIndex);
+    this.currentBlockIndex.update(c => newIndex);
     this.currentBlock.update(c => currentMark.blocks[newIndex]);
   }
 

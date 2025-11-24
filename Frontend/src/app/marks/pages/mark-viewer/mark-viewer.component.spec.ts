@@ -138,7 +138,7 @@ describe('MarkViewerComponent', () => {
             const blockId = mockMark.blocks[0].id;
             mockBlockService.updateContent.and.returnValue(of({ id: blockId, title: 'Test', content: newContent, createdDate: new Date() }));
             
-            component.onEditorValueChanged(blockId, newContent);
+            component.onEditorValueChanged(newContent);
             tick(500);
 
             expect(mockBlockService.updateContent).toHaveBeenCalledWith(blockId, newContent);
@@ -147,11 +147,10 @@ describe('MarkViewerComponent', () => {
 
         it('should save changes locally on block update failure', fakeAsync(() => {
             const newContent = 'New content';
-            const blockId = mockMark.blocks[0].id;
             spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
             mockBlockService.updateContent.and.returnValue(throwError(() => new Error('Update failed')));
             
-            component.onEditorValueChanged(blockId, newContent);
+            component.onEditorValueChanged(newContent);
             tick(1000); // Wait for retries.
 
             expect(component.saveState()).toBe(SaveState.error);
@@ -213,7 +212,7 @@ describe('MarkViewerComponent', () => {
         it('should update block index', () => {
             const newIndex = 1;
             component.modifyActiveBlock(newIndex);
-            expect(component.currentGalleryBlockIndex()).toBe(newIndex);
+            expect(component.currentBlockIndex()).toBe(newIndex);
         });
     });
 });

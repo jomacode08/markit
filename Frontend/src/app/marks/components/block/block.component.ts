@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LinkProtocolOptions } from './../../../../../node_modules/@tiptap/extension-link/dist/link.d';
 
@@ -51,7 +51,6 @@ type UriValidationContext = {
 })
 export class BlockComponent implements OnInit, ControlValueAccessor {
   //* Configuration
-  @Input() public title: string = "";
   @Output() public onEditorSelected = new EventEmitter<Editor>();
   @Output() public onValueChange = new EventEmitter<string>();
   private injector = inject(Injector);

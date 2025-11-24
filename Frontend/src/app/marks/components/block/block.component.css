@@ -1,28 +1,21 @@
 /** Text editor */
+#editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .tiptap {
+  flex: 1;
   font-size: 16px;
   padding-left: 0.5px;
-}
-.tiptap p.is-editor-empty:first-child::before {
-  color: rgb(255, 255, 255, 0.4);
-  font-style: italic;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
-}
 
-.tiptap.ProseMirror.ProseMirror-focused {
-  outline: none !important;
-}
-
-/** Editor Marks */
-.tiptap {
   h1,h2,h3 {
     border-bottom: 1px solid var(--surface-border);
     padding: 0.5rem 0;
   }
 
+  /** General marks */
   h1 {
     font-size: 1.75rem !important;
     font-weight: 700 !important;
@@ -103,7 +96,7 @@
     }
   }
 
-  /* Link styles */
+  /** Link styles */
   a {
     color: var(--secondary-accent);
     cursor: pointer;
@@ -112,107 +105,118 @@
       color: var(--secondary-accent-hover);
     }
   }
+
+  /** Code Styling */
+  pre {
+    background: var(--surface-1);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding: 1em;
+    border: 1px solid var(--surface-border);
+    overflow-x: auto;
+  
+    code {
+      background: none;
+      color: inherit;
+    }
+  
+    /* Comments */
+    .hljs-comment,
+    .hljs-quote {
+      color: #6c6c6c;
+      font-style: italic;
+    }
+  
+    /* Keywords, tags */
+    .hljs-keyword,
+    .hljs-selector-tag,
+    .hljs-literal {
+      color: #dcc1ff;
+      font-weight: bold;
+    }
+  
+    /* Strings */
+    .hljs-string,
+    .hljs-template-tag,
+    .hljs-template-variable {
+      color: #ab93e0; /* Lavender accent */
+    }
+  
+    /* Numbers, booleans, symbols */
+    .hljs-number,
+    .hljs-symbol,
+    .hljs-bullet {
+      color: #c49fff; /* Muted purple */
+    }
+  
+    /* Titles, names (functions, classes) */
+    .hljs-title,
+    .hljs-section,
+    .hljs-name {
+      color: #8affc1;
+      font-weight: bold;
+    }
+  
+    .hljs-property {
+      color: #ab93e0;
+    }
+  
+    /* Meta data (e.g., decorators, annotations) */
+    .hljs-meta {
+      color: #ab93e0;
+      font-style: italic;
+    }
+  
+    /* Attributes (in tags or functions) */
+    .hljs-attr,
+    .hljs-attribute {
+      color: #f0c0ff;
+    }
+  
+    /* Variables */
+    .hljs-variable,
+    .hljs-languaje_,
+    .hljs-built_in,
+    .hljs-function.hljs-params {
+      color: #ffd580; /* Soft amber for clarity */
+    }
+  
+    /* Operators and punctuation */
+    .hljs-operator,
+    .hljs-punctuation {
+      color: #e0e0e0;
+    }
+  
+    /* Diff additions and deletions */
+    .hljs-addition {
+      background-color: #223322;
+      color: #bbffbb;
+    }
+    .hljs-deletion {
+      background-color: #332222;
+      color: #ffbbbb;
+    }
+  
+    /* Strong and emphasis */
+    .hljs-strong {
+      font-weight: bold;
+    }
+    .hljs-emphasis {
+      font-style: italic;
+    }
+  }
 }
 
-/** Code Styling */
-/* Base styles */
-pre {
-  background: var(--surface-1);
-  font-family: 'Fira Code', monospace;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  padding: 1em;
-  border: 1px solid var(--surface-border);
-  overflow-x: auto;
-
-  code {
-    background: none;
-    color: inherit;
-  }
-
-  /* Comments */
-  .hljs-comment,
-  .hljs-quote {
-    color: #6c6c6c;
-    font-style: italic;
-  }
-
-  /* Keywords, tags */
-  .hljs-keyword,
-  .hljs-selector-tag,
-  .hljs-literal {
-    color: #dcc1ff;
-    font-weight: bold;
-  }
-
-  /* Strings */
-  .hljs-string,
-  .hljs-template-tag,
-  .hljs-template-variable {
-    color: #ab93e0; /* Lavender accent */
-  }
-
-  /* Numbers, booleans, symbols */
-  .hljs-number,
-  .hljs-symbol,
-  .hljs-bullet {
-    color: #c49fff; /* Muted purple */
-  }
-
-  /* Titles, names (functions, classes) */
-  .hljs-title,
-  .hljs-section,
-  .hljs-name {
-    color: #8affc1;
-    font-weight: bold;
-  }
-
-  .hljs-property {
-    color: #ab93e0;
-  }
-
-  /* Meta data (e.g., decorators, annotations) */
-  .hljs-meta {
-    color: #ab93e0;
-    font-style: italic;
-  }
-
-  /* Attributes (in tags or functions) */
-  .hljs-attr,
-  .hljs-attribute {
-    color: #f0c0ff;
-  }
-
-  /* Variables */
-  .hljs-variable,
-  .hljs-languaje_,
-  .hljs-built_in,
-  .hljs-function.hljs-params {
-    color: #ffd580; /* Soft amber for clarity */
-  }
-
-  /* Operators and punctuation */
-  .hljs-operator,
-  .hljs-punctuation {
-    color: #e0e0e0;
-  }
-
-  /* Diff additions and deletions */
-  .hljs-addition {
-    background-color: #223322;
-    color: #bbffbb;
-  }
-  .hljs-deletion {
-    background-color: #332222;
-    color: #ffbbbb;
-  }
-
-  /* Strong and emphasis */
-  .hljs-strong {
-    font-weight: bold;
-  }
-  .hljs-emphasis {
-    font-style: italic;
-  }
+.tiptap p.is-editor-empty:first-child::before {
+  color: rgb(255, 255, 255, 0.4);
+  font-style: italic;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
+.tiptap.ProseMirror.ProseMirror-focused {
+  outline: none !important;
+}

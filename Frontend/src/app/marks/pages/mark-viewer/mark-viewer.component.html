@@ -1,5 +1,5 @@
 @defer(when mark$ | async) {
-    <section class="container">
+    <section class="container flex h-full">
         <!-- Mark menu bar -->
         <nav id="markMenuBar">
             <div class="flex gap-2">
@@ -25,7 +25,7 @@
                 </span>
                 <!-- Navigators -->
                  <block-navigator
-                    [blockIndex]="currentGalleryBlockIndex()"
+                    [blockIndex]="currentBlockIndex()"
                     [blocksLength]="currentMark().blocks.length"
                     (positionChanged)="modifyActiveBlock($event)"
                  />
@@ -48,6 +48,7 @@
         <form
             [formGroup]="markForm"
             autocomplete="off"
+            class="flex-container"
         >
             <!-- Header -->
             <div id="markHeader" class="mb-3 md:mt-4">
@@ -65,27 +66,19 @@
                     (input)="onMarkNameInputChanged($event)"
                 >
             </div>
-            <!-- Blocks gallery -->
+            <!-- Current block -->
             <ng-container formArrayName="blocks">
-                <p-galleria
-                    #blockGalleria
-                    id="blockGalleria"
-                    [value]="markForm.controls.blocks.controls"
-                    [showIndicators]="false"
-                    [showThumbnails]="false"
-                    [activeIndex]="currentGalleryBlockIndex()"
+                <div
+                    id="markBlock"
+                    class="flex-container"
+                    [formGroup]="getCurrentBlockFormGroup()"
                 >
-                    <ng-template let-block pTemplate="item">
-                        <div [formGroup]="block">
-                            <marks-block
-                                formControlName="content"
-                                [title]="block.value['title']"
-                                (onEditorSelected)="onEditorSelected($event)"
-                                (onValueChange)="onEditorValueChanged(block.value['id'], $event)"
-                            />
-                        </div>
-                    </ng-template>   
-                </p-galleria>
+                    <marks-block
+                        formControlName="content"
+                        (onEditorSelected)="onEditorSelected($event)"
+                        (onValueChange)="onEditorValueChanged($event)"
+                    />
+                </div>
             </ng-container>
         </form>
     </section>

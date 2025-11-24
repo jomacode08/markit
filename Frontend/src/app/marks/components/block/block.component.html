@@ -1,10 +1,8 @@
-<section class="block">
-    <tiptap-editor
-        id="editor"
-        [editor]="editor"
-        [(ngModel)]="input"
-        (ngModelChange)="onEditorInputChange($event)"
-        (blur)="onTouched()"
-        (mousedown)="onEditorClick()"
-    />
-</section>
+<tiptap-editor
+    id="editor"
+    [editor]="editor"
+    [(ngModel)]="input"
+    (ngModelChange)="onEditorInputChange($event)"
+    (blur)="onTouched()"
+    (mousedown)="onEditorClick()"
+/>
