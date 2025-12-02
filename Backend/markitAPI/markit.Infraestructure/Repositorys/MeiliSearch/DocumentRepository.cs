@@ -2,6 +2,7 @@
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
+using markit.Application.Models.MeiliSearch.Search;
 using markit.Infraestructure.Persistence.MeiliSearch.Helpers;
 using Meilisearch;
 using Index = Meilisearch.Index;
@@ -16,6 +17,41 @@ namespace markit.Infraestructure.Repositorys.MeiliSearch
         public DocumentRepository(MeiliSearchAuthSettings authSettings, string indexUid) {
             _indexUid = indexUid;
             _client = new MeilisearchClient(authSettings.UrlServer, authSettings.ApiKey);
+        }
+
+        public async Task<IReadOnlyList<T>> FormattedSearchAsync(FormattedDocumentSearch search)
+        {
+            if (search.AttributesToHighlight == null || search.AttributesToHighlight.Length == 0)
+                throw new ArgumentException(nameof(search.AttributesToHighlight));
+
+            var index = await GetIndexAsync();
+            ISearchable<FormattedDocument<T>> result = await index.SearchAsync<FormattedDocument<T>>(
+                search.Query,
+                searchAttributes: new SearchQuery
+                {
+                    IndexUid = _indexUid,
+                    Filter = GetGlobalFilter(search.CreatorId),
+                    Limit = search.Limit,
+                    AttributesToHighlight = search.AttributesToHighlight,
+                    HighlightPreTag = "<span>",
+                    HighlightPostTag = "</span>",
+                }
+            );
+            return [.. result.Hits.Select(fd => fd.Formatted)];
+        }
+
+        public async Task<IReadOnlyList<T>> SearchAsync(DocumentSearch search)
+        {
+            var index = await GetIndexAsync();
+            ISearchable<T> result = await index.SearchAsync<T>(
+                search.Query,
+                searchAttributes: new SearchQuery {
+                    IndexUid = _indexUid,
+                    Filter = GetGlobalFilter(search.CreatorId),
+                    Limit = search.Limit,
+                }
+            );
+            return [.. result.Hits];
         }
 
         public async Task<T> GetByIdAsync(string documentId)
@@ -50,20 +86,6 @@ namespace markit.Infraestructure.Repositorys.MeiliSearch
 
         private async Task<Index> GetIndexAsync()
         {
-            // Check server availability
-            var isServerHealthy = await _client.IsHealthyAsync();
-            if (!isServerHealthy)
-            {
-                throw new Exception("It hasn't been posible to connect with the MileiSearch server");
-            }
-
-            // Check index existency
-            var currentIndexes = (await _client.GetStatsAsync()).Indexes;
-            if (!currentIndexes.ContainsKey(_indexUid))
-            {
-                throw new Exception($"The index with id: { _indexUid } doesn't exist.");
-            }
-
             return await _client.GetIndexAsync(_indexUid);
         }
 
@@ -72,5 +94,7 @@ namespace markit.Infraestructure.Repositorys.MeiliSearch
             var finishedTask = await _client.WaitForTaskAsync(taskUid);
             MeiliSearchHelper.EnsureTaskSucceeded(finishedTask);
         }
+
+        private static string GetGlobalFilter(int creatorId) => $"enabled = true AND creatorId = {creatorId}";
     }
 }
