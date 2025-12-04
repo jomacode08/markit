@@ -10,21 +10,19 @@ import { AuthRequest } from '../interfaces/auth-request';
 import { AuthResponse } from '../interfaces/auth-response';
 import { AuthStatus } from '../interfaces/auth-status.enum';
 import { UserInfo } from './../interfaces/user-info';
-import { MARKS_STORAGE_KEY, MEILISEARCH_TOKEN_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
+import { MARKS_STORAGE_KEY, TOKEN_STORAGE_KEY } from '../../shared/utils/constant';
 import { SignInMethods } from '../interfaces/signin-methods';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   //* === Configuration === *//
   private _token = signal<string | null>(null);
-  private _meiliSearchToken = signal<string | null>(null);
   private _currentUser = signal<UserInfo | null>(null);
   private _authStatus = signal<AuthStatus>(AuthStatus.checking);
   private baseUrl: string = `${environment.baseApiUrl}/login`;
 
   //! To the external world
   public token = computed(() => this._token());
-  public meiliSearchToken = computed(() => this._meiliSearchToken());
   public currentUser = computed(() => this._currentUser());
   public authStatus = computed(() => this._authStatus());
 
@@ -52,11 +50,9 @@ export class AuthService {
   public logout(): void {
     this.logoutFromApi().subscribe(() => {
       this._token.set(null);
-      this._meiliSearchToken.set(null);
       this._currentUser.set(null);
       this._authStatus.set(AuthStatus.notAuthenticated);
       localStorage.removeItem(TOKEN_STORAGE_KEY);
-      localStorage.removeItem(MEILISEARCH_TOKEN_STORAGE_KEY);
       localStorage.removeItem(MARKS_STORAGE_KEY);
       this.router.navigate(['auth']);
     });
@@ -73,18 +69,15 @@ export class AuthService {
 
   //* === Utilities ===  //
   private setAuthentication(auth: AuthResponse): void {
-    const { token, meiliSearchToken } = auth;
+    const { token } = auth;
     this._token.set(token);
-    this._meiliSearchToken.set(meiliSearchToken);
     this._currentUser.set(this.getUserInfo(token));
     this._authStatus.set(AuthStatus.authenticated);
     this.setTokenInLocalStorage(token, TOKEN_STORAGE_KEY);
-    this.setTokenInLocalStorage(meiliSearchToken, MEILISEARCH_TOKEN_STORAGE_KEY);
   }
 
   private checkAuthStatus(): void {
     this._token.set(localStorage.getItem(TOKEN_STORAGE_KEY));
-    this._meiliSearchToken.set(localStorage.getItem(MEILISEARCH_TOKEN_STORAGE_KEY));
 
     this._currentUser.set
     (

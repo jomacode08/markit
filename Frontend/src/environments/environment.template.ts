@@ -4,7 +4,3 @@ export const environment = {
     // baseApiUrl: 'http://localhost:port/api'
     // baseApiUrl: 'https://your-domain/api'
 }
-
-export const meiliSearchEnvironment = {
-    serverUrl : ''
-}

@@ -26,17 +26,17 @@
 
 <div class="results">
     <ng-container 
-        *ngIf="searchResults()?.collectionDocuments?.length
-            || searchResults()?.markDocuments?.length;
+        *ngIf="searchResults()?.collections?.length
+            || searchResults()?.marks?.length;
             else noResultsTemplate"
         class="results-list"
     >
         <!-- Collection documents -->
         <div *ngIf="showCollections()" class="mb-2 fadein animation-duration-200">
             <div class="py-3 text-sm font-light text-secondary">
-                COLLECTIONS ({{ searchResults()?.collectionDocuments?.length }})
+                COLLECTIONS ({{ searchResults()?.collections?.length }})
             </div>
-            @for (collection of searchResults()?.collectionDocuments; track $index) {
+            @for (collection of searchResults()?.collections; track $index) {
                 <div class="item-result" (click)="navigateToCollectionExplorer(collection.collectionId)">
                     <span class="collection-icon fa-regular fa-folder mr-2"></span>
                     <div [innerHTML]="collection.name" class="name formatted"></div>
@@ -46,9 +46,9 @@
         <!-- Mark documents -->
         <div *ngIf="showMarks()" class="mb-3 fadein animation-duration-200">
             <div class="py-2 text-sm font-light text-secondary">
-                MARKS ({{ searchResults()?.markDocuments?.length }})
+                MARKS ({{ searchResults()?.marks?.length }})
             </div>
-            @for (mark of searchResults()?.markDocuments; track $index) {
+            @for (mark of searchResults()?.marks; track $index) {
                 <div class="item-result" (click)="navigateToMarkViewer(mark.markId)">
                     <span class="mark-icon fa-regular fa-note-sticky mr-2"></span>
                     <div [innerHTML]="mark.name" class="name formatted"></div>

@@ -36,8 +36,7 @@ namespace markit.Infraestructure.Security.Services
 
             return new AuthResponse()
             {
-                Token = GenerateToken(user, roles),
-                MeiliSearchToken = await GenerateMeiliSearchTenantToken(user)
+                Token = GenerateToken(user, roles)
             };
         }
 
@@ -74,34 +73,6 @@ namespace markit.Infraestructure.Security.Services
                     signingCredentials: signingCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(securityToken);
-        }
-
-        private async Task<string> GenerateMeiliSearchTenantToken(AppUser user)
-        {
-            MeilisearchClient client = new(_meiliSearchAuthSettings.UrlServer, _meiliSearchAuthSettings.ApiKey);
-            Key apiKeyInfo = await client.GetKeyAsync(_meiliSearchAuthSettings.ApiKey);
-            var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes);
-            var searchRules = new TenantTokenRules(new Dictionary<string, object> {
-                { 
-                    MeiliSearch.COLLECTION_INDEX_UID,
-                    new Dictionary<string, object> { 
-                        { "filter", $"creatorId = { user.CreatorId }" }
-                    } 
-                },
-                {
-                    MeiliSearch.MARK_INDEX_UID,
-                    new Dictionary<string, object> {
-                        { "filter", $"creatorId = { user.CreatorId }" }
-                    }
-                },
-            });
-
-            return client.GenerateTenantToken(
-                apiKeyInfo.Uid,
-                searchRules,
-                apiKeyInfo.KeyUid,
-                expiresAt
-            );
         }
         #endregion
     }

@@ -1,5 +1,4 @@
 export const TOKEN_STORAGE_KEY: string = 'markit-token';
-export const MEILISEARCH_TOKEN_STORAGE_KEY: string = 'meili-token';
 export const MARKS_STORAGE_KEY : string = 'local-marks';
 export const DEFAULT_MARK_NAME : string = 'My new mark 🎉'; 
 export const DEFAULT_BLOCK_NAME : string = 'Main block';
@@ -25,11 +24,4 @@ export const ROUTES = {
 export const POPUP_NAMES = {
     SIGN_IN : 'sign-in',
     LINK_ACCOUNT : 'link-account'
-}
-
-export const MEILISEARCH = {
-    COLLECTION_INDEX_UID : 'collections',
-    COLLECTION_SEARCHABLE_ATTRIBUTE_NAME : 'name',
-    MARK_INDEX_UID : 'marks',
-    MARK_SEARCHABLE_ATTRIBUTE_NAME : 'name',
 }

@@ -9,7 +9,6 @@ export interface RedirectUrlParams {
   purpose : RedirectPurpose,
   error ?: string;
   token ?: string;
-  meiliToken ?: string;
 }
 
 export interface RedirectResponse {

@@ -3,15 +3,15 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { QuickSearchComponent } from './quick-search.component';
 import { SearchService, SearchFilters } from '../../services/search.service';
-import { SearchResults } from '../../interfaces/search/search-results';
 import { ROUTES } from '../../../shared/utils/constant';
+import { DocumentSearch } from '../../interfaces/search/document-search';
 
 class MockSearchService {
-  search(query: string, filter: SearchFilters) {
+  searchDocuments(query: string, filter: SearchFilters) {
     return of({
-      collectionDocuments: [{ collectionId: 1, name: 'Test Collection' }],
-      markDocuments: [{ markId: 2, name: 'Test Mark' }]
-    } as SearchResults);
+      collections: [{ collectionId: 1, name: 'Test Collection' }],
+      marks: [{ markId: 2, name: 'Test Mark' }]
+    } as DocumentSearch);
   }
 }
 
@@ -54,8 +54,8 @@ describe('QuickSearchComponent', () => {
     component.onSearchBoxChanged('test');
     tick(500);
     fixture.detectChanges();
-    expect(component.searchResults()?.collectionDocuments?.length).toBe(1);
-    expect(component.searchResults()?.markDocuments?.length).toBe(1);
+    expect(component.searchResults()?.collections?.length).toBe(1);
+    expect(component.searchResults()?.marks?.length).toBe(1);
     expect(component.searchState()).toBe(component.searchStateEnum.finished);
   }));
 
@@ -70,7 +70,7 @@ describe('QuickSearchComponent', () => {
   });
 
   it('should handle search error', fakeAsync(() => {
-    spyOn(searchService, 'search').and.returnValue(throwError(() => new Error('error')));
+    spyOn(searchService, 'searchDocuments').and.returnValue(throwError(() => new Error('error')));
     component.onSearchBoxChanged('fail');
     tick(500);
     fixture.detectChanges();

@@ -51,11 +51,11 @@ export class RedirectComponent implements OnInit {
   }
 
   private sendRedirectResponse(params: RedirectUrlParams): void {
-    const { state, purpose, token, meiliToken } = params;
+    const { state, purpose, token } = params;
     let auth : AuthResponse | undefined = undefined;
 
     if (purpose === 'sign-in') {
-      auth = { token, meiliSearchToken: meiliToken } as AuthResponse;
+      auth = { token } as AuthResponse;
     }
 
     this.poupService.sendMessageToOpener({
@@ -65,11 +65,11 @@ export class RedirectComponent implements OnInit {
   }
 
   private isRedirectValid(params: RedirectUrlParams): boolean {
-    const { state, purpose, token, meiliToken, error } = params;
+    const { state, purpose, token, error } = params;
     if (state === 'failure' || error != undefined) return false;
 
     if (purpose === 'sign-in') {
-      const hasValidTokens: boolean = [token, meiliToken]
+      const hasValidTokens: boolean = [token]
         .every((token : string | undefined) => token != undefined && token.trim().length > 0);
       return hasValidTokens;
     }

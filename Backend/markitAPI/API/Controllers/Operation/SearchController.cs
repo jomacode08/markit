@@ -24,7 +24,7 @@ namespace markit.API.Controllers.Operation
 
         [HttpPost]
         [Route("documents")]
-        public async Task<DocumentSearchVm> DocumentSearch([FromBody] DocumentSearchRequest request)
+        public async Task<DocumentSearchVm> SearchDocuments([FromBody] DocumentSearchRequest request)
         {
             DocumentSearchQuery query = new()
             {

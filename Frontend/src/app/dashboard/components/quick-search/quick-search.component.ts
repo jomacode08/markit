@@ -6,9 +6,9 @@ import { debounceTime, filter, Subject, switchMap } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { SearchFilters, SearchService } from '../../services/search.service';
-import { SearchResults } from '../../interfaces/search/search-results';
 import { Router } from '@angular/router';
 import { ROUTES } from '../../../shared/utils/constant';
+import { DocumentSearch } from '../../interfaces/search/document-search';
 
 enum SearchState {
   idle,
@@ -36,7 +36,7 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
   public query : string = "";
   public queryDebouncer = new Subject<string>();
   public currentFilter = signal<SearchFilters>(SearchFilters.All);
-  public searchResults = signal<SearchResults | null>(null);
+  public searchResults = signal<DocumentSearch | null>(null);
   public searchState = signal<SearchState>(SearchState.idle);
   
   public showCollections = computed<boolean>(() => {
@@ -68,7 +68,7 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
       filter((query) => this.isQueryValid(query)),
       switchMap((query) => {
         this.setSearchState(SearchState.searching);
-        return this.searchService.search(query, this.currentFilter())
+        return this.searchService.searchDocuments(query, this.currentFilter())
       }),
     ).subscribe({
       next: (results) => {

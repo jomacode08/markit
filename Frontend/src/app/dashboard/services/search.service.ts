@@ -1,14 +1,9 @@
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { AuthService } from '../../auth/services/auth.service';
-import { CollectionDocument } from '../interfaces/search/documents/collection-document';
-import { MarkDocument } from '../interfaces/search/documents/mark-document';
-import { MEILISEARCH } from '../../shared/utils/constant';
-import { meiliSearchEnvironment } from '../../../environments/environment';
-import { MultiSearchRequest, MultiSearchResponse, Query } from '../interfaces/search/multi-search';
-import { SearchResults } from '../interfaces/search/search-results';
+import { environment } from '../../../environments/environment';
+import { DocumentSearch } from '../interfaces/search/document-search';
 
 export enum SearchFilters {
     All = 'All',
@@ -18,95 +13,16 @@ export enum SearchFilters {
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-    private readonly SEARCH_LIMIT: number = 10;
-    private readonly GLOBAL_FILTER: string = 'enabled = true';
+    private baseUrl: string = `${ environment.baseApiUrl }/search`;
 
     constructor(
         private http: HttpClient,
-        private authService: AuthService,
-    ) { }
+    ) {}
 
-    public search(query: string, filter: SearchFilters): Observable<SearchResults | null> {
-        const requestUrl = `${meiliSearchEnvironment.serverUrl}/multi-search`;
-        const body = this.constructSearchBodyRequest(query, filter);
-
-        return this.http.post<MultiSearchResponse>(requestUrl, body, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.authService.meiliSearchToken()}`
-            }
-        }).pipe(
-            map(result => this.mapSearchResults(result))
-        );
-    }
-
-    private constructSearchBodyRequest(query: string, filter: SearchFilters): MultiSearchRequest {
-        let queries: Query[] = [];
-
-        switch (filter) {
-            case SearchFilters.All: {
-                queries.push(this.createNewQuery(
-                    query,
-                    MEILISEARCH.COLLECTION_INDEX_UID,
-                    MEILISEARCH.COLLECTION_SEARCHABLE_ATTRIBUTE_NAME
-                ));
-                queries.push(this.createNewQuery(
-                    query,
-                    MEILISEARCH.MARK_INDEX_UID,
-                    MEILISEARCH.MARK_SEARCHABLE_ATTRIBUTE_NAME
-                ));
-                break;
-            }
-            case SearchFilters.Collections: {
-                queries.push(this.createNewQuery(
-                    query,
-                    MEILISEARCH.COLLECTION_INDEX_UID,
-                    MEILISEARCH.COLLECTION_SEARCHABLE_ATTRIBUTE_NAME
-                ));
-                break;
-            }
-            case SearchFilters.Marks: {
-                queries.push(this.createNewQuery(
-                    query,
-                    MEILISEARCH.MARK_INDEX_UID,
-                    MEILISEARCH.MARK_SEARCHABLE_ATTRIBUTE_NAME
-                ));
-                break;
-            }
-            default:
-                break;
-        }
-
-        return {
-            queries
-        } as MultiSearchRequest;
-    }
-
-    private createNewQuery
-    (
-        query: string,
-        indexUid: string,
-        searchableAttribute: string,
-    ): Query {
-        return {
-            indexUid,
-            q: query,
-            filter : this.GLOBAL_FILTER,
-            limit: this.SEARCH_LIMIT,
-            attributesToHighlight: [searchableAttribute],
-            highlightPreTag: "<span>",
-            highlightPostTag: "</span>"
-        } as Query;
-    }
-
-    private mapSearchResults(data: MultiSearchResponse): SearchResults {
-        const results = data.results;
-        const collectionIndexResult = results.find(r => r.indexUid === MEILISEARCH.COLLECTION_INDEX_UID);
-        const markIndexResult = results.find(r => r.indexUid === MEILISEARCH.MARK_INDEX_UID);
-
-        return {
-            collectionDocuments: collectionIndexResult?.hits.map(h => h._formatted as CollectionDocument) ?? [],
-            markDocuments: markIndexResult?.hits.map(h => h._formatted as MarkDocument) ?? [],
-        };
+    public searchDocuments(query: string, filter: SearchFilters): Observable<DocumentSearch> {
+        return this.http.post<DocumentSearch>(`${ this.baseUrl }/documents`,{
+            query,
+            filter,
+        });
     }
 }

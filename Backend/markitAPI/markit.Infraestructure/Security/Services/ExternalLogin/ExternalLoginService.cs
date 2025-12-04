@@ -135,7 +135,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 scope.Complete();
                 // === Transaction end === 
 
-                return $"{_spaRedirectUrl}?state=success&purpose=sign-in&token={auth.Token}&meiliToken={auth.MeiliSearchToken}";
+                return $"{_spaRedirectUrl}?state=success&purpose=sign-in&token={auth.Token}";
             }
             catch (Exception ex)
             {

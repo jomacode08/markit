@@ -2,7 +2,6 @@
 using System.Text;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Models.Authentication.AppUser;
-using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Authentication.GitHub;
 using markit.Application.Models.GitHub;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +22,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
         private readonly UserManager<AppUser> _userManager;
         private readonly HttpClient _httpClient;
 
-        private readonly LoginProvider githubProvider;
         private GitHubClient? _client;
 
         public GitHubApiService(
@@ -36,7 +34,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
             _logger = logger;
             _userManager = userManager;
             _httpClient = httpClient;
-            githubProvider = LoginProvider.GitHub;
             _httpClient.BaseAddress = new Uri("https://api.github.com");
         }
 
