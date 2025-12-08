@@ -1,12 +1,13 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, CanMatchFn, Route, Router, RouterStateSnapshot, UrlSegment } from "@angular/router";
 import { AuthService } from "../services/auth.service";
+import { AuthStatus } from "../interfaces/auth-status.enum";
 
 //* === Utilities === *//
 const checkAuthenticationStatus = (): boolean => 
 {
     const authService = inject(AuthService);
-    return authService.isTokenAvailable();
+    return authService.authStatus() === AuthStatus.authenticated;
 }
 
 const requireAuthentication = (): boolean => 

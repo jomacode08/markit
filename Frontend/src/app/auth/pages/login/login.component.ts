@@ -17,6 +17,7 @@ import { PopupService } from '../../../shared/services/popup.service';
 import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -108,12 +109,11 @@ export class LoginComponent extends ValidatorErrorField {
 
   private listenForAuthRedirect(): void {
     this.popupService.listenForMessagesFrom(POPUP_NAMES.SIGN_IN).subscribe(
-      (event) => {
+      async (event) => {
         const response = event.data as RedirectResponse;
-        if (response.state === 'success' && response.auth != null) {
-          this.authService.externalAuthLogin(response.auth);
-          this.confirmSession();
-        }
+        if (response.purpose != 'sign-in' || response.state === 'failure') return;
+        const isAuthenticated = await firstValueFrom(this.authService.isAuthenticated());
+        if (isAuthenticated) this.confirmSession();
         this.popupService.close(POPUP_NAMES.SIGN_IN);
       }
     );

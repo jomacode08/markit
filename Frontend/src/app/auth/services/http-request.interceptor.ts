@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -10,27 +10,29 @@ import { CustomMessage, MessageType } from '../../shared/interfaces/message/cust
 import { CustomMessageService } from '../../shared/services/custom-message.service';
 
 @Injectable()
-export class TokenInterceptor implements HttpInterceptor {
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private toast = inject(CustomMessageService);
+export class HttpRequestInterceptor implements HttpInterceptor {
+  constructor(
+    private injector: Injector,
+    private router: Router,
+    private toast: CustomMessageService,
+  ) {}
 
   private readonly generalError = "Something went wrong, we keep track of this error, but feel free to contact us if refreshing doesn't fix things.";
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const authService = this.injector.get(AuthService);
     // Evaluate if the hostname is from a 3rd party
     if (!request.url.includes(environment.baseApiUrl)) return next.handle(request);
-
+    
     // Set headers to the request
     request = request.clone(
       {
+        withCredentials: true,
         setHeaders: {
           'Content-Type'  : 'application/json, text/plain',
-          'Authorization' : `Bearer ${ this.authService.token() ?? '' }` 
         }
       }
     );
-
     // Catching errors
     return next.handle(request).pipe(
       catchError((httpError: HttpErrorResponse) => {
@@ -45,7 +47,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
         switch (statusCode) {
           case HttpStatusCode.Unauthorized: {
-            this.authService.logout();
+            authService.invalidateSession();
             break;
           }
 

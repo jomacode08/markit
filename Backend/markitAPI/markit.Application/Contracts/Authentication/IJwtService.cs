@@ -1,10 +1,11 @@
-﻿using markit.Application.Models.Authentication;
-using markit.Application.Models.Authentication.AppUser;
+﻿using markit.Application.Models.Authentication.AppUser;
+using Microsoft.AspNetCore.Http;
 
 namespace markit.Application.Contracts.Authentication
 {
     public interface IJwtService
     {
-        Task<AuthResponse> GenerateAuthResponse(AppUser user);
+        Task<string> WriteToken(AppUser user);
+        void SetTokenInsideCookie(string accessToken, HttpContext context);
     }
 }

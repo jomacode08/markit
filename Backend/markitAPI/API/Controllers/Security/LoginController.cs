@@ -1,11 +1,13 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace markit.API.Controllers.Seguridad
 {
@@ -40,9 +42,39 @@ namespace markit.API.Controllers.Seguridad
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public async Task<AuthResponse> Authenticate(AuthRequest request)
+        public async Task<AuthenticatedUser> Authenticate(AuthRequest request)
         {
-            return await _loginService.Login(request);
+            AppUser user = await _loginService.Login(request, HttpContext);
+            return new AuthenticatedUser
+            (
+                user.Id,
+                user.GivenName,
+                user.Email!,
+                user.Picture
+            );
+        }
+
+        [HttpGet]
+        [Route("IsAuthenticated")]
+        public AuthenticatedUser IsAuthenticated()
+        {
+            if (User == null || User.Identity == null) throw new UnauthorizedAccessException();
+
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string? givenName = User.FindFirstValue(ClaimTypes.GivenName);
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            string? picture = User.FindFirstValue(GeneralConstant.CustomClaimType.ProfilePictureUrl);
+
+            if (userId == null || givenName == null || email == null)
+                throw new InvalidOperationException($"The user doesn't have the required claims.");
+
+            return new AuthenticatedUser
+            (
+                userId,
+                givenName,
+                email,
+                picture
+            );
         }
 
         [HttpPost]
@@ -51,10 +83,9 @@ namespace markit.API.Controllers.Seguridad
         {
             if (User == null || User.Identity == null) return Unauthorized();
             
-            if (User.Identity.IsAuthenticated) {
-                await _externalTokenService.ClearShortLivedAsync(_sessionService.GetUserId());
-                await _signInManager.SignOutAsync();
-            }
+            await _externalTokenService.ClearShortLivedAsync(_sessionService.GetUserId());
+            await _signInManager.SignOutAsync();
+            HttpContext.Response.Cookies.Delete(GeneralConstant.Token.ACCESS_TOKEN_COOKIE_NAME);
 
             return Ok();
         }
@@ -63,7 +94,7 @@ namespace markit.API.Controllers.Seguridad
         [Route("signin-methods")]
         public async Task<SignInMethods> GetSignInMethods()
         {
-            AppUser? user = await _userManager.GetUserAsync(User) 
+            AppUser user = await _userManager.GetUserAsync(User) 
                 ?? throw new UnauthorizedAccessException();
 
             bool hasEmail = user.Email != null;

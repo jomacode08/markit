@@ -1,5 +1,5 @@
-export const TOKEN_STORAGE_KEY: string = 'markit-token';
 export const MARKS_STORAGE_KEY : string = 'local-marks';
+export const ISAUTHENTICATED_STORAGE_KEY : string = 'is-authenticated'
 export const DEFAULT_MARK_NAME : string = 'My new mark 🎉'; 
 export const DEFAULT_BLOCK_NAME : string = 'Main block';
 export const MAIN_COLLECTION_PARAM : string = 'my-marks';

@@ -22,7 +22,7 @@ export class NavigationMenuComponent {
   public userPictureUrl ?: string;
 
   constructor(private authService: AuthService) {
-    this.userName = authService.currentUser()?.given_name;
+    this.userName = authService.currentUser()?.givenName;
     this.userPictureUrl = authService.currentUser()?.userPictureUrl;
   }
 

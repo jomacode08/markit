@@ -13,6 +13,7 @@ using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -25,7 +26,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         private readonly ILogger<ExternalLoginService> _logger;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IJwtService _authService;
+        private readonly IJwtService _jwtService;
         private readonly IGoogleApiService _googleApiService;
         private readonly IGitHubApiService _gitHubApiService;
         private readonly IExternalIdentifierService _externalIdentifierService;
@@ -42,7 +43,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             ILogger<ExternalLoginService> logger,
             IMediator mediator,
             IMapper mapper,
-            IJwtService authService,
+            IJwtService jwtService,
             IOptions<SpaSettings> spaSettings,
             IGoogleApiService googleApiService,
             IGitHubApiService gitHubApiService,
@@ -54,7 +55,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             _logger = logger;
             _mediator = mediator;
             _mapper = mapper;
-            _authService = authService;
+            _jwtService = jwtService;
             _spaSettings = spaSettings.Value;
             _googleApiService = googleApiService;
             _gitHubApiService = gitHubApiService;
@@ -109,7 +110,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             return properties;
         }
 
-        public async Task<string> LoginCallback(LoginProvider provider)
+        public async Task<string> LoginCallback(LoginProvider provider, HttpContext context)
         {
             try
             {
@@ -131,11 +132,11 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                     await _userManager.AddLoginAsync(user, loginInfo);
                 }
                 await HandleProviderTokens(loginInfo.AuthenticationTokens, provider, user);
-                var auth = await _authService.GenerateAuthResponse(user);
+                await HandleApiTokenAccess(user, context);
                 scope.Complete();
-                // === Transaction end === 
+                // === Transaction end ===
 
-                return $"{_spaRedirectUrl}?state=success&purpose=sign-in&token={auth.Token}";
+                return $"{_spaRedirectUrl}?state=success&purpose=sign-in";
             }
             catch (Exception ex)
             {
@@ -255,6 +256,12 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         )
         {
             await _externalTokenService.StoreAsync(provider, user, providerTokens);
+        }
+
+        private async Task HandleApiTokenAccess(AppUser user, HttpContext context)
+        {
+            string accessToken = await _jwtService.WriteToken(user);
+            _jwtService.SetTokenInsideCookie(accessToken, context);
         }
 
         private static AppUserRequest MapAppUserRequest(IEnumerable<Claim> claims, LoginProvider loginProvider)

@@ -147,6 +147,16 @@ namespace markit.Infraestructure
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = ctx =>
+                    {
+                        ctx.Request.Cookies.TryGetValue(GeneralConstant.Token.ACCESS_TOKEN_COOKIE_NAME, out string? accessToken);
+                        if (!string.IsNullOrEmpty(accessToken))
+                            ctx.Token = accessToken;
+                        return Task.CompletedTask;
+                    }
+                };
             })
             // Add external login providers
             .AddGoogle(options =>

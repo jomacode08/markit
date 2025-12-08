@@ -1,13 +1,13 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, TitleStrategy, withRouterConfig, withViewTransitions } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
-import { TokenInterceptor } from './auth/services/token.interceptor';
+import { HttpRequestInterceptor } from './auth/services/http-request.interceptor';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TemplatePageTitleStrategy } from './shared/utils/template-page-title-strategy';
+import { AuthService } from './auth/services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,18 +23,19 @@ export const appConfig: ApplicationConfig = {
     ),
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
+      useClass: HttpRequestInterceptor,
       multi: true
-    },
-    {
-      provide: JWT_OPTIONS,
-      useValue: JWT_OPTIONS
     },
     {
       provide: TitleStrategy,
       useClass: TemplatePageTitleStrategy
     },
-    JwtHelperService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (authService: AuthService) => () => authService.inicializeAuth(),
+      deps: [AuthService],
+      multi: true
+    },
     MessageService,
     ConfirmationService
   ]

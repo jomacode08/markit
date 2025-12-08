@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { RedirectResponse, RedirectUrlParams } from '../../interfaces/redirect';
-import { AuthResponse } from '../../interfaces/auth-response';
 import { PopupService } from '../../../shared/services/popup.service';
 
 export type AuthProcessState = 'idle' | 'authorized' | 'error';
@@ -51,30 +50,16 @@ export class RedirectComponent implements OnInit {
   }
 
   private sendRedirectResponse(params: RedirectUrlParams): void {
-    const { state, purpose, token } = params;
-    let auth : AuthResponse | undefined = undefined;
-
-    if (purpose === 'sign-in') {
-      auth = { token } as AuthResponse;
-    }
-
+    const { state, purpose } = params;
     this.poupService.sendMessageToOpener({
       state,
-      auth
+      purpose,
     } as RedirectResponse);
   }
 
   private isRedirectValid(params: RedirectUrlParams): boolean {
-    const { state, purpose, token, error } = params;
-    if (state === 'failure' || error != undefined) return false;
-
-    if (purpose === 'sign-in') {
-      const hasValidTokens: boolean = [token]
-        .every((token : string | undefined) => token != undefined && token.trim().length > 0);
-      return hasValidTokens;
-    }
-
-    return true;
+    const { state } = params;
+    return state === 'success';
   }
 
   private setAuthState = (status: AuthProcessState) => this.currentAuthState.update(() => status);

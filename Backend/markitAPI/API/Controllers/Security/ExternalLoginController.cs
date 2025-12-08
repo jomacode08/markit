@@ -66,7 +66,7 @@ namespace markit.API.Controllers.Security
         [HttpGet("callback-login")]
         public async Task<IActionResult> CallbackLogin(LoginProvider provider)
         {
-            string redirectUrl = await _externalLoginService.LoginCallback(provider);
+            string redirectUrl = await _externalLoginService.LoginCallback(provider, HttpContext);
             return Redirect(redirectUrl);
         }
 

@@ -1,4 +1,4 @@
-import { AsyncPipe, TitleCasePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 
@@ -21,7 +21,6 @@ import { CustomMessageService } from '../../../../../shared/services/custom-mess
     SharedModule,
     GeneralButtonComponent,
     AsyncPipe,
-    TitleCasePipe,
     LoginProviderIconPipe,
 ],
   templateUrl: './signin-methods.component.html',

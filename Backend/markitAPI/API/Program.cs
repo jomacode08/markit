@@ -7,6 +7,8 @@ using Serilog;
 using System.Text.Json;
 using markit.Infraestructure.Persistence.MeiliSearch.Managers;
 using Hangfire;
+using markit.Application.Models.Authentication;
+using markit.Application.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,10 +35,15 @@ builder.Services.AddApplicationServices();
 // -- Add Cors Policy. --
 builder.Services.AddCors(options =>
 {
+    SpaSettings spaSettings = new();
+    builder.Configuration.GetSection(GeneralConstant.Configuration.SPA_SECTION_NAME)
+        .Bind(spaSettings);
+
     options.AddPolicy("CorsPolicy", builder =>
-        builder.AllowAnyOrigin()
+        builder.WithOrigins(spaSettings.BaseUrl)
                .AllowAnyMethod()
                .AllowAnyHeader()
+               .AllowCredentials()
     );
 });
 

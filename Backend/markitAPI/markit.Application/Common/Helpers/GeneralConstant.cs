@@ -19,6 +19,11 @@
             public static readonly string CURRENT_USERID_KEY = "CurrentUserId";
         }
 
+        public static class Token
+        {
+            public static readonly string ACCESS_TOKEN_COOKIE_NAME = "accessToken";
+        }
+
         public static class ExternalToken
         {
             public static readonly string ACCESS_TOKEN_NAME = "access_token";
