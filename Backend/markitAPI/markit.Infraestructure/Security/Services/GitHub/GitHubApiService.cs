@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Octokit;
 using Microsoft.Extensions.Logging;
-using static markit.Application.Helpers.GeneralConstant.ExternalToken;
+using static markit.Application.Helpers.GeneralConstant.Token;
 using Microsoft.AspNetCore.Http;
 using markit.Application.Features.Gists.Queries.ViewModels;
 

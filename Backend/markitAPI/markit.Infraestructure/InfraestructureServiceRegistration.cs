@@ -151,7 +151,7 @@ namespace markit.Infraestructure
                 {
                     OnMessageReceived = ctx =>
                     {
-                        ctx.Request.Cookies.TryGetValue(GeneralConstant.Token.ACCESS_TOKEN_COOKIE_NAME, out string? accessToken);
+                        ctx.Request.Cookies.TryGetValue(GeneralConstant.Token.ACCESS_TOKEN_NAME, out string? accessToken);
                         if (!string.IsNullOrEmpty(accessToken))
                             ctx.Token = accessToken;
                         return Task.CompletedTask;

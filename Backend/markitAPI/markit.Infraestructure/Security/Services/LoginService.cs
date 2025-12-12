@@ -1,32 +1,33 @@
 ﻿using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Exceptions;
+using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Octokit;
+using System.Transactions;
 
 namespace markit.Infraestructure.Security.Services
 {
     public class LoginService : ILoginService
     {
         private readonly IJwtService _jwtService;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IExternalTokenService _externalTokenService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
 
         public LoginService(
             IJwtService jwtService,
-            IOptions<JwtSettings> jwtSettings,
+            IExternalTokenService externalTokenService,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager)
         {
+            _jwtService = jwtService;
+            _externalTokenService = externalTokenService;
             _userManager = userManager;
             _signInManager = signInManager;
-            _jwtService = jwtService;
-            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<AppUser> Login(AuthRequest request, HttpContext context)
@@ -48,6 +49,16 @@ namespace markit.Infraestructure.Security.Services
             return user;
         }
 
+        public async Task Logout(AppUser user, HttpContext context)
+        {
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            await _externalTokenService.ClearShortLivedAsync(user.Id);
+            await _jwtService.Revoke(user);
+            context.Response.Cookies.Delete(GeneralConstant.Token.ACCESS_TOKEN_NAME);
+            context.Response.Cookies.Delete(GeneralConstant.Token.REFRESH_TOKEN_NAME);
+            scope.Complete();
+        }
+
         private static void ValidateCreatorExistency(AppUser user)
         {
             if (user.CreatorId == null)
@@ -56,8 +67,8 @@ namespace markit.Infraestructure.Security.Services
 
         private async Task HandleTokenAccess(AppUser user, HttpContext context)
         {
-            string accessToken = await _jwtService.WriteToken(user);
-            _jwtService.SetTokenInsideCookie(accessToken, context);
+            TokenModel tokens = await _jwtService.GenerateTokens(user);
+            _jwtService.SetInsideCookie(tokens, context);
         }
     }
 }

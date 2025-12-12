@@ -21,11 +21,6 @@
 
         public static class Token
         {
-            public static readonly string ACCESS_TOKEN_COOKIE_NAME = "accessToken";
-        }
-
-        public static class ExternalToken
-        {
             public static readonly string ACCESS_TOKEN_NAME = "access_token";
             public static readonly string REFRESH_TOKEN_NAME = "refresh_token";
             public static readonly string EXPIRES_AT_TOKEN_NAME = "expires_at";

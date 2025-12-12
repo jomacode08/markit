@@ -4,5 +4,6 @@
     {
         Google = 1,
         GitHub = 2,
+        Internal = 3,
     }
 }

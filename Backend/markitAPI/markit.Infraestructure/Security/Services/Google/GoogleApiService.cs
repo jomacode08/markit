@@ -6,8 +6,6 @@ using Google.Apis.PeopleService.v1.Data;
 using Google.Apis.Services;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Google;
-using markit.Application.Exceptions;
-using markit.Application.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Authentication.Google;
@@ -16,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using static markit.Application.Helpers.GeneralConstant.Token;
+
 namespace markit.Infraestructure.Security.Services.Google
 {
     public class GoogleApiService : IGoogleApiService
@@ -132,7 +132,7 @@ namespace markit.Infraestructure.Security.Services.Google
             return await _userManager.GetAuthenticationTokenAsync(
                 user,
                 loginProvider: LoginProvider.Google.GetName(),
-                tokenName: GeneralConstant.ExternalToken.REFRESH_TOKEN_NAME
+                tokenName: REFRESH_TOKEN_NAME
             );
         }
     }

@@ -18,23 +18,17 @@ namespace markit.API.Controllers.Seguridad
     {
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
-        private readonly IExternalTokenService _externalTokenService;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly SessionService _sessionService;
 
         public LoginController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
-            IExternalTokenService externalTokenService,
-            SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             SessionService sessionService)
         {
             _loginService = loginService;
-            _signInManager = signInManager;
             _externalLoginService = externalLoginService;
-            _externalTokenService = externalTokenService;
             _userManager = userManager;
             _sessionService = sessionService;
         }
@@ -55,7 +49,7 @@ namespace markit.API.Controllers.Seguridad
         }
 
         [HttpGet]
-        [Route("IsAuthenticated")]
+        [Route("isAuthenticated")]
         public AuthenticatedUser IsAuthenticated()
         {
             if (User == null || User.Identity == null) throw new UnauthorizedAccessException();
@@ -81,12 +75,9 @@ namespace markit.API.Controllers.Seguridad
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            if (User == null || User.Identity == null) return Unauthorized();
-            
-            await _externalTokenService.ClearShortLivedAsync(_sessionService.GetUserId());
-            await _signInManager.SignOutAsync();
-            HttpContext.Response.Cookies.Delete(GeneralConstant.Token.ACCESS_TOKEN_COOKIE_NAME);
-
+            AppUser? user = await _userManager.FindByIdAsync(_sessionService.GetUserId());
+            if (user is null) return Unauthorized();
+            await _loginService.Logout(user, HttpContext);
             return Ok();
         }
 

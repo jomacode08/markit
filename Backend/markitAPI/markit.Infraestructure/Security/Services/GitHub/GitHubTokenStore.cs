@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Octokit;
 using markit.Application.Models.Authentication.GitHub;
 using System.Transactions;
-using static markit.Application.Helpers.GeneralConstant.ExternalToken;
+using static markit.Application.Helpers.GeneralConstant.Token;
 
 namespace markit.Infraestructure.Security.Services.GitHub
 {

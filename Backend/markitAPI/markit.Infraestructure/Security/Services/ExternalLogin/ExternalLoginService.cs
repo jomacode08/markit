@@ -260,8 +260,8 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
 
         private async Task HandleApiTokenAccess(AppUser user, HttpContext context)
         {
-            string accessToken = await _jwtService.WriteToken(user);
-            _jwtService.SetTokenInsideCookie(accessToken, context);
+            TokenModel tokens = await _jwtService.GenerateTokens(user);
+            _jwtService.SetInsideCookie(tokens, context);
         }
 
         private static AppUserRequest MapAppUserRequest(IEnumerable<Claim> claims, LoginProvider loginProvider)

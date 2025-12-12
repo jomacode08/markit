@@ -5,7 +5,7 @@ using markit.Application.Common.Helpers;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
-using static markit.Application.Helpers.GeneralConstant.ExternalToken;
+using static markit.Application.Helpers.GeneralConstant.Token;
 
 namespace markit.Infraestructure.Security.Services.Google
 {
