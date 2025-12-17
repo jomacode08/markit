@@ -1,4 +1,6 @@
-﻿using markit.Application.Contracts.Persistence.Common;
+﻿using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Domain.Entities;
 using MediatR;
@@ -36,9 +38,7 @@ namespace markit.Application.Features.Collections.Commands.SetCollectionFavorite
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
+            collection.ValidateCreator(creatorId);
             return collection;
         }
     }

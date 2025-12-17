@@ -1,4 +1,7 @@
-﻿using markit.Application.Models.Authentication.Enums;
+﻿using markit.Application.Common.Exceptions;
+using markit.Application.Models.Authentication.Enums;
+using markit.Domain.Entities;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Application.Common.Helpers
 {
@@ -14,6 +17,31 @@ namespace markit.Application.Common.Helpers
         {
             return Enum.GetName(typeof(LoginPurpose), loginPurpose)
                 ?? throw new InvalidOperationException();
+        }
+
+        public static void ValidateCreator(this Collection collection, int creatorId)
+        {
+            if (collection.CreatorId != creatorId)
+            {
+                throw new ForbiddenResourceException(
+                    resource: "Collection",
+                    resourceId: collection.Id,
+                    creatorId
+                );
+            }
+        }
+
+        public static void ValidateCreator(this Mark mark, int creatorId)
+        {
+            ArgumentNullException.ThrowIfNull(mark.Collection, nameof(mark.Collection));
+            if (mark.Collection.CreatorId != creatorId)
+            {
+                throw new ForbiddenResourceException(
+                    resource: "Mark",
+                    resourceId: mark.Id,
+                    creatorId
+                );
+            }
         }
     }
 }

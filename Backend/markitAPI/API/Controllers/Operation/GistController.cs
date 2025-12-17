@@ -1,4 +1,5 @@
-﻿using markit.Application.Features.Gists.Queries;
+﻿using markit.Application.Exceptions;
+using markit.Application.Features.Gists.Queries;
 using markit.Application.Features.Gists.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Infraestructure.Security.Services;
@@ -30,7 +31,7 @@ namespace markit.API.Controllers.Operation
         {
             string userId = _sessionService.GetUserId();
             AppUser user = await _userMannager.FindByIdAsync(userId)
-                ?? throw new UnauthorizedAccessException();
+                ?? throw new NotFoundException("Users", userId);
 
             GetGistByIdQuery query = new()
             {

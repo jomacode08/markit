@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Blocks.Queries.ViewModels;
@@ -39,12 +41,9 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
         {
             var block = await _unitOfWork.blockRepository.GetByIdAsync(blockId)
                 ?? throw new NotFoundException("Block", blockId);
-
             var mark = await _unitOfWork.markRepository.GetByIdAsync(block.MarkId, "Collection")
                 ?? throw new NotFoundException("Mark", block.MarkId);
-
-            if (mark.Collection?.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
+            mark.ValidateCreator(creatorId);
             return block;
         }
     }

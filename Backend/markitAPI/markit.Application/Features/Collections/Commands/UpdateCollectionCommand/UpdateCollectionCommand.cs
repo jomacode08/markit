@@ -1,5 +1,6 @@
-﻿using System.Transactions;
-using AutoMapper;
+﻿using AutoMapper;
+using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
@@ -7,6 +8,7 @@ using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
+using System.Transactions;
 
 namespace markit.Application.Features.Collections.Commands.UpdateCollectionCommand
 {
@@ -84,11 +86,10 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
+            collection.ValidateCreator(creatorId);
             return collection;
         }
+
         private void UpdateDescendantsPath(int level, string newName, List<Collection> descendants)
         {
             foreach (Collection descendant in descendants)

@@ -1,10 +1,12 @@
-﻿using System.Transactions;
+﻿using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
+using System.Transactions;
 
 namespace markit.Application.Features.Collections.Commands.DeleteCollectionCommand
 {
@@ -49,8 +51,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
+            collection.ValidateCreator(creatorId);
             return collection;
         }
 

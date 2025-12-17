@@ -1,4 +1,6 @@
-﻿using markit.Application.Common.Helpers.Services;
+﻿using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
+using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
@@ -43,8 +45,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPage
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
+            collection.ValidateCreator(creatorId);
         }
 
         private async Task<CollectionItemPage> GetItemsAsync(GetCollectionItemsPagedQuery request)

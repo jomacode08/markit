@@ -1,4 +1,6 @@
-﻿using markit.Application.Contracts.Persistence.Common;
+﻿using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Domain.Entities;
 using MediatR;
@@ -36,9 +38,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
         {
             var mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
-
-            if (mark.Collection?.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
+            mark.ValidateCreator(creatorId);
             return mark;
         }
     }

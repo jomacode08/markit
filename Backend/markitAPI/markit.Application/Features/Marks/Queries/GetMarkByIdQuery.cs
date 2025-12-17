@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Marks.Queries.ViewModels;
@@ -28,10 +29,7 @@ namespace markit.Application.Features.Marks.Queries
         {
             Mark? mark = await _unitOfWork.markRepository.GetWithOrderedBlocks(request.Id)
                 ?? throw new NotFoundException("Mark", request.Id);
-
-            if (mark.Collection?.CreatorId != request.CreatorId)
-                throw new NotFoundException("Mark", request.Id);
-
+            mark.ValidateCreator(request.CreatorId);
             return _mapper.Map<MarkViewModel>(mark);
         }
     }

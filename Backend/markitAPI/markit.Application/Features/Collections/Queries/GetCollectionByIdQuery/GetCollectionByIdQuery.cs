@@ -44,9 +44,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
         {
             var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-
-            if (collection.CreatorId != creatorId) throw new UnauthorizedAccessException();
-
+            collection.ValidateCreator(creatorId);
             return collection;
         }
 

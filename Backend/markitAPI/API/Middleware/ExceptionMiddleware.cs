@@ -1,4 +1,5 @@
 ﻿using markit.API.Middleware.Errors;
+using markit.Application.Common.Exceptions;
 using markit.Application.Exceptions;
 using System.Net;
 
@@ -66,6 +67,13 @@ namespace markit.API.Middleware
                     {
                         statusCode = HttpStatusCode.Unauthorized;
                         customResponse = new(statusCode, unauthorizedAccessException.Message, ex.StackTrace);
+                        break;
+                    }
+
+                    case ForbiddenResourceException forbiddenResourceException:
+                    {
+                        statusCode = HttpStatusCode.Forbidden;
+                        customResponse = new(statusCode, forbiddenResourceException.Message, ex.StackTrace);
                         break;
                     }
 

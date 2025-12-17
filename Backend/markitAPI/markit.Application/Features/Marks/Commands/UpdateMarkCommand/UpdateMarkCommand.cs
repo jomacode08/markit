@@ -1,5 +1,6 @@
-﻿using System.Transactions;
-using AutoMapper;
+﻿using AutoMapper;
+using markit.Application.Common.Exceptions;
+using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
@@ -8,6 +9,7 @@ using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
+using System.Transactions;
 
 namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 {
@@ -66,8 +68,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
         {
             Mark? mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Blocks,Collection")
                 ?? throw new NotFoundException("Mark", markId);
-
-            if (mark.Collection?.CreatorId != creatorId) throw new UnauthorizedAccessException();
+            mark.ValidateCreator(creatorId);
             return mark;
         }
 
