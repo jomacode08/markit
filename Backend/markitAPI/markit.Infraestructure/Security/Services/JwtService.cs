@@ -46,19 +46,20 @@ namespace markit.Infraestructure.Security.Services
 
         public void SetInsideCookie(TokenModel tokenModel, HttpContext context)
         {
+            DateTime expiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenDurationInMinutes);
             // Access token
             SetHttpOnlyCookie(
                 context,
                 key: Token.ACCESS_TOKEN_NAME,
                 token: tokenModel.AccessToken,
-                expiresIn: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenDurationInMinutes)
+                expiresIn
             );
             // RefreshToken
             SetHttpOnlyCookie(
                 context,
                 key: Token.REFRESH_TOKEN_NAME,
                 token: tokenModel.RefreshToken,
-                expiresIn: DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenDurationInMinutes)
+                expiresIn
             );
         }
 
