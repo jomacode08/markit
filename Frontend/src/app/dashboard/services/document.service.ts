@@ -12,15 +12,15 @@ export enum SearchFilters {
 }
 
 @Injectable({ providedIn: 'root' })
-export class SearchService {
-    private baseUrl: string = `${ environment.baseApiUrl }/search`;
+export class DocumentService {
+    private baseUrl: string = `${ environment.baseApiUrl }/documents`;
 
     constructor(
         private http: HttpClient,
     ) {}
 
-    public searchDocuments(query: string, filter: SearchFilters): Observable<DocumentSearch> {
-        return this.http.post<DocumentSearch>(`${ this.baseUrl }/documents`,{
+    public search(query: string, filter: SearchFilters): Observable<DocumentSearch> {
+        return this.http.post<DocumentSearch>(`${ this.baseUrl }/search`,{
             query,
             filter,
         });

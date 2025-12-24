@@ -10,19 +10,15 @@ import { environment } from '../../../environments/environment';
 })
 export class CreatorService {
 
-  private baseUrl: string = `${ environment.baseApiUrl }/creators`;
+  private baseUrl: string = `${ environment.baseApiUrl }/creator`;
 
   constructor(private http: HttpClient) { }
 
-  public getById(id: number): Observable<Creator> {
-    return this.http.get<Creator>(`${ this.baseUrl }/getById/${ id }`);
-  }
-
   public getByCurrentSession(): Observable<Creator> {
-    return this.http.get<Creator>(`${ this.baseUrl }/getByCurrentSession`);
+    return this.http.get<Creator>(`${ this.baseUrl }/me`);
   }
 
   public update( creator: Creator ): Observable<Creator> {
-    return this.http.put<Creator>(`${ this.baseUrl }/update`, creator);
+    return this.http.put<Creator>(`${ this.baseUrl }/${ creator.id }`, creator);
   }
 }

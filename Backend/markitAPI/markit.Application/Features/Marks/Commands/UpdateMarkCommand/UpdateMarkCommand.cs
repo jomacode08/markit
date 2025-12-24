@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using markit.Application.Common.Exceptions;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
@@ -13,13 +12,13 @@ using System.Transactions;
 
 namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 {
-    public class UpdateMarkCommand : IRequest<MarkViewModel>
+    public class UpdateMarkCommand(int id, UpdateMarkDto dto) : IRequest<MarkViewModel>
     {
-        public int Id { get; set; }
-        public string InputName { get; set; } = string.Empty;
-        public string? Emoji { get; set; }
-        public List<BlockViewModel> Blocks { get; set; } = new();
-        public int CreatorId { get; set; }
+        public int Id { get; set; } = id;
+        public string InputName { get; set; } = dto.InputName;
+        public string? Emoji { get; set; } = dto.Emoji;
+        public List<BlockViewModel> Blocks { get; set; } = dto.Blocks;
+        public int CreatorId { get; set; } = dto.CreatorId;
     }
 
     public class UpdateMarkCommandHandler : IRequestHandler<UpdateMarkCommand, MarkViewModel>

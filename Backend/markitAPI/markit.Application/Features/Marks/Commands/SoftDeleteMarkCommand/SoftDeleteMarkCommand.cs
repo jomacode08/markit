@@ -1,5 +1,4 @@
-﻿using markit.Application.Common.Exceptions;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
@@ -10,10 +9,10 @@ using System.Transactions;
 
 namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 {
-    public class SoftDeleteMarkCommand : IRequest<bool>
+    public class SoftDeleteMarkCommand(int id, int creatorId) : IRequest<bool>
     {
-        public int Id { get; set; }
-        public int CreatorId { get; set; }
+        public int Id { get; set; } = id;
+        public int CreatorId { get; set; } = creatorId;
     }
 
     public class SoftDeleteMarkCommandHandler : IRequestHandler<SoftDeleteMarkCommand, bool>

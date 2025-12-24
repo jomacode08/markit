@@ -12,15 +12,16 @@ using Microsoft.Extensions.Options;
 namespace markit.API.Controllers.Security
 {
     [Authorize]
-    [Route("api/external-login")]
-    public class ExternalLoginController : ControllerBase
+    [ApiController]
+    [Route("api/auth/external")]
+    public class ExternalAuthController : ControllerBase
     {
         private readonly IExternalLoginService _externalLoginService;
         private readonly IMemoryCache _cache;
         private readonly SpaSettings _spaSettings;
         private readonly SessionService _sessionService;
 
-        public ExternalLoginController(
+        public ExternalAuthController(
             IExternalLoginService externalLoginService,
             IOptions<SpaSettings> spaSettings,
             IMemoryCache cache,
@@ -32,7 +33,7 @@ namespace markit.API.Controllers.Security
             _cache = cache;
         }
 
-        [HttpGet("generate-link-token")]
+        [HttpGet("link-token")]
         public IActionResult GenerateLinkToken()
         {
             var userId = _sessionService.GetUserId();
@@ -42,14 +43,14 @@ namespace markit.API.Controllers.Security
         }
 
         [AllowAnonymous]
-        [HttpGet("initiate-login")]
+        [HttpGet("{provider}")]
         public IActionResult InitiateLogin(LoginProvider provider)
         {
             return InitiateChallenge(provider, purpose: LoginPurpose.SignIn);
         }
 
         [AllowAnonymous]
-        [HttpGet("initiate-link-account")]
+        [HttpGet("{provider}/account/{token}")]
         public IActionResult InitiateLinkAccount(LoginProvider provider, string token)
         {
             string? userId = GetUserIdFromLinkToken(token);
@@ -63,7 +64,7 @@ namespace markit.API.Controllers.Security
         }
 
         [AllowAnonymous]
-        [HttpGet("callback-login")]
+        [HttpGet("callback/{provider}")]
         public async Task<IActionResult> CallbackLogin(LoginProvider provider)
         {
             string redirectUrl = await _externalLoginService.LoginCallback(provider, HttpContext);
@@ -71,7 +72,7 @@ namespace markit.API.Controllers.Security
         }
 
         [AllowAnonymous]
-        [HttpGet("callback-link-account")]
+        [HttpGet("account/callback/{provider}")]
         public async Task<IActionResult> CallbackLinkAccount(LoginProvider provider)
         {
             string redirectUrl = await _externalLoginService.LinkCallback(provider);
@@ -124,7 +125,7 @@ namespace markit.API.Controllers.Security
 
             return Url.Action(
                 action,
-                controller: "ExternalLogin",
+                controller: "ExternalAuth",
                 values: new { provider = provider.GetName() },
                 protocol: Request.Scheme
             );

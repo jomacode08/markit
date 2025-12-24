@@ -28,6 +28,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddMemoryCache();
 builder.Services.AddInfraestructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();

@@ -1,4 +1,5 @@
-﻿using markit.Application.Features.Creators.Commands.UpdateCreator;
+﻿using markit.API.Controllers.Common;
+using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries;
 using markit.Application.Features.Creators.Queries.ViewModels;
 using markit.Infraestructure.Security.Services;
@@ -9,9 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace markit.API.Controllers.Operation
 {
     [Authorize]
-    [Route("api/creators")]
-    [ApiController]
-    public class CreatorController : ControllerBase
+    public class CreatorController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly SessionService _sessionService;
@@ -23,27 +22,20 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpGet]
-        [Route("getById/{Id}")]
-        public async Task<CreatorViewModel> GetById([FromRoute] GetCreatorByIdQuery query)
-            => await _mediator.Send(query);
-
-        [HttpGet]
-        [Route("getByCurrentSession")]
-        public async Task<CreatorViewModel> GetByCurrentSession()
+        [Route("me")]
+        public async Task<ActionResult<CreatorViewModel>> GetByCurrentSession()
         {
-            var query = new GetCreatorByIdQuery()
-            { 
-                Id = _sessionService.GetCreatorId() 
-            };
-
-            return await _mediator.Send(query);
+            GetCreatorByIdQuery query = new(id: _sessionService.GetCreatorId());
+            CreatorViewModel creator = await _mediator.Send(query);
+            return Ok(creator);
         }
 
-        [HttpPut]
-        [Route("update")]
-        public async Task<CreatorViewModel> Update([FromBody] UpdateCreatorCommand command)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<CreatorViewModel>> Update([FromRoute] int id, [FromBody] UpdateCreatorDto dto)
         {
-            return await _mediator.Send(command);
+            UpdateCreatorCommand command = new(id, dto);
+            CreatorViewModel updatedCreator = await _mediator.Send(command);
+            return Ok(updatedCreator);
         }
     }
 }

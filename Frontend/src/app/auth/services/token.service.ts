@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class TokenService {
-    private baseUrl: string = `${environment.baseApiUrl}/token`;
+    private baseUrl: string = `${environment.baseApiUrl}/auth/token`;
     
     constructor(
         private http: HttpClient

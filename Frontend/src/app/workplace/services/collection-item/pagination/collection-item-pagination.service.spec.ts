@@ -10,7 +10,7 @@ describe('CollectionItemService', () => {
   let service: CollectionItemPaginationService;
   let httpMock: HttpTestingController;
 
-  const getItemsPagedUrl = `${environment.baseApiUrl}/collections/getItemsPaged`;
+  const getItemsPagedUrl = `${environment.baseApiUrl}/collections/search`;
   const mockCursor = '2025-05-30T14:08:08.1966667|Mark|2';
   const mockPage: CollectionItemPage = {
     items: [

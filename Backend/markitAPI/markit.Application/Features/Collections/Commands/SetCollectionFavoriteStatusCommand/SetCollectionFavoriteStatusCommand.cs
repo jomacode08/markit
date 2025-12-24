@@ -1,5 +1,4 @@
-﻿using markit.Application.Common.Exceptions;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Domain.Entities;
@@ -7,11 +6,11 @@ using MediatR;
 
 namespace markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand
 {
-    public class SetCollectionFavoriteStatusCommand : IRequest<bool>
+    public class SetCollectionFavoriteStatusCommand(int id, int creatorId, bool isFavorite) : IRequest<bool>
     {
-        public int Id { get; set; }
-        public int CreatorId { get; set; }
-        public bool IsFavorite { get; set; }
+        public int Id { get; set; } = id;
+        public int CreatorId { get; set; } = creatorId;
+        public bool IsFavorite { get; set; } = isFavorite;
     }
 
     public class SetCollectionFavoriteStatusCommandHandler : IRequestHandler<SetCollectionFavoriteStatusCommand, bool>

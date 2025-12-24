@@ -9,9 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery
 {
-    public class GetMainCollectionByCreatorQuery : IRequest<CollectionViewModel>
+    public class GetMainCollectionByCreatorQuery(int creatorId) : IRequest<CollectionViewModel>
     {
-       public int CreatorId { get; set; }
+       public int CreatorId { get; set; } = creatorId;
     }
 
     public class GetMainCollectionByCreatorQueryHandler : IRequestHandler<GetMainCollectionByCreatorQuery, CollectionViewModel>

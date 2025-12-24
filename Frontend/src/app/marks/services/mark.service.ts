@@ -60,18 +60,14 @@ export class MarkService {
 
     // * === API MARKS === *//
     public getById(id: number): Observable<Mark> {
-        return this.http.get<Mark>(`${ this.baseUrl }/getById/${ id }`);
-    }
-
-    public getByCurrentSession(): Observable<Mark[]> {
-        return this.http.get<Mark[]>(`${ this.baseUrl }/getByCurrentSession`);
+        return this.http.get<Mark>(`${ this.baseUrl }/${ id }`);
     }
 
     public create(mark: Mark): Observable<Mark> {
-        return this.http.post<Mark>(`${ this.baseUrl }/create`, mark);
+        return this.http.post<Mark>(`${ this.baseUrl }`, mark);
     }
 
     public update(mark : Mark): Observable<Mark> {
-        return this.http.patch<Mark>(`${ this.baseUrl }/update`, mark);
+        return this.http.put<Mark>(`${ this.baseUrl }/${mark.id}`, mark);
     }
 }

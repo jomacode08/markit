@@ -12,10 +12,10 @@ export class CollectionService {
     constructor(private http: HttpClient) { }
 
     public getMainByCurrentSession(): Observable<Collection> {
-        return this.http.get<Collection>(`${ this.baseUrl }/getMainByCurrentSession`);
+        return this.http.get<Collection>(`${ this.baseUrl }/main`);
     }
 
     public getById(collectionId: number): Observable<Collection> {
-        return this.http.get<Collection>(`${ this.baseUrl }/getById/${ collectionId }`);
+        return this.http.get<Collection>(`${ this.baseUrl }/${ collectionId }`);
     }
 }

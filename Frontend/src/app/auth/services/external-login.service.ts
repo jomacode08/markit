@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginProvider, LoginPurpose } from '../interfaces/signin-methods';
-import { firstValueFrom, map, Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 interface LinkTokenResponse {
@@ -10,7 +10,7 @@ interface LinkTokenResponse {
 
 @Injectable({providedIn: 'root'})
 export class ExternalLoginService {
-    private baseUrl: string = `${environment.baseApiUrl}/external-login`;
+    private baseUrl: string = `${environment.baseApiUrl}/auth/external`;
     
     constructor(private http: HttpClient) { }
 
@@ -22,19 +22,18 @@ export class ExternalLoginService {
         provider: LoginProvider,
         purpose: LoginPurpose
     ): Observable<string> {
-        const action = purpose === LoginPurpose.SignIn ? 'initiate-login' : 'initiate-link-account';
-        const baseUrl = `${this.baseUrl}/${action}?provider=${provider}`;
+        const baseUrl = `${this.baseUrl}/${provider}`;
 
         if (purpose === LoginPurpose.LinkAccount) {
             return this.getLinkToken()
-            .pipe(map(token => `${baseUrl}&token=${token}`));
+            .pipe(map(token => `${baseUrl}/account/${token}`));
         }
 
         return of(baseUrl);
     }
 
     private getLinkToken(): Observable<string> {
-        return this.http.get<LinkTokenResponse>(`${ this.baseUrl }/generate-link-token`)
+        return this.http.get<LinkTokenResponse>(`${ this.baseUrl }/link-token`)
         .pipe(map(data => data.token));
     }
 }

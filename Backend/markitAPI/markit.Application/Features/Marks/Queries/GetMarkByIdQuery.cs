@@ -8,10 +8,10 @@ using MediatR;
 
 namespace markit.Application.Features.Marks.Queries
 {
-    public class GetMarkByIdQuery : IRequest<MarkViewModel>
+    public class GetMarkByIdQuery(int id, int creatorId) : IRequest<MarkViewModel>
     {
-        public int Id { get; set; }
-        public int CreatorId {  get; set; }
+        public int Id { get; set; } = id;
+        public int CreatorId {  get; set; } = creatorId;
     }
 
     public class GetMarkByIdQueryHandler : IRequestHandler<GetMarkByIdQuery, MarkViewModel>

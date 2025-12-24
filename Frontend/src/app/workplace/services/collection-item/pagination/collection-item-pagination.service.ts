@@ -77,7 +77,7 @@ export class CollectionItemPaginationService {
       filters : this.filters
     } as CollectionItemPageRequest;
 
-    this.http.post<CollectionItemPage>(`${ this.BASE_URL }/getItemsPaged`, bodyRequest)
+    this.http.post<CollectionItemPage>(`${ this.BASE_URL }/search`, bodyRequest)
     .pipe(
       finalize(() => this.loadingSubject.next(false))
     )

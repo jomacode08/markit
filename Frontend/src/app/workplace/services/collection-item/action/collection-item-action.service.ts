@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { CollectionItem, CollectionItemType } from '../../../interfaces/collection-item';
 import { environment } from '../../../../../environments/environment';
@@ -46,35 +46,36 @@ export class CollectionItemActionService {
   public createEmptyCollection(item : CollectionItem): Observable<Collection> {
     const { name, collectionId, type, emoji } = item;
     const collection : Collection = this.CREATE_INITIAL_COLLECTION(name, collectionId, emoji);
-    return this.http.post<Collection>(`${ this.BASE_URL(type) }/create`, collection);
+    return this.http.post<Collection>(`${ this.BASE_URL(type) }`, collection);
   }
 
   public createEmptyMark(item : CollectionItem): Observable<Mark> {
     const { name, collectionId, type, emoji } = item;
     const mark : Mark = this.CREATE_INITIAL_MARK(name, collectionId, emoji);
-    return this.http.post<Mark>(`${ this.BASE_URL(type) }/create`, mark);
+    return this.http.post<Mark>(`${ this.BASE_URL(type) }`, mark);
   }
 
   public rename( item: CollectionItem ): Observable<Collection | Mark> {
     const bodyRequest = {
-      Id: item.typeId,
       name: item.name,
       emoji : item.emoji
     };
 
-    return this.http.patch<Collection | Mark>(`${ this.BASE_URL(item.type) }/rename`, bodyRequest);
+    return this.http.patch<Collection | Mark>(`${ this.BASE_URL(item.type) }/${ item.typeId }`, bodyRequest);
   }
 
   public updateFavoriteStatus(item : CollectionItem): Observable<boolean> {
-    const bodyRequest = {
-      Id : item.typeId,
-      IsFavorite : !item.isFavorite,
-      emoji: item.emoji,
-    };
-    return this.http.patch<boolean>(`${ this.BASE_URL(item.type) }/favorite`, bodyRequest);
+    const URL = `${ this.BASE_URL(item.type) }/${item.typeId}/favorite`;
+    if (item.isFavorite) {
+      return this.http.delete<boolean>(URL)
+      .pipe(map(() => !item.isFavorite));
+    } else {
+      return this.http.put<boolean>(URL, {})
+      .pipe(map(() => !item.isFavorite));
+    }
   }
 
   public softDelete( item: CollectionItem ): Observable<boolean> {
-    return this.http.delete<boolean>(`${ this.BASE_URL(item.type) }/softDelete/${ item.typeId }`);
+    return this.http.delete<boolean>(`${ this.BASE_URL(item.type) }/${ item.typeId }`);
   }
 }

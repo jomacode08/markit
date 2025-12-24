@@ -11,14 +11,14 @@ using System.Transactions;
 
 namespace markit.Application.Features.Creators.Commands.UpdateCreator
 {
-    public class UpdateCreatorCommand : IRequest<CreatorViewModel>
+    public class UpdateCreatorCommand(int id, UpdateCreatorDto dto) : IRequest<CreatorViewModel>
     {
 
-        public int Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string BirthDate { get; set; } = string.Empty;
-        public Gender Gender { get; set; }
+        public int Id { get; set; } = id;
+        public string FirstName { get; set; } = dto.FirstName;
+        public string LastName { get; set; } = dto.LastName;
+        public string BirthDate { get; set; } = dto.BirthDate;
+        public Gender Gender { get; set; } = dto.Gender;
     }
 
     public class UpdateCreatorCommandHandler : IRequestHandler<UpdateCreatorCommand, CreatorViewModel>
@@ -44,9 +44,7 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
             await UpdateAppUser(request);
 
             var creatorUpdated = await _mediator.Send(
-                new GetCreatorByIdQuery {
-                    Id = request.Id 
-                }
+                new GetCreatorByIdQuery(request.Id)
             );
 
             scope.Complete();

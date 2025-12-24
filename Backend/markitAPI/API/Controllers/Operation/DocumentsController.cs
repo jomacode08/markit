@@ -1,4 +1,5 @@
-﻿using markit.Application.Features.Reports.Search;
+﻿using markit.API.Controllers.Common;
+using markit.Application.Features.Reports.Search;
 using markit.Application.Features.Reports.Search.ViewModels;
 using markit.Application.Models.MeiliSearch.Search;
 using markit.Infraestructure.Security.Services;
@@ -9,22 +10,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace markit.API.Controllers.Operation
 {
     [Authorize]
-    [Route("api/search")]
-    [ApiController]
-    public class SearchController : ControllerBase
+    public class DocumentsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly SessionService _sessionService;
 
-        public SearchController(IMediator mediator, SessionService sessionService)
+        public DocumentsController(IMediator mediator, SessionService sessionService)
         {
             _mediator = mediator;
             _sessionService = sessionService;
         }
 
         [HttpPost]
-        [Route("documents")]
-        public async Task<DocumentSearchVm> SearchDocuments([FromBody] DocumentSearchRequest request)
+        [Route("search")]
+        public async Task<ActionResult<DocumentSearchVm>> SearchDocuments([FromBody] DocumentSearchRequest request)
         {
             DocumentSearchQuery query = new()
             {
@@ -32,7 +31,8 @@ namespace markit.API.Controllers.Operation
                 Filter = request.Filter,
                 CreatorId = _sessionService.GetCreatorId(),
             };
-            return await _mediator.Send(query);
+            DocumentSearchVm search = await _mediator.Send(query);
+            return Ok(search);
         }
     }
 }

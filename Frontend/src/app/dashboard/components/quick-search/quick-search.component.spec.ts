@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { QuickSearchComponent } from './quick-search.component';
-import { SearchService, SearchFilters } from '../../services/search.service';
+import { DocumentService, SearchFilters } from '../../services/document.service';
 import { ROUTES } from '../../../shared/utils/constant';
 import { DocumentSearch } from '../../interfaces/search/document-search';
 
 class MockSearchService {
-  searchDocuments(query: string, filter: SearchFilters) {
+  search(query: string, filter: SearchFilters) {
     return of({
       collections: [{ collectionId: 1, name: 'Test Collection' }],
       marks: [{ markId: 2, name: 'Test Mark' }]
@@ -22,21 +22,21 @@ class MockRouter {
 describe('QuickSearchComponent', () => {
   let component: QuickSearchComponent;
   let fixture: ComponentFixture<QuickSearchComponent>;
-  let searchService: SearchService;
+  let documentService: DocumentService;
   let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [QuickSearchComponent],
       providers: [
-        { provide: SearchService, useClass: MockSearchService },
+        { provide: DocumentService, useClass: MockSearchService },
         { provide: Router, useClass: MockRouter }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuickSearchComponent);
     component = fixture.componentInstance;
-    searchService = TestBed.inject(SearchService);
+    documentService = TestBed.inject(DocumentService);
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -70,7 +70,7 @@ describe('QuickSearchComponent', () => {
   });
 
   it('should handle search error', fakeAsync(() => {
-    spyOn(searchService, 'searchDocuments').and.returnValue(throwError(() => new Error('error')));
+    spyOn(documentService, 'search').and.returnValue(throwError(() => new Error('error')));
     component.onSearchBoxChanged('fail');
     tick(500);
     fixture.detectChanges();

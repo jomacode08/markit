@@ -1,5 +1,4 @@
-﻿using markit.Application.Common.Exceptions;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
@@ -10,10 +9,10 @@ using System.Transactions;
 
 namespace markit.Application.Features.Collections.Commands.DeleteCollectionCommand
 {
-    public class SoftDeleteCollectionCommand : IRequest<bool>
+    public class SoftDeleteCollectionCommand(int id, int creatorId) : IRequest<bool>
     {
-        public int CollectionId { get; set; }
-        public int CreatorId { get; set; }
+        public int CollectionId { get; set; } = id;
+        public int CreatorId { get; set; } = creatorId;
     }
 
     public class DeleteCollectionCommandHandler : IRequestHandler<SoftDeleteCollectionCommand, bool>

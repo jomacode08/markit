@@ -12,7 +12,7 @@ export class BlockService {
     constructor( private http: HttpClient ) { }
 
     public updateContent( id: number, content: string ): Observable<Block> {
-        const bodyRequest = { id, content };
-        return this.http.patch<Block>(`${ this.baseUrl }/update-content`, bodyRequest);
+        const bodyRequest = { content };
+        return this.http.patch<Block>(`${ this.baseUrl }/${id}`, bodyRequest);
     }
 }

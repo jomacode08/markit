@@ -9,10 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 {
-    public class GetCollectionByIdQuery : IRequest<CollectionViewModel>
+    public class GetCollectionByIdQuery(int id, int creatorId) : IRequest<CollectionViewModel>
     {
-        public int CollectionId { get; set; }
-        public int CreatorId { get; set; }
+        public int CollectionId { get; set; } = id;
+        public int CreatorId { get; set; } = creatorId;
     }
 
     public class GetCollectionItemsQueryHandler : IRequestHandler<GetCollectionByIdQuery, CollectionViewModel>

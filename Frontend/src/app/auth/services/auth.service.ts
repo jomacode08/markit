@@ -15,7 +15,7 @@ export class AuthService {
   //* === Configuration === *//
   private _currentUser = signal<AuthenticatedUser | null>(null);
   private _authStatus = signal<AuthStatus>(AuthStatus.checking);
-  private baseUrl: string = `${environment.baseApiUrl}/login`;
+  private baseUrl: string = `${environment.baseApiUrl}/auth`;
 
   //! To the external world
   public currentUser = computed(() => this._currentUser());
@@ -28,7 +28,7 @@ export class AuthService {
   {}
 
   public login(authRequest: AuthRequest): Observable<AuthenticatedUser> {
-    return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/authenticate`, authRequest)
+    return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/login`, authRequest)
     .pipe(
       tap((authUser) => this.setAuthentication(authUser))
     );
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   public isAuthenticated(): Observable<boolean> {
-    return this.http.get<AuthenticatedUser>(`${ this.baseUrl }/isAuthenticated`)
+    return this.http.get<AuthenticatedUser>(`${ this.baseUrl }/me`)
     .pipe(
       tap((authUser : AuthenticatedUser) => this.setAuthentication(authUser)),
       map(() => true),

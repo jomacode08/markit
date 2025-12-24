@@ -9,9 +9,9 @@ using MediatR;
 
 namespace markit.Application.Features.Reports.Dashboard.Queries
 {
-    public class DashboardReportQuery : IRequest<DashboardReportVm>
+    public class DashboardReportQuery(int creatorId) : IRequest<DashboardReportVm>
     {
-        public int CreatorId {  get; set; }
+        public int CreatorId { get; set; } = creatorId;
     }
 
     public class DashboardReportQueryHandler : IRequestHandler<DashboardReportQuery, DashboardReportVm>

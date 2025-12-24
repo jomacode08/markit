@@ -11,6 +11,6 @@ export class DashboardService {
     constructor(private http: HttpClient) { }
 
     public getReportByCurrentSession(): Observable<DashboardReport> {
-        return this.http.get<DashboardReport>(`${ this.baseUrl }/getReportByCurrentSession`);
+        return this.http.get<DashboardReport>(`${ this.baseUrl }`);
     }
 }

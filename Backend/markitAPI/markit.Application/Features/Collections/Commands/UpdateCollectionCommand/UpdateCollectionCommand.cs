@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using markit.Application.Common.Exceptions;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
@@ -12,12 +11,12 @@ using System.Transactions;
 
 namespace markit.Application.Features.Collections.Commands.UpdateCollectionCommand
 {
-    public class UpdateCollectionCommand : IRequest<CollectionViewModel>
+    public class UpdateCollectionCommand(int id, UpdateCollectionDto dto) : IRequest<CollectionViewModel>
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? Emoji { get; set; }
-        public int CreatorId { get; set; }
+        public int Id { get; set; } = id;
+        public string Name { get; set; } = dto.Name;
+        public string? Emoji { get; set; } = dto.Emoji;
+        public int CreatorId { get; set; } = dto.CreatorId;
     }
 
     public class UpdateCollectionCommandHandler : IRequestHandler<UpdateCollectionCommand, CollectionViewModel>

@@ -1,4 +1,4 @@
-﻿using FluentValidation.Validators;
+﻿using markit.API.Controllers.Common;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Exceptions;
@@ -14,16 +14,14 @@ using System.Security.Claims;
 namespace markit.API.Controllers.Seguridad
 {
     [Authorize]
-    [Route("api/login")]
-    [ApiController]
-    public class LoginController : ControllerBase
+    public class AuthController : ApiControllerBase
     {
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SessionService _sessionService;
 
-        public LoginController(
+        public AuthController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
             UserManager<AppUser> userManager,
@@ -37,22 +35,21 @@ namespace markit.API.Controllers.Seguridad
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("authenticate")]
-        public async Task<AuthenticatedUser> Authenticate(AuthRequest request)
+        [Route("login")]
+        public async Task<ActionResult<AuthenticatedUser>> Authenticate(AuthRequest request)
         {
             AppUser user = await _loginService.Login(request, HttpContext);
-            return new AuthenticatedUser
-            (
+            return Ok(new AuthenticatedUser(
                 user.Id,
                 user.GivenName,
                 user.Email!,
                 user.Picture
-            );
+            ));
         }
 
         [HttpGet]
-        [Route("isAuthenticated")]
-        public AuthenticatedUser IsAuthenticated()
+        [Route("me")]
+        public ActionResult<AuthenticatedUser> IsAuthenticated()
         {
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string? givenName = User.FindFirstValue(ClaimTypes.GivenName);
@@ -62,13 +59,12 @@ namespace markit.API.Controllers.Seguridad
             if (userId == null || givenName == null || email == null)
                 throw new InvalidOperationException($"The user doesn't have the required claims.");
 
-            return new AuthenticatedUser
-            (
+            return Ok(new AuthenticatedUser(
                 userId,
                 givenName,
                 email,
                 picture
-            );
+            ));
         }
 
         [HttpPost]
@@ -84,7 +80,7 @@ namespace markit.API.Controllers.Seguridad
 
         [HttpGet]
         [Route("signin-methods")]
-        public async Task<SignInMethods> GetSignInMethods()
+        public async Task<ActionResult<SignInMethods>> GetSignInMethods()
         {
             string userId = _sessionService.GetUserId();
             AppUser user = await _userManager.FindByIdAsync(userId)
@@ -94,11 +90,11 @@ namespace markit.API.Controllers.Seguridad
             bool hasPassword = await _userManager.HasPasswordAsync(user);
             List<ExternalSignInMethod> externalSignInMethods = await _externalLoginService.GetByUser(user);
 
-            return new SignInMethods(
+            return Ok(new SignInMethods(
                 hasEmail,
                 hasPassword,
                 externalSignInMethods
-            );
+            ));
         }
     }
 }

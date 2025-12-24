@@ -5,7 +5,7 @@ import { debounceTime, filter, Subject, switchMap } from 'rxjs';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-import { SearchFilters, SearchService } from '../../services/search.service';
+import { SearchFilters, DocumentService } from '../../services/document.service';
 import { Router } from '@angular/router';
 import { ROUTES } from '../../../shared/utils/constant';
 import { DocumentSearch } from '../../interfaces/search/document-search';
@@ -58,7 +58,7 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private searchService: SearchService,
+    private documentService: DocumentService,
     private router : Router,
   ){}
 
@@ -68,7 +68,7 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
       filter((query) => this.isQueryValid(query)),
       switchMap((query) => {
         this.setSearchState(SearchState.searching);
-        return this.searchService.searchDocuments(query, this.currentFilter())
+        return this.documentService.search(query, this.currentFilter())
       }),
     ).subscribe({
       next: (results) => {

@@ -5,7 +5,7 @@ using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Security
 {
-    [Route("api/token")]
+    [Route("api/auth/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
     {

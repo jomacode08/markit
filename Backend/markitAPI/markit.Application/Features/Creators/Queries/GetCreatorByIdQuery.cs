@@ -9,9 +9,9 @@ using MediatR;
 
 namespace markit.Application.Features.Creators.Queries
 {
-    public class GetCreatorByIdQuery : IRequest<CreatorViewModel>
+    public class GetCreatorByIdQuery(int id) : IRequest<CreatorViewModel>
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = id;
     }
 
     public class GetCreatorByIdQueryHandler : IRequestHandler<GetCreatorByIdQuery, CreatorViewModel>

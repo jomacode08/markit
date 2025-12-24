@@ -1,4 +1,5 @@
-﻿using markit.Application.Exceptions;
+﻿using markit.API.Controllers.Common;
+using markit.Application.Exceptions;
 using markit.Application.Features.Gists.Queries;
 using markit.Application.Features.Gists.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
@@ -11,15 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace markit.API.Controllers.Operation
 {
     [Authorize]
-    [Route("api/gists")]
-    [ApiController]
-    public class GistController : ControllerBase
+    public class GistsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly SessionService _sessionService;
         private readonly UserManager<AppUser> _userMannager;
 
-        public GistController(IMediator mediator, SessionService sessionService, UserManager<AppUser> userMannager)
+        public GistsController(IMediator mediator, SessionService sessionService, UserManager<AppUser> userMannager)
         {
             _mediator = mediator;
             _sessionService = sessionService;

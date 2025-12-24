@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
-using markit.Application.Common.Exceptions;
 using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Features.Blocks.Commands.PatchBlockContentCommand;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Domain.Entities;
 using MediatR;
 
 namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
 {
-    public class PatchBlockContentCommand : IRequest<BlockViewModel>
+    public class PatchBlockContentCommand(int id, PatchBlockDto dto) : IRequest<BlockViewModel>
     {
-        public int Id { get; set; }
-        public string Content { get; set; } = string.Empty;
-        public int CreatorId { get; set; }
+        public int Id { get; set; } = id;
+        public string Content { get; set; } = dto.Content;
+        public int CreatorId { get; set; } = dto.CreatorId;
     }
 
     public class PatchBlockCommandHandler : IRequestHandler<PatchBlockContentCommand, BlockViewModel>
