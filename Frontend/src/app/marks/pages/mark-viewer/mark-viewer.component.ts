@@ -177,7 +177,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   public onEmojiSelected(emoji: string) {
-    this.markForm.value.emoji = emoji;
+    this.markForm.controls.emoji.setValue(emoji);
     this.updateMarkWithRetry();
   } 
   
