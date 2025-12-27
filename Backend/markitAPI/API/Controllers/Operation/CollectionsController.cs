@@ -48,18 +48,14 @@ namespace markit.API.Controllers.Operation
 
         [HttpPost]
         [Route("search")]
-        public async Task<CollectionItemPage> GetItemsPaged([FromBody] CollectionItemPageRequest request)
+        public async Task<ActionResult<CollectionItemPage>> GetItemsPaged([FromBody] GetCollectionItemsPagedQueryDto dto)
         {
-            var query = new GetCollectionItemsPagedQuery
-            {
-                CreatorId = _sessionService.GetCreatorId(),
-                PageSize = request.PageSize,
-                Cursor = request.Cursor,
-                SortOrder = request.SortOrder,
-                Filters = request.Filters
-            };
-
-            return await _mediator.Send(query);
+            GetCollectionItemsPagedQuery query = new(
+                dto,
+                creatorId: _sessionService.GetCreatorId()
+            );
+            CollectionItemPage page = await _mediator.Send(query);
+            return Ok(page);
         }
 
         [HttpPost]

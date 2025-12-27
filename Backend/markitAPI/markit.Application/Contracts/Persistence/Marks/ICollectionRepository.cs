@@ -9,6 +9,7 @@ namespace markit.Application.Contracts.Persistence.Marks
         Task<List<Collection>> GetHierarchyRecursively(int rootCollectionId);
         Task<List<Collection>> GetAsyncCursorBasedPagination(
             int pageSize,
+            int creatorId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,

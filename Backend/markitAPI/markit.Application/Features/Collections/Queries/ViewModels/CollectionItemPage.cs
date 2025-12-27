@@ -2,6 +2,7 @@
 {
     public class CollectionItemPageRequest
     {
+        public int CreatorId { get; set; }
         public int PageSize { get; set; }
         public string? Cursor { get; set; }
         public SortPaginationOrder SortOrder { get; set; } = SortPaginationOrder.Ascending;

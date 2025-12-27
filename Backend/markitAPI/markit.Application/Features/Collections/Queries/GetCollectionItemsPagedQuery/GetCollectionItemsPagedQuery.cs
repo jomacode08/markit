@@ -1,5 +1,4 @@
-﻿using markit.Application.Common.Exceptions;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
@@ -8,9 +7,16 @@ using MediatR;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery
 {
-    public class GetCollectionItemsPagedQuery : CollectionItemPageRequest, IRequest<CollectionItemPage>
+    public class GetCollectionItemsPagedQuery(GetCollectionItemsPagedQueryDto dto, int creatorId) : IRequest<CollectionItemPage>
     {
-        public int CreatorId { get; set; }
+        public CollectionItemPageRequest PaginationRequest = new()
+        {
+            CreatorId = creatorId,
+            PageSize = dto.PageSize,
+            Cursor = dto.Cursor,
+            SortOrder = dto.SortOrder,
+            Filters = dto.Filters,
+        };
     }
 
     public class GetCollectionItemsPagedQueryHandler : IRequestHandler<GetCollectionItemsPagedQuery, CollectionItemPage>
@@ -26,13 +32,14 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPage
 
         public async Task<CollectionItemPage> Handle(GetCollectionItemsPagedQuery request, CancellationToken cancellationToken)
         {
-            await ValidateCreator(request.CreatorId);
+            CollectionItemPageRequest paginationRequest = request.PaginationRequest;
+            await ValidateCreator(paginationRequest.CreatorId);
 
-            if (request.Filters.CollectionId.HasValue) {
-                await  ValidateCollection(request.Filters.CollectionId.GetValueOrDefault(), request.CreatorId);
+            if (paginationRequest.Filters.CollectionId.HasValue) {
+                await  ValidateCollection(paginationRequest.Filters.CollectionId.GetValueOrDefault(), paginationRequest.CreatorId);
             }
 
-            return await GetItemsAsync(request);
+            return await GetItemsAsync(paginationRequest);
         }
 
         private async Task ValidateCreator(int creatorId)
@@ -48,9 +55,9 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPage
             collection.ValidateCreator(creatorId);
         }
 
-        private async Task<CollectionItemPage> GetItemsAsync(GetCollectionItemsPagedQuery request)
+        private async Task<CollectionItemPage> GetItemsAsync(CollectionItemPageRequest paginationRequest)
         {
-            return await _collectionItemService.GetItemsPageAsync(request);
+            return await _collectionItemService.GetItemsPageAsync(paginationRequest);
         }
     }
 }

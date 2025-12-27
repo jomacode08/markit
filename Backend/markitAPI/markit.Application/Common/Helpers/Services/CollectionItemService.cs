@@ -1,7 +1,8 @@
-﻿using System.Globalization;
-using AutoMapper;
+﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using System.Globalization;
 
 namespace markit.Application.Common.Helpers.Services
 {
@@ -21,7 +22,8 @@ namespace markit.Application.Common.Helpers.Services
                 var collections = await _unitOfWork.collectionRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
-                        cursorData,
+                        request.CreatorId,
+                        cursor: cursorData,
                         request.SortOrder,
                         request.Filters.CollectionId,
                         request.Filters.OnlyFavorites
@@ -35,7 +37,8 @@ namespace markit.Application.Common.Helpers.Services
                 var marks = await _unitOfWork.markRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
-                        cursorData,
+                        request.CreatorId,
+                        cursor: cursorData,
                         request.SortOrder,
                         request.Filters.CollectionId,
                         request.Filters.OnlyFavorites

@@ -9,6 +9,7 @@ namespace markit.Application.Contracts.Persistence.Marks
         Task<Mark?> GetWithOrderedBlocks(int id);
         Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
+            int creatorId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,

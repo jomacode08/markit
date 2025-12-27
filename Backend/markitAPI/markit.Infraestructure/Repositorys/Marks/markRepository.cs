@@ -31,6 +31,7 @@ namespace markit.Infraestructure.Repositorys.Marks
 
         public Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
+            int creatorId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,
@@ -40,6 +41,9 @@ namespace markit.Infraestructure.Repositorys.Marks
             IQueryable<Mark> marksQuery = context.Marks.AsNoTracking();
 
             // Apply filters
+            marksQuery = marksQuery.Include(m => m.Collection)
+                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId));
+
             if (collectionId.HasValue)
             {
                 marksQuery = marksQuery.Where(m => m.CollectionId.Equals(collectionId));
