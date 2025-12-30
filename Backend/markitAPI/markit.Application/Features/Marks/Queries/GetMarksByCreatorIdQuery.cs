@@ -26,11 +26,11 @@ namespace markit.Application.Features.Marks.Queries
         public async Task<List<MarkViewModel>> Handle(GetMarksByCreatorIdQuery request, CancellationToken cancellationToken)
         {
             // Validate the existence of the creator
-            Creator creator = await _unitOfWork.creatorRepository.GetByIdAsync(request.CreatorId)
+            Creator creator = await _unitOfWork.CreatorRepository.GetByIdAsync(request.CreatorId)
                 ?? throw new NotFoundException("Creator", request.CreatorId);
 
             // Get the marks by the creator
-            var marks = await _unitOfWork.markRepository
+            var marks = await _unitOfWork.MarkRepository
                 .GetAsync(m => m.Collection != null && m.Collection.CreatorId.Equals(request.CreatorId));
 
             return _mapper.Map<List<MarkViewModel>>(marks);

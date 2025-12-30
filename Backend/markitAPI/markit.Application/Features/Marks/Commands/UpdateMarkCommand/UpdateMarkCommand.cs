@@ -59,19 +59,19 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
         private async Task ValidateCreatorExistency(int creatorId)
         {
-            _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private async Task<Mark> ValidateMarkExistency(int markId, int creatorId)
         {
-            Mark? mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Blocks,Collection")
+            Mark? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Blocks,Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateCreator(creatorId);
             return mark;
         }
 
-        private async Task UpdateMarkAsync(Mark mark) => await _unitOfWork.markRepository.UpdateAsync(mark);
+        private async Task UpdateMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
 
         private async Task CreateDocumentBackgroundJob(Mark mark)
         {
@@ -82,7 +82,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
             _documentJobService.ScheduleUpdateAsync(
                 document,
-                continueWith: () => _unitOfWork.markRepository.UpdateSyncModelAsync(mark.Id, document.Id)
+                continueWith: () => _unitOfWork.MarkRepository.UpdateSyncModelAsync(mark.Id, document.Id)
             );
         }
     }

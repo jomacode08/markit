@@ -64,7 +64,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
         private async Task<Unit> ValidateCreatorExistency(int creatorId)
         {
-            var creator = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            var creator = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
             ?? throw new NotFoundException("Creator", creatorId);
 
             return Unit.Value;
@@ -72,7 +72,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
         private async Task<Unit> ValidateMainCollectionDuplicate(int creatorId)
         {
-            var mainCollection = await _unitOfWork.collectionRepository
+            var mainCollection = await _unitOfWork.CollectionRepository
                 .GetAsync(c => c.CreatorId.Equals(creatorId) && c.IsMain.Equals(true));
 
             if (mainCollection.Any()) throw new CustomValidationException("A main collection is already configured for the user");
@@ -84,7 +84,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         {
             (string name, int creatorId, int? parentId) = request;
 
-            var duplicates = await _unitOfWork.collectionRepository
+            var duplicates = await _unitOfWork.CollectionRepository
                 .GetAsync(c =>
                     c.ParentId.Equals(parentId)
                     && c.Name.Equals(name)
@@ -97,14 +97,14 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         }
         private async Task<Collection> GetCollection(int collectionId)
         {
-            return await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            return await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
             ?? throw new NotFoundException("Collection", collectionId);
         }
 
         private async Task<Collection> CreateCollection(CreateCollectionCommand request)
         {
             var collection = _mapper.Map<Collection>(request);
-            await _unitOfWork.collectionRepository.AddAsync(collection);
+            await _unitOfWork.CollectionRepository.AddAsync(collection);
             return collection;
         }
 
@@ -113,7 +113,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             CollectionDocument document = new(collection.Name, collection.Id, collection.CreatorId);
             _documentJobService.ScheduleAddAsync(
                 document,
-                () => _unitOfWork.collectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
+                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
             );
         }
 
@@ -121,7 +121,7 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
         {
             collection.Path = CreatePathIds(collection.Id, parent);
             collection.PathNames = CreatePathNames(collection.Name, parent);
-            return await _unitOfWork.collectionRepository.UpdateAsync(collection);
+            return await _unitOfWork.CollectionRepository.UpdateAsync(collection);
         }
 
         private static string CreatePathIds(int collectionId, Collection? parent = null)

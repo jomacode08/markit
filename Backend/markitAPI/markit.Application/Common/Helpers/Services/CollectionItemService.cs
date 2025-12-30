@@ -19,7 +19,7 @@ namespace markit.Application.Common.Helpers.Services
 
             if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Collection))
             {
-                var collections = await _unitOfWork.collectionRepository
+                var collections = await _unitOfWork.CollectionRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
                         request.CreatorId,
@@ -34,7 +34,7 @@ namespace markit.Application.Common.Helpers.Services
 
             if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Mark))
             {
-                var marks = await _unitOfWork.markRepository
+                var marks = await _unitOfWork.MarkRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
                         request.CreatorId,

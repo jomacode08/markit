@@ -41,13 +41,13 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
 
         private async Task ValidateCreatorExistency(int creatorId)
         {
-            _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private async Task<Collection> GetMainCollection(int creatorId)
         {
-            var result = await _unitOfWork.collectionRepository.GetAsync(c => c.CreatorId == creatorId && c.IsMain)
+            var result = await _unitOfWork.CollectionRepository.GetAsync(c => c.CreatorId == creatorId && c.IsMain)
                 ?? throw new CustomValidationException($"The main collection of the creator with ID: {creatorId} must be configurated");
 
             return result[0];

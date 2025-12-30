@@ -53,14 +53,14 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
 
         private async Task UpdateCreator(UpdateCreatorCommand request) {
             // Get creator from database
-            Creator creator = await _unitOfWork.creatorRepository.GetByIdAsync(request.Id)
+            Creator creator = await _unitOfWork.CreatorRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException("Creator", request.Id);
 
             // Mapping the request values to creator
             _mapper.Map(request, creator, typeof(UpdateCreatorCommand), typeof(Creator));
 
             // Update creator
-            await _unitOfWork.creatorRepository.UpdateAsync(creator);
+            await _unitOfWork.CreatorRepository.UpdateAsync(creator);
         }
 
         private async Task UpdateAppUser(UpdateCreatorCommand request)

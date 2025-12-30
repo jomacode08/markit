@@ -42,7 +42,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 
         private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
         {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
             collection.ValidateCreator(creatorId);
             return collection;
@@ -50,7 +50,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 
         private async Task ValidateCreatorExistency(int creatorId)
         {
-            _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 

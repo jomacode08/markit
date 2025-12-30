@@ -29,7 +29,7 @@ namespace markit.Application.Features.Creators.Queries
 
         public async Task<CreatorViewModel> Handle(GetCreatorByIdQuery request, CancellationToken cancellationToken)
         {
-            Creator creator = await _unitOfWork.creatorRepository.GetByIdAsync(request.Id) 
+            Creator creator = await _unitOfWork.CreatorRepository.GetByIdAsync(request.Id) 
             ?? throw new NotFoundException("Creator", request.Id);
 
             AppUser user = _appUserService.GetAppUserByCreatorId(creator.Id);

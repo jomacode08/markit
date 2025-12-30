@@ -48,7 +48,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
         private async Task<Collection> ValidateCollectionExistency(int collectionId, int creatorId)
         {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
             collection.ValidateCreator(creatorId);
             return collection;
@@ -56,12 +56,12 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
         private async Task<List<Collection>> GetHierarchy(int collectionId)
         {
-            return await _unitOfWork.collectionRepository.GetHierarchyRecursively(collectionId);
+            return await _unitOfWork.CollectionRepository.GetHierarchyRecursively(collectionId);
         }
 
         private async Task<List<Mark>> GetMarks(int[] ids)
         {
-            return [.. await _unitOfWork.markRepository.GetAsync(m => ids.Contains(m.CollectionId))];
+            return [.. await _unitOfWork.MarkRepository.GetAsync(m => ids.Contains(m.CollectionId))];
         }
 
         private async Task<Unit> SoftDeleteOnCascade(List<Collection> collections)
@@ -79,11 +79,11 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
                 // Soft delete to related marks
                 if (collectionMarks.Any())
                 {
-                    _unitOfWork.markRepository.SoftDeleteRangeEntity([.. collectionMarks]);
+                    _unitOfWork.MarkRepository.SoftDeleteRangeEntity([.. collectionMarks]);
                 }
 
                 // Soft delete to collection
-                _unitOfWork.collectionRepository.SoftDeleteEntity(collection);
+                _unitOfWork.CollectionRepository.SoftDeleteEntity(collection);
             }
 
             return Unit.Value;
@@ -98,7 +98,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
             _documentJobService.ScheduleUpdateAsync(
                 document,
-                () => _unitOfWork.collectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
+                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
             );
         }
     }

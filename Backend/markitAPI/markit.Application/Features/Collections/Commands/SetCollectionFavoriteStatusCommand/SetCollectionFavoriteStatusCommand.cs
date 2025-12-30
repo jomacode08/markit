@@ -27,7 +27,7 @@ namespace markit.Application.Features.Collections.Commands.SetCollectionFavorite
             var collection = await ValidateCollection(request.Id, request.CreatorId);
 
             collection.IsFavorite = request.IsFavorite;
-            _unitOfWork.collectionRepository.UpdateEntity(collection);
+            _unitOfWork.CollectionRepository.UpdateEntity(collection);
             await _unitOfWork.Complete();
 
             return collection.IsFavorite;
@@ -35,7 +35,7 @@ namespace markit.Application.Features.Collections.Commands.SetCollectionFavorite
 
         private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
         {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
             collection.ValidateCreator(creatorId);
             return collection;

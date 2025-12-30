@@ -27,7 +27,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
             var mark = await ValidateMark(request.Id, request.CreatorId);
             
             mark.IsFavorite = request.IsFavorite;
-            _unitOfWork.markRepository.UpdateEntity(mark);
+            _unitOfWork.MarkRepository.UpdateEntity(mark);
          
             await _unitOfWork.Complete();
             return mark.IsFavorite;
@@ -35,7 +35,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
 
         private async Task<Mark> ValidateMark(int markId, int creatorId)
         {
-            var mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Collection")
+            var mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateCreator(creatorId);
             return mark;

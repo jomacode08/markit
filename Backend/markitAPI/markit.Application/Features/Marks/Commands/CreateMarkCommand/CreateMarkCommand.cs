@@ -60,18 +60,18 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
         private async Task ValidateCreatorExistency(int creatorId)
         {
-           _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+           _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private async Task ValidateCollection(int collectionId)
         {
-            _ = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            _ = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
         }
         private async Task<Collection> GetMainCollection(int creatorId)
         {
-            var mainCollection = await _unitOfWork.collectionRepository
+            var mainCollection = await _unitOfWork.CollectionRepository
                 .GetAsync(c =>
                     c.IsMain.Equals(true)
                     && c.CreatorId.Equals(creatorId)
@@ -81,14 +81,14 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
                 ?? throw new CustomValidationException($"The main collection of the creator with id:{creatorId} is not configured.");
         }
 
-        private async Task AddMarkAsync(Mark mark) => await _unitOfWork.markRepository.AddAsync(mark);
+        private async Task AddMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.AddAsync(mark);
 
         private void CreateDocumentBackgroundJob(Mark mark, int creatorId)
         {
             MarkDocument document = new(mark.Name, mark.Id, creatorId);
             _documentJobService.ScheduleAddAsync(
                 document,
-                continueWith: () => _unitOfWork.markRepository.UpdateSyncModelAsync(mark.Id, document.Id)
+                continueWith: () => _unitOfWork.MarkRepository.UpdateSyncModelAsync(mark.Id, document.Id)
             );
         }
     }

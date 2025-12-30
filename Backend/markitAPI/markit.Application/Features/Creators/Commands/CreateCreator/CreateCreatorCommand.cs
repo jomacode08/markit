@@ -53,7 +53,7 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
 
         private async Task<Creator> AddCreator(Creator creator)
         {
-            return await _unitOfWork.creatorRepository.AddAsync(creator);
+            return await _unitOfWork.CreatorRepository.AddAsync(creator);
         }
 
         private async Task AddSystemAccess(CreateCreatorCommand request, int creatorId)

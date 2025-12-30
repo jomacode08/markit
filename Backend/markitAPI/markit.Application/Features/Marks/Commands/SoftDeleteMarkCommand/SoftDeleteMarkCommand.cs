@@ -48,7 +48,7 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 
         private async Task<Mark> ValidateMarkExistency(int markId, int creatorId)
         {
-            Mark mark = await _unitOfWork.markRepository.GetByIdAsync(markId, "Collection")
+            Mark mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateCreator(creatorId);
             return mark;
@@ -56,13 +56,13 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 
         private void SoftDeleteMark(Mark mark)
         {
-            _unitOfWork.markRepository.SoftDeleteEntity(mark);
+            _unitOfWork.MarkRepository.SoftDeleteEntity(mark);
         }
 
         private async Task SoftDeleteBlocks(int markId)
         {
-            var blocks = await _unitOfWork.blockRepository.GetAsync(b => b.MarkId.Equals(markId));
-            _unitOfWork.blockRepository.SoftDeleteRangeEntity([.. blocks]);
+            var blocks = await _unitOfWork.BlockRepository.GetAsync(b => b.MarkId.Equals(markId));
+            _unitOfWork.BlockRepository.SoftDeleteRangeEntity([.. blocks]);
         }
 
         private async Task CreateDocumentBackgroundJob(Mark mark)
@@ -74,7 +74,7 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 
             _documentJobService.ScheduleUpdateAsync(
                 document,
-                continueWith: () => _unitOfWork.markRepository.UpdateSyncModelAsync(mark.Id, document.Id)
+                continueWith: () => _unitOfWork.MarkRepository.UpdateSyncModelAsync(mark.Id, document.Id)
             );
         }
     }

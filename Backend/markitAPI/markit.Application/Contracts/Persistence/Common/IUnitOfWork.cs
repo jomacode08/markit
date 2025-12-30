@@ -1,17 +1,14 @@
 ﻿using markit.Application.Contracts.Persistence.Marks;
-using markit.Application.Contracts.Persistence.Users;
-using markit.Domain.Common;
+using markit.Domain.Entities;
 
 namespace markit.Application.Contracts.Persistence.Common
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICollectionRepository collectionRepository { get; }
-        ICreatorRepository creatorRepository { get; }
-        IMarkRepository markRepository { get; }
-        IBlockRepository blockRepository { get; }
-
-        IAsyncRepository<TEntity> Repository<TEntity>() where TEntity : BaseModel;
+        IAsyncRepository<Creator> CreatorRepository { get; }
+        IAsyncRepository<Block> BlockRepository { get; }
+        ICollectionRepository CollectionRepository { get; }
+        IMarkRepository MarkRepository { get; }
         Task<int> Complete();
     }
 }

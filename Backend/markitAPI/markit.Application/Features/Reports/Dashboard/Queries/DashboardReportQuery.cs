@@ -42,20 +42,20 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         }
 
         private async Task ValidateCreatorExistencyAsync(int creatorId) {
-            _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
             ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private async Task<List<MarkViewModel>> GetRecentMarksAsync(int creatorId)
         {
             const int LIMIT = 5;
-            List<Mark> marks = await _unitOfWork.markRepository.GetMostRecentAsync(creatorId, LIMIT);
+            List<Mark> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(creatorId, LIMIT);
             return _mapper.Map<List<MarkViewModel>>(marks);
         }
 
         private async Task<List<CollectionViewModel>> GetStarredCollectionsAsync(int creatorId)
         {
-            IReadOnlyList<Collection> collections = await _unitOfWork.collectionRepository
+            IReadOnlyList<Collection> collections = await _unitOfWork.CollectionRepository
                 .GetAsync(c => 
                     c.CreatorId.Equals(creatorId) && c.IsFavorite,
                     c => c.OrderByDescending(c => c.CreatedDate)
@@ -67,8 +67,8 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         {
             int DAYS_OF_THE_WEEK = Enum.GetValues(typeof(DayOfWeek)).Length;
             // Get global counts by creator
-            int marksCount = await _unitOfWork.markRepository.CountByCreatorIdAsync(creatorId);
-            int collectionsCount = await _unitOfWork.collectionRepository.CountByCreatorIdAsync(creatorId);
+            int marksCount = await _unitOfWork.MarkRepository.CountByCreatorIdAsync(creatorId);
+            int collectionsCount = await _unitOfWork.CollectionRepository.CountByCreatorIdAsync(creatorId);
 
             // Get mark stats of the week
             IReadOnlyList<Mark> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(creatorId);
@@ -110,7 +110,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         {
             DateTime today = GetDateZeroTime(DateTime.Now);
             DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);
-            return await _unitOfWork.markRepository
+            return await _unitOfWork.MarkRepository
             .GetAsync(
                 m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId) && m.CreatedDate >= weekStart,
                 m => m.OrderByDescending(m => m.CreatedDate)

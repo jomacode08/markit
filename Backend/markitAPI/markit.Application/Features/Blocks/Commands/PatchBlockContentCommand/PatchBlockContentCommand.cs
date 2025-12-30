@@ -32,16 +32,16 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
             Block block = await ValidateBlock(request.Id, request.CreatorId);
 
             block.Content = request.Content;
-            await _unitOfWork.blockRepository.UpdateAsync(block);
+            await _unitOfWork.BlockRepository.UpdateAsync(block);
 
             return _mapper.Map<BlockViewModel>(block);
         }
 
         private async Task<Block> ValidateBlock(int blockId, int creatorId)
         {
-            var block = await _unitOfWork.blockRepository.GetByIdAsync(blockId)
+            var block = await _unitOfWork.BlockRepository.GetByIdAsync(blockId)
                 ?? throw new NotFoundException("Block", blockId);
-            var mark = await _unitOfWork.markRepository.GetByIdAsync(block.MarkId, "Collection")
+            var mark = await _unitOfWork.MarkRepository.GetByIdAsync(block.MarkId, "Collection")
                 ?? throw new NotFoundException("Mark", block.MarkId);
             mark.ValidateCreator(creatorId);
             return block;

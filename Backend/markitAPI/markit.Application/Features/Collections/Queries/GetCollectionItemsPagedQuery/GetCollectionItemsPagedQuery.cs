@@ -3,6 +3,7 @@ using markit.Application.Common.Helpers.Services;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Domain.Entities;
 using MediatR;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery
@@ -44,13 +45,13 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionItemsPage
 
         private async Task ValidateCreator(int creatorId)
         {
-            _ = await _unitOfWork.creatorRepository.GetByIdAsync(creatorId)
+            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private async Task ValidateCollection(int collectionId, int creatorId)
         {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
             collection.ValidateCreator(creatorId);
         }

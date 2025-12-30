@@ -1,34 +1,30 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Contracts.Persistence.Marks;
-using markit.Application.Contracts.Persistence.Users;
-using markit.Domain.Common;
+using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF;
 using markit.Infraestructure.Repositorys.Marks;
-using markit.Infraestructure.Repositorys.Users;
-using System.Collections;
 
 namespace markit.Infraestructure.Repositorys.Common
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private Hashtable? _repositories;
         private readonly MarkitDbContext _context;
-
-        #region Inyección de Repositorios personalizados
-        private ICollectionRepository _collectionRepository;
-        private ICreatorRepository  _creatorRepository;
-        private IMarkRepository     _markRepository;
-        private IBlockRepository _blockRepository;
-
-        public ICollectionRepository collectionRepository => _collectionRepository = new CollectionRepository(_context);
-        public ICreatorRepository creatorRepository => _creatorRepository = new CreatorRepository(_context);
-        public IMarkRepository markRepository => _markRepository = new MarkRepository(_context);
-        public IBlockRepository blockRepository => _blockRepository = new BlockRepository(_context);
+        #region Generic repositories
+        public  IAsyncRepository<Creator> CreatorRepository { get; private set; }
+        public IAsyncRepository<Block> BlockRepository { get; private set; }
+        #endregion
+        #region Custom repositories
+        public ICollectionRepository CollectionRepository { get; private set; }
+        public IMarkRepository MarkRepository { get; private set; }
         #endregion
 
         public UnitOfWork(MarkitDbContext context)
         {
             _context = context;
+            CreatorRepository = new BaseRepository<Creator>(context);
+            BlockRepository = new BaseRepository<Block>(context);
+            CollectionRepository = new CollectionRepository(context);
+            MarkRepository = new MarkRepository(context);
         }
 
         public async Task<int> Complete()
@@ -39,32 +35,6 @@ namespace markit.Infraestructure.Repositorys.Common
         public void Dispose()
         {
             _context.Dispose();
-        }
-
-        public IAsyncRepository<TEntity> Repository<TEntity>() where TEntity : BaseModel
-        {
-            // Inicializar repositories
-            if (_repositories == null)
-            {
-                _repositories = new Hashtable();
-            }
-
-            // Obtener nombre de la entidad recibida
-            string nameEntity = typeof(TEntity).Name;
-
-            //Evaluar si el hashtable cuenta con la key de la entidad
-            if (!_repositories.ContainsKey(nameEntity))
-            {
-                // Obtener el tipo del repositorio genérico
-                Type repositoryType = typeof(BaseRepository<>);
-                // Crear instancia del repositorio genérico
-                var reposirotyInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context);
-
-                // Agregarla al hashtable con la key de la entidad
-                _repositories.Add(nameEntity, reposirotyInstance);
-            }
-
-            return (IAsyncRepository<TEntity>)_repositories[nameEntity]!;
         }
     }
 }

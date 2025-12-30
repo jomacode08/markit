@@ -51,7 +51,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
                 // Map and update collection
                 _mapper.Map(request, collection, typeof(UpdateCollectionCommand), typeof(Collection));
                 collection.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: collection.PathNames);
-                _unitOfWork.collectionRepository.UpdateEntity(collection);
+                _unitOfWork.CollectionRepository.UpdateEntity(collection);
 
                 // Update descendants path
                 List<Collection> hierarchy = await GetHierarchy(collection.Id);
@@ -71,7 +71,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
         private async Task ValidateNameDuplicates(string name, int collectionId, int? parentId)
         {
-            var duplicates = await _unitOfWork.collectionRepository
+            var duplicates = await _unitOfWork.CollectionRepository
                 .GetAsync(c => 
                     c.ParentId.Equals(parentId)
                     && c.Name.Equals(name) 
@@ -83,7 +83,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
         private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
         {
-            var collection = await _unitOfWork.collectionRepository.GetByIdAsync(collectionId)
+            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
             collection.ValidateCreator(creatorId);
             return collection;
@@ -94,13 +94,13 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
             foreach (Collection descendant in descendants)
             {
                 descendant.PathNames = GetNewPath(nodeLevelToReplace: level, newName, oldPath: descendant.PathNames);
-                _unitOfWork.collectionRepository.UpdateEntity(descendant);
+                _unitOfWork.CollectionRepository.UpdateEntity(descendant);
             }
         }
 
         private async Task<List<Collection>> GetHierarchy(int collectionId)
         {
-            return await _unitOfWork.collectionRepository.GetHierarchyRecursively(collectionId);
+            return await _unitOfWork.CollectionRepository.GetHierarchyRecursively(collectionId);
         }
 
         private static string GetNewPath(int nodeLevelToReplace, string newNodeName, string oldPath)
@@ -125,7 +125,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
             _documentJobService.ScheduleUpdateAsync(
                 document,
-                () => _unitOfWork.collectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
+                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
             );
         }
     }
