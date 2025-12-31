@@ -6,7 +6,10 @@ wwwroot
 .vs/
 Log
 *.csproj.user
+*.pubxml.user
 
 API/appsettings.json
+API/appsettings.*.json
+!API/appsettings-template.json
 API/Logs/*
 !API/Logs/.gitkeep
