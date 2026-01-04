@@ -2,6 +2,8 @@
 
 #Environment
 environment.ts
+environment.*.ts
+!environment.template.ts
 
 # Compiled output
 /dist
