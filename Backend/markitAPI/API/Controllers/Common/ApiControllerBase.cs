@@ -3,7 +3,7 @@
 namespace markit.API.Controllers.Common
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public abstract class ApiControllerBase : ControllerBase
     {
     }

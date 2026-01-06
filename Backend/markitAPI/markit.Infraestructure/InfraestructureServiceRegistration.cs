@@ -165,7 +165,7 @@ namespace markit.Infraestructure
                 options.ClientSecret = googleAuthSettings.ClientSecret;
                 options.AccessType = "offline";
                 options.SaveTokens = true;
-                options.AccessDeniedPath = "/api/external-login/access-denied";
+                options.AccessDeniedPath = "/auth/external/access-denied";
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
                 options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
@@ -175,7 +175,7 @@ namespace markit.Infraestructure
                 options.ClientId = githubAuthSettings.ClientId;
                 options.ClientSecret = githubAuthSettings.ClientSecret;
                 options.SaveTokens = true;
-                options.AccessDeniedPath = "/api/external-login/access-denied";
+                options.AccessDeniedPath = "/auth/external/access-denied";
                 options.Scope.Add("read:user");
                 options.Scope.Add("user:email");
             });

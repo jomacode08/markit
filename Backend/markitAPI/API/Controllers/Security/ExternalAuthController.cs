@@ -13,7 +13,7 @@ namespace markit.API.Controllers.Security
 {
     [Authorize]
     [ApiController]
-    [Route("api/auth/external")]
+    [Route("auth/external")]
     public class ExternalAuthController : ControllerBase
     {
         private readonly IExternalLoginService _externalLoginService;
