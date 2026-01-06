@@ -9,6 +9,7 @@ using markit.Infraestructure.Persistence.MeiliSearch.Managers;
 using Hangfire;
 using markit.Application.Models.Authentication;
 using markit.Application.Helpers;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor
+    | ForwardedHeaders.XForwardedHost
+    | ForwardedHeaders.XForwardedProto
+    | ForwardedHeaders.XForwardedPrefix
+});
 
 app.UseCors("CorsPolicy");
 app.UseSerilogRequestLogging();
