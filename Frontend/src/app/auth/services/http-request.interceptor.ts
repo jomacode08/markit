@@ -19,6 +19,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   ) {}
 
   private readonly GENERAL_ERROR_MESSAGE = "Something went wrong, we keep track of this error, but feel free to contact us if refreshing doesn't fix things.";
+  private readonly TOKEN_REFRESH_ENDPOINT = 'auth/token/refresh';
   private isRefreshing : boolean = false;
   private refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
 
@@ -51,6 +52,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
         switch (statusCode) {
           case HttpStatusCode.Unauthorized: {
+            if (this.isRefreshing && request.url.includes(this.TOKEN_REFRESH_ENDPOINT)) break;
             return this.handle401Error(
               request,
               next,
