@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { ErrorException, HttpStatusCode, ValidationError } from '../interfaces/error-exception';
 import { CustomMessage, MessageType } from '../../shared/interfaces/message/custom-message.interface';
 import { CustomMessageService } from '../../shared/services/custom-message.service';
 import { TokenService } from './token.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
@@ -46,7 +46,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         const statusCode = error ? error.statusCode : httpError.status;
 
         // Show error in console for develop environment
-        if (!environment.production) {
+        if (environment.production === 'true') {
           console.log(httpError);
         }
 
