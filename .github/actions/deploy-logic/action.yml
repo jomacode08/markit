@@ -68,6 +68,7 @@ runs:
       with:
         node-version: 22
         cache: 'pnpm'
+        cache-dependency-path: './Frontend/pnpm-lock.yaml'
 
     - name: Build SPA
       shell: bash

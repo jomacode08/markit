@@ -17,7 +17,7 @@ on:
 
 jobs:
   # --- STAGING: Runs on every push to main ---
-  deploy-Staging:
+  deploy-staging:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: staging
