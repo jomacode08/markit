@@ -34,7 +34,7 @@ jobs:
           access_key_passphrase: ${{ secrets.ACCESS_KEY_PASSPHRASE }}
           vps_project_path: ${{ secrets.VPS_PROJECT_PATH }}
           vps_systemctl_name: ${{ secrets.VPS_SYSTEMCTL_NAME }}
-          api_url: $BASE_API_URL
+          api_url: ${{ vars.BASE_API_URL }}
 
   # --- PRODUCTION: Runs only when manually triggered ---
   deploy-production:
@@ -54,4 +54,4 @@ jobs:
           access_key_passphrase: ${{ secrets.ACCESS_KEY_PASSPHRASE }}
           vps_project_path: ${{ secrets.VPS_PROJECT_PATH }}
           vps_systemctl_name: ${{ secrets.VPS_SYSTEMCTL_NAME }}
-          api_url: $BASE_API_URL
+          api_url: ${{ vars.BASE_API_URL }}
