@@ -36,6 +36,12 @@ runs:
       uses: actions/checkout@v4
 
     # Build .Net API
+    - name: Create AppSettings.json file 
+      shell: bash
+      run: |
+        cd Backend/markitAPI/API
+        envsubst < appsettings-template.json > appsettings.json
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -78,7 +84,7 @@ runs:
         cd Frontend
         pnpm install
         pnpm run build:${{ inputs.env_name }}
-        cp -r dist ../release/wwwroot
+        cp -r dist/markit-app/browser ../release/wwwroot
   
     # Deploy via RSYNC
     - name: Deploy to VPS
