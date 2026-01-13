@@ -24,8 +24,10 @@ inputs:
     required: true
   vps_systemctl_name: 
     description: 'The service unit file name for the API'
+    required: true
   api_url:
     description: 'The configured url of the api'
+    required: true
 
 runs:
   using: "composite"
@@ -57,11 +59,9 @@ runs:
         baseApiUrl: ${{ inputs.api_url }}
 
     - name: Install pnpm
-      shell: bash
       uses: pnpm/action-setup@v4
     
     - name: Use Node.js 22
-      shell: bash
       uses: actions/setup-node@v5
       with:
         node-version: 22
@@ -77,10 +77,9 @@ runs:
   
     # Deploy via RSYNC
     - name: Deploy to VPS
-      shell: bash
       uses: burnett01/rsync-deployments@v8
       with:
-        switches: -avzr --delete --exclude="wwwroot/.htaccess" --exclude="api/Logs"
+        switches: -avz --delete --exclude="wwwroot/.htaccess" --exclude="api/Logs"
         path: release/
         remote_path: ${{ inputs.vps_project_path }}
         remote_host: ${{ inputs.host }}
@@ -91,7 +90,6 @@ runs:
 
     # Reload VPS services
     - name: Reload app-related services in the VPS
-      shell: bash
       uses: appleboy/ssh-action@v1
       with:
         host: ${{ inputs.host }}
