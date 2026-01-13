@@ -1,0 +1,104 @@
+# Composite action containing all the build and deploy steps for an environment.
+# CI/CD steps to build the components of the app and deploy them in a VPS.
+name: 'Shared Deploy Logic'
+description: 'Runs the build and deploy steps'
+
+inputs:
+  env_name: 
+    description: 'The name of the environment (production | staging)'
+    required: true
+  host:
+    description: 'The VPS address'
+    required: true
+  username:
+    description: 'The VPS username'
+    required: true
+  access_key:
+    description: 'The ssh private key for the user'
+    required: true
+  access_key_passphrase:
+    description: 'The passphrase of the access_key'
+    required: true
+  vps_project_path:
+    description: 'The configured path of the application in the vps'
+    required: true
+  vps_systemctl_name: 
+    description: 'The service unit file name for the API'
+  api_url:
+    description: 'The configured url of the api'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Build .Net API
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
+
+    - name: Build API
+      shell: bash
+      run: |
+        dotnet publish ./Backend/markitAPI/API/markit.API.csproj \
+          -c Release \
+          -r linux-x64 \
+          -o ./release/api \
+          --self-contained true
+
+    # Build SPA
+    - name: Inject SPA Environment variables 
+      shell: bash
+      run: envsubst < Frontend/src/environments/environment.template.ts > Frontend/src/environments/environment.${{ inputs.env_name }}.ts
+      env:
+        production: ${{ inputs.env_name == 'production' || inputs.env_name == 'staging' }}
+        baseApiUrl: ${{ inputs.api_url }}
+
+    - name: Install pnpm
+      shell: bash
+      uses: pnpm/action-setup@v4
+    
+    - name: Use Node.js 22
+      shell: bash
+      uses: actions/setup-node@v5
+      with:
+        node-version: 22
+        cache: 'pnpm'
+
+    - name: Build SPA
+      shell: bash
+      run: | 
+        cd Frontend
+        pnpm install
+        pnpm run build:${{ inputs.env_name }}
+        cp -r dist ../release/wwwroot
+  
+    # Deploy via RSYNC
+    - name: Deploy to VPS
+      shell: bash
+      uses: burnett01/rsync-deployments@v8
+      with:
+        switches: -avzr --delete --exclude="wwwroot/.htaccess" --exclude="api/Logs"
+        path: release/
+        remote_path: ${{ inputs.vps_project_path }}
+        remote_host: ${{ inputs.host }}
+        remote_user: ${{ inputs.username }}
+        remote_key: ${{ inputs.access_key }}
+        remote_key_pass: ${{ inputs.access_key_passphrase }}
+        remote_port: 22
+
+    # Reload VPS services
+    - name: Reload app-related services in the VPS
+      shell: bash
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ inputs.host }}
+        username: ${{ inputs.username }}
+        key: ${{ inputs.access_key }}
+        passphrase: ${{ inputs.access_key_passphrase }}
+        port: 22
+        script: |
+          sudo systemctl restart ${{ inputs.vps_systemctl_name }}
+          sudo systemctl reload apache2

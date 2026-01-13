@@ -1,0 +1,57 @@
+## Pipeline for the CI/CD implementation of the markit app environments: 
+## (Staging and Production)
+name: GitHub Flow (Staging and Production)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target Environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+
+jobs:
+  # --- STAGING: Runs on every push to main ---
+  deploy-Staging:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Call Deploy action
+        uses: ./.github/actions/deploy-logic
+        with:
+          env_name: 'staging'
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          access_key: ${{ secrets.ACCESS_KEY }}
+          access_key_passphrase: ${{ secrets.ACCESS_KEY_PASSPHRASE }}
+          vps_project_path: ${{ secrets.VPS_PROJECT_PATH }}
+          vps_systemctl_name: ${{ secrets.VPS_SYSTEMCTL_NAME }}
+          api_url: $BASE_API_URL
+
+  # --- PRODUCTION: Runs only when manually triggered ---
+  deploy-production:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.target_env == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Call Deploy action
+        uses: ./.github/actions/deploy-logic
+        with:
+          env_name: 'production'
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          access_key: ${{ secrets.ACCESS_KEY }}
+          access_key_passphrase: ${{ secrets.ACCESS_KEY_PASSPHRASE }}
+          vps_project_path: ${{ secrets.VPS_PROJECT_PATH }}
+          vps_systemctl_name: ${{ secrets.VPS_SYSTEMCTL_NAME }}
+          api_url: $BASE_API_URL
