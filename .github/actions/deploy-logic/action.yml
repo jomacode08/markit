@@ -53,7 +53,9 @@ runs:
     # Build SPA
     - name: Inject SPA Environment variables 
       shell: bash
-      run: envsubst < ./Frontend/src/environments/environment.template.ts > ./Frontend/src/environments/environment.${{ inputs.env_name }}.ts
+      run: |
+        cd Frontend
+        envsubst < src/environments/environment.template.ts > src/environments/environment.ts
       env:
         production: ${{ inputs.env_name == 'production' || inputs.env_name == 'staging' }}
         baseApiUrl: ${{ inputs.api_url }}
