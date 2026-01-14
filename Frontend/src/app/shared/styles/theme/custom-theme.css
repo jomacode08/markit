@@ -6,8 +6,7 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
     --accent-color: #845ef7;
     --accent-hover: #7950f2;
-    --secondary-accent: #c084fc;
-    --secondary-accent-hover: #AD61FA;
+    --secondary-accent: rgb(129 140 248 / 1);
     /* Surface system */
     --surface-1: #232429;    /* Subtle elevation, good for cards */
     --surface-2: #2d2e32;    /* Medium elevation, for dialogs */
@@ -104,7 +103,7 @@ button {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.general-button:hover, .p-button.nav-button:hover  {
+.general-button:hover {
   transform: translateY(-0.25rem);
   transition-duration: 300ms;
 }
@@ -137,19 +136,25 @@ button {
 .danger-button:hover, .danger-button:focus {
   background-color: var(--highlight-border-red);
 }
-  
 
 .p-button.nav-button {
+  width: 100%;
   background-color: transparent;
   padding: .5rem;
-  width: fit-content;
   font-size: 1rem;
   color: var(--text-secondary);
   border: none;
+  border-radius: 0;
+  transition: all 0.3s ease;
 }
 .p-button.nav-button:focus {
   color: var(--text-primary);
   box-shadow: none;
+}
+.p-element:not(.p-menuitem-link-active) {
+  .p-button.nav-button:hover {
+    background-color: var(--surface-2);
+  }
 }
 
 .floating-button {
@@ -262,7 +267,7 @@ button {
 }
 .p-menuitem-link-active {
   background-color: var(--highlight-border-purple);
-  border-right: 2px solid var(--accent-color);
+  border-left: 2px solid var(--accent-color);
   i {
     color: #818cf8;
   }
@@ -271,7 +276,7 @@ button {
   color: var(--text-primary);
 }
 .p-menuitem-icon {
-    margin-right: 15px;
+  margin-right: 15px;
 }
 .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover {
   background-color: var(--surface-2)
@@ -373,25 +378,25 @@ button {
 
 /** ToolTip */
 .p-tooltip .p-tooltip-text {
-  background: var(--surface-overlay-2);
-  color: var(--text-primary);
-  font-size: 0.75rem;
-  font-weight: 600;
+  background: var(--secondary-accent);
+  color: var(--paper-bg);
+  font-size: .75rem;
+  font-weight: 400;
   padding: 0.5rem;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 6px;
 }
 .p-tooltip.p-tooltip-right .p-tooltip-arrow {
-  border-right-color: var(--surface-overlay-2);
+  border-right-color: var(--secondary-accent);
 }
 .p-tooltip.p-tooltip-left .p-tooltip-arrow {
-  border-left-color: var(--surface-overlay-2);
+  border-left-color: var(--secondary-accent);
 }
 .p-tooltip.p-tooltip-top .p-tooltip-arrow {
-  border-top-color: var(--surface-overlay-2);
+  border-top-color: var(--secondary-accent);
 }
 .p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
-  border-bottom-color: var(--surface-overlay-2);
+  border-bottom-color: var(--secondary-accent);
 }
 
 .p-progress-spinner-circle {

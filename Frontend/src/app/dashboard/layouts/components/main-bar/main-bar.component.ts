@@ -1,8 +1,9 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { AuthService } from './../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
@@ -12,8 +13,11 @@ import { ROUTES } from '../../../../shared/utils/constant';
   templateUrl: './main-bar.component.html',
   standalone: true,
   imports: [
-    ButtonModule
-  ],
+    ButtonModule,
+    RouterLink,
+    TooltipModule,
+    RouterLinkActive
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   styleUrl: './main-bar.component.css'
 })
