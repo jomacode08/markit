@@ -263,6 +263,13 @@ button {
 .p-menuitem-link i {
   color: var(--text-secondary)
 }
+.p-menuitem-link-active {
+  background-color: var(--highlight-border-purple);
+  border-left: 2px solid var(--accent-color);
+  i {
+    color: #818cf8;
+  }
+}
 .p-menu.transparent {
   background-color: transparent;
   border: none;
@@ -272,13 +279,6 @@ button {
   }
   .p-menuitem-link {
     padding: .85rem 1rem !important;
-  }
-  .p-menuitem-link-active {
-    background-color: var(--highlight-border-purple);
-    border-left: 2px solid var(--accent-color);
-    i {
-      color: #818cf8;
-    }
   }
   .p-menuitem:not(.p-highlight):not(.p-disabled)
   > .p-menuitem-content:hover {
