@@ -39,7 +39,15 @@
         </div>
         <!-- Profile -->
         <div class="profile md:py-3 md:w-full">
-            <div class="p-avatar" (click)="onAvatarClick()">
+            <!-- Popup menu -->
+            <app-profile-menu #profileMenu/>
+            <!-- User Image -->
+            <button
+                type="button"
+                aria-label="Profile image"
+                class="p-avatar border-none"
+                (click)="profileMenu.toggle($event)"
+            >
                 @if ( userPictureUrl ) {
                     <img
                         [src]="userPictureUrl"
@@ -48,7 +56,7 @@
                         referrerpolicy="no-referrer"
                     >
                 }
-            </div>
+            </button>
         </div>
     </div>
 </nav>

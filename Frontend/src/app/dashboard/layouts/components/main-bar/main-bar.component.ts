@@ -7,6 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { AuthService } from './../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
+import { ProfileMenu } from '../profile-menu/profile-menu.component';
 
 @Component({
   selector: 'app-main-bar',
@@ -16,8 +17,9 @@ import { ROUTES } from '../../../../shared/utils/constant';
     ButtonModule,
     RouterLink,
     TooltipModule,
-    RouterLinkActive
-],
+    RouterLinkActive,
+    ProfileMenu,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   styleUrl: './main-bar.component.css'
 })
@@ -26,7 +28,7 @@ export class MainBarComponent {
   
   public navigationRutes : MenuItem[] = [
     {
-      label: 'Home',
+      label: 'Dashboard',
       icon: 'fa-regular fa-chart-bar',
       route: ROUTES.HOME_URL,
     },
