@@ -133,6 +133,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public async ngOnInit(): Promise<void> {
     this.floatingMenuOptions.set(createTextFormattingOptions(this.editor));
     this.subscribeToFormChanges();
+    this.subscribeToEmojiChanges();
     this.subscribeToDebouncedMarkNameInput();
   }
 
@@ -173,16 +174,6 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   public retryMarkSave(): void {
-    this.updateMarkWithRetry();
-  }
-
-  public onEmojiSelected(emoji: string) {
-    this.markForm.controls.emoji.setValue(emoji);
-    this.updateMarkWithRetry();
-  } 
-  
-  public onEmojiDeleted() {
-    this.markForm.value.emoji = undefined;
     this.updateMarkWithRetry();
   }
 
@@ -247,7 +238,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     return blocks.at(this.currentBlockIndex()) as FormGroup;
   }
   private initializeForm(mark: Mark): void {
-    this.markForm.reset(mark);
+    this.markForm.reset(mark, {emitEvent: false});
     this.setBlocks(mark.blocks);
     this.modifyActiveBlock(0);
   }
@@ -257,6 +248,16 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     .pipe(takeUntil(this.destroy$))
     .subscribe(changes => {
       this.currentMark.update(current => changes as Mark);
+    });
+  }
+  
+  private subscribeToEmojiChanges(): Subscription {
+    return this.markForm.controls.emoji.valueChanges
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(emoji => {
+      if (this.currentMark().emoji != emoji) {
+        this.updateMarkWithRetry();
+      }
     });
   }
 
@@ -286,7 +287,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   private updateMarkWithRetry(): void {
     this.setSaveState(SaveState.saving);
-    const currentMark = this.currentMark();
+    const currentMark = this.markForm.getRawValue() as Mark;
     this.markService.update(currentMark)
     .pipe(
       // Error retry with exponential backoff
@@ -295,7 +296,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     )
     .subscribe({
       next:  (mark)  => {
-        this.markForm.reset(mark);
+        this.markForm.reset(mark, {emitEvent: false});
         this.setSaveState(SaveState.saved);
         if (currentMark.requiresSync)
           this.resetMarkSync(currentMark.id);

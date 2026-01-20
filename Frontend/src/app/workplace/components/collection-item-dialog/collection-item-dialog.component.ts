@@ -123,9 +123,6 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
   }
 
   //* Utils
-  public setEmoji = (emoji ?: string) => {
-    this.form.controls['emoji'].setValue(emoji);
-  };
   private setFormValues(collectionItem: CollectionItem): void {
     this.form.reset(collectionItem);
   }

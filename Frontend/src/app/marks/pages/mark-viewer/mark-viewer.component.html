@@ -53,10 +53,8 @@
             <!-- Header -->
             <div id="markHeader" class="mb-3 md:mt-4">
                 <app-emoji-picker
+                    formControlName="emoji"
                     defaultIconClass="fa-regular fa-note-sticky"
-                    [currentEmoji]="currentMark().emoji"
-                    (emojiClick)="onEmojiSelected($event)"
-                    (emojiDeleted)="onEmojiDeleted()"
                 />
                 <input 
                     id="markName"

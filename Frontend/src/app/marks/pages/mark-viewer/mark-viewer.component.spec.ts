@@ -130,6 +130,12 @@ describe('MarkViewerComponent', () => {
             tick();
             expect(mockRouter.navigate).toHaveBeenCalled();
         }));
+
+        it('should call subscribeToEmojiChanges on ngOnInit', fakeAsync(() => {
+            const subscribeToEmojiChangesSpy = spyOn<any>(component, 'subscribeToEmojiChanges').and.callThrough();
+            component.ngOnInit();
+            expect(subscribeToEmojiChangesSpy).toHaveBeenCalled();
+        }));
     });
 
     describe('Block management', () => {
@@ -175,8 +181,55 @@ describe('MarkViewerComponent', () => {
             spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
             mockMarkService.update.and.returnValue(throwError(() => new Error('Update failed')));
 
-            component.onEmojiSelected('🎉');
+            component['updateMarkWithRetry']();
             tick(1000); // Wait for retries.
+
+            expect(component.saveState()).toBe(SaveState.error);
+            expect(mockMarkService.setMarkInLocalStorage).toHaveBeenCalled();
+        }));
+    });
+
+    describe('Emoji changes', () => {
+        it('should trigger updateMarkWithRetry when emoji changes', fakeAsync(() => {
+            spyOn<any>(component, 'updateMarkWithRetry');
+            mockMarkService.update.and.returnValue(of(mockMark));
+            const newEmoji = '🎨';
+
+            component.markForm.patchValue({ emoji: newEmoji });
+            tick();
+
+            expect(component['updateMarkWithRetry']).toHaveBeenCalled();
+        }));
+
+        it('should not trigger updateMarkWithRetry when emoji value does not change', fakeAsync(() => {
+            spyOn<any>(component, 'updateMarkWithRetry');
+            const currentEmoji = mockMark.emoji;
+
+            component.markForm.patchValue({ emoji: currentEmoji });
+            tick();
+
+            expect(component['updateMarkWithRetry']).not.toHaveBeenCalled();
+        }));
+
+        it('should handle emoji update with retry on success', fakeAsync(() => {
+            const newEmoji = '🎨';
+            const updatedMark = { ...mockMark, emoji: newEmoji };
+            mockMarkService.update.and.returnValue(of(updatedMark));
+
+            component.markForm.patchValue({ emoji: newEmoji });
+            tick(500);
+
+            expect(mockMarkService.update).toHaveBeenCalled();
+            expect(component.saveState()).toBe(SaveState.saved);
+        }));
+
+        it('should save changes locally on emoji update failure', fakeAsync(() => {
+            spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
+            mockMarkService.update.and.returnValue(throwError(() => new Error('Update failed')));
+            const newEmoji = '🎨';
+
+            component.markForm.patchValue({ emoji: newEmoji });
+            tick(1000);
 
             expect(component.saveState()).toBe(SaveState.error);
             expect(mockMarkService.setMarkInLocalStorage).toHaveBeenCalled();

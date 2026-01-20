@@ -29,10 +29,8 @@
             <div class="icon-container">
                 <app-emoji-picker
                     #emoji
+                    formControlName="emoji"
                     [defaultIconClass]="defaultPickerIconClass"
-                    [currentEmoji]="currentCollectionItem.emoji"
-                    (emojiClick)="setEmoji($event)"
-                    (emojiDeleted)="setEmoji(undefined)"
                 />
             </div>
         </div>
