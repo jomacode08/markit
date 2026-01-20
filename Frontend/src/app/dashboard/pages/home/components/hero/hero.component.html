@@ -1,0 +1,55 @@
+<div class="bg-pattern m-2 p-4 gap-2">
+    <form
+        [formGroup]="form"
+        (submit)="onSubmit()"
+        autocomplete="off"
+    >
+        <div class="grid m-0">
+            <!-- Message -->
+            <div class="col-12 md:col-5">
+                <div class="message">
+                    What are you building today?
+                </div>
+            </div>
+            <!-- Name -->
+            <div class="col-12 md:col-7 flex gap-2">
+                <input
+                    id="name"
+                    formControlName="name"
+                    type="text"
+                    class="w-full"
+                    autocomplete="off"
+                    placeholder="Project ideas #1"
+                />
+                <div class="icon p-2">
+                    <app-emoji-picker
+                        formControlName="emoji"
+                        size="sm"
+                    />
+                </div>
+            </div>
+            <!-- Content -->
+            <div class="col-12">
+                <input
+                    id="content"
+                    formControlName="content"
+                    type="text"
+                    class="w-full"
+                    autocomplete="off"
+                    placeholder="Some awesome ideas to start..."
+                />
+            </div>
+            <!-- Save button -->
+            <div class="col-12 flex justify-content-end align-items-center">
+                <button
+                    id="saveBtn"
+                    type="submit"
+                    aria-label="create"
+                    [disabled]="submit()"
+                >
+                    <span>Let's create!</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

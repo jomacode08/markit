@@ -13,8 +13,14 @@ button span:hover {
     color: rgb(255, 255, 255, 0.8);
 }
 
-#emoji, #defaultIcon {
+button.sm > span {
+    font-size: 1.25rem;
+}
+button.md > span {
     font-size: 1.75rem;
+}
+button.lg > span {
+    font-size: 2rem;
 }
 
 .picker-header {

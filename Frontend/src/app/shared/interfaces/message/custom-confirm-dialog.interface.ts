@@ -2,5 +2,6 @@ export interface CustomConfirmDialog {
     message : string,
     header  : string,
     icon   ?: string,
-    accept  : Function
+    accept  : Function,
+    reject  ?: Function,
 }

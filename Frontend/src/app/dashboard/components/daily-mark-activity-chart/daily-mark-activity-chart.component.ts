@@ -24,7 +24,7 @@ interface WeekDayBar {
     MarkActivityPipe,
   ],
   template: `
-  <div class="flex  justify-content-between">
+  <div class="flex gap-4 justify-content-center align-items-end">
     @for (bar of bars(); track $index) {
       <div class="flex flex-column align-items-center justify-content-center">
         <button
@@ -34,7 +34,7 @@ interface WeekDayBar {
           class="bar"
           tooltipPosition="left"
           [pTooltip]="bar.value | markActivity" 
-          [style.height.px]="bar.height"
+          [style.height.px]="bar.height > 1 ? bar.height : 1"
           [style.opacity]="bar.opacity"
         ></button>
         <div class="bar-label">{{ bar.label | titlecase }}</div>
@@ -48,17 +48,23 @@ interface WeekDayBar {
     }
     .bar {
       width: 1rem;
-      border-radius: .25rem;
+      border-radius: 0;
       margin-bottom: .25rem;
       padding: 0;
-      border: none;
+      border: 1px solid var(--accent-color);
       cursor: pointer;
-      background-color: var(--accent-color);
+      background: repeating-linear-gradient(
+        45deg,
+        var(--accent-color) 0px,
+        var(--accent-color) 1px,
+        transparent 1px,
+        transparent 2px
+      ) 0% 0% / 2px 2px;
     }
     .bar-label {
       font-size: .75rem;
       line-height: 1rem;
-      color: rgba(255,255,255,0.3);
+      color: var(--text-secondary);
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

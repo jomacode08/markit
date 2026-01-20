@@ -1,162 +1,170 @@
-<section class="hero">
-    <h1>Welcome back!</h1>
-    <p>Pick up where you left off or create something new</p>
-    <div class="flex flex-wrap gap-3"> 
-        <button type="button" class="new-item mark-btn" (click)="onNewMarkBtnClick()">
-            <i class="fa-regular fa-pen-to-square"></i>
-            <span class="ml-2">New Mark</span>
-        </button>
-        <button type="button" class="new-item collection" (click)="onNewCollectionBtnClick()">
-            <i class="fa-regular fa-folder"></i>
-            <span class="ml-2">New Collection</span>
-        </button>
-    </div>
+<div class="dashed-container">
+    <div>&nbsp;</div>
+</div>
+<!-- Hero -->
+<section class="dashed-container hero">
+    <home-hero/>
 </section>
-
+<!-- Dashboard -->
 <ng-container *ngIf="report$ | async as report">
-    <section class="dashboard grid fadein animation-duration-300">
-        <div class="col-12 md:col-8">
-            <div class="grid mt-0 h-full">
-                <!-- Recent marks -->
-                <div class="col-12 pt-0">
-                    <div class="rounded-card">
-                        <div class="card-header">
-                            <span class="title">
-                                <i class="fa-regular fa-clock mr-2"></i>
-                                <h2>Recent Marks</h2>
-                            </span>
-                            <button type="button" class="view-all" (click)="onViewAllRecentBtnClick()">
-                                View all
-                                <span class="fa-solid fa-angle-right"></span>
-                            </button>
-                        </div>
-                        <div *ngIf="report.recentMarks.length > 0; else noRecentMarksTemplate" class="marks-list">
-                            @for (mark of report.recentMarks; track $index) {
-                                <button type="button" class="recent-mark" (click)="onRecentMarkBtnClick(mark.id)">
-                                    <div class="mark-description">
-                                        <div class="icon">
-                                            @if (mark.emoji) {
-                                                <span class="emoji">{{ mark.emoji }}</span>
-                                            }
-                                            @else {
-                                                <i class="fa-regular fa-note-sticky"></i>
-                                            }
-                                        </div>
-                                        <div class="naming">
-                                            <div class="font-medium text-base text-left">{{ mark.name }}</div>
-                                            <div class="small-text">{{ mark.collectionName }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="small-text">
-                                        {{ mark.createdDate != null ? (mark.createdDate.toString() | timeAgo) : 'Date not available'}}
-                                    </div>
-                                </button>
-                            }
-                        </div>
-                    </div>
-                </div>
-                <!-- Quick access -->
-                <div class="col-12 pb-0">
-                    <div class="rounded-card">
-                        <div class="card-header">
-                            <span class="title">
-                                <i class="fa-regular fa-star mr-2"></i>
-                                <h2>Quick access</h2>
-                            </span>
-                            <button type="button" class="view-all" (click)="onViewAllStarredBtnClick()">
-                                View all
-                                <span class="fa-solid fa-angle-right"></span>
-                            </button>
-                        </div>
-                        <div *ngIf="report.starredCollections.length > 0; else noStarredCollectionsTemplate" class="quick-access">
-                            <div class="grid">
-                                @for (collection of report.starredCollections; track $index) {
-                                    <div class="col-6 md:col-3">
-                                        <button type="button" class="access" (click)="onStarredCollectionBtnClick(collection.id)">
-                                            @if (collection.emoji) {
-                                                <span class="emoji text-xl mb-2">{{ collection.emoji }}</span>
-                                            }
-                                            @else {
-                                                <span class="fa-regular fa-folder text-xl mb-2"></span>
-                                            }
-                                            <div>{{ collection.name }}</div>
-                                        </button>
-                                    </div>
+    <!-- Recent marks -->
+    <div class="dashed-container">
+        <div class="title">
+            <h2>Recent marks</h2>
+            <button type="button" class="view-all" (click)="onViewAllRecentBtnClick()">
+                View all
+                <span class="fa-solid fa-angle-right"></span>
+            </button>
+        </div>
+    </div>
+    <section class="dashed-container recent-marks">
+        <div *ngIf="report.recentMarks.length > 0; else noRecentMarksTemplate" class="marks-list">
+            @for (mark of report.recentMarks; track $index) {
+                <div class="mark-item">
+                    <button type="button" class="recent-mark" (click)="onRecentMarkBtnClick(mark.id)">
+                        <div class="mark-description">
+                            <div class="icon">
+                                @if (mark.emoji) {
+                                    <span class="emoji">{{ mark.emoji }}</span>
+                                }
+                                @else {
+                                    <i class="fa-regular fa-note-sticky"></i>
                                 }
                             </div>
+                            <div class="naming">
+                                <div class="font-medium text-base text-left">{{ mark.name }}</div>
+                                <div class="small-text">{{ mark.collectionName }}</div>
+                            </div>
                         </div>
+                        <div class="small-text">
+                            {{ mark.createdDate != null ? (mark.createdDate.toString() | timeAgo) : 'Date not available'}}
+                        </div>
+                    </button>
+                </div>
+            }
+        </div>
+    </section>
+    <!-- Quick access -->
+    <div class="dashed-container">
+        <div class="title">
+            <h2>Quick access</h2>
+            <button type="button" class="view-all" (click)="onViewAllStarredBtnClick()">
+                View all
+                <span class="fa-solid fa-angle-right"></span>
+            </button>
+        </div>
+    </div>
+    <section class="dashed-container quick-access">
+        <div 
+            *ngIf="report.starredCollections.length > 0; else noStarredCollectionsTemplate"
+            class="grid m-0 quick-access-list"
+        >
+            @for (collection of report.starredCollections; track $index) {
+                <div
+                    class="col-6 md:col-3 access-item"
+                    [ngClass]="{ 
+                        'border-right-none' : ($index + 1) % 2 === 0,
+                        'md: border-right-none' : ($index + 1) % 4 === 0,
+                        'border-bottom-none' : isLastRow($index, 2, report.starredCollections.length),
+                        'md:border-bottom-none' : isLastRow($index, 4, report.starredCollections.length),
+                    }"
+                >
+                    <div class="access-wrapper">
+                        <button
+                            type="button"
+                            class="access"
+                            (click)="onStarredCollectionBtnClick(collection.id)"
+                        >
+                            @if (collection.emoji) {
+                                <span class="emoji text-xl mb-2">{{ collection.emoji }}</span>
+                            }
+                            @else {
+                                <span class="fa-regular fa-folder text-xl mb-2"></span>
+                            }
+                            <div>{{ collection.name }}</div>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+    <!-- Stats -->
+    <div class="dashed-container stats-title">
+        <div class="title">
+            <h2>Your stats</h2>
+        </div>
+    </div>
+    <section class="dashed-container statistics">
+        <div class="grid stats-list">
+            <div class="col-6 border-dashed-r border-dashed-b">
+                <div class="stat-container highlight-primary">
+                    <div class="text-sm  mb-2">Total marks</div>
+                    <div id="marksCount" class="text-3xl font-bold">{{ report.stats.marksCount }}</div>
+                </div>
+            </div>
+            <div class="col-6 border-dashed-b">
+                <div class="stat-container">
+                    <div class="text-sm  mb-2">Total collections</div>
+                    <div id="collectionsCount" class="text-3xl font-bold">{{ report.stats.collectionsCount }}</div>
+                </div>
+            </div>
+            <div class="col-6 border-dashed-r">
+                <div class="stat-container">
+                    <div class="text-sm  mb-2">New this week</div>
+                    <div class="text-3xl font-bold">
+                        <span id="weekMarksCount">{{ report.stats.weekMarksCount }}</span>
+                        <span *ngIf="true" class="fa-solid fa-fire text-red-400 text-2xl ml-2"></span>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Statistics -->
-        <div class="col-12 md:col-4">
-            <div class="rounded-card">
-                <div class="card-header">
-                    <span class="title">
-                        <i class="fa-solid fa-arrow-trend-up mr-2"></i>
-                        <h2>Your Stats</h2>
-                    </span>
-                </div>
-                <div class="grid statistics">
-                    <div class="col-12">
-                        <div class="stat-container highlight-primary">
-                            <div class="text-sm  mb-2">Total marks</div>
-                            <div id="marksCount" class="text-3xl font-bold">{{ report.stats.marksCount }}</div>
-                        </div>
+            <div class="col-6">
+                <div class="stat-container" [ngClass]="{'highlight-success': report.stats.todayMarksCount > 0}">
+                    <div class="mb-2">
+                        <span class="text-sm  mr-2">New today</span>
                     </div>
-                    <div class="col-12">
-                        <div class="stat-container">
-                            <div class="text-sm  mb-2">Total collections</div>
-                            <div id="collectionsCount" class="text-3xl font-bold">{{ report.stats.collectionsCount }}</div>
-                        </div>
+                    <div
+                        class="text-3xl font-bold"
+                        [ngClass]="{ 'text-green-400' : report.stats.todayMarksCount > 0}"
+                    >
+                        <span>{{ report.stats.todayMarksCount > 0 ? '+ ' : '' }}</span>
+                        <span id="todayMarksCount">{{ report.stats.todayMarksCount }}</span>
                     </div>
-                    <div class="col-6">
-                        <div class="stat-container">
-                            <div class="text-sm  mb-2">New this week</div>
-                            <div class="text-3xl font-bold">
-                                <span id="weekMarksCount">{{ report.stats.weekMarksCount }}</span>
-                                <span *ngIf="true" class="fa-solid fa-fire text-red-400 text-2xl ml-2"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="stat-container" [ngClass]="{'highlight-success': report.stats.todayMarksCount > 0}">
-                            <div class="mb-2">
-                                <span class="text-sm  mr-2">New today</span>
-                            </div>
-                            <div
-                                class="text-3xl font-bold"
-                                [ngClass]="{ 'text-green-400' : report.stats.todayMarksCount > 0}"
-                            >
-                                <span>{{ report.stats.todayMarksCount > 0 ? '+ ' : '' }}</span>
-                                <span id="todayMarksCount">{{ report.stats.todayMarksCount }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="activity">
-                    <div class="title">
-                        <h3>ACTIVITY</h3>
-                    </div>
-                    <dashboard-daily-mark-activity-chart [activity]="report.stats.weeklyMarkActivity" />
                 </div>
             </div>
         </div>
     </section>
+    <!-- Activity -->
+    <section class="dashed-container weekly-activity">
+        <dashboard-daily-mark-activity-chart
+            class="p-2"
+            [activity]="report.stats.weeklyMarkActivity"
+        />
+    </section>
 </ng-container>
 
+<div class="dashed-container">
+    <div>&nbsp;</div>
+</div>
+
 <ng-template #noRecentMarksTemplate>
-    <div id="noRecentMarks" class="flex flex-column align-items-center">
-        <span class="fa-regular fa-file-lines p-3 text-2xl "></span>
-        <h2 class="m-0 mb-2 text-lg font-medium">No recent marks</h2>
-        <p class="m-0 max-w-20rem text-center  font-light">You haven't created any marks yet. Start creating your first mark.</p>
+    <div class="p-3">
+        <div id="noRecentMarks" class="flex flex-column align-items-center p-3">
+            <div class="flex align-items-center gap-1">
+                <span class="fa-regular fa-file-lines p-3 text-xl"></span>
+                <h2 class="m-0 text-lg font-medium">No recent marks</h2>
+            </div>
+            <p class="m-0 max-w-20rem text-center text-sm font-light">You haven't created any marks yet. Start creating your first mark.</p>
+        </div>
     </div>
 </ng-template>
 <ng-template #noStarredCollectionsTemplate>
-    <div id="noStarredCollections" class="flex flex-column align-items-center">
-        <span class="fa-regular fa-folder p-3 text-2xl "></span>
-        <h2 class="m-0 mb-2 text-lg font-medium">No starred collections</h2>
-        <p class="m-0 max-w-20rem text-center  font-light">Add collections to favorites for quick access to your most important marks.</p>
+    <div class="p-3">
+        <div id="noStarredCollections" class="flex flex-column align-items-center p-3">
+            <div class="flex align-items-center gap-1">
+                <span class="fa-regular fa-folder p-3 text-xl"></span>
+                <h2 class="m-0 text-lg font-medium">No starred collections</h2>
+            </div>
+            <p class="m-0 max-w-20rem text-center text-sm font-light">Add collections to favorites for quick access to your most important marks.</p>
+        </div>
     </div>
 </ng-template>

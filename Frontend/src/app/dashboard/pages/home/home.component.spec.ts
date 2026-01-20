@@ -4,16 +4,22 @@ import { of } from "rxjs";
 import { Router } from "@angular/router";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DialogService } from "primeng/dynamicdialog";
-
 import { Collection } from "../../../workplace/interfaces/collection";
 import { CollectionService } from "../../../workplace/services/collection.service";
 import { DailyMarkActivityChartComponent } from "../../components/daily-mark-activity-chart/daily-mark-activity-chart.component";
 import { DashboardReport, Stats, WeeklyMarkActivity } from "../../interfaces/dashboard-report";
 import { DashboardService } from "../../services/dashboard.service";
 import { HomeComponent } from "./home.component";
-import { CollectionItemType } from "../../../workplace/interfaces/collection-item";
 import { ROUTES } from "../../../shared/utils/constant";
+import { HeroComponent } from "./components/hero/hero.component";
+
+@Component({
+    selector: 'home-hero',
+    standalone: true,
+    template: ''
+})
+class MockHeroComponent {
+}
 
 @Component({
     selector: 'dashboard-daily-mark-activity-chart',
@@ -22,7 +28,7 @@ import { ROUTES } from "../../../shared/utils/constant";
 })
 class MockDailyMarkActivityChartComponent {
     public activity = input.required<WeeklyMarkActivity>();
-};
+}
 
 @Pipe({
     name: 'timeAgo',
@@ -40,13 +46,6 @@ describe('HomeComponent', () => {
     let mockCollectionService : jasmine.SpyObj<CollectionService>;
     let mockDashboardService : jasmine.SpyObj<DashboardService>;
     let mockRouter : jasmine.SpyObj<Router>;
-
-    const mockDialogRef = {
-        onClose: of(1),
-    };
-    const mockDialogService = {
-        open: jasmine.createSpy('open').and.returnValue(mockDialogRef),
-    };
 
     const baseDashboardReport : DashboardReport = {
         creatorId : 1,
@@ -89,16 +88,17 @@ describe('HomeComponent', () => {
             providers: [
                 { provide: CollectionService, useValue: mockCollectionService },
                 { provide: DashboardService, useValue: mockDashboardService },
-                { provide: DialogService, useValue: mockDialogService },
                 { provide: Router, useValue: mockRouter },
             ]
         })
         .overrideComponent(HomeComponent, {
             remove: { imports: [
-                DailyMarkActivityChartComponent
+                HeroComponent,
+                DailyMarkActivityChartComponent,
             ]},
             add: {imports: [
-                MockDailyMarkActivityChartComponent
+                MockHeroComponent,
+                MockDailyMarkActivityChartComponent,
             ]}
         }).compileComponents();
 
@@ -109,22 +109,6 @@ describe('HomeComponent', () => {
 
     it('Should create the component', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('Should get main collection on init', () => {
-        expect(mockCollectionService.getMainByCurrentSession).toHaveBeenCalledTimes(1);
-    });
-
-    it('Should add a new mark item, onNewMarkBtnClick()', () => {
-        const privateAddItemSpy = spyOn<any>(component, 'addItem');
-        component.onNewMarkBtnClick();
-        expect(privateAddItemSpy).toHaveBeenCalledWith(CollectionItemType.Mark);
-    });
-
-    it('Should add a new collection item, onNewCollectionBtnClick()', () => {
-        const privateAddItemSpy = spyOn<any>(component, 'addItem');
-        component.onNewCollectionBtnClick();
-        expect(privateAddItemSpy).toHaveBeenCalledWith(CollectionItemType.Collection);
     });
 
     it('Should navigate to mark viewer, onRecentMarkBtnClick()', () => {
@@ -201,7 +185,7 @@ describe('HomeComponent', () => {
         expect(noResultsTemplate).not.toBeNull();
     });
 
-    it('should display .quick-access div only when report.starredCollections.length > 0', async () => {
+    it('should display .quick-access-list div only when report.starredCollections.length > 0', async () => {
         //  GIVEN: Set up the report$ observable with starredCollections
         let reportWithStarredCollections = baseDashboardReport;
         reportWithStarredCollections.starredCollections = [
@@ -223,7 +207,7 @@ describe('HomeComponent', () => {
         fixture.detectChanges();
         await fixture.whenStable();
         //THEN: Assert expected behaviour
-        const quickAccessDiv = fixture.debugElement.query(By.css('.quick-access'));
+        const quickAccessDiv = fixture.debugElement.query(By.css('.quick-access-list'));
         const noResultsTemplate = fixture.debugElement.query(By.css('#noStarredCollections'));
         const accessButtons = fixture.debugElement.queryAll(By.css('.access'));
         
@@ -232,7 +216,7 @@ describe('HomeComponent', () => {
         expect(noResultsTemplate).toBeNull();
     });
 
-    it('should not display .quick-access div when report.starredCollections is empty', async () => {
+    it('should not display .quick-access-list div when report.starredCollections is empty', async () => {
         //  GIVEN: Set up the report$ observable with starredCollections
         let reportWithStarredCollections = baseDashboardReport;
         reportWithStarredCollections.starredCollections = [];
@@ -243,7 +227,7 @@ describe('HomeComponent', () => {
         fixture.detectChanges();
         await fixture.whenStable();
         //THEN: Assert expected behaviour
-        const quickAccessDiv = fixture.debugElement.query(By.css('.quick-access'));
+        const quickAccessDiv = fixture.debugElement.query(By.css('.quick-access-list'));
         const noResultsTemplate = fixture.debugElement.query(By.css('#noStarredCollections'));
         const accessButtons = fixture.debugElement.queryAll(By.css('.access'));
         

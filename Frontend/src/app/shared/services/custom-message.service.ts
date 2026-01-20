@@ -65,6 +65,9 @@ export class CustomMessageService {
       icon: confirm.icon ?? 'fa fa-warning',
       accept: () => {
         confirm.accept();
+      },
+      reject: () => {
+        if (confirm.reject) confirm.reject();
       }
     });
   }

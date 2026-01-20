@@ -19,7 +19,7 @@
     --surface-border: rgba(255, 255, 255, 0.12);
     --surface-border-hover: rgba(255, 255, 255, 0.18);
     /* Highlight surfaces - subtle colored backgrounds */
-    --highlight-surface-red: rgba(239, 68, 68, 0.15);
+    --highlight-surface-red: rgba(239, 68, 68, 0.3);
     --highlight-surface-purple: rgba(132, 94, 247, 0.15);
     --highlight-surface-green: rgba(16, 185, 129, 0.15);
     --highlight-surface-blue: rgba(59, 130, 246, 0.15);

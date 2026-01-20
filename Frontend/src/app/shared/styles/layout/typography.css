@@ -98,6 +98,13 @@ body {
 button, input {
     font-family: 'OpenSans';
 }
+/** Caveat **/
+@font-face {
+    font-family: "Caveat";
+    src: url('./../fonts/caveat/Caveat-Regular.ttf') format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
 
 .font-playfair {
     font-family: 'PlayfairDisplay';

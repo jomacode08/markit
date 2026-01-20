@@ -7,6 +7,8 @@ import 'emoji-picker-element';
 
 import { Picker } from 'emoji-picker-element';
 
+export type Size = 'sm' | 'md' | 'lg';
+
 @Component({
   selector: 'app-emoji-picker',
   standalone: true,
@@ -25,6 +27,7 @@ import { Picker } from 'emoji-picker-element';
   <button
     type="button"
     aria-label="emoji picker"
+    [class]="size"
     (click)="onPickerButtonClick($event)"
     [ngClass]="{ 'opacity-40' : disabled}"
     [disabled]="disabled"
@@ -33,7 +36,10 @@ import { Picker } from 'emoji-picker-element';
       <span id="emoji">{{ currentEmoji() }}</span>
     }
     @else {
-      <span id="defaultIcon" [class]="defaultIconClass() ?? 'fa-regular fa-smile'"></span>
+      <span
+        id="defaultIcon"
+        [class]="(defaultIconClass() ?? 'fa-regular fa-smile')"
+      ></span>
     }
   </button>
   <!-- Overlay panel -->
@@ -52,6 +58,7 @@ export class EmojiPickerComponent implements ControlValueAccessor, AfterViewInit
   @ViewChild('panel') private panelRef!: OverlayPanel;
   @ViewChild('emojiPicker', { static: false }) private emojiPickerRef!: ElementRef;
   @Input() public disabled : boolean = false;
+  @Input() public size : Size = 'lg';
   public defaultIconClass = input<string | undefined>(undefined);
   public currentEmoji = signal<string | undefined>(undefined);
   
