@@ -36,7 +36,6 @@ input {
   margin: 0;
 }
 input:disabled {
-  background-color: var(--surface-1);
   color: var(--text-secondary);
 }
 

@@ -29,8 +29,8 @@ export type Size = 'sm' | 'md' | 'lg';
     aria-label="emoji picker"
     [class]="size"
     (click)="onPickerButtonClick($event)"
-    [ngClass]="{ 'opacity-40' : disabled}"
-    [disabled]="disabled"
+    [ngClass]="{ 'opacity-40' : isDisabled() }"
+    [disabled]="isDisabled()"
   >
     @if (currentEmoji()) {
       <span id="emoji">{{ currentEmoji() }}</span>
@@ -57,8 +57,8 @@ export type Size = 'sm' | 'md' | 'lg';
 export class EmojiPickerComponent implements ControlValueAccessor, AfterViewInit {
   @ViewChild('panel') private panelRef!: OverlayPanel;
   @ViewChild('emojiPicker', { static: false }) private emojiPickerRef!: ElementRef;
-  @Input() public disabled : boolean = false;
   @Input() public size : Size = 'lg';
+  public isDisabled = signal<boolean>(false);
   public defaultIconClass = input<string | undefined>(undefined);
   public currentEmoji = signal<string | undefined>(undefined);
   
@@ -92,7 +92,7 @@ export class EmojiPickerComponent implements ControlValueAccessor, AfterViewInit
   }
   // Allows Angular to disable the input
   setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.isDisabled.update(() => isDisabled);
   }
 
   public onPickerButtonClick(event: Event) {

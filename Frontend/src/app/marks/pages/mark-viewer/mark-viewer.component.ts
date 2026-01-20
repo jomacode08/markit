@@ -296,7 +296,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     )
     .subscribe({
       next:  (mark)  => {
-        this.markForm.reset(mark, {emitEvent: false});
+        this.markForm.reset(mark);
         this.setSaveState(SaveState.saved);
         if (currentMark.requiresSync)
           this.resetMarkSync(currentMark.id);
