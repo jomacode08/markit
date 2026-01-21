@@ -4,32 +4,35 @@ button {
 }
 
 .filter-container {
-  padding: 4px;
-  background-color: var(--surface-1);
   margin-bottom: 1rem;
-  border-radius: 16px;
 }
 
 .filter-container .filter {
-  font-size: 1rem;
+  font-size: .95rem;
   padding: 0.5rem 0.75rem;
   color: var(--text-secondary);
-  border-radius: 12px;
+  border-radius: .5rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.filter-container .filter:hover {
+  background-color: var(--surface-1);
 }
 
 .filter-container .filter.active {
   color: var(--text-primary);
-  background-color: var(--surface-3);
+  background-color: var(--surface-2);
   font-weight: 500;
 }
 
 .item {
   display: flex;
   transition: background-color 0.3s ease;
-  margin-top: .75rem;
-  border-bottom: 1px solid var(--border-color);
+  border: 1px dashed var(--border-color);
+  margin-bottom: .75rem;
 
-  button {
+  #collectionItemBtn {
     padding: .75rem 0 .75rem 1rem;
   }
   div.actions-container {
@@ -47,7 +50,7 @@ button {
   border-radius: .5rem;
   margin-right: .75rem;
   font-size: 1rem;
-  background-color: var(--highlight-surface-blue);
+  border: 1px solid var(--border-color);
 }
 
 .grid > div {
@@ -57,8 +60,7 @@ button {
 
 .actions-container {
   display: flex;
-  gap: 1rem;
-  justify-content:space-around;
+  justify-content: center;
 }
 
 .actions-container button span {

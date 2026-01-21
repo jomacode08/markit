@@ -1,5 +1,5 @@
 <!-- Filters -->
-<div class="filter-container flex justify-content-around md:inline-flex">
+<div class="filter-container flex gap-2">
     @for (filter of collectionItemTypeFilters; track $index) {
         <button 
             type="button"
@@ -31,7 +31,7 @@
                     class="grid grid-nogutter w-full"
                 >
                     <!-- Name and Description -->
-                    <div class="col-12 mb-3 md:col-6 md:m-0">
+                    <div class="col-8 md:col-6">
                         <span class="item-icon">
                             @if (item.emoji) {
                                 <span class="emoji">{{ item.emoji }}</span>
@@ -50,12 +50,14 @@
                         </div>
                     </div>
                     <!-- Date -->
-                    <div class="col-12 md:col-6 text-sm text-white-alpha-60">
-                        {{ item.updatedAt ?? item.createdAt | timeAgo }}
+                    <div class="col-4 md:col-6 text-sm text-white-alpha-60">
+                        <span class="w-full text-right mr-3">
+                            {{ item.updatedAt ?? item.createdAt | timeAgo }}
+                        </span>
                     </div>
                 </button>
                 <!-- General actions -->
-                <div class="actions-container flex-column md:flex-row">
+                <div class="actions-container flex-column gap-2 md:flex-row md:gap-3">
                     <!-- Favorite -->
                     <button (click)="onFavoriteClicked(item, $index)" [disabled]="item.updating" type="button">
                         <span *ngIf="!item.isFavorite; else fullStar" class="fa-regular fa-star text-lg text-white-alpha-60"></span>
