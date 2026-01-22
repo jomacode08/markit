@@ -53,11 +53,5 @@ namespace markit.Application.Common.Helpers
 
             return path;
         }
-
-        public static DateTime? GetMostRecentBlockDate(ICollection<Block> blocks)
-        {
-            if (blocks.Count == 0) return null;
-            return blocks.OrderBy(b => b.UpdatedDate).Last().UpdatedDate;
-        }
     }
 }

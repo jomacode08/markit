@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using MediatR;
 using System.Globalization;
 
 namespace markit.Application.Common.Helpers.Services
@@ -17,7 +17,11 @@ namespace markit.Application.Common.Helpers.Services
             CursorData? cursorData = ParseCursor(request.Cursor);
             string? nextCursor = null;
 
-            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Collection))
+            if (IsSearchValidForItemType(
+                itemType: CollectionItemType.Collection,
+                filter: request.Filters.Type,
+                cursor: cursorData
+            ))
             {
                 var collections = await _unitOfWork.CollectionRepository
                     .GetAsyncCursorBasedPagination(
@@ -29,10 +33,15 @@ namespace markit.Application.Common.Helpers.Services
                         request.Filters.OnlyFavorites
                     );
 
+                if (collections.Count < request.PageSize) cursorData = null;
                 items.AddRange(_mapper.Map<List<CollectionItem>>(collections));
             }
 
-            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All) || request.Filters.Type.Equals(CollectionItemTypeFilter.Mark))
+            if (IsSearchValidForItemType(
+                itemType: CollectionItemType.Mark,
+                filter: request.Filters.Type,
+                cursor: cursorData
+            ))
             {
                 var marks = await _unitOfWork.MarkRepository
                     .GetAsyncCursorBasedPagination(
@@ -47,13 +56,6 @@ namespace markit.Application.Common.Helpers.Services
                 items.AddRange(_mapper.Map<List<CollectionItem>>(marks));
             }
 
-            if (request.Filters.Type.Equals(CollectionItemTypeFilter.All))
-            {
-
-                var orderedItems = OrderItems(request.SortOrder, items);
-                items = [.. orderedItems.Take(request.PageSize + 1)];
-            }
-
             bool hasNextPage = items.Count > request.PageSize;
             items = [.. items.Take(request.PageSize)];
 
@@ -64,6 +66,20 @@ namespace markit.Application.Common.Helpers.Services
             }
 
             return new CollectionItemPage(nextCursor, items, hasNextPage);
+        }
+
+        private static bool IsCursorValidForItemType(CollectionItemType type, CursorData cursor) => cursor.Type.Equals(type);
+
+        private static bool IsSearchValidForItemType(CollectionItemType itemType, CollectionItemTypeFilter filter, CursorData? cursor)
+        {
+            CollectionItemTypeFilter expectedFilter = itemType switch
+            {
+                CollectionItemType.Collection => CollectionItemTypeFilter.Collection,
+                CollectionItemType.Mark => CollectionItemTypeFilter.Mark,
+                _ => throw new NotImplementedException(),
+            };
+
+            return filter.Equals(expectedFilter) || (filter.Equals(CollectionItemTypeFilter.All) && (cursor is null || IsCursorValidForItemType(itemType, cursor)));
         }
 
         private static string GenerateCursor(CollectionItem lastItem) => $"{lastItem.CreatedAt:O}|{Enum.GetName(typeof(CollectionItemType), lastItem.Type)}|{lastItem.TypeId}";
@@ -80,24 +96,6 @@ namespace markit.Application.Common.Helpers.Services
             if (!int.TryParse(parts[2], out int id)) return null;
 
             return new CursorData(createdAt, type, id);
-        }
-
-        private static IOrderedEnumerable<CollectionItem> OrderItems(SortPaginationOrder sortOrder, List<CollectionItem> items)
-        {
-            if (sortOrder.Equals(SortPaginationOrder.Ascending))
-            {
-                return items
-                    .OrderBy(c => c.CreatedAt)
-                    .ThenBy(c => c.Type)
-                    .ThenBy(c => c.TypeId);
-            }
-            else
-            {
-                return items
-                    .OrderByDescending(c => c.CreatedAt)
-                    .ThenByDescending(c => c.Type)
-                    .ThenByDescending(c => c.TypeId);
-            }
         }
     }
 }

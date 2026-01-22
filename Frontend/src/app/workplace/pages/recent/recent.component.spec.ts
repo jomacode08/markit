@@ -55,10 +55,10 @@ describe('RecentComponent', () => {
 
     it('should reset and set filters on initialization', () => {
         expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
-            type: CollectionItemTypeFilter.All,
+            type: CollectionItemTypeFilter.Mark,
             collectionId: undefined,
             onlyFavorites: false, 
-        }, SortPaginationOrder.Descending);
+        });
     });
 
     it('Should implement CollectionItemDataView', () => {
@@ -97,7 +97,7 @@ describe('RecentComponent', () => {
             type: filter,
             collectionId: undefined,
             onlyFavorites: false, 
-        }, SortPaginationOrder.Descending);
+        });
     });
 });
 

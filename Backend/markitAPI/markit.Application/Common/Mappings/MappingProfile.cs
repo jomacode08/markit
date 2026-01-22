@@ -216,7 +216,7 @@ namespace markit.Application.Mappings
                 .ForMember(
                     dest => dest.UpdatedAt,
                     opt => opt.MapFrom( src => src.Blocks != null
-                        ? Utilities.GetMostRecentBlockDate(src.Blocks)
+                        ? src.Blocks.GetMostRecentBlockDate()
                         : src.UpdatedDate
                     )
                 )

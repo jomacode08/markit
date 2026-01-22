@@ -43,7 +43,7 @@ export class CollectionItemPaginationService {
   private cursor ?: string;
   private hasNextPage : boolean = true;
   private isResetEnabled : boolean = false;
-  private sortOrder : SortPaginationOrder = SortPaginationOrder.Ascending;
+  private sortOrder : SortPaginationOrder = SortPaginationOrder.Descending;
 
   private itemsSubject = new BehaviorSubject<CollectionItem[]>([]);
   private typeSubject = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
@@ -69,7 +69,6 @@ export class CollectionItemPaginationService {
     if (!this.hasNextPage) return;
     
     this.loadingSubject.next(true);
-
     let bodyRequest = {
       pageSize : this.PAGE_SIZE,
       cursor : this.cursor,
@@ -91,11 +90,9 @@ export class CollectionItemPaginationService {
   }
 
   public resetAndLoad(
-    filters : CollectionItemFilters,
-    sortOrder : SortPaginationOrder = SortPaginationOrder.Ascending
+    filters : CollectionItemFilters
   ): void {
     this.filters = filters;
-    this.sortOrder = sortOrder;
     this.isResetEnabled = true;
     this.cursor = undefined;
     this.hasNextPage = true;

@@ -67,13 +67,13 @@ namespace markit.Infraestructure.Repositorys.Marks
             if (sortOrder.Equals(SortPaginationOrder.Ascending))
             {
                 marksQuery = marksQuery
-                    .OrderBy(m => m.CreatedDate)
+                    .OrderBy(m => m.UpdatedDate)
                     .ThenBy(m => m.Id);
             }
             else
             {
                 marksQuery = marksQuery
-                    .OrderByDescending(m => m.CreatedDate)
+                    .OrderByDescending(m => m.UpdatedDate)
                     .ThenByDescending(m => m.Id);
             }
 

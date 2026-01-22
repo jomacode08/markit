@@ -1,7 +1,6 @@
 ﻿using markit.Application.Common.Exceptions;
 using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
-using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Application.Common.Helpers
 {
@@ -42,6 +41,12 @@ namespace markit.Application.Common.Helpers
                     creatorId
                 );
             }
+        }
+
+        public static DateTime? GetMostRecentBlockDate(this ICollection<Block> blocks)
+        {
+            if (blocks.Count == 0) return null;
+            return blocks.OrderBy(b => b.UpdatedDate).Last().UpdatedDate;
         }
     }
 }
