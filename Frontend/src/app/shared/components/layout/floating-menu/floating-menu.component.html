@@ -3,18 +3,36 @@
     id="floating-menu"
     position="bottom"
     modal="false"
-    [visible]="isSidebarDisplayed()"
+    showCloseIcon="false"
+    [visible]="isSideBarVisible()"
 >
+    <ng-template pTemplate="header">
+        <!-- Close button -->
+        <button
+            id="closeBtn"
+            type="button"
+            aria-label="Close menu"
+            (click)="toggle()"
+        >
+            <span class="fa-solid fa-angles-left"></span>
+        </button>
+    </ng-template>
     <div class="scroll-container">
-        <!-- Back button -->
-        <button *ngIf="isBackButtonVisible" type="button" (click)="onBackButtonClick()">
+        <!-- Back item button -->
+        <button
+            *ngIf="isBackButtonVisible"
+            type="button"
+            class="item"
+            (click)="onBackButtonClick()"
+        >
             <span class="active fa fa-angles-left"></span>
         </button>
 
         <!-- Edition options -->
         @for (option of currentOptions()(); track $index) {
             <button 
-                type="button" 
+                type="button"
+                class="item"
                 (click)="onOptionClick(option)"
                 [disabled]='option.isDisabled ? option.isDisabled() : false'
             >

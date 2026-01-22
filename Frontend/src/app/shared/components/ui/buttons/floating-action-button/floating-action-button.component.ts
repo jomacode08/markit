@@ -7,11 +7,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from 
   styleUrl: './floating-action-button.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+  <div class="wrapper-floating-button">
     <div class="floating-button">
       <button type="button" [disabled]="!enabled()" (click)="onButtonClicked()">
         <span [class]="iconClass()"></span>
       </button>
     </div>
+  </div>
   `,
 })
 export class FloatingActionButtonComponent {

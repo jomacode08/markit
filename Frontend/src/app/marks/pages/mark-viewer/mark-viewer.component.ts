@@ -2,7 +2,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, signal, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
@@ -61,6 +61,7 @@ import { SharedData } from './../../components/block-menu/block-menu.component';
 })
 export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   //* Configuration
+  @ViewChild('floatingMenu') private floatingMenu !: FloatingMenuComponent;
   private blockMenuDialogRef: DynamicDialogRef | undefined;
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
@@ -90,7 +91,6 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   //* Floating menu
   public floatingMenuOptions = signal<FloatingMenuOption[]>([]);
-  public isFloatingMenuVisible = signal<boolean>(false);
 
   //* Getters
   get markNamePlaceHolder(): string {
@@ -367,7 +367,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   private changeFloatingMenuState(): void {
-    this.isFloatingMenuVisible.update(current => !current);
+    this.floatingMenu.toggle();
   }
 
   private getErrorRetryConfig(): RetryConfig {

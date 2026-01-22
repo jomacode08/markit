@@ -24,7 +24,10 @@ import { IntersectionDirective } from "../../../shared/directives/intersection.d
 })
 class MockFloatingMenuComponent {
     public options = input.required<FloatingMenuOption[]>();
-    public isSidebarDisplayed = input.required<boolean>({ alias: 'visible' });
+    public isSideBarVisible = signal<boolean>(false);
+    public toggle(): void {
+        this.isSideBarVisible.update(state => !state);
+    }
 };
 
 describe('CollectionItemDataViewComponent', () => {
@@ -127,8 +130,6 @@ describe('CollectionItemDataViewComponent', () => {
     });
 
     it('should show the menu, onItemActionsClicked(item : CollectionItem)', () => {
-        // GIVEN
-        component.isMenuVisible.set(false);
         // WHEN
         component.onItemActionsClicked(mockitem);
         fixture.detectChanges();

@@ -1,4 +1,4 @@
-import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Editor } from "@tiptap/core";
 import { FormBuilder } from "@angular/forms";
@@ -14,6 +14,23 @@ import { Mark } from "../../interfaces/mark";
 import { MarkService } from "../../services/mark.service";
 import { MarkViewerComponent } from "./mark-viewer.component";
 import { SaveState } from "../../components/mark-autosave-indicator/mark-autosave-indicator.component";
+import { By } from "@angular/platform-browser";
+import { Component, input, signal } from "@angular/core";
+import { FloatingMenuOption } from "../../../shared/components/layout/floating-menu/floating-menu-option";
+import { FloatingMenuComponent } from "../../../shared/components/layout/floating-menu/floating-menu.component";
+
+@Component({
+  selector: 'shared-floating-menu',
+  standalone: true,
+  template: ''
+})
+class MockFloatingMenuComponent {
+    public options = input.required<FloatingMenuOption[]>();
+    public isSideBarVisible = signal<boolean>(false);
+    public toggle(): void {
+        this.isSideBarVisible.update(state => !state);
+    }
+};
 
 describe('MarkViewerComponent', () => {
     let component : MarkViewerComponent;
@@ -98,7 +115,16 @@ describe('MarkViewerComponent', () => {
                     }
                 },
             ]
-        }).compileComponents();
+        })
+        .overrideComponent(MarkViewerComponent, {
+            remove: { imports: [
+                FloatingMenuComponent
+            ]},
+            add: { imports: [
+                MockFloatingMenuComponent
+            ]}
+        })
+        .compileComponents();
 
         fixture = TestBed.createComponent(MarkViewerComponent);
         component = fixture.componentInstance;
@@ -256,10 +282,12 @@ describe('MarkViewerComponent', () => {
             expect(component['editor']()).toBe(mockEditor);
         });
 
-        it('should toggle floating menu visibility', () => {
-            const initialState = component.isFloatingMenuVisible();
-            component['changeFloatingMenuState']();
-            expect(component.isFloatingMenuVisible()).toBe(!initialState);
+        it('should call changeFloatingMenuState when onTextFormattingButtonClick is invoked', () => {
+            const changeFloatingMenuStateSpy = spyOn<any>(component, 'changeFloatingMenuState');
+            
+            component.onTextFormattingButtonClick();
+            
+            expect(changeFloatingMenuStateSpy).toHaveBeenCalledTimes(1);
         });
 
         it('should update block index', () => {

@@ -12,6 +12,7 @@
     --surface-2: #2d2e32;    /* Medium elevation, for dialogs */
     --surface-3: #34363b;    /* Higher elevation, for modals */
     --surface-4: #3c3e43;    /* Highest elevation, for dropdowns */
+    --surface-accent : #2A253F;
     /* Surface overlays with transparency */
     --surface-overlay-1: rgba(35, 36, 41, 0.95);  /* For floating menus */
     --surface-overlay-2: rgba(45, 46, 50, 0.90);  /* For tooltips */
@@ -157,19 +158,8 @@ button {
   }
 }
 
-.floating-button {
-  position: fixed;
-  right: 2rem;
-  bottom: 2rem;
-  z-index: 1;
-}
-
 .p-button:focus {
   box-shadow: none;
-}
-.p-button.floating-button {
-  border: none;
-  opacity: 0.9;
 }
 
 
@@ -233,18 +223,22 @@ button {
 #floating-menu {
   .p-sidebar {
     background: transparent;
-    height: 6rem;
+    height: 6.1rem;
     box-shadow: none;
   }
   .p-sidebar-content {
+    background-color: var(--surface-accent);;
     display: flex;
     justify-content: center;
-    background-color: #2A253F;
     padding: 0.5rem 2rem;
     box-shadow: 0 1px 3px var(--shadow-color);
   }
   .p-sidebar-header {
-    display: none;
+    position: relative;
+    display: flex;
+    justify-content: end;
+    padding: 0;
+    width: 100%;
   }
 }
 

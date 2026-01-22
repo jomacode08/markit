@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal, ViewChild, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -36,6 +36,7 @@ import { CollectionItemDialogComponent } from '../../components/collection-item-
   styleUrl: './collection-explorer.component.css',
 })
 export class CollectionExplorerComponent implements OnDestroy, OnInit {
+  @ViewChild('addItemMenu') private floatingMenu !: FloatingMenuComponent;
   //* Constants
   private readonly DYNAMIC_DIALOG_CONFIG = (header: string, data: any): DynamicDialogConfig => {
     return {
@@ -68,7 +69,6 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   public currentFilter = signal<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
 
   //* Floating menu
-  public isFloatingMenuVisible = signal(false);
   public readonly ADD_ITEM_ACTIONS: FloatingMenuOption[] = [
     {
       label: 'Add collection',
@@ -199,5 +199,5 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   //* Utils
   private redirect = () => this.router.navigate([ROUTES.NOT_FOUND]);
   private setLoading = (value: boolean) => this.loading.set(value);
-  private changeFloatingMenuState = () => this.isFloatingMenuVisible.set(!this.isFloatingMenuVisible())
+  private changeFloatingMenuState = () => this.floatingMenu.toggle();
 }

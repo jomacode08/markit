@@ -46,6 +46,9 @@ a {
             align-items: center;
             margin-bottom: 10px;
         }
+        .p-sidebar-header {
+            display: none !important;
+        }
         .p-sidebar-content {
             max-width: 640px;
             border-radius: 16px;
@@ -77,9 +80,10 @@ a {
         gap: 1rem;
         width: calc(100vw - var(--main-bar-width-md));
     }
-    .floating-button {
-        right: 30% !important;
-        bottom: 7.5rem !important;
+    .wrapper-floating-button {
+      z-index: 1103;
+      right: 2.5rem !important;
+      bottom: 2.5rem !important;
     }
 }
 /* sm: Aplica width <= 768px */

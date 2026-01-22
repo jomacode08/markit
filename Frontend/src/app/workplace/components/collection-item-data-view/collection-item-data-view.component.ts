@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
@@ -35,6 +35,7 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionItemDataViewComponent implements OnDestroy {
+  @ViewChild('addItemMenu') private floatingMenu !: FloatingMenuComponent;
   //* Inputs
   public items = input.required<CollectionItem[]>();
   public currentFilter = input.required<CollectionItemTypeFilter>();
@@ -75,7 +76,6 @@ export class CollectionItemDataViewComponent implements OnDestroy {
   ];
   
   public currentItems = computed(() => signal(this.items()));
-  public isMenuVisible = signal<boolean>(false);
   public menuTarget ?: CollectionItem;
   public dialogReference ?: DynamicDialogRef;
 
@@ -167,5 +167,5 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     });
   }
 
-  private changeMenuState = () => this.isMenuVisible.set(!this.isMenuVisible())
+  private changeMenuState = () => this.floatingMenu.toggle();
 }

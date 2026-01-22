@@ -2,7 +2,7 @@ import { CollectionExplorerBreadcrumbComponent } from './../../components/collec
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
@@ -27,7 +27,10 @@ import { FloatingActionButtonComponent } from '../../../shared/components/ui/but
 })
 class MockFloatingMenuComponent {
     public options = input.required<FloatingMenuOption[]>();
-    public isSidebarDisplayed = input.required<boolean>({ alias: 'visible' });
+    public isSideBarVisible = signal<boolean>(false);
+    public toggle(): void {
+        this.isSideBarVisible.update(state => !state);
+    }
 };
 
 @Component({
@@ -137,10 +140,6 @@ describe('CollectionExplorerComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it(`should isFloatingMenuVisible be 'false' on initialization`, () => {
-        expect(component.isFloatingMenuVisible()).toBeFalse();
-    })
-
     it(`When id param is provided as a root value, then the root collection is loaded`, async () => {
         // GIVEN - Load test data and define expected results.
         const ROOT_PARAM_VALUE = MAIN_COLLECTION_PARAM;
@@ -214,13 +213,13 @@ describe('CollectionExplorerComponent', () => {
         expect(component['dialogReference'].destroy).toHaveBeenCalled();
     });
 
-    it(`Should change isFloatingMenuVisible state, onFloatingButtonClick()`, () => {
-        // GIVEN - Load test data
-        component.isFloatingMenuVisible.set(false);
+    it(`Should call changeFloatingMenuState() method, onFloatingButtonClick()`, () => {
+        // GIVEN
+        const spy = spyOn<any>(component, 'changeFloatingMenuState').and.callThrough()
         // WHEN - Perform operation.
         component.onFloatingButtonClick();
-        // THEN - Assert expected results
-        expect(component.isFloatingMenuVisible()).toBeTrue();
+        // THEN
+        expect(spy).toHaveBeenCalled();
     });
     
     it('Should floating-button be enabled when isLoading is false', () => {
@@ -243,24 +242,15 @@ describe('CollectionExplorerComponent', () => {
         expect(floatingButton.componentInstance.enabled()).toBeFalse();
     });
 
-    it('Should show shared-floating-menu when isFloatingMenuVisible is true', () => {
-        // GIVEN - Set test conditions.
-        component.isFloatingMenuVisible.set(true);
+    it('Should call floating menu toggle() method, onFloatingButtonClick()', () => {
+        // Given - Set test conditions
+        const floatingMenuElement = fixture.debugElement.query(By.directive(MockFloatingMenuComponent));
+        const floatingMenuInstance = floatingMenuElement.componentInstance as MockFloatingMenuComponent;
+        spyOn(floatingMenuInstance, 'toggle');
         // WHEN - Detect changes and get DOM element.
-        fixture.detectChanges();
-        const floatingMenu = fixture.debugElement.query(By.directive(MockFloatingMenuComponent));
+        component.onFloatingButtonClick();
         // THEN - Assert expected behaviour.
-        expect(floatingMenu.attributes['ng-reflect-is-sidebar-displayed']).toBe('true');
-    });
-
-    it('Should hide shared-floating-menu when isFloatingMenuVisible is false', () => {
-        // GIVEN - Set test conditions.
-        component.isFloatingMenuVisible.set(false);
-        // WHEN - Detect changes and get DOM element.
-        fixture.detectChanges();
-        const floatingMenu = fixture.debugElement.query(By.directive(MockFloatingMenuComponent));
-        // THEN - Assert expected behaviour.
-        expect(floatingMenu.attributes['ng-reflect-is-sidebar-displayed']).toBe('false');
+        expect(floatingMenuInstance.toggle).toHaveBeenCalled();
     });
 
     it('Should load a new CollectionItem page, onItemViewChange()', () => {
