@@ -57,7 +57,7 @@
     <section class="dashed-container quick-access">
         <div 
             *ngIf="report.starredCollections.length > 0; else noStarredCollectionsTemplate"
-            class="grid m-0 quick-access-list"
+            class="grid quick-access-list"
         >
             @for (collection of report.starredCollections; track $index) {
                 <div
