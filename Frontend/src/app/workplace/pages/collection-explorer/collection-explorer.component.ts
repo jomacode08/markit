@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal, ViewChild, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -43,7 +43,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       header,
       width  : '25rem',
       modal  : true,
-      closable: false,
+      closable: true,
       dismissableMask: true,
       styleClass : 'custom-dialog',
       data : data

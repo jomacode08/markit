@@ -112,10 +112,9 @@ export class HeroComponent implements OnInit {
 
   private showMarkConfirmationDialog(mark: Mark) {
     this.messageService.showConfirmationDialog({
-      message : `
-        ${ mark.emoji } ${ mark.name }
-      `,
-      header : 'Create new mark',
+      subtitle : 'Some subtitle!',
+      message : `Do you want to create this mark?: ${ mark.emoji } ${ mark.name }`,
+      header : 'New mark',
       icon : 'fa fa-warning',
       accept: () => this.addMark(mark),
       reject: () => {

@@ -50,7 +50,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
       header,
       width  : '25rem',
       modal  : true,
-      closable: false,
+      closable: true,
       dismissableMask: true,
       styleClass : 'custom-dialog',
       data : data

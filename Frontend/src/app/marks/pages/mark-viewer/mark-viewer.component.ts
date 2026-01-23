@@ -187,7 +187,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       header: 'Blocks',
       width : '30rem',
       modal : true,
-      closable : false,
+      closable : true,
       dismissableMask : true,
       styleClass : 'custom-dialog',
       data: {

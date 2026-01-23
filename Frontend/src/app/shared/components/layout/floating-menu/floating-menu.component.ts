@@ -13,8 +13,7 @@ import { FloatingMenuOption } from './floating-menu-option';
     SidebarModule
   ],
   templateUrl: './floating-menu.component.html',
-  styleUrl: './floating-menu.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: './floating-menu.component.css'
 })
 export class FloatingMenuComponent {
   @ViewChild('sidebar')

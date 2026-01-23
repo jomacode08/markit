@@ -21,15 +21,15 @@ button.item:hover:enabled {
   }
 }
 button.item:disabled {
-  color: #4c4c4c;
+  color: var(--surface-3);
 }
 span.fa {
-  color: rgb(255, 255, 255, 0.6);
+  color: var(--text-foreground);
   transition: 0.5s;
 }
 span.label {
   font-size: 1rem;
-  color: #7f7f7f;
+  color: var(--text-foreground);
   margin-top: 0.25rem;
 }
 .active {
@@ -45,13 +45,13 @@ span.label {
 /* Firefox */
 .scroll-container {
   scrollbar-width: auto;
-  scrollbar-color: #6a6779 var(--surface-accent);;
+  scrollbar-color: var(--surface-4) var(--surface-1);
 }
 /*Chromium*/
 .scroll-container::-webkit-scrollbar {
   height: 6px;
-  background-color: var(--surface-accent);;
+  background-color: var(--surface-1);
 }
 .scroll-container::-webkit-scrollbar-thumb {
-  background-color: #6a6779;
+  background-color: var(--surface-4);
 }

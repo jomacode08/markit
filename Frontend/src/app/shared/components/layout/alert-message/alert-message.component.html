@@ -53,32 +53,10 @@
 
 </p-toast>
 <!-- Confirm Dialog -->
-<p-confirmDialog styleClass="w-10 md:w-20rem" #confirmDialog>
-    <ng-template pTemplate="headless" let-message>
-        <div class="confirm-dialog-icon">
-            <i [class]="message.icon"></i>
-        </div>
-        <div class="confirm-dialog-header">
-            {{ message.header }}
-        </div>
-        <div class="confirm-dialog-content">
+<p-confirmDialog styleClass="max-w-10 md:max-w-25rem" #confirmDialog>
+    <ng-template pTemplate="message" let-message>
+        <div class="p-confirm-dialog-message">
             {{ message.message }}
-        </div>
-        <div class="confirm-dialog-footer">
-            <button
-                class="up-down-transition"
-                type="button"
-                pButton
-                label="Accept"
-                (click)="confirmDialog.accept()"
-            ></button>
-            <button
-                class="up-down-transition"
-                type="button"
-                pButton
-                label="Cancel"
-                (click)="confirmDialog.reject()"
-            ></button>
         </div>
     </ng-template>
 </p-confirmDialog>

@@ -2,6 +2,7 @@
     --paper-bg: #1a1b1e;
     --text-primary: #e9ecef;
     --text-secondary: #adb5bd;
+    --text-foreground: rgba(255, 255, 255, 0.6);
     --border-color: #343a40;
     --shadow-color: rgba(0, 0, 0, 0.3);
     --accent-color: #845ef7;
@@ -227,11 +228,13 @@ button {
     box-shadow: none;
   }
   .p-sidebar-content {
-    background-color: var(--surface-accent);;
+    background-color: var(--surface-1);
     display: flex;
     justify-content: center;
     padding: 0.5rem 2rem;
-    box-shadow: 0 1px 3px var(--shadow-color);
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-color: var(--border-color);
   }
   .p-sidebar-header {
     position: relative;
@@ -294,41 +297,37 @@ button {
   }
 }
 /** Dialogs */
-.custom-dialog {
+.p-dialog {
+  background-color: var(--paper-bg);
   border: 1px solid var(--surface-border);
-  border-radius: 0.5rem;
-  .p-dialog-header, .p-dialog-content {
-    background-color: var(--surface-1);
+  .p-dialog-content, .p-dialog-footer {
+      background-color: transparent;
   }
-
   .p-dialog-header {
     padding: 1rem;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-    border-bottom: 1px solid var(--surface-border);
-
+    background-color: var(--surface-1);
     .p-dialog-title {
-      font-size: 1.125rem;
-      font-weight: 500;
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--text-primary);
     }
+    .p-dialog-header-icon {
+      color: var(--text-foreground);
+    }
+    .p-dialog-header-close-icon {
+      color: var(--text-foreground);
+    }
   }
+}
 
+.custom-dialog {
   .p-dialog-content {
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
     padding: 0;
   }
-
   .modal-body, .modal-footer {
     padding: 1rem 1.5rem;
     background-color: var(--paper-bg);
   }
-  .modal-footer {
-    background-color: var(--surface-1);
-    border-top: 1px solid var(--surface-border);
-  }
-
   #saveBtn {
     background-color: var(--accent-color);
   }
@@ -341,6 +340,7 @@ button {
     cursor: default;
   }
   #cancelBtn {
+    border: 1px solid var(--border-color);
     color: var(--text-secondary);
   }
   #cancelBtn:hover {

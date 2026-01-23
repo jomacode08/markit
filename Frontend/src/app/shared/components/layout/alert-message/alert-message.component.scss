@@ -3,57 +3,45 @@
     #message-icon {
         font-size: 3rem;
     }
-    .p-dialog {
-        background: var(--surface-overlay-1);
-        border-radius: 1rem;
-        padding: 2rem;
-    }
-    .confirm-dialog-header, .confirm-dialog-content {
-        text-align: center;
-    }
-    .confirm-dialog-icon {
-        display: flex;
-        justify-content: center;
-        color: var(--yellow-500);
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
-    }
-    .confirm-dialog-header {
-        font-family: 'PlayfairDisplay';
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-    .confirm-dialog-content {
-        font-size: 1rem;
-        margin-bottom: 2rem;
-        color: var(--text-secondary);
-    }
-    .confirm-dialog-footer {
-        display: flex;
-        justify-content: space-around;
-    }
-    .confirm-dialog-footer > .p-button:first-child {
-        color: var(--text-primary);
-        background-color: var(--accent-color);
-    }
-    .confirm-dialog-footer > .p-button:last-child {
-        color: var(--text-secondary);
-    }
-    .p-dialog .confirm-dialog-footer .p-button {
-        border: solid 1px var(--border-color);
-        border-radius: 1.5rem;
-        padding: 0.5rem;
-        width: 45%;
-    }
-    .p-dialog .confirm-dialog-footer .p-button:hover {
-        transform: translateY(-0.25rem);
-        transition-duration: 300ms;
-    }
-    .p-dialog .confirm-dialog-footer .p-button:focus {
-        box-shadow: none;
-    }
     
+    .p-confirm-dialog{
+        .p-dialog-content {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            .p-confirm-dialog-message {
+                margin: 0;
+                color: var(--text-secondary);
+            }
+            .p-confirm-dialog-icon {
+                font-size: 3rem;
+                margin-bottom: .5rem;
+                color: var(--secondary-accent);
+            }
+        }
+        .p-dialog-footer {
+            .p-button-label {
+                font-weight: 400;
+                font-size: .875rem;
+            }
+            button {
+                padding: .5rem 1rem;
+                font-size: 1rem;
+            }
+            button.p-confirm-dialog-reject {
+                border: 1px solid var(--border-color);
+                color: var(--text-secondary);
+            }
+            button.p-confirm-dialog-accept {
+                border: none;
+                color: var(--text-primary);
+                background-color: var(--accent-color);
+                margin: 0;
+            }
+        }
+    }
+
     //** Toast **/
     .p-toast .p-toast-message {
         color: #ffffff;
