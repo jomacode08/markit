@@ -85,7 +85,7 @@ export class HeroComponent implements OnInit {
       {
         id: 0,
         title: DEFAULT_BLOCK_NAME,
-        content
+        content: `<p>${ content }</p>`
       }
     ];
     return mark;
