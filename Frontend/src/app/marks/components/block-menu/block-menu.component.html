@@ -41,7 +41,7 @@
                     icon="fa fa-trash"
                     pTooltip="Delete"
                     [disabled]="block.id === currentBlockId || blocks().length === 1"
-                    (onClick)="onDeleteBlockButtonClick(block.id)"
+                    (onClick)="onDeleteBlockButtonClick($index)"
                 />
             </div>
         </div>

@@ -83,21 +83,21 @@ export class BlockMenuComponent implements OnInit {
     });
   }
 
-  public onDeleteBlockButtonClick( blockId: number ): void {
-    const block = this.blocks().find(b => b.id === blockId);
-    if (block === undefined) throw Error(`The block with id: ${ blockId } doesn't exist.`);
+  public onDeleteBlockButtonClick( blockIndex: number ): void {
+    const block = this.blocks().at(blockIndex);
+    if (block === undefined) return;
     // The block has content, show a warning to the user.
-    if (block.content && block.content.length > 0) {
+    if (block.id > 0 && (block.content && block.content.length > 0)) {
       this.messageService.showConfirmationDialog({
-        message: "Do you want to delete this block?. You won't be able to get it back later. ",
+        message: `Do you want to delete the ${ block.title } block? You won't be able to get it back later.`,
         header: 'Delete block',
         icon: 'fa fa-warning',
-        accept: () => this.removeBlock(blockId),
+        accept: () => this.removeBlockByIndex(blockIndex),
       });
       return;
     }
     // Otherwise the block is empty so it can be deleted.
-    this.removeBlock(blockId);
+    this.removeBlockByIndex(blockIndex);
   }
 
   public onSelectBlock(selectedBlockId: number): void {
@@ -136,8 +136,11 @@ export class BlockMenuComponent implements OnInit {
     this.blocks.set( blocks as EditableBlock[] );
   }
 
-  private removeBlock( blockId: number ): void {
-    this.blocks.update(current => current.filter(b => b.id != blockId));
+  private removeBlockByIndex( blockIndex: number ): void {
+    this.blocks.update(current => {
+      current.splice(blockIndex, 1);
+      return current;
+    });
   }
 
   private setFocusToInputElement( elementId: string ): void {
