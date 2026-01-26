@@ -28,11 +28,13 @@
 
         public static class Role
         {
-            public const string admin = "Admin";
-            public const string general = "General";
+            public const string ADMIN_NAME = "Admin";
+            public const string GENERAL_NAME = "General";
+            public const string DEMO_NAME = "Demo";
 
-            public static readonly string adminUuid = "5335f3ce-37dd-11ee-be56-0242ac120002";
-            public static readonly string generalUuid = "6ff7edb4-37dd-11ee-be56-0242ac120002";
+            public static readonly string ADMIN_UUID = "5335f3ce-37dd-11ee-be56-0242ac120002";
+            public static readonly string GENERAL_UUID = "6ff7edb4-37dd-11ee-be56-0242ac120002";
+            public static readonly string DEMO_UUID = "3c2cba5a-562c-4098-9598-864e96f15397";
         }
 
         public static class CustomClaimType

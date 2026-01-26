@@ -14,24 +14,25 @@ namespace markit.Infraestructure.Security.Configurations
 
         private static void CrearRolesDefault(EntityTypeBuilder<IdentityRole> builder)
         {
-            IdentityRole admin = new()
-            {
-                Id = Role.adminUuid,
-                Name = Role.admin,
-                NormalizedName = Role.admin.ToLower(),
-            };
-
-            IdentityRole general = new()
-            {
-                Id = Role.generalUuid,
-                Name = Role.general,
-                NormalizedName = Role.general.ToLower(),
-            };
+            IdentityRole admin = ConstructIdentityRole(id: Role.ADMIN_UUID, name: Role.ADMIN_NAME);
+            IdentityRole general = ConstructIdentityRole(id: Role.GENERAL_UUID, name: Role.GENERAL_NAME);
+            IdentityRole demo = ConstructIdentityRole(id: Role.DEMO_UUID, name: Role.DEMO_NAME);
 
             builder.HasData(
                 admin,
-                general
+                general,
+                demo
             );
+        }
+
+        private static IdentityRole ConstructIdentityRole(string id, string name)
+        {
+            return new IdentityRole()
+            {
+                Id = id,
+                Name = name,
+                NormalizedName = name.ToLower(),
+            };
         }
     }
 }
