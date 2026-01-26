@@ -1,7 +1,7 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
-using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Settings;
 using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

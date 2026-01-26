@@ -11,6 +11,7 @@ using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;

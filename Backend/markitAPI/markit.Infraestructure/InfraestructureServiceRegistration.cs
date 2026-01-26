@@ -31,6 +31,7 @@ using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication.GitHub;
 using markit.Application.Contracts.GitHub;
 using markit.Infraestructure.Security.Services.GitHub;
+using markit.Application.Models.Settings;
 
 namespace markit.Infraestructure
 {

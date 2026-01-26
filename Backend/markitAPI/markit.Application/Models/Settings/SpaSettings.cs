@@ -1,4 +1,4 @@
-﻿namespace markit.Application.Models.Authentication
+﻿namespace markit.Application.Models.Settings
 {
     public class SpaSettings
     {
