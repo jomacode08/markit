@@ -168,6 +168,7 @@ namespace markit.Infraestructure
                 options.AccessDeniedPath = "/auth/external/access-denied";
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
                 options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+                options.Scope.Add("https://www.googleapis.com/auth/calendar.events.readonly");
                 options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
             })
             .AddGitHub(options =>
