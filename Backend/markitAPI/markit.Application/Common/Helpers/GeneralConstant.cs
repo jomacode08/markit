@@ -11,12 +11,19 @@
             public static readonly string GITHUB_AUTH_SECTION_NAME = "GitHubAuthSettings";
             public static readonly string MEILISEARCH_SECTION_NAME = "MeiliSearchSettings";
             public static readonly string SPA_SECTION_NAME = "SpaSettings";
+            public static readonly string DEMO_SECTION_NAME = "DemoSettings";
         }
 
         public static class AuthenticationItems
         {
             public static readonly string LOGIN_PURPOSE_KEY = "LoginPurpose";
             public static readonly string CURRENT_USERID_KEY = "CurrentUserId";
+        }
+
+        public static class  AuthorizationPolicies
+        {
+            public const string CAN_ESCALATE = "CanEscalate";
+            public const string DEMO_ONLY = "DemoOnly";
         }
 
         public static class Token

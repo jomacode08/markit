@@ -6,6 +6,7 @@ using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Operation
 {
@@ -30,6 +31,7 @@ namespace markit.API.Controllers.Operation
             return Ok(creator);
         }
 
+        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<CreatorViewModel>> Update([FromRoute] int id, [FromBody] UpdateCreatorDto dto)
         {
