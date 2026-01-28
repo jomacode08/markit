@@ -31,7 +31,7 @@ namespace markit.Infraestructure.Persistence.EF
 
         private static async Task<bool> IsAdminConfigurated(MarkitDbContext context, UserManager<AppUser> userManager)
         {
-            var admins = await userManager.GetUsersInRoleAsync(Role.admin);
+            var admins = await userManager.GetUsersInRoleAsync(Role.ADMIN_NAME);
             return admins.Any();
         } 
 
@@ -80,7 +80,7 @@ namespace markit.Infraestructure.Persistence.EF
             string passwordHashed = hasher.HashPassword(adminUser, userDefaultSettings.Password);
             adminUser.PasswordHash = passwordHashed;
             await userManager.CreateAsync(adminUser);
-            await userManager.AddToRoleAsync(adminUser, Role.admin);
+            await userManager.AddToRoleAsync(adminUser, Role.ADMIN_NAME);
 
             scope.Complete();
             return creator.Id;

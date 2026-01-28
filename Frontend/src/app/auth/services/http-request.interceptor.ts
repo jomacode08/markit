@@ -71,7 +71,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
             break;
 
           case HttpStatusCode.Forbidden:
-            this.router.navigate(['/auth/unauthorized'])
+            this.router.navigate(['/unauthorized'])
             break;
 
           case HttpStatusCode.InternalServerError:

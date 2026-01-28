@@ -1,13 +1,14 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
-using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Settings;
 using markit.Infraestructure.Security.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Security
 {
@@ -33,6 +34,7 @@ namespace markit.API.Controllers.Security
             _cache = cache;
         }
 
+        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
         [HttpGet("link-token")]
         public IActionResult GenerateLinkToken()
         {
@@ -79,7 +81,7 @@ namespace markit.API.Controllers.Security
             return Redirect(redirectUrl);
         }
 
-        [Authorize]
+        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
         [HttpDelete("{provider}")]
         public async Task<IActionResult> RemoveLogin(LoginProvider provider)
         {

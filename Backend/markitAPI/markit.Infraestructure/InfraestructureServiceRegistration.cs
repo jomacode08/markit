@@ -22,7 +22,6 @@ using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Models.MeiliSearch.Documents;
 using Hangfire;
 using markit.Infraestructure.Persistence.MeiliSearch.Services;
-using static markit.Application.Helpers.GeneralConstant.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using markit.Application.Contracts.Google;
 using markit.Infraestructure.Security.Services.Google;
@@ -31,6 +30,9 @@ using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication.GitHub;
 using markit.Application.Contracts.GitHub;
 using markit.Infraestructure.Security.Services.GitHub;
+using markit.Application.Models.Settings;
+using static markit.Application.Helpers.GeneralConstant.Configuration;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infraestructure
 {
@@ -43,11 +45,12 @@ namespace markit.Infraestructure
                 .AddDataBasePersistence(configuration)
                 .AddMeiliSearchPersistence(configuration)
                 .AddAuthentication(configuration)
+                .AddAuthorization(configuration)
                 .AddHangfire(configuration);
             return services;
         }
 
-        public static IServiceCollection AddDataBasePersistence(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddDataBasePersistence(this IServiceCollection services, IConfiguration configuration)
         {
             string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
 
@@ -71,7 +74,7 @@ namespace markit.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddMeiliSearchPersistence(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddMeiliSearchPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             // Bind auth settings configuration data
             var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
@@ -94,7 +97,7 @@ namespace markit.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             // Bind configuration data classes
             var jwtSettings = new JwtSettings();
@@ -196,11 +199,29 @@ namespace markit.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
         {
             string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
             services.AddHangfire(config => config.UseSqlServerStorage(connString));
             services.AddHangfireServer();
+            return services;
+        }
+
+        private static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
+        {
+            DemoSettings demoSettings = new();
+            services.Configure<DemoSettings>(configuration.GetSection(DEMO_SECTION_NAME));
+            configuration.Bind(DEMO_SECTION_NAME, demoSettings);
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy(AuthorizationPolicies.CAN_ESCALATE, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole([Role.ADMIN_NAME, Role.GENERAL_NAME]);
+                })
+                .AddPolicy(AuthorizationPolicies.DEMO_ONLY, policy =>
+                    policy.RequireAssertion(context => demoSettings.Enabled)
+                );
             return services;
         }
     }
