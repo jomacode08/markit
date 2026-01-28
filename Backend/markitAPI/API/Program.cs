@@ -7,9 +7,9 @@ using Serilog;
 using System.Text.Json;
 using markit.Infraestructure.Persistence.MeiliSearch.Managers;
 using Hangfire;
-using markit.Application.Models.Authentication;
 using markit.Application.Helpers;
 using Microsoft.AspNetCore.HttpOverrides;
+using markit.Application.Models.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 

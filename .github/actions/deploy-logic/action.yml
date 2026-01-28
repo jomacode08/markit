@@ -64,6 +64,7 @@ runs:
         envsubst < src/environments/environment.template.ts > src/environments/environment.ts
       env:
         production: ${{ inputs.env_name == 'production' || inputs.env_name == 'staging' }}
+        demo: ${{ inputs.env_name == 'staging' }}
         baseApiUrl: ${{ inputs.api_url }}
 
     - name: Install pnpm

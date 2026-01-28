@@ -51,7 +51,7 @@ namespace markit.Infraestructure.Security.Services
             if (registrationResult.Succeeded)
             {
                 // Role registration
-                IdentityRole? role = await _roleManager.FindByNameAsync(Role.general);
+                IdentityRole? role = await _roleManager.FindByNameAsync(Role.GENERAL_NAME);
 
                 if (role != null)
                 {
