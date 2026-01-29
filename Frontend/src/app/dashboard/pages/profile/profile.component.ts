@@ -80,7 +80,7 @@ export class ProfileComponent extends ValidatorErrorField implements OnInit {
   }
 
   private updateCreator(creator: Creator): void {
-    this.creatorService.update(creator)
+    this.creatorService.updateByCurrentSession(creator)
     .pipe(delay(500))
     .subscribe({
       next : (creator) => {

@@ -18,7 +18,7 @@ export class CreatorService {
     return this.http.get<Creator>(`${ this.baseUrl }/me`);
   }
 
-  public update( creator: Creator ): Observable<Creator> {
-    return this.http.put<Creator>(`${ this.baseUrl }/${ creator.id }`, creator);
+  public updateByCurrentSession( creator: Creator ): Observable<Creator> {
+    return this.http.put<Creator>(`${ this.baseUrl }/me`, creator);
   }
 }
