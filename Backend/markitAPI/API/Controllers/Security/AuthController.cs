@@ -39,10 +39,13 @@ namespace markit.API.Controllers.Seguridad
         public async Task<ActionResult<AuthenticatedUser>> Authenticate(AuthRequest request)
         {
             AppUser user = await _loginService.Login(request, HttpContext);
+            IReadOnlyList<string> roles = GetUserRoles();
+
             return Ok(new AuthenticatedUser(
                 user.Id,
                 user.GivenName,
                 user.Email!,
+                roles,
                 user.Picture
             ));
         }
@@ -55,6 +58,7 @@ namespace markit.API.Controllers.Seguridad
             string? givenName = User.FindFirstValue(ClaimTypes.GivenName);
             string? email = User.FindFirstValue(ClaimTypes.Email);
             string? picture = User.FindFirstValue(GeneralConstant.CustomClaimType.ProfilePictureUrl);
+            IReadOnlyList<string> roles = GetUserRoles();
 
             if (userId == null || givenName == null || email == null)
                 throw new InvalidOperationException($"The user doesn't have the required claims.");
@@ -63,6 +67,7 @@ namespace markit.API.Controllers.Seguridad
                 userId,
                 givenName,
                 email,
+                roles,
                 picture
             ));
         }
@@ -95,6 +100,14 @@ namespace markit.API.Controllers.Seguridad
                 hasPassword,
                 externalSignInMethods
             ));
+        }
+
+        private IReadOnlyList<string> GetUserRoles()
+        {
+            return [.. User.Claims
+                .Where(c => c.Type.Equals(ClaimTypes.Role))
+                .Select(c => c.Value)
+            ];
         }
     }
 }

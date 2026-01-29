@@ -4,6 +4,7 @@
         string UserId,
         string GivenName,
         string Email,
+        IReadOnlyList<string> Roles,
         string? Picture
     );
 }
