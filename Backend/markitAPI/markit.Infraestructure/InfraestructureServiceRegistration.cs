@@ -215,6 +215,11 @@ namespace markit.Infraestructure
             configuration.Bind(DEMO_SECTION_NAME, demoSettings);
 
             services.AddAuthorizationBuilder()
+                .AddPolicy(AuthorizationPolicies.ADMIN_ONLY, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole([Role.ADMIN_NAME]);
+                })
                 .AddPolicy(AuthorizationPolicies.CAN_ESCALATE, policy =>
                 {
                     policy.RequireAuthenticatedUser();

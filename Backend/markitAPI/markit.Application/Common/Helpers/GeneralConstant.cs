@@ -22,6 +22,7 @@
 
         public static class  AuthorizationPolicies
         {
+            public const string ADMIN_ONLY = "AdminOnly";
             public const string CAN_ESCALATE = "CanEscalate";
             public const string DEMO_ONLY = "DemoOnly";
         }
