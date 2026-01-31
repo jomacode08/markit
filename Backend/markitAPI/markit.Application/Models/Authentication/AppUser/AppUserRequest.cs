@@ -4,19 +4,21 @@ namespace markit.Application.Models.Authentication.AppUser
 {
     public class AppUserRequest(
         string email,
+        string name,
+        int creatorId,
+        AccessType accessType,
+        string[] roles,
         string? password,
-        string firstName,
-        string lastName,
-        string? picture,
-        AccessType accessType
+        string? picture
     )
     {
         private string _Email => email;
+        public string Name => name;
+        public int CreatorId => creatorId;
         public string? Password => password;
-        public string FirstName => firstName;
-        public string LastName => lastName;
         public string? Picture => picture;
         public AccessType AccessType => accessType;
+        public string[] Roles => roles;
 
         public string Email
         {

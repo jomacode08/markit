@@ -1,67 +1,41 @@
-﻿using markit.Application.Contracts.Authentication;
+﻿using FluentValidation;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Exceptions;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
+using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
-using markit.Application.Models.Authentication.AppUser;
 
 namespace markit.Infraestructure.Security.Services
 {
     public class AppUserService : IAppUserService
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AppUserService(
-            UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public AppUserService(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
-        public async Task CreateIdentityUser(AppUserRequest request, int creatorId)
+        public async Task CreateIdentityUser(AppUserRequest request)
         {
-            // Validate the existency of the user
             AppUser? userInDatabase = await _userManager.FindByEmailAsync(request.Email);
+            if (userInDatabase != null) throw new CustomValidationException($"The user with email: {request.Email} already exists.");
+            if (!AreRolesValid(request.Roles)) throw new CustomValidationException("The user must have only permitted roles.");
+            if (request.AccessType == AccessType.Internal && request.Password == null) 
+                throw new CustomValidationException("The user must have a password.");
 
-            if (userInDatabase != null)
-                throw new CustomValidationException($"The user with email: {request.Email} already exists.");
-
-            if (request.AccessType == AccessType.Internal && request.Password == null)
-                throw new CustomValidationException("The user must have a password");
-
-            // IdentityUser registration
-            AppUser identityUser = new()
-            {
-                CreatorId = creatorId,
-                GivenName = $"{request.FirstName} {request.LastName}",
-                Email = request.Email,
-                UserName = request.Email,
-                Picture = request.Picture,
-                AccessType = request.AccessType,
-                CreatedDate = DateTime.UtcNow,
-                EmailConfirmed = request.AccessType == AccessType.External
-            };
-
-            IdentityResult registrationResult = identityUser.AccessType == AccessType.External
-                ? await _userManager.CreateAsync(identityUser)
-                : await _userManager.CreateAsync(identityUser, request.Password!);
-
-            if (registrationResult.Succeeded)
-            {
-                // Role registration
-                IdentityRole? role = await _roleManager.FindByNameAsync(Role.GENERAL_NAME);
-
-                if (role != null)
-                {
-                    await _userManager.AddToRoleAsync(identityUser, role.Name!);
-                }
-            }
-            else
-            {
-                throw new CustomValidationException($"{registrationResult.Errors.First().Description}");
-            }
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+                // User creation
+                AppUser identityUser = ConstructAppUser(request);
+                IdentityResult registrationResult = identityUser.AccessType == AccessType.External
+                    ? await _userManager.CreateAsync(identityUser)
+                    : await _userManager.CreateAsync(identityUser, request.Password!);
+                if (!registrationResult.Succeeded) throw new CustomValidationException($"{registrationResult.Errors.First().Description}");
+                // UserRoles creation
+                await _userManager.AddToRolesAsync(identityUser, request.Roles);
+            scope.Complete();
         }
 
         public async Task UpdateIdentityUser(UpdateAppUserRequest request, int creatorId)
@@ -80,5 +54,27 @@ namespace markit.Infraestructure.Security.Services
                 .FirstOrDefault()
                 ?? throw new NotFoundException("User with creatorId", creatorId);
         }
+
+        #region Helpers
+        private static bool AreRolesValid(string[] userRoles)
+        {
+            return userRoles.All(r => Role.All.Contains(r));
+        }
+
+        private static AppUser ConstructAppUser(AppUserRequest request)
+        {
+            return new AppUser()
+            {
+                CreatorId = request.CreatorId,
+                GivenName = request.Name,
+                Email = request.Email,
+                UserName = request.Email,
+                Picture = request.Picture,
+                AccessType = request.AccessType,
+                CreatedDate = DateTime.UtcNow,
+                EmailConfirmed = request.AccessType == AccessType.External
+            };
+        }
+        #endregion
     }
 }
