@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using markit.Application.Common.Helpers;
+using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
@@ -11,8 +12,11 @@ using markit.Application.Features.Marks.Commands.CreateMarkCommand;
 using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Helpers;
+using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Application.Mappings
 {
@@ -20,6 +24,19 @@ namespace markit.Application.Mappings
     {
         public MappingProfile()
         {
+            #region Accounts
+            CreateMap<ExternalUser, CreateAccountCommand>()
+                .ForMember(
+                    dest => dest.AccessType,
+                    opt => opt.MapFrom(src => AccessType.External)
+                )
+                .ForMember(
+                    dest => dest.Roles,
+                    opt => opt.MapFrom(src => new string[] { Role.GENERAL_NAME })
+                );
+
+            #endregion
+
             #region Collections
             CreateMap<CreateCollectionCommand, Collection>();
             CreateMap<UpdateCollectionCommand, Collection>();
@@ -66,7 +83,6 @@ namespace markit.Application.Mappings
 
             #region Creators
             CreateMap<CreateCreatorCommand, Creator>();
-            CreateMap<AppUserRequest, CreateCreatorCommand>();
 
             CreateMap<UpdateCreatorCommand, Creator>()
                 .ForMember(

@@ -7,7 +7,7 @@ using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
 using markit.Application.Exceptions;
-using markit.Application.Features.Creators.Commands.CreateCreator;
+using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
@@ -125,11 +125,14 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 if (user == null)
                 {
                     // Create a new account.
-                    AppUserRequest appUserRequest = MapAppUserRequest(loginInfo.Principal.Claims, provider);
-                    await CreateCreator(appUserRequest);
+                    ExternalUser externalUser =  ConstructExternalUserFromClaims(
+                        claims: loginInfo.Principal.Claims,
+                        loginProvider: provider
+                    );
+                    await CreateAccount(externalUser);
                     // Link the user with the external login.
-                    user = await _userManager.FindByEmailAsync(appUserRequest.Email)
-                        ?? throw new InvalidOperationException($"Something went wrong with user creation and their email link: {appUserRequest.Email}");
+                    user = await _userManager.FindByEmailAsync(externalUser.Email)
+                        ?? throw new InvalidOperationException($"Something went wrong with user creation and their email link: {externalUser.Email}");
                     await _userManager.AddLoginAsync(user, loginInfo);
                 }
                 await HandleProviderTokens(loginInfo.AuthenticationTokens, provider, user);
@@ -244,9 +247,9 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             if (userWithLogin != null && userWithLogin.Id != userId) throw new CustomValidationException("The account is already linked by another user.");
         }
 
-        private async Task CreateCreator(AppUserRequest request)
+        private async Task CreateAccount(ExternalUser externalUser)
         {
-            CreateCreatorCommand command = _mapper.Map<CreateCreatorCommand>(request);
+            CreateAccountCommand command = ConstructCreateAccountCommand(externalUser);
             await _mediator.Send(command);
         }
 
@@ -265,10 +268,15 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             _jwtService.SetInsideCookie(tokens, context);
         }
 
-        private static AppUserRequest MapAppUserRequest(IEnumerable<Claim> claims, LoginProvider loginProvider)
+        private static ExternalUser ConstructExternalUserFromClaims(IEnumerable<Claim> claims, LoginProvider loginProvider)
         {
-            ExternalAppUserGenerator generator = new(claims);
+            ExternalUserGenerator generator = new(claims);
             return generator.Generate(loginProvider);
+        }
+
+        private CreateAccountCommand ConstructCreateAccountCommand(ExternalUser externalUser)
+        {
+            return _mapper.Map<CreateAccountCommand>(externalUser);
         }
 
         private string LogAndRedirectError(string message, string spaRedirectUrl)

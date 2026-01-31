@@ -1,17 +1,17 @@
 ﻿using System.Security.Claims;
-using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Common.Helpers;
+using markit.Application.Models.Authentication;
 
 namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
-    public class ExternalAppUserGenerator(IEnumerable<Claim> claims)
+    public class ExternalUserGenerator(IEnumerable<Claim> claims)
     {
         private const string IDENTITY_CLAIM_NAMESPACE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims";
         private const string EMAIL_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/emailaddress";
         private const string CLAIMS_NOT_FOUNDED_ERROR_MESSAGE = "Required claims missing or invalid";
 
-        public AppUserRequest Generate(LoginProvider provider)
+        public ExternalUser Generate(LoginProvider provider)
         {
             return provider switch
             {
@@ -21,7 +21,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             };
         }
 
-        private AppUserRequest GenerateForGoogle()
+        private ExternalUser GenerateForGoogle()
         {
             const string GIVENNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givenname";
             const string SURNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/surname";
@@ -36,21 +36,19 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
             }
 
-            return new AppUserRequest(
+            return new ExternalUser(
+                FirstName: givenName,
+                LastName: surName,
                 email,
-                password: null,
-                givenName,
-                surName,
-                picture,
-                AccessType.External
+                picture
             );
         }
 
-        private AppUserRequest GenerateForGitHub()
+        private ExternalUser GenerateForGitHub()
         {
             const string USER_NAME_CLAIM_TYPE = $"{IDENTITY_CLAIM_NAMESPACE}/name";
             const string NAME_CLAIM_TYPE = "urn:github:name";
-            const string DEFAULT_LAST_NAME = "Markit";
+            const string DEFAULT_LAST_NAME = "Creator";
 
             string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
             string? name = GetClaimValue(NAME_CLAIM_TYPE);
@@ -60,13 +58,10 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
             }
 
-            return new AppUserRequest(
-                email,
-                password: null,
-                firstName: name,
-                lastName: DEFAULT_LAST_NAME,
-                picture: null,
-                AccessType.External
+            return new ExternalUser(
+                FirstName: name,
+                LastName: DEFAULT_LAST_NAME,
+                email
             );
         }
 
