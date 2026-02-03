@@ -19,7 +19,7 @@ namespace markit.Infraestructure.Security.Services
             _userManager = userManager;
         }
 
-        public AppUser GetUserByCreatorIdAsync(int creatorId)
+        public AppUser GetUserByCreatorId(int creatorId)
         {
             return _userManager.Users
                 .Where(u => u.CreatorId.Equals(creatorId))
