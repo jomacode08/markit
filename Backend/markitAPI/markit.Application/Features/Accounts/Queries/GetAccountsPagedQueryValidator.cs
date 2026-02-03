@@ -8,7 +8,7 @@ namespace markit.Application.Features.Accounts.Queries
             RuleFor(q => q.PageIndex).NotNull().WithMessage("The pageIndex is required.");
             RuleFor(q => q.PageSize).NotNull().WithMessage("The pageSize is required.");
             RuleFor(q => q.PageIndex).GreaterThan(0).WithMessage("The pageIndex must be greater than zero.");
-            RuleFor(q => q.PageSize).GreaterThan(0).WithMessage("The pageSize must be greater than zero."); ;
+            RuleFor(q => q.PageSize).GreaterThan(0).WithMessage("The pageSize must be greater than zero.");
         }
     }
 }
