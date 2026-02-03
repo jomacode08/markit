@@ -65,7 +65,7 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
 
         private async Task UpdateAppUser(UpdateCreatorCommand request)
         {
-            await _appUserService.UpdateIdentityUser(
+            await _appUserService.UpdateIdentityUserAsync(
                 new UpdateAppUserRequest(
                     request.FirstName,
                     request.LastName,

@@ -4,6 +4,7 @@ using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -18,7 +19,42 @@ namespace markit.Infraestructure.Security.Services
             _userManager = userManager;
         }
 
-        public async Task CreateIdentityUser(AppUserRequest request)
+        public AppUser GetUserByCreatorId(int creatorId)
+        {
+            return _userManager.Users
+                .Where(u => u.CreatorId.Equals(creatorId))
+                .FirstOrDefault()
+                ?? throw new NotFoundException("User with creatorId", creatorId);
+        }
+
+        public async Task<AppUserPaginationDto> GetUsersPagedAsync(int page, int pageSize)
+        {
+            List<AppUserSummary> data = await _userManager.Users
+                .AsNoTracking()
+                .OrderByDescending(u => u.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new AppUserSummary
+                {
+                    Id = u.Id,
+                    CreatorId = u.CreatorId,
+                    UserName = u.UserName ?? "",
+                    AccessType = u.AccessType,
+                    CreatedDate = u.CreatedDate,
+                    IsLocked = u.LockoutEnd > DateTime.UtcNow,
+                    IsConfirmed = u.RegistrationConfirmed
+                }).ToListAsync();
+
+            int totalItems = await _userManager.Users.CountAsync();
+            return new AppUserPaginationDto(
+                data,
+                totalItems,
+                page,
+                pageSize
+            );
+        }
+
+        public async Task CreateIdentityUserAsync(AppUserRequest request)
         {
             AppUser? userInDatabase = await _userManager.FindByEmailAsync(request.Email);
             if (userInDatabase != null) throw new CustomValidationException($"The user with email: {request.Email} already exists.");
@@ -38,21 +74,13 @@ namespace markit.Infraestructure.Security.Services
             scope.Complete();
         }
 
-        public async Task UpdateIdentityUser(UpdateAppUserRequest request, int creatorId)
+        public async Task UpdateIdentityUserAsync(UpdateAppUserRequest request, int creatorId)
         {
-            AppUser appUser = GetAppUserByCreatorId(creatorId);
+            AppUser appUser = GetUserByCreatorIdAsync(creatorId);
             appUser.GivenName = $"{request.FirstName} {request.LastName}";
             appUser.RegistrationConfirmed = request.RegistrationConfirmed;
 
             await _userManager.UpdateAsync(appUser);
-        }
-
-        public AppUser GetAppUserByCreatorId(int creatorId)
-        {
-            return _userManager.Users
-                .Where(u => u.CreatorId.Equals(creatorId))
-                .FirstOrDefault()
-                ?? throw new NotFoundException("User with creatorId", creatorId);
         }
 
         #region Helpers
