@@ -12,7 +12,7 @@ namespace markit.Application.Models.Authentication.AppUser
         public IReadOnlyList<AppUserSummary> Data { get; } = data;
         public PaginationMetaData Meta { get; } = new(
             totalItems,
-            TotalPages: (totalItems + pageSize - 1) / pageSize,
+            TotalPages: totalItems == 0 ? 1 : (totalItems + pageSize - 1) / pageSize,
             CurrentPage: page,
             pageSize
         );
