@@ -76,7 +76,7 @@ namespace markit.Infraestructure.Security.Services
 
         public async Task UpdateIdentityUserAsync(UpdateAppUserRequest request, int creatorId)
         {
-            AppUser appUser = GetUserByCreatorIdAsync(creatorId);
+            AppUser appUser = GetUserByCreatorId(creatorId);
             appUser.GivenName = $"{request.FirstName} {request.LastName}";
             appUser.RegistrationConfirmed = request.RegistrationConfirmed;
 

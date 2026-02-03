@@ -32,7 +32,7 @@ namespace markit.Application.Features.Creators.Queries
             Creator creator = await _unitOfWork.CreatorRepository.GetByIdAsync(request.Id) 
             ?? throw new NotFoundException("Creator", request.Id);
 
-            AppUser user = _appUserService.GetUserByCreatorIdAsync(creator.Id);
+            AppUser user = _appUserService.GetUserByCreatorId(creator.Id);
             
             CreatorViewModel creatorVm = _mapper.Map<CreatorViewModel>(creator);
 
