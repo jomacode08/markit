@@ -34,7 +34,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 int creatorId = await CreateCreator(request.FirstName, request.LastName);
                 AppUserRequest userRequest = ConstructAppUserRequest(request, creatorId);
-                await _appUserService.CreateIdentityUser(userRequest);
+                await _appUserService.CreateIdentityUserAsync(userRequest);
             scope.Complete();
             return Unit.Value;
         }
