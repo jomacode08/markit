@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+button.action-button {
+    border: none;
+    background-color: transparent;
+    padding: .5rem;
+    cursor: pointer;
+}
+button.action-button span {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    transition: color .3s ease-in;
+}
+button.action-button:hover {
+    span.fa-pencil {
+        color: var(--purple-400)
+    }
+    span.fa-trash {
+        color: var(--red-400)
+    }
+}
