@@ -19,7 +19,7 @@ namespace markit.Infraestructure.Security.Services
             _userManager = userManager;
         }
 
-        public AppUser GetUserByCreatorId(int creatorId)
+        public AppUser GetByCreatorId(int creatorId)
         {
             return _userManager.Users
                 .Where(u => u.CreatorId.Equals(creatorId))
@@ -27,7 +27,7 @@ namespace markit.Infraestructure.Security.Services
                 ?? throw new NotFoundException("User with creatorId", creatorId);
         }
 
-        public async Task<AppUserPaginationDto> GetUsersPagedAsync(int page, int pageSize)
+        public async Task<AppUserPaginationDto> GetPagedAsync(int page, int pageSize)
         {
             List<AppUserSummary> data = await _userManager.Users
                 .AsNoTracking()
@@ -54,7 +54,7 @@ namespace markit.Infraestructure.Security.Services
             );
         }
 
-        public async Task CreateIdentityUserAsync(AppUserRequest request)
+        public async Task CreateAsync(CreateAppUserRequest request)
         {
             AppUser? userInDatabase = await _userManager.FindByEmailAsync(request.Email);
             if (userInDatabase != null) throw new CustomValidationException($"The user with email: {request.Email} already exists.");
@@ -74,12 +74,10 @@ namespace markit.Infraestructure.Security.Services
             scope.Complete();
         }
 
-        public async Task UpdateIdentityUserAsync(UpdateAppUserRequest request, int creatorId)
+        public async Task RenameAsync(RenameAppUserRequest request, int creatorId)
         {
-            AppUser appUser = GetUserByCreatorId(creatorId);
+            AppUser appUser = GetByCreatorId(creatorId);
             appUser.GivenName = $"{request.FirstName} {request.LastName}";
-            appUser.RegistrationConfirmed = request.RegistrationConfirmed;
-
             await _userManager.UpdateAsync(appUser);
         }
 
@@ -89,7 +87,7 @@ namespace markit.Infraestructure.Security.Services
             return userRoles.All(r => Role.All.Contains(r));
         }
 
-        private static AppUser ConstructAppUser(AppUserRequest request)
+        private static AppUser ConstructAppUser(CreateAppUserRequest request)
         {
             return new AppUser()
             {

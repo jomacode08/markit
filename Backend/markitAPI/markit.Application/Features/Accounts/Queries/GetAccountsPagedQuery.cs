@@ -21,7 +21,7 @@ namespace markit.Application.Features.Accounts.Queries
 
         public Task<AppUserPaginationDto> Handle(GetAccountsPagedQuery request, CancellationToken cancellationToken)
         {
-            return _appUserservice.GetUsersPagedAsync(
+            return _appUserservice.GetPagedAsync(
                 page: request.PageIndex,
                 pageSize: request.PageSize
             );

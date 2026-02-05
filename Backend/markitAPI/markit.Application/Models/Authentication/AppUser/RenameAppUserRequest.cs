@@ -1,13 +1,11 @@
 ﻿namespace markit.Application.Models.Authentication.AppUser
 {
-    public class UpdateAppUserRequest(
+    public class RenameAppUserRequest(
         string firstName,
-        string lastName,
-        bool registrationConfirmed
+        string lastName
     )
     {
         public string FirstName => firstName;
         public string LastName => lastName;
-        public bool RegistrationConfirmed => registrationConfirmed;
     }
 }

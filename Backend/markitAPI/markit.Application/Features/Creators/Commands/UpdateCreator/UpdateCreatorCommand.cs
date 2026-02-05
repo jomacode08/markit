@@ -65,11 +65,10 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
 
         private async Task UpdateAppUser(UpdateCreatorCommand request)
         {
-            await _appUserService.UpdateIdentityUserAsync(
-                new UpdateAppUserRequest(
+            await _appUserService.RenameAsync(
+                new RenameAppUserRequest(
                     request.FirstName,
-                    request.LastName,
-                    true),
+                    request.LastName),
                 request.Id
             );
         }
