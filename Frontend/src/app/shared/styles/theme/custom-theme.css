@@ -501,6 +501,49 @@ p-panel.selected {
   background-color: var(--surface-4);
 }
 
+/** Data table */
+.p-paginator {
+  background-color: transparent;
+}
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  font-size: .85rem;
+}
+.p-datatable .p-datatable-tbody > tr {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+.p-datatable .p-datatable-tbody > tr > td {
+  border: none;
+  font-size: .85rem;
+}
+.p-datatable .p-paginator-bottom {
+  border-width: 1px 0;
+  border-color: var(--border-color);
+}
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: var(--highlight-surface-purple);
+  border: 1px solid var(--highlight-border-purple);
+}
+.p-paginator .p-paginator-pages .p-paginator-page,
+.p-paginator-first.p-paginator-element.p-link,
+.p-paginator-prev.p-paginator-element.p-link,
+.p-paginator-next.p-paginator-element.p-link,
+.p-paginator-last.p-paginator-element.p-link {
+  min-width: 2rem;
+  height: 2rem;
+  font-size: .85rem;
+  transition: .3s all ease;
+}
+.p-paginator .p-paginator-pages .p-paginator-page:hover,
+.p-paginator-first.p-paginator-element.p-link:hover,
+.p-paginator-prev.p-paginator-element.p-link:hover,
+.p-paginator-next.p-paginator-element.p-link:hover,
+.p-paginator-last.p-paginator-element.p-link:hover {
+  background-color: var(--surface-1);
+}
 /** Utils */
 .h-50 {
   height: 50% !important;
