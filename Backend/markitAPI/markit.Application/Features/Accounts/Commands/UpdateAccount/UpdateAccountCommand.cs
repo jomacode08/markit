@@ -37,7 +37,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                     email: request.Email,
                     roles: request.Roles
                 ));
-                if (user.CreatorId is null) throw new InvalidOperationException($"The user with id: {user.Id} must have a configured creator.");
+                if (user.CreatorId is null) throw new NotFoundException("Creator for user", user.Id);
                 await UpdateCreator(
                     firstName: request.FirstName,
                     lastName: request.LastName,
