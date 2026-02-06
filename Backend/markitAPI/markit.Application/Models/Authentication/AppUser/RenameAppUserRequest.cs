@@ -1,11 +1,11 @@
 ﻿namespace markit.Application.Models.Authentication.AppUser
 {
     public class RenameAppUserRequest(
-        string firstName,
-        string lastName
+        string id,
+        string newName
     )
     {
-        public string FirstName => firstName;
-        public string LastName => lastName;
+        public string Id => id;
+        public string NewName => newName;
     }
 }
