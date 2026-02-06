@@ -1,4 +1,5 @@
 ﻿using markit.API.Controllers.Common;
+using markit.Application.Features.Accounts.Commands.UpdateAccount;
 using markit.Application.Features.Accounts.Queries;
 using markit.Application.Models.Authentication.AppUser;
 using MediatR;
@@ -19,6 +20,7 @@ namespace markit.API.Controllers.Security
         }
 
         [HttpGet]
+        [Route("all")]
         public async Task<ActionResult<AppUserPaginationDto>> GetAllPaged(int page, int limit)
         {
             GetAccountsPagedQuery query = new(
@@ -26,6 +28,15 @@ namespace markit.API.Controllers.Security
                 pageSize: limit
             );
             return Ok(await _mediator.Send(query));
+        }
+
+        [HttpPut]
+        [Route("{userId}")]
+        public async Task<ActionResult> UpdateAccount([FromRoute] string  userId, [FromBody]UpdateAccountCommandDto dto)
+        {
+            UpdateAccountCommand command = new(userId, dto);
+            await _mediator.Send(command);
+            return Ok();
         }
     }
 }

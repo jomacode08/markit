@@ -84,7 +84,7 @@ namespace markit.Infraestructure.Security.Services
                 user.UserName = request.Email;
                 IdentityResult result = await _userManager.UpdateAsync(user);
                 HandleIdentityResult(result);
-                if (request.RolesChanged) await UpdateRoles(request.Roles, user);
+                await UpdateRoles(request.Roles, user);
             scope.Complete();
             return user;
         }
@@ -131,6 +131,8 @@ namespace markit.Infraestructure.Security.Services
         {
             if (!AreRolesValid(roles)) throw new CustomValidationException("The user must have only permitted roles.");
             IList<string> existentRoles =  await _userManager.GetRolesAsync(user);
+            if (existentRoles.SequenceEqual([.. roles])) return;
+
             List<string> rolesToRemove = [..existentRoles];
             List<string> rolesToAdd = [];
 
