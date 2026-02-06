@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace markit.Infraestructure.Security.Services
 {
@@ -124,7 +125,8 @@ namespace markit.Infraestructure.Security.Services
         {
             if (!result.Succeeded)
             {
-                throw new CustomValidationException(result.ToString());
+                string errorsMessage = $"Failed : {string.Join(",", result.Errors.Select(x => x.Description))}";
+                throw new CustomValidationException(errorsMessage);
             }
         }
 
