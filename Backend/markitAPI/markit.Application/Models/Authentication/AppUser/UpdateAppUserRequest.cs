@@ -7,9 +7,18 @@
         string[] roles
     )
     {
+        private string _Email => email;
         public string Id => id;
         public string Name => name;
-        public string Email => email;
         public string[] Roles => roles;
+        public string Email
+        {
+            get
+            {
+                return _Email.ToLower();
+            }
+
+            private set { }
+        }
     }
 }
