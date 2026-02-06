@@ -128,17 +128,23 @@ namespace markit.Infraestructure.Security.Services
             }
         }
 
+        private static bool HaveRolesChanged(string[] currentRoles, string[] newRoles)
+        {
+            currentRoles = [..currentRoles.OrderBy(r => r)];
+            newRoles = [..newRoles.OrderBy(r => r)];
+            return !currentRoles.SequenceEqual(newRoles);
+        }
+
         private async Task UpdateRoles(string[] roles, AppUser user)
         {
             if (!AreRolesValid(roles)) throw new CustomValidationException("The user must have only permitted roles.");
-            IList<string> existentRoles =  await _userManager.GetRolesAsync(user);
-            if (existentRoles.SequenceEqual([.. roles])) return;
-
-            List<string> rolesToRemove = [..existentRoles];
+            string[] currentRoles = [..await _userManager.GetRolesAsync(user)];
+            if (!HaveRolesChanged(currentRoles, newRoles: roles)) return;
+            List<string> rolesToRemove = [..currentRoles];
             List<string> rolesToAdd = [];
 
             foreach (string role in roles) {
-                if (existentRoles.Contains(role)) {
+                if (currentRoles.Contains(role)) {
                     rolesToRemove.Remove(role);
                 }
                 else
