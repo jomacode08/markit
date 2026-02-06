@@ -22,7 +22,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
 
             RuleFor(c => c.FirstName).MaximumLength(100).WithMessage("The maximun length of first name is 100");
             RuleFor(c => c.LastName).MaximumLength(100).WithMessage("The maximun length of last name is 100");
-            RuleFor(c => c.Email).MaximumLength(255).WithMessage("The maximun length of last name is 256");
+            RuleFor(c => c.Email).MaximumLength(256).WithMessage("The maximun length of last name is 256");
 
             RuleForEach(c => c.Roles)
                 .Must(r => Role.All.Contains(r))
