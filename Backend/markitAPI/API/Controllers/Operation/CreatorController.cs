@@ -45,16 +45,11 @@ namespace markit.API.Controllers.Operation
         public async Task<ActionResult<CreatorViewModel>> UpdateByCurrentSession([FromBody] UpdateCreatorDto dto)
         {
             int creatorId = await GetValidatedCreatorIdAsync(_sessionService.GetUserId());
-            UpdateCreatorCommand command = new(creatorId, dto);
-            CreatorViewModel updatedCreator = await _mediator.Send(command);
-            return Ok(updatedCreator);
-        }
-
-        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<CreatorViewModel>> UpdateById([FromRoute] int id, [FromBody] UpdateCreatorDto dto)
-        {
-            UpdateCreatorCommand command = new(id, dto);
+            UpdateCreatorCommand command = new(
+                id: creatorId,
+                userId: _sessionService.GetUserId(),
+                dto: dto
+            );
             CreatorViewModel updatedCreator = await _mediator.Send(command);
             return Ok(updatedCreator);
         }

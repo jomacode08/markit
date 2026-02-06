@@ -2,7 +2,7 @@
 
 namespace markit.Application.Models.Authentication.AppUser
 {
-    public class AppUserRequest(
+    public class CreateAppUserRequest(
         string email,
         string name,
         int creatorId,

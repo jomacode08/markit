@@ -1,13 +1,24 @@
 ﻿namespace markit.Application.Models.Authentication.AppUser
 {
     public class UpdateAppUserRequest(
-        string firstName,
-        string lastName,
-        bool registrationConfirmed
+        string id,
+        string name,
+        string email,
+        string[] roles
     )
     {
-        public string FirstName => firstName;
-        public string LastName => lastName;
-        public bool RegistrationConfirmed => registrationConfirmed;
+        private string _Email => email;
+        public string Id => id;
+        public string Name => name;
+        public string[] Roles => roles;
+        public string Email
+        {
+            get
+            {
+                return _Email.ToLower();
+            }
+
+            private set { }
+        }
     }
 }

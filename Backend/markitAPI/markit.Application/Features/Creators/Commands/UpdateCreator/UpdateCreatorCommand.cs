@@ -11,10 +11,10 @@ using System.Transactions;
 
 namespace markit.Application.Features.Creators.Commands.UpdateCreator
 {
-    public class UpdateCreatorCommand(int id, UpdateCreatorDto dto) : IRequest<CreatorViewModel>
+    public class UpdateCreatorCommand(int id, string userId, UpdateCreatorDto dto) : IRequest<CreatorViewModel>
     {
-
         public int Id { get; set; } = id;
+        public string UserId { get; set; } = userId;
         public string FirstName { get; set; } = dto.FirstName;
         public string LastName { get; set; } = dto.LastName;
         public string BirthDate { get; set; } = dto.BirthDate;
@@ -65,12 +65,11 @@ namespace markit.Application.Features.Creators.Commands.UpdateCreator
 
         private async Task UpdateAppUser(UpdateCreatorCommand request)
         {
-            await _appUserService.UpdateIdentityUserAsync(
-                new UpdateAppUserRequest(
-                    request.FirstName,
-                    request.LastName,
-                    true),
-                request.Id
+            await _appUserService.RenameAsync(
+                new RenameAppUserRequest(
+                    id: request.UserId,
+                    newName: $"{ request.FirstName } { request.LastName }"
+                )
             );
         }
     }

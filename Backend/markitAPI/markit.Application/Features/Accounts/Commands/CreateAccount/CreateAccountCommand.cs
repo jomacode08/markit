@@ -33,8 +33,8 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 int creatorId = await CreateCreator(request.FirstName, request.LastName);
-                AppUserRequest userRequest = ConstructAppUserRequest(request, creatorId);
-                await _appUserService.CreateIdentityUserAsync(userRequest);
+                CreateAppUserRequest userRequest = ConstructAppUserRequest(request, creatorId);
+                await _appUserService.CreateAsync(userRequest);
             scope.Complete();
             return Unit.Value;
         }
@@ -49,9 +49,9 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
             return await _mediator.Send(command);
         }
 
-        private static AppUserRequest ConstructAppUserRequest(CreateAccountCommand request, int creatorId)
+        private static CreateAppUserRequest ConstructAppUserRequest(CreateAccountCommand request, int creatorId)
         {
-            return new AppUserRequest(
+            return new CreateAppUserRequest(
                 email: request.Email,
                 name: $"{request.FirstName} {request.LastName}",
                 creatorId: creatorId,

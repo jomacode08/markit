@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using markit.Application.Contracts.Authentication;
+﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace markit.Infraestructure.Security.Services
 {
@@ -19,7 +19,7 @@ namespace markit.Infraestructure.Security.Services
             _userManager = userManager;
         }
 
-        public AppUser GetUserByCreatorId(int creatorId)
+        public AppUser GetByCreatorId(int creatorId)
         {
             return _userManager.Users
                 .Where(u => u.CreatorId.Equals(creatorId))
@@ -27,7 +27,7 @@ namespace markit.Infraestructure.Security.Services
                 ?? throw new NotFoundException("User with creatorId", creatorId);
         }
 
-        public async Task<AppUserPaginationDto> GetUsersPagedAsync(int page, int pageSize)
+        public async Task<AppUserPaginationDto> GetPagedAsync(int page, int pageSize)
         {
             List<AppUserSummary> data = await _userManager.Users
                 .AsNoTracking()
@@ -54,7 +54,7 @@ namespace markit.Infraestructure.Security.Services
             );
         }
 
-        public async Task CreateIdentityUserAsync(AppUserRequest request)
+        public async Task<AppUser> CreateAsync(CreateAppUserRequest request)
         {
             AppUser? userInDatabase = await _userManager.FindByEmailAsync(request.Email);
             if (userInDatabase != null) throw new CustomValidationException($"The user with email: {request.Email} already exists.");
@@ -68,19 +68,36 @@ namespace markit.Infraestructure.Security.Services
                 IdentityResult registrationResult = identityUser.AccessType == AccessType.External
                     ? await _userManager.CreateAsync(identityUser)
                     : await _userManager.CreateAsync(identityUser, request.Password!);
-                if (!registrationResult.Succeeded) throw new CustomValidationException($"{registrationResult.Errors.First().Description}");
+                HandleIdentityResult(registrationResult);
                 // UserRoles creation
-                await _userManager.AddToRolesAsync(identityUser, request.Roles);
+                IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
+                HandleIdentityResult(rolesResult);
             scope.Complete();
+            return identityUser;
         }
 
-        public async Task UpdateIdentityUserAsync(UpdateAppUserRequest request, int creatorId)
+        public async Task<AppUser> UpdateAsync(UpdateAppUserRequest request)
         {
-            AppUser appUser = GetUserByCreatorId(creatorId);
-            appUser.GivenName = $"{request.FirstName} {request.LastName}";
-            appUser.RegistrationConfirmed = request.RegistrationConfirmed;
+            AppUser user = await _userManager.FindByIdAsync(request.Id)
+                ?? throw new NotFoundException("Users", request.Id);
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+                user.GivenName = request.Name;
+                user.Email = request.Email;
+                user.UserName = request.Email;
+                IdentityResult result = await _userManager.UpdateAsync(user);
+                HandleIdentityResult(result);
+                await UpdateRoles(request.Roles, user);
+            scope.Complete();
+            return user;
+        }
 
-            await _userManager.UpdateAsync(appUser);
+        public async Task RenameAsync(RenameAppUserRequest request)
+        {
+            AppUser user = await _userManager.FindByIdAsync(request.Id)
+                ?? throw new NotFoundException("Users", request.Id);
+            user.GivenName = request.NewName;
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            HandleIdentityResult(result);
         }
 
         #region Helpers
@@ -89,7 +106,7 @@ namespace markit.Infraestructure.Security.Services
             return userRoles.All(r => Role.All.Contains(r));
         }
 
-        private static AppUser ConstructAppUser(AppUserRequest request)
+        private static AppUser ConstructAppUser(CreateAppUserRequest request)
         {
             return new AppUser()
             {
@@ -102,6 +119,53 @@ namespace markit.Infraestructure.Security.Services
                 CreatedDate = DateTime.UtcNow,
                 EmailConfirmed = request.AccessType == AccessType.External
             };
+        }
+
+        private static void HandleIdentityResult(IdentityResult result)
+        {
+            if (!result.Succeeded)
+            {
+                string errorsMessage = $"Failed : {string.Join(",", result.Errors.Select(x => x.Description))}";
+                throw new CustomValidationException(errorsMessage);
+            }
+        }
+
+        private static bool HaveRolesChanged(string[] currentRoles, string[] newRoles)
+        {
+            currentRoles = [..currentRoles.OrderBy(r => r)];
+            newRoles = [..newRoles.OrderBy(r => r)];
+            return !currentRoles.SequenceEqual(newRoles);
+        }
+
+        private async Task UpdateRoles(string[] roles, AppUser user)
+        {
+            if (!AreRolesValid(roles)) throw new CustomValidationException("The user must have only permitted roles.");
+            string[] currentRoles = [..await _userManager.GetRolesAsync(user)];
+            if (!HaveRolesChanged(currentRoles, newRoles: roles)) return;
+            List<string> rolesToRemove = [..currentRoles];
+            List<string> rolesToAdd = [];
+
+            foreach (string role in roles) {
+                if (currentRoles.Contains(role)) {
+                    rolesToRemove.Remove(role);
+                }
+                else
+                {
+                    rolesToAdd.Add(role);
+                }
+            }
+
+            if (rolesToRemove.Count > 0)
+            {
+                IdentityResult result = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                HandleIdentityResult(result);
+            }
+
+            if (rolesToAdd.Count > 0)
+            {
+                IdentityResult result = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                HandleIdentityResult(result);
+            }
         }
         #endregion
     }

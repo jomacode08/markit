@@ -1,16 +1,15 @@
 ﻿using FluentValidation;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.Application.Features.Account.Commands.CreateAccount
+namespace markit.Application.Features.Accounts.Commands.UpdateAccount
 {
-    public class CreateAccountCommandValidation : AbstractValidator<CreateAccountCommand>
+    public class UpdateAccountCommandValidator : AbstractValidator<UpdateAccountCommand>
     {
-        public CreateAccountCommandValidation()
-        {
+        public UpdateAccountCommandValidator() {
+            RuleFor(c => c.UserId).NotEmpty().WithMessage("The userId is required");
             RuleFor(c => c.FirstName).NotEmpty().WithMessage("The firstName is required");
             RuleFor(c => c.LastName).NotEmpty().WithMessage("The lastName is required");
             RuleFor(c => c.Email).NotEmpty().WithMessage("The email is required");
-            RuleFor(c => c.AccessType).NotEmpty().WithMessage("The access type is required");
             RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
 
             string nameFormatRegex = "^[a-zA-Z ]+$";
