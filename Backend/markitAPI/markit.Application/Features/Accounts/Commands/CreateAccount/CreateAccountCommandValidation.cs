@@ -27,7 +27,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
 
             RuleForEach(c => c.Roles)
                 .Must(r => Role.All.Contains(r))
-                .WithMessage(r => $"The role {r} is not permitted.");
+                .WithMessage((c, r) => $"The role {r} is not permitted.");
         }
     }
 }
