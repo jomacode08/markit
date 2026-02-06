@@ -69,7 +69,8 @@ namespace markit.Infraestructure.Security.Services
                     : await _userManager.CreateAsync(identityUser, request.Password!);
                 HandleIdentityResult(registrationResult);
                 // UserRoles creation
-                await _userManager.AddToRolesAsync(identityUser, request.Roles);
+                IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
+                HandleIdentityResult(rolesResult);
             scope.Complete();
             return identityUser;
         }
