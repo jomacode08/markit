@@ -7,11 +7,11 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
     {
         public CreateAccountCommandValidation()
         {
-            RuleFor(c => c.FirstName).NotEmpty().WithMessage("The first name is required");
-            RuleFor(c => c.LastName).NotEmpty().WithMessage("The first name is required");
+            RuleFor(c => c.FirstName).NotEmpty().WithMessage("The firstName is required");
+            RuleFor(c => c.LastName).NotEmpty().WithMessage("The lastName is required");
             RuleFor(c => c.Email).NotEmpty().WithMessage("The email is required");
             RuleFor(c => c.AccessType).NotEmpty().WithMessage("The access type is required");
-            RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must to have at least one role");
+            RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
 
             string nameFormatRegex = "^[a-zA-Z ]+$";
             RuleFor(c => c.FirstName).Matches(nameFormatRegex)
