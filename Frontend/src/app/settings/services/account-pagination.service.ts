@@ -54,7 +54,7 @@ export class AccountPaginationService {
     }
 
     private fetchAccountPagination(pageIndex: number) : Observable<AccountPagination | null> {
-        const url = `${ this.BASE_URL }/all/?page=${ pageIndex }&limit=${ this.PAGE_SIZE }`;
+        const url = `${ this.BASE_URL }/all?page=${ pageIndex }&limit=${ this.PAGE_SIZE }`;
         return this.http.get<AccountPagination>(url)
         .pipe(
             catchError(() => {
