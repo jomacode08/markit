@@ -12,7 +12,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
         public AccessType AccessType { get; set; }
         public string[] Roles { get; set; } = [];
         public string? Password { get; set; }
@@ -44,7 +44,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 CreatorId = creatorId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                UserName = request.Email,
+                UserName = request.UserName,
                 Roles = request.Roles,
             };
         }
@@ -62,7 +62,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
         private static CreateAppUserRequest ConstructAppUserRequest(CreateAccountCommand request, int creatorId)
         {
             return new CreateAppUserRequest(
-                email: request.Email,
+                email: request.UserName,
                 name: $"{request.FirstName} {request.LastName}",
                 creatorId: creatorId,
                 accessType: request.AccessType,

@@ -13,7 +13,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
         public string UserId { get; set; } = userId;
         public string FirstName { get; set; } = dto.FirstName;
         public string LastName { get; set; } = dto.LastName;
-        public string Email { get; set; } = dto.Email;
+        public string UserName { get; set; } = dto.Email;
         public string[] Roles { get; set; } = dto.Roles;
     }
 
@@ -34,7 +34,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                 AppUser user = await UpdateUser(new UpdateAppUserRequest(
                     id: request.UserId,
                     name: $"{ request.FirstName } { request.LastName }",
-                    email: request.Email,
+                    email: request.UserName,
                     roles: request.Roles
                 ));
                 if (user.CreatorId is null) throw new NotFoundException("Creator for user", user.Id);

@@ -1,10 +1,12 @@
 ﻿﻿using markit.API.Controllers.Common;
 using markit.Application.Features.Account.Commands.CreateAccount;
+using markit.Application.Features.Accounts.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.UpdateAccount;
 using markit.Application.Features.Accounts.Queries;
 using markit.Application.Features.Accounts.Queries.GetAccountByUserId;
 using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,8 +44,17 @@ namespace markit.API.Controllers.Security
         }
         
         [HttpPost]
-        public async Task<ActionResult<AccountVm>> Create([FromBody] CreateAccountCommand command)
+        public async Task<ActionResult<AccountVm>> Create([FromBody] CreateAccountCommandDto dto)
         {
+            CreateAccountCommand command = new()
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                UserName = dto.UserName,
+                Roles = dto.Roles,
+                AccessType = AccessType.Internal,
+            };
+
             AccountVm result = await _mediator.Send(command);
             return Ok(result);
         }
