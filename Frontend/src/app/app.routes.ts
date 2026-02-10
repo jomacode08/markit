@@ -35,6 +35,16 @@ export const routes: Routes = [
             import('./marks/mark.routes').then(r => r.MARK_ROUTES)
     },
     {
+        path: 'settings',
+        data: { breadcrumb : 'Settings' },
+        canActivate: [IsAuthenticatedActivateGuard],
+        canMatch: [IsAuthenticatedActivateGuard],
+        loadComponent: () => 
+            import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
+        loadChildren: () =>
+            import('./settings/settings.routes').then(r => r.SETTINGS_ROUTES)
+    },
+    {
         path: 'workplace',
         data: { breadcrumb : 'Workplace' },
         canActivate: [IsAuthenticatedActivateGuard],

@@ -31,6 +31,7 @@ export class AccountPaginationService {
     private pageRequest$ = new Subject<number>();
     //! To the external world
     public accounts = computed<AccountSummary[]>(() => this._accounts());
+    public totalItemsPerPage = computed<number>(() => this.PAGE_SIZE);
     public totalItems = computed<number>(() => this._totalItems());
     public totalPages = computed<number>(() => this._totalPages());
     public status = computed<AccountPaginationStatus>(() => this._status());
