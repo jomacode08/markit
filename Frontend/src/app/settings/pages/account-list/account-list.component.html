@@ -1,3 +1,15 @@
+<div class="mb-3 flex justify-content-end">
+    <button
+        id="addAccountBtn"
+        type="button"
+        aria-label="Create account"
+        class="w-full md:w-8rem"
+        (click)="onAddAccountBtnClick()"
+    >
+        <span class="fa fa-plus text-green-400 mr-2"></span>
+        <span>Create</span>
+    </button>
+</div>
 <shared-data-table
     [data]="accounts()"
     [columns]="cols"

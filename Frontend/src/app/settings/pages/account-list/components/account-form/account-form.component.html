@@ -1,0 +1,92 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- modal-body section -->
+  <div class="modal-body">
+    <!-- First Name Field -->
+    <div class="form-field">
+      <label for="firstName">First Name</label>
+      <input
+        id="firstName"
+        pInputText
+        formControlName="firstName"
+        maxlength="100"
+        autocomplete="off"
+        [class.invalid]="isInvalidField('firstName')"
+      />
+      @if (isInvalidField('firstName')) {
+        <shared-error-field [validationField]="getValidationField('firstName', 'masc', 'first name')" />
+      }
+    </div>
+
+    <!-- Last Name Field -->
+    <div class="form-field">
+      <label for="lastName">Last Name</label>
+      <input
+        id="lastName"
+        pInputText
+        formControlName="lastName"
+        maxlength="100"
+        autocomplete="off"
+        [class.invalid]="isInvalidField('lastName')"
+      />
+      @if (isInvalidField('lastName')) {
+        <shared-error-field [validationField]="getValidationField('lastName', 'masc', 'last name')" />
+      }
+    </div>
+
+    <!-- User Name (Email) Field -->
+    <div class="form-field">
+      <label for="userName">User Name (Email)</label>
+      <input
+        id="userName"
+        pInputText
+        formControlName="userName"
+        maxlength="256"
+        type="email"
+        autocomplete="off"
+        placeholder="example@email.com"
+        [class.invalid]="isInvalidField('userName')"
+      />
+      @if (isInvalidField('userName')) {
+        <shared-error-field [validationField]="getValidationField('userName', 'masc', 'user name')" />
+      }
+    </div>
+
+    <!-- Roles MultiSelect -->
+    <div class="form-field">
+      <label for="roles">Roles</label>
+      <p-multiSelect
+        id="roles"
+        formControlName="roles"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select roles"
+        appendTo="body"
+        styleClass="w-full"
+        [options]="roleOptions"
+        [class.invalid]="isInvalidField('roles')"
+      />
+      @if (isInvalidField('roles')) {
+        <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+      }
+    </div>
+  </div>
+
+  <!-- modal-footer section -->
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="cancel-btn"
+      (click)="onCancel()"
+      [disabled]="submit()"
+      aria-label="Cancel">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="save-btn"
+      [disabled]="submit()"
+      aria-label="Save">
+      Save
+    </button>
+  </div>
+</form>

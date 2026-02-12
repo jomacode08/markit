@@ -69,6 +69,63 @@ input {
   outline: none;
 }
 
+/** MultiSelect **/
+.p-multiselect {
+  background-color: var(--surface-1);
+  border-color: var(--border-color);
+}
+.p-multiselect .p-multiselect-label {
+  padding: 0.5rem 0.75rem;
+  font-size: .85rem;
+}
+.p-multiselect-panel {
+  margin-top: 5px;
+}
+.p-multiselect-panel,
+.p-multiselect-panel .p-multiselect-header,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item {
+  background-color: var(--surface-1);
+  font-size: .85rem;
+}
+.p-multiselect-panel .p-multiselect-header {
+  border-color: var(--border-color);
+}
+.p-multiselect .p-multiselect-label,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item {
+  color: var(--text-primary);
+}
+.p-placeholder {
+  color: var(--text-secondary) !important;
+}
+.p-multiselect-close {
+  color: var(--text-foreground);
+}
+.p-multiselect:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
+.p-multiselect-panel
+.p-multiselect-items
+.p-multiselect-item:not(.p-highlight):not(.p-disabled) {
+  transition: 0.3s ease;
+}
+.p-multiselect-panel
+.p-multiselect-items
+.p-multiselect-item:not(.p-highlight):not(.p-disabled):hover {
+  background-color: var(--surface-2);
+}
+.p-element.p-inputwrapper.invalid .p-multiselect {
+  border-color: var(--red-600);
+}
+
+/** Check box **/
+.p-checkbox .p-checkbox-box {
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-color);
+}
+.p-checkbox .p-checkbox-box.p-highlight {
+  background-color: var(--highlight-surface-purple);
+  border-color: var(--highlight-border-purple);
+}
 /**Typography**/
 .text-primary {
   color: var(--text-primary);
@@ -508,7 +565,9 @@ p-panel.selected {
 .p-datatable .p-datatable-thead > tr > th {
   background-color: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  border-width: 1px 0 1px 0;
+  border-style: solid;
+  border-color: var(--border-color);
   font-size: .85rem;
 }
 .p-datatable .p-datatable-tbody > tr {
