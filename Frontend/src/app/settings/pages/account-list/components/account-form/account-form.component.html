@@ -32,6 +32,25 @@
         <shared-error-field [validationField]="getValidationField('lastName', 'masc', 'last name')" />
       }
     </div>
+    
+    <!-- Roles MultiSelect -->
+    <div class="form-field">
+      <label for="roles">Roles</label>
+      <p-multiSelect
+        id="roles"
+        formControlName="roles"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select roles"
+        appendTo="body"
+        styleClass="w-full"
+        [options]="roleOptions"
+        [class.invalid]="isInvalidField('roles')"
+      />
+      @if (isInvalidField('roles')) {
+        <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+      }
+    </div>
 
     <!-- User Name (Email) Field -->
     <div class="form-field">
@@ -51,24 +70,53 @@
       }
     </div>
 
-    <!-- Roles MultiSelect -->
-    <div class="form-field">
-      <label for="roles">Roles</label>
-      <p-multiSelect
-        id="roles"
-        formControlName="roles"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Select roles"
-        appendTo="body"
-        styleClass="w-full"
-        [options]="roleOptions"
-        [class.invalid]="isInvalidField('roles')"
-      />
-      @if (isInvalidField('roles')) {
-        <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
-      }
-    </div>
+    @if (!isUpdateMode) {
+      <div class="password-container">
+        <!-- Password -->
+        <div class="form-field">
+          <label for="password">Password</label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            autocomplete="off"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [toggleMask]="true"
+            [class.invalid]="isInvalidField('password')"
+          >
+            <ng-template pTemplate="footer">
+              <ul class="font-light">
+                <li>At least one <b>uppercase</b></li>
+                <li>At least one <b>lowercase</b></li>
+                <li>At least one <b>numeric</b></li>
+                <li>Minimum <b>8 characters</b></li>
+              </ul>
+            </ng-template>
+          </p-password>
+          @if (isInvalidField('password')) {
+            <shared-error-field [validationField]="getValidationField('password', 'masc', 'password')" />
+          }
+        </div>
+  
+        <!-- Confirm Password -->
+        <div class="form-field">
+          <label for="confirmPassword">Confirm Password</label>
+          <p-password
+            inputId="confirmPassword"
+            formControlName="confirmPassword"
+            autocomplete="off"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [toggleMask]="true"
+            [feedback]="false"
+            [class.invalid]="isInvalidField('confirmPassword')"
+          ></p-password>
+          @if (isInvalidField('confirmPassword')) {
+            <shared-error-field [validationField]="getValidationField('confirmPassword', 'masc', 'password confirmation')" />
+          }
+        </div>
+      </div>
+    }
   </div>
 
   <!-- modal-footer section -->

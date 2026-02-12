@@ -3,12 +3,15 @@ import { ChangeDetectionStrategy, Component, OnDestroy, Signal } from '@angular/
 import { TableModule } from 'primeng/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { Account } from '../../interfaces/account';
+import { AccountFormComponent } from './components/account-form/account-form.component';
 import { AccountPaginationService, AccountPaginationStatus } from '../../services/account-pagination.service';
 import { AccountSummary } from '../../interfaces/account-summary';
 import { Column } from '../../../shared/components/layout/data-table.component/interfaces/column';
+import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DataTableComponent } from '../../../shared/components/layout/data-table.component/data-table.component';
-import { AccountFormComponent } from './components/account-form/account-form.component';
-import { Account } from '../../interfaces/account';
+
+type DialogAction = 'Create' | 'Update';
 
 @Component({
   selector: 'app-account-list',
@@ -35,6 +38,7 @@ export class AccountListComponent implements OnDestroy {
   constructor(
     private accountPaginationService: AccountPaginationService,
     private dialogService : DialogService,
+    private messageService : CustomMessageService,
   )
   {
     this.accounts = accountPaginationService.accounts;
@@ -83,16 +87,25 @@ export class AccountListComponent implements OnDestroy {
   }
 
   public onAddAccountBtnClick(): void {
+    this.showAccountFormDialog('Create');
+  }
+
+  private showAccountFormDialog(action : DialogAction, accountData ?: Account): void {
+    if (action === 'Update' && !accountData) return;
+    const HEADER = `${ action } Account`;
+    const CONFIRMATION_MESSAGE = `The account was ${ action === 'Create' ? 'created' : 'updated' } successfully.`;
+
     this.dialogRef = this.dialogService.open(AccountFormComponent, {
-      header: 'Create Account',
+      header : HEADER,
       width: '500px',
       styleClass: 'custom-dialog',
-      data: {}
+      data: accountData ?? {}
     });
 
     this.dialogRef.onClose.subscribe((result : Account) => {
       if (result) {
         this.accountPaginationService.loadPage(1);
+        this.messageService.showGeneralSuccess(CONFIRMATION_MESSAGE);
       }
     });
   }

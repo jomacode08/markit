@@ -25,7 +25,7 @@ export class ErrorFieldMessagePipe implements PipeTransform {
             case 'pattern' :
                 return `The ${ name } has an invalid format`;
             case 'notEqual' :
-                return `The value of ${ name.toLowerCase() } isn't correct`;
+                return `The value of ${ name.toLowerCase() } is incorrect`;
             case 'notGroupValidCheckbox' :
                 return `At least one must be selected`;
             default:

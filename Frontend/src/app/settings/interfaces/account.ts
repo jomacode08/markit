@@ -6,3 +6,8 @@ export interface Account {
     userName:  string;
     roles:     string[];
 }
+
+export interface PasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+}

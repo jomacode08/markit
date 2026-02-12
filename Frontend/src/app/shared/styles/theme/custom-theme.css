@@ -117,6 +117,19 @@ input {
   border-color: var(--red-600);
 }
 
+/** Password **/
+.p-password-panel {
+  background-color: var(--surface-2);
+  color: var(--text-primary);
+  font-size: .85rem;
+}
+
+.p-password-mask.invalid {
+  input {
+    border-color: var(--red-600);
+  }
+}
+
 /** Check box **/
 .p-checkbox .p-checkbox-box {
   background-color: var(--surface-1);
