@@ -1,6 +1,7 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
+using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 using MediatR;
@@ -8,16 +9,16 @@ using System.Transactions;
 
 namespace markit.Application.Features.Accounts.Commands.UpdateAccount
 {
-    public class UpdateAccountCommand(string userId, UpdateAccountCommandDto dto) : IRequest<Unit>
+    public class UpdateAccountCommand(string userId, UpdateAccountCommandDto dto) : IRequest<AccountVm>
     {
         public string UserId { get; set; } = userId;
         public string FirstName { get; set; } = dto.FirstName;
         public string LastName { get; set; } = dto.LastName;
-        public string UserName { get; set; } = dto.Email;
+        public string UserName { get; set; } = dto.UserName;
         public string[] Roles { get; set; } = dto.Roles;
     }
 
-    public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, Unit>
+    public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, AccountVm>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppUserService _appUserService;
@@ -28,7 +29,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
             _appUserService = appUserService;
         }
 
-        public async Task<Unit> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
+        public async Task<AccountVm> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 AppUser user = await UpdateUser(new UpdateAppUserRequest(
@@ -44,7 +45,16 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                     creatorId: (int)user.CreatorId
                 );
             scope.Complete();
-            return Unit.Value;
+
+            return new AccountVm()
+            {
+                UserId = user.Id,
+                CreatorId = user.CreatorId.Value,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                UserName = request.UserName,
+                Roles = request.Roles
+            };
         }
 
         private async Task<AppUser> UpdateUser(UpdateAppUserRequest updateUserRequest)

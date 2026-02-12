@@ -62,11 +62,11 @@ namespace markit.API.Controllers.Security
 
         [HttpPut]
         [Route("{userId}")]
-        public async Task<ActionResult> Update([FromRoute] string userId, [FromBody]UpdateAccountCommandDto dto)
+        public async Task<ActionResult<AccountVm>> Update([FromRoute] string userId, [FromBody] UpdateAccountCommandDto dto)
         {
             UpdateAccountCommand command = new(userId, dto);
-            await _mediator.Send(command);
-            return Ok();
+            AccountVm result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }

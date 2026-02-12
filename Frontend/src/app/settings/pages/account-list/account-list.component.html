@@ -14,10 +14,11 @@
     [data]="accounts()"
     [columns]="cols"
     [loading]="status() === accountPaginationStatus.fetching"
-    [enableActions]="false"
+    [enableActions]="true"
     [enablePagination]="true"
     [rowsPerPage]="totalItemsPerPage()"
     [totalItems]="totalItems()"
     [totalPages]="totalPages()"
     (pageSelected)="onPageSelected($event)"
+    (edit)="onEditAccount($event)"
 />

@@ -10,6 +10,7 @@ import { AccountSummary } from '../../interfaces/account-summary';
 import { Column } from '../../../shared/components/layout/data-table.component/interfaces/column';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DataTableComponent } from '../../../shared/components/layout/data-table.component/data-table.component';
+import { AccountService } from '../../services/account.service';
 
 type DialogAction = 'Create' | 'Update';
 
@@ -36,6 +37,7 @@ export class AccountListComponent implements OnDestroy {
   }
 
   constructor(
+    private accountService : AccountService,
     private accountPaginationService: AccountPaginationService,
     private dialogService : DialogService,
     private messageService : CustomMessageService,
@@ -88,6 +90,14 @@ export class AccountListComponent implements OnDestroy {
 
   public onAddAccountBtnClick(): void {
     this.showAccountFormDialog('Create');
+  }
+
+  public onEditAccount(data: AccountSummary): void {
+    const { id } = data;
+    this.accountService.getByUserId(id).subscribe({
+      next: (account) => this.showAccountFormDialog('Update', account),
+      error : () => this.messageService.showGeneralError('Failed to load account details.')
+    });
   }
 
   private showAccountFormDialog(action : DialogAction, accountData ?: Account): void {
