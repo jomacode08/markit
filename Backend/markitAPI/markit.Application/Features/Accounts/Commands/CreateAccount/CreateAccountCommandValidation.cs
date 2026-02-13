@@ -11,6 +11,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
             RuleFor(c => c.LastName).NotEmpty().WithMessage("The lastName is required");
             RuleFor(c => c.UserName).NotEmpty().WithMessage("The userName is required");
             RuleFor(c => c.AccessType).NotEmpty().WithMessage("The accessType is required");
+            RuleFor(c => c.Enabled).NotNull().WithMessage("The enabled field is required");
             RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
 
             string nameFormatRegex = "^[a-zA-Z ]+$";

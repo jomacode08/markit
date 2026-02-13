@@ -6,6 +6,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 import { Account, PasswordRequest } from '../../../../interfaces/account';
 import { AccountService } from '../../../../services/account.service';
@@ -29,6 +30,7 @@ interface RoleOption {
     MultiSelectModule,
     PasswordModule,
     ReactiveFormsModule,
+    ToggleButtonModule,
   ],
   templateUrl: './account-form.component.html',
   styleUrl: './account-form.component.css'
@@ -43,6 +45,7 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
     roles : FormControl<string[]>,
     password : FormControl<string>,
     confirmPassword : FormControl<string>,
+    enabled : FormControl<boolean>
   }>;
 
   public roleOptions : RoleOption[] = [
@@ -79,6 +82,7 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
         Validators.pattern(this.validatorService.passwordPattern),
       ]],
       confirmPassword: [''],
+      enabled : [true],
     },
     {
       validators:

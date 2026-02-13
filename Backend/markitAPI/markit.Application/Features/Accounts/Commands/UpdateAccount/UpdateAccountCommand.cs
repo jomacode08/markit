@@ -16,6 +16,8 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
         public string LastName { get; set; } = dto.LastName;
         public string UserName { get; set; } = dto.UserName;
         public string[] Roles { get; set; } = dto.Roles;
+        public bool Enabled { get; set; } = dto.Enabled;
+
     }
 
     public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, AccountVm>
@@ -36,7 +38,8 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                     id: request.UserId,
                     name: $"{ request.FirstName } { request.LastName }",
                     email: request.UserName,
-                    roles: request.Roles
+                    roles: request.Roles,
+                    enabled : request.Enabled
                 ));
                 if (user.CreatorId is null) throw new NotFoundException("Creator for user", user.Id);
                 await UpdateCreator(
@@ -53,7 +56,8 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.UserName,
-                Roles = request.Roles
+                Roles = request.Roles,
+                Enabled = user.RegistrationConfirmed,
             };
         }
 

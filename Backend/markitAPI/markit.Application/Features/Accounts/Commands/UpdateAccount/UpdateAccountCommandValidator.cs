@@ -10,6 +10,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
             RuleFor(c => c.FirstName).NotEmpty().WithMessage("The firstName is required");
             RuleFor(c => c.LastName).NotEmpty().WithMessage("The lastName is required");
             RuleFor(c => c.UserName).NotEmpty().WithMessage("The userName is required");
+            RuleFor(c => c.Enabled).NotNull().WithMessage("The enabled field is required");
             RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
 
             string nameFormatRegex = "^[a-zA-Z ]+$";

@@ -33,8 +33,11 @@ namespace markit.Application.Mappings
                 .ForMember(
                     dest => dest.Roles,
                     opt => opt.MapFrom(src => new string[] { Role.GENERAL_NAME })
+                )
+                .ForMember(
+                    dest => dest.Enabled,
+                    opt => opt.MapFrom(src => false)
                 );
-
             #endregion
 
             #region Collections

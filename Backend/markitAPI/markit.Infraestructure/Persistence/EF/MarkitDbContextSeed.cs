@@ -71,6 +71,7 @@ namespace markit.Infraestructure.Persistence.EF
                 EmailConfirmed = true,
                 TwoFactorEnabled = false,
                 LockoutEnabled = false,
+                RegistrationConfirmed = true,
                 AccessFailedCount = 0,
                 AccessType = AccessType.Internal,
                 CreatedDate = DateTime.UtcNow,

@@ -5,6 +5,7 @@ export interface Account {
     lastName:  string;
     userName:  string;
     roles:     string[];
+    enabled : boolean;
 }
 
 export interface PasswordRequest {

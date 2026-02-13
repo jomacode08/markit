@@ -9,7 +9,8 @@ namespace markit.Application.Models.Authentication.AppUser
         AccessType accessType,
         string[] roles,
         string? password,
-        string? picture
+        string? picture,
+        bool enabled
     )
     {
         private string _Email => email;
@@ -19,6 +20,7 @@ namespace markit.Application.Models.Authentication.AppUser
         public string? Picture => picture;
         public AccessType AccessType => accessType;
         public string[] Roles => roles;
+        public bool Enabled => enabled;
 
         public string Email
         {

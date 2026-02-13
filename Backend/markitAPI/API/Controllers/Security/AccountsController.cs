@@ -53,6 +53,7 @@ namespace markit.API.Controllers.Security
                 UserName = dto.Account.UserName,
                 Roles = dto.Account.Roles,
                 Password = dto.Password.NewPassword,
+                Enabled = dto.Account.Enabled,
                 AccessType = AccessType.Internal,
             };
 

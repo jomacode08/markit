@@ -84,6 +84,7 @@ namespace markit.Infraestructure.Security.Services
                 user.GivenName = request.Name;
                 user.Email = request.Email;
                 user.UserName = request.Email;
+                user.RegistrationConfirmed = request.Enabled;
                 IdentityResult result = await _userManager.UpdateAsync(user);
                 HandleIdentityResult(result);
                 await UpdateRoles(request.Roles, user);
@@ -117,7 +118,8 @@ namespace markit.Infraestructure.Security.Services
                 Picture = request.Picture,
                 AccessType = request.AccessType,
                 CreatedDate = DateTime.UtcNow,
-                EmailConfirmed = request.AccessType == AccessType.External
+                EmailConfirmed = request.AccessType == AccessType.External,
+                RegistrationConfirmed = request.Enabled
             };
         }
 

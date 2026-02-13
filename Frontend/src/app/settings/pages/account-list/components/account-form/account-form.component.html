@@ -33,45 +33,45 @@
       }
     </div>
     
-    <!-- Roles MultiSelect -->
-    <div class="form-field">
-      <label for="roles">Roles</label>
-      <p-multiSelect
-        id="roles"
-        formControlName="roles"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Select roles"
-        appendTo="body"
-        styleClass="w-full"
-        [options]="roleOptions"
-        [class.invalid]="isInvalidField('roles')"
-      />
-      @if (isInvalidField('roles')) {
-        <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
-      }
-    </div>
+    <div class="fields-container">
+      <!-- Roles MultiSelect -->
+      <div class="form-field">
+        <label for="roles">Roles</label>
+        <p-multiSelect
+          id="roles"
+          formControlName="roles"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select roles"
+          appendTo="body"
+          styleClass="w-full"
+          [options]="roleOptions"
+          [class.invalid]="isInvalidField('roles')"
+        />
+        @if (isInvalidField('roles')) {
+          <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+        }
+      </div>
 
-    <!-- User Name (Email) Field -->
-    <div class="form-field">
-      <label for="userName">User Name (Email)</label>
-      <input
-        id="userName"
-        pInputText
-        formControlName="userName"
-        maxlength="256"
-        type="email"
-        autocomplete="off"
-        placeholder="example@email.com"
-        [class.invalid]="isInvalidField('userName')"
-      />
-      @if (isInvalidField('userName')) {
-        <shared-error-field [validationField]="getValidationField('userName', 'masc', 'user name')" />
-      }
-    </div>
+      <!-- User Name (Email) Field -->
+      <div class="form-field">
+        <label for="userName">User Name (Email)</label>
+        <input
+          id="userName"
+          pInputText
+          formControlName="userName"
+          maxlength="256"
+          type="email"
+          autocomplete="off"
+          placeholder="example@email.com"
+          [class.invalid]="isInvalidField('userName')"
+        />
+        @if (isInvalidField('userName')) {
+          <shared-error-field [validationField]="getValidationField('userName', 'masc', 'user name')" />
+        }
+      </div>
 
-    @if (!isUpdateMode) {
-      <div class="password-container">
+      @if (!isUpdateMode) {
         <!-- Password -->
         <div class="form-field">
           <label for="password">Password</label>
@@ -115,8 +115,18 @@
             <shared-error-field [validationField]="getValidationField('confirmPassword', 'masc', 'password confirmation')" />
           }
         </div>
+      }
+      
+      <div class="form-field">
+        <label for="enabled">Enabled</label>
+        <p-toggleButton 
+        formControlName="enabled"
+        onLabel="Yes" 
+        offLabel="No"
+        />
       </div>
-    }
+    </div>
+
   </div>
 
   <!-- modal-footer section -->

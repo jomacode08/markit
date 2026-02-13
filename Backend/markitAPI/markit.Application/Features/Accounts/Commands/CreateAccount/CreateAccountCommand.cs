@@ -17,6 +17,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
         public string[] Roles { get; set; } = [];
         public string? Password { get; set; }
         public string? Picture { get; set; }
+        public bool Enabled { get; set; }
     }
 
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, AccountVm>
@@ -46,6 +47,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 LastName = request.LastName,
                 UserName = request.UserName,
                 Roles = request.Roles,
+                Enabled = user.RegistrationConfirmed
             };
         }
 
@@ -68,7 +70,8 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 accessType: request.AccessType,
                 roles: request.Roles,
                 password: request.Password,
-                picture: request.Picture
+                picture: request.Picture,
+                enabled: request.Enabled
             );
         }
     }

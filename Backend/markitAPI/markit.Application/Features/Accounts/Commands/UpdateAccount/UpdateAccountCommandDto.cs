@@ -6,5 +6,6 @@
         public string LastName { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string[] Roles { get; set; } = [];
+        public bool Enabled { get; set; } = false;
     }
 }

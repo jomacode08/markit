@@ -139,6 +139,23 @@ input {
   background-color: var(--highlight-surface-purple);
   border-color: var(--highlight-border-purple);
 }
+/** Toggle **/
+.p-togglebutton {
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-color);
+  color: var(--text-foreground);
+  font-size: .85rem;
+  padding: .5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+.p-togglebutton:hover {
+  color: var(--text-primary);
+}
+.p-togglebutton.p-button.p-highlight {
+  background-image: none;
+  background-color: var(--highlight-surface-green);
+  border-color: var(--highlight-border-green);
+}
 /**Typography**/
 .text-primary {
   color: var(--text-primary);
