@@ -15,10 +15,11 @@
     [columns]="cols"
     [loading]="status() === accountPaginationStatus.fetching"
     [enableActions]="true"
+    [customActions]="dataTableActions"
     [enablePagination]="true"
     [rowsPerPage]="totalItemsPerPage()"
     [totalItems]="totalItems()"
     [totalPages]="totalPages()"
     (pageSelected)="onPageSelected($event)"
-    (edit)="onEditAccount($event)"
+    (actionTriggered)="onActionTriggered($event)"
 />

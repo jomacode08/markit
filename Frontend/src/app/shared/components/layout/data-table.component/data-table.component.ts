@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from 
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 import { Column } from './interfaces/column';
+import { Action, ActionEvent } from './interfaces/action';
 
 @Component({
   selector: 'shared-data-table',
@@ -22,17 +23,30 @@ export class DataTableComponent<T = unknown> {
   public rowsPerPage = input<number>(10);
   public totalPages = input<number>(1);
   public totalItems = input<number>(0);
+  public customActions = input<Action[]>([
+    {
+      label: 'Edit',
+      icon: 'fa fa-pencil'
+    },
+    {
+      label: 'Delete',
+      icon: 'fa fa-trash'
+    },
+  ]);
   //* Outputs
   // Emit the pageIndex of the selected page.
   @Output() public pageSelected = new EventEmitter<number>();
-  // Emit the data for the row that was clicked by the action button.
-  @Output() public edit = new EventEmitter<T>();
-  @Output() public delete = new EventEmitter<T>();
+  // Emit the ActionEvent for the action that was triggered.
+  @Output() public actionTriggered = new EventEmitter<ActionEvent<T>>();
 
-  public loadDataLazy(event: TableLazyLoadEvent){
+  public loadDataLazy(event: TableLazyLoadEvent): void {
     if (event.first != undefined && event.rows != undefined) {
       const pageIndex = Math.floor(event.first / event.rows) + 1; 
       this.pageSelected.emit(pageIndex);
     }
+  }
+
+  public onActionButtonClick(action : Action, data: T): void {
+    this.actionTriggered.emit({ action, data });
   }
 }

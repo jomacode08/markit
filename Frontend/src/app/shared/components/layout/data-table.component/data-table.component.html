@@ -49,22 +49,16 @@
             @if (enableActions()) {
                 <td>
                     <div class="w-full flex gap-2">
-                        <button 
-                            type="button"
-                            aria-label="Edit"
-                            class="action-button"
-                            (click)="edit.emit(rowData)"
-                        >
-                            <span class="fa fa-pencil"></span>
-                        </button>
-                        <button 
-                            type="button"
-                            aria-label="Delete"
-                            class="action-button delete"
-                            (click)="delete.emit(rowData)"
-                        >
-                            <span class="fa fa-trash"></span>
-                        </button>
+                        @for (action of customActions(); track $index) {
+                            <button 
+                                type="button"
+                                class="action-button"
+                                [attr.aria-label]="action.label"
+                                (click)="onActionButtonClick(action, rowData)"
+                            >
+                                <span [class]="action.icon"></span>
+                            </button>
+                        }
                     </div>
                 </td>
             }

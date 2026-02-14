@@ -11,8 +11,12 @@ import { Column } from '../../../shared/components/layout/data-table.component/i
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DataTableComponent } from '../../../shared/components/layout/data-table.component/data-table.component';
 import { AccountService } from '../../services/account.service';
+import { Action, ActionEvent } from '../../../shared/components/layout/data-table.component/interfaces/action';
 
 type DialogAction = 'Create' | 'Update';
+enum DataTableAction {
+  Edit = 'Edit'
+}
 
 @Component({
   selector: 'app-account-list',
@@ -31,6 +35,12 @@ export class AccountListComponent implements OnDestroy {
   protected totalItemsPerPage : Signal<number>;
   protected totalItems : Signal<number>;
   protected totalPages : Signal<number>;
+  protected dataTableActions : Action[] = [
+    {
+      label : DataTableAction.Edit,
+      icon : 'fa fa-pencil'
+    }
+  ];
 
   get accountPaginationStatus(): typeof AccountPaginationStatus {
     return AccountPaginationStatus;
@@ -92,7 +102,16 @@ export class AccountListComponent implements OnDestroy {
     this.showAccountFormDialog('Create');
   }
 
-  public onEditAccount(data: AccountSummary): void {
+  public onActionTriggered(event : ActionEvent<AccountSummary>): void {
+    const action = event.action.label;
+    switch(action){
+      case DataTableAction.Edit :
+        this.EditAccount(event.data);
+        break;
+    }
+  }
+
+  public EditAccount(data: AccountSummary): void {
     const { id } = data;
     this.accountService.getByUserId(id).subscribe({
       next: (account) => this.showAccountFormDialog('Update', account),
