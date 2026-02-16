@@ -32,6 +32,7 @@ namespace markit.Infraestructure.Security.Services
 
         public async Task<TokenModel> GenerateTokens(AppUser user)
         {
+            if (!user.Enabled) throw new CustomValidationException("The user does not have sufficient permissions to continue.");
             string accessToken = await GenerateAccessToken(user);
             string refreshToken = GenerateRefreshToken();
 
