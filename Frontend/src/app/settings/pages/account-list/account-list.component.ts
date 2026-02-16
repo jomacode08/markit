@@ -81,8 +81,8 @@ export class AccountListComponent implements OnDestroy {
         header: 'Locked',
       },
       {
-        field: 'isConfirmed',
-        header: 'Confirmed',
+        field: 'enabled',
+        header: 'Enabled',
         transform: (value: boolean) => {
           return value ? 'Yes' : 'No';
         } 

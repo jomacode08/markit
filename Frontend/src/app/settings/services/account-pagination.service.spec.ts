@@ -67,8 +67,8 @@ describe('AccountPaginationService', () => {
 
     it('should update accounts signal with data from response', (done) => {
       const mockAccounts: AccountSummary[] = [
-        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, isConfirmed: true } as AccountSummary,
-        { id: '2', creatorId: 1, userName: 'user2', accessType: 'external', createdDate: new Date(), isLocked: false, isConfirmed: true } as AccountSummary
+        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, enabled: true } as AccountSummary,
+        { id: '2', creatorId: 1, userName: 'user2', accessType: 'external', createdDate: new Date(), isLocked: false, enabled: true } as AccountSummary
       ];
 
       service.loadPage(1);
@@ -121,10 +121,10 @@ describe('AccountPaginationService', () => {
 
     it('should handle multiple page requests sequentially', (done) => {
       const mockAccounts1: AccountSummary[] = [
-        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, isConfirmed: true } as AccountSummary
+        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, enabled: true } as AccountSummary
       ];
       const mockAccounts2: AccountSummary[] = [
-        { id: '11', creatorId: 1, userName: 'user11', accessType: 'external', createdDate: new Date(), isLocked: false, isConfirmed: true } as AccountSummary
+        { id: '11', creatorId: 1, userName: 'user11', accessType: 'external', createdDate: new Date(), isLocked: false, enabled: true } as AccountSummary
       ];
 
       service.loadPage(1);
@@ -219,7 +219,7 @@ describe('AccountPaginationService', () => {
   describe('Signal Reactivity', () => {
     it('should emit new values for all computed signals after successful load', (done) => {
       const mockAccounts: AccountSummary[] = [
-        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, isConfirmed: true } as AccountSummary
+        { id: '1', creatorId: 1, userName: 'user1', accessType: 'internal', createdDate: new Date(), isLocked: false, enabled: true } as AccountSummary
       ];
 
       service.loadPage(1);

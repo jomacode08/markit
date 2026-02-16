@@ -5,7 +5,7 @@ export interface AccountSummary {
     accessType : AccessType,
     createdDate : Date,
     isLocked : boolean,
-    isConfirmed : boolean
+    enabled : boolean
 }
 
 export enum AccessType {
