@@ -47,7 +47,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 LastName = request.LastName,
                 UserName = request.UserName,
                 Roles = request.Roles,
-                Enabled = user.RegistrationConfirmed
+                Enabled = user.Enabled
             };
         }
 

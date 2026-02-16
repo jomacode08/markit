@@ -43,7 +43,7 @@ namespace markit.Application.Features.Accounts.Queries.GetAccountByUserId
                 FirstName = creator.FirstName,
                 LastName = creator.LastName,
                 UserName = user.UserName,
-                Enabled = user.RegistrationConfirmed,
+                Enabled = user.Enabled,
                 Roles = await GetUserRoles(user),
             };
         }

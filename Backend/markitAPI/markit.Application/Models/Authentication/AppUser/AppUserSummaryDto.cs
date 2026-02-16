@@ -33,6 +33,6 @@ namespace markit.Application.Models.Authentication.AppUser
         public AccessType AccessType { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsLocked { get; set; }
-        public bool IsConfirmed { get; set; }
+        public bool Enabled { get; set; }
     }
 }

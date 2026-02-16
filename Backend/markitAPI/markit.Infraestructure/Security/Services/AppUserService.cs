@@ -42,7 +42,7 @@ namespace markit.Infraestructure.Security.Services
                     AccessType = u.AccessType,
                     CreatedDate = u.CreatedDate,
                     IsLocked = u.LockoutEnd > DateTime.UtcNow,
-                    IsConfirmed = u.RegistrationConfirmed
+                    Enabled = u.Enabled
                 }).ToListAsync();
 
             int totalItems = await _userManager.Users.CountAsync();
@@ -84,7 +84,7 @@ namespace markit.Infraestructure.Security.Services
                 user.GivenName = request.Name;
                 user.Email = request.Email;
                 user.UserName = request.Email;
-                user.RegistrationConfirmed = request.Enabled;
+                user.Enabled = request.Enabled;
                 IdentityResult result = await _userManager.UpdateAsync(user);
                 HandleIdentityResult(result);
                 await UpdateRoles(request.Roles, user);
@@ -119,7 +119,7 @@ namespace markit.Infraestructure.Security.Services
                 AccessType = request.AccessType,
                 CreatedDate = DateTime.UtcNow,
                 EmailConfirmed = request.AccessType == AccessType.External,
-                RegistrationConfirmed = request.Enabled
+                Enabled = request.Enabled
             };
         }
 

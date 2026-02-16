@@ -14,11 +14,6 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
             RuleFor(c => c.Enabled).NotNull().WithMessage("The enabled field is required");
             RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
 
-            string nameFormatRegex = "^[a-zA-Z ]+$";
-            RuleFor(c => c.FirstName).Matches(nameFormatRegex)
-                .WithMessage("The first name format is incorrect");
-            RuleFor(c => c.LastName).Matches(nameFormatRegex)
-                .WithMessage("The last name format is incorrect");
             RuleFor(c => c.UserName).Matches(@"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")
                 .WithMessage("The user name format is incorrect");
 

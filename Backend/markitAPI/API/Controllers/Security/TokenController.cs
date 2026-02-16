@@ -1,6 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Models.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -17,7 +16,6 @@ namespace markit.API.Controllers.Security
             _jwtService = jwtService;
         }
 
-        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
         [HttpPost]
         [Route("refresh")]
         public async Task<IActionResult> Refresh()

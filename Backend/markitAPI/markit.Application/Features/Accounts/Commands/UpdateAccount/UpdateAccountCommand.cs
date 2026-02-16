@@ -57,7 +57,7 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                 LastName = request.LastName,
                 UserName = request.UserName,
                 Roles = request.Roles,
-                Enabled = user.RegistrationConfirmed,
+                Enabled = user.Enabled,
             };
         }
 

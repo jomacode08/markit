@@ -14,7 +14,7 @@ namespace markit.Application.Models.Authentication.AppUser
         public AccessType AccessType { get; set; }
 
         [Required]
-        public bool RegistrationConfirmed { get; set; } = false;
+        public bool Enabled { get; set; } = false;
 
         [Required]
         public DateTime CreatedDate { get; set; }

@@ -39,7 +39,7 @@ namespace markit.Application.Features.Creators.Queries
             // Access system properties
             creatorVm.Email = user.Email!;
             creatorVm.Picture = user.Picture;
-            creatorVm.RegistrationConfirmed = user.RegistrationConfirmed;
+            creatorVm.RegistrationConfirmed = user.Enabled;
 
             return creatorVm;
         }
