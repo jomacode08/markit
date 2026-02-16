@@ -37,6 +37,10 @@ namespace markit.Application.Mappings
                 .ForMember(
                     dest => dest.Enabled,
                     opt => opt.MapFrom(src => false)
+                )
+                .ForMember(
+                    dest => dest.UserName,
+                    opt => opt.MapFrom(src => src.Email)
                 );
             #endregion
 
