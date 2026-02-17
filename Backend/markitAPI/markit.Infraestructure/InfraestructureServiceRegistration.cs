@@ -190,6 +190,9 @@ namespace markit.Infraestructure
                 options.Password.RequireLowercase = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
             });
 
             // Configure login provider clients for httpClient

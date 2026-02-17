@@ -40,7 +40,14 @@ namespace markit.Infraestructure.Security.Services
 
             // Password validation
             SignInResult signInResult = await _signInManager
-                .PasswordSignInAsync(user.UserName!, request.Password, false, lockoutOnFailure: false);
+                .PasswordSignInAsync(
+                    userName: user.UserName!, 
+                    request.Password,
+                    isPersistent: false, 
+                    lockoutOnFailure: true
+                );
+            if (signInResult.IsLockedOut)
+                throw new CustomValidationException("The account is locked out, try again later.");
             if (!signInResult.Succeeded)
                 throw new CustomValidationException("The password is incorrect.");
 
