@@ -1,5 +1,6 @@
 ﻿using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Settings;
 using markit.Domain.Common;
 using markit.Domain.Entities;
 using markit.Infraestructure.Persistence.EF.Configurations;
@@ -29,6 +30,7 @@ namespace markit.Infraestructure.Persistence.EF
         }
 
         public DbSet<AppUser> User { get; set; }
+        public DbSet<SystemConfig> SystemConfigs { get; set; }
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Block> Blocks { get; set; }
         public DbSet<Creator> Creators { get; set; }
@@ -84,6 +86,7 @@ namespace markit.Infraestructure.Persistence.EF
         {
             const string securitySchema = "security";
             builder.Entity<AppUser>().ToTable("Users", securitySchema);
+            builder.Entity<SystemConfig>().ToTable("SystemConfigs", securitySchema);
             builder.Entity<IdentityRole>().ToTable("Roles", securitySchema);
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", securitySchema);
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", securitySchema);
