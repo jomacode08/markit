@@ -33,6 +33,8 @@ using markit.Infraestructure.Security.Services.GitHub;
 using markit.Application.Models.Settings;
 using static markit.Application.Helpers.GeneralConstant.Configuration;
 using static markit.Application.Helpers.GeneralConstant;
+using markit.Application.Contracts.Settings;
+using markit.Infraestructure.Security.Services.Settings;
 
 namespace markit.Infraestructure
 {
@@ -68,6 +70,7 @@ namespace markit.Infraestructure
 
             services.AddHttpContextAccessor();
             services.AddTransient<SessionService>();
+            services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
