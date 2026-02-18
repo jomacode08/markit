@@ -1,4 +1,4 @@
-﻿using markit.API.Controllers.Common;
+﻿﻿﻿using markit.API.Controllers.Common;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Exceptions;
@@ -38,7 +38,7 @@ namespace markit.API.Controllers.Seguridad
         [Route("login")]
         public async Task<ActionResult<AuthenticatedUser>> Authenticate(AuthRequest request)
         {
-            AppUser user = await _loginService.Login(request, HttpContext);
+            AppUser user = await _loginService.LoginAsync(request, HttpContext);
             IReadOnlyList<string> roles = GetUserRoles();
 
             return Ok(new AuthenticatedUser(
@@ -50,6 +50,23 @@ namespace markit.API.Controllers.Seguridad
             ));
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("demo")]
+        public async Task<ActionResult<AuthenticatedUser>> AuthenticateForDemo()
+        {
+            AppUser demoUser = await _loginService.DemoAsync(HttpContext);
+            IReadOnlyList<string> roles = GetUserRoles();
+
+            return Ok(new AuthenticatedUser(
+                demoUser.Id,
+                demoUser.GivenName,
+                demoUser.Email!,
+                roles,
+                demoUser.Picture
+            ));
+        }
+        
         [HttpGet]
         [Route("me")]
         public ActionResult<AuthenticatedUser> IsAuthenticated()
@@ -79,7 +96,7 @@ namespace markit.API.Controllers.Seguridad
             string userId = _sessionService.GetUserId();
             AppUser user = await _userManager.FindByIdAsync(userId)
                 ?? throw new NotFoundException("Users", userId);
-            await _loginService.Logout(user, HttpContext);
+            await _loginService.LogoutAsync(user, HttpContext);
             return Ok();
         }
 

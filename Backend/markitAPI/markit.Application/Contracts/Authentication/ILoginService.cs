@@ -6,7 +6,8 @@ namespace markit.Application.Contracts.Authentication
 {
     public interface ILoginService
     {
-        Task<AppUser> Login(AuthRequest request, HttpContext context);
-        Task Logout(AppUser user, HttpContext context);
+        Task<AppUser> LoginAsync(AuthRequest request, HttpContext context);
+        Task<AppUser> DemoAsync(HttpContext context);
+        Task LogoutAsync(AppUser user, HttpContext context);
     }
 }
