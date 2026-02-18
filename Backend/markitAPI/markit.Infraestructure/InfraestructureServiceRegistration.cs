@@ -215,10 +215,6 @@ namespace markit.Infraestructure
 
         private static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
-            DemoSettings demoSettings = new();
-            services.Configure<DemoSettings>(configuration.GetSection(DEMO_SECTION_NAME));
-            configuration.Bind(DEMO_SECTION_NAME, demoSettings);
-
             services.AddAuthorizationBuilder()
                 .AddPolicy(AuthorizationPolicies.ADMIN_ONLY, policy =>
                 {
@@ -231,7 +227,7 @@ namespace markit.Infraestructure
                     policy.RequireRole([Role.ADMIN_NAME, Role.GENERAL_NAME]);
                 })
                 .AddPolicy(AuthorizationPolicies.DEMO_ONLY, policy =>
-                    policy.RequireAssertion(context => demoSettings.Enabled)
+                    policy.RequireRole([Role.DEMO_NAME])
                 );
             return services;
         }
