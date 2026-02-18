@@ -44,6 +44,7 @@ namespace markit.Infraestructure.Persistence.EF
             builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new CollectionConfiguration());
             builder.ApplyConfiguration(new MarkConfiguration());
+            builder.ApplyConfiguration(new SystemConfigConfiguration());
 
             ChangeNameSchemas(builder);
             AddQueryFilters(builder);

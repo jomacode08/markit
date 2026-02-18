@@ -52,6 +52,12 @@
             }.AsReadOnly();
         }
 
+        public static class SystemConfigKeys
+        {
+            public const string IS_DEMO_ENABLED_KEY = "Demo:IsEnabled";
+            public const string DEMO_USER_ID_KEY = "Demo:UserId";
+        }
+
         public static class CustomClaimType
         {
             public static readonly string ProfilePictureUrl = "prof_pic_url";
