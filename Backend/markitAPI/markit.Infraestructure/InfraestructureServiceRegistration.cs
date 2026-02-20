@@ -35,6 +35,8 @@ using static markit.Application.Helpers.GeneralConstant.Configuration;
 using static markit.Application.Helpers.GeneralConstant;
 using markit.Application.Contracts.Settings;
 using markit.Infraestructure.Security.Services.Settings;
+using markit.Application.Contracts.Authentication.Demo;
+using markit.Infraestructure.Security.Services.Demo;
 
 namespace markit.Infraestructure
 {
@@ -126,6 +128,7 @@ namespace markit.Infraestructure
 
             // Inject authentication services
             services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<IDemoService, DemoService>();
             services.AddScoped<IGoogleApiService, GoogleApiService>();
             services.AddScoped<IGitHubApiService, GitHubApiService>();
             services.AddScoped<IJwtService, JwtService>();

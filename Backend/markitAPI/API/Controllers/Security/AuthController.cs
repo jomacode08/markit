@@ -49,23 +49,6 @@ namespace markit.API.Controllers.Seguridad
                 user.Picture
             ));
         }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("demo")]
-        public async Task<ActionResult<AuthenticatedUser>> AuthenticateForDemo()
-        {
-            AppUser demoUser = await _loginService.DemoAsync(HttpContext);
-            IReadOnlyList<string> roles = GetUserRoles();
-
-            return Ok(new AuthenticatedUser(
-                demoUser.Id,
-                demoUser.GivenName,
-                demoUser.Email!,
-                roles,
-                demoUser.Picture
-            ));
-        }
         
         [HttpGet]
         [Route("me")]
