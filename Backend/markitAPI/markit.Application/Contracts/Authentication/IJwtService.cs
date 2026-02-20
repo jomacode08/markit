@@ -6,9 +6,10 @@ namespace markit.Application.Contracts.Authentication
 {
     public interface IJwtService
     {
-        Task<TokenModel> GenerateTokens(AppUser user);
-        void SetInsideCookie(TokenModel tokenModel, HttpContext context);
-        Task<TokenModel> Refresh(TokenModel tokens);
-        Task Revoke(AppUser user);
+        Task<TokenModel> GenerateTokenPairAsync(AppUser user);
+        Task<TokenModel> RefreshAsync(TokenModel tokens);
+        Task RevokeAsync(AppUser user);
+        Task IssueDemoTokenAsync(AppUser user, HttpContext context);
+        void SetTokenPairInCookies(TokenModel tokenModel, HttpContext context);
     }
 }

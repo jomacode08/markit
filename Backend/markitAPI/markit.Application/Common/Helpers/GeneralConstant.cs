@@ -56,6 +56,7 @@
         {
             public const string IS_DEMO_ENABLED_KEY = "Demo:IsEnabled";
             public const string DEMO_USER_ID_KEY = "Demo:UserId";
+            public const string DEMO_TOKEN_DURATION_IN_MINUTES = "Demo:TokenDurationInMinutes";
         }
 
         public static class CustomClaimType

@@ -25,8 +25,8 @@ namespace markit.API.Controllers.Security
 
             if (accessToken is null || refreshToken is null) return BadRequest("Invalid token request");
 
-            TokenModel renewedTokens = await _jwtService.Refresh(new TokenModel(accessToken, refreshToken));
-            _jwtService.SetInsideCookie(renewedTokens, HttpContext);
+            TokenModel renewedTokens = await _jwtService.RefreshAsync(new TokenModel(accessToken, refreshToken));
+            _jwtService.SetTokenPairInCookies(renewedTokens, HttpContext);
             return Ok();
         }
     }

@@ -56,34 +56,40 @@ namespace markit.Infraestructure.Security.Services
             if (!signInResult.Succeeded)
                 throw new CustomValidationException("Invalid email or password.");
             ValidateCreatorExistency(user);
-            await HandleTokenAccessAsync(user, context);
+            await IssueTokenPairAsync(user, context);
             return user;
         }
 
         public async Task<AppUser> DemoAsync(HttpContext context)
         {
-            string? isDemoEnabledValue = await _settingsService
-                .GetValueAsync(SystemConfigKeys.IS_DEMO_ENABLED_KEY);
+            const string CONFIGURATION_ERROR_MESSAGE = "Demo mode is not available due to a configuration error.";
+            string? isDemoEnabledValue = await _settingsService.GetValueAsync(SystemConfigKeys.IS_DEMO_ENABLED_KEY);
+
             // Validate Demo toggle.
             if (!bool.TryParse(isDemoEnabledValue, out bool isDemoEnabled) || !isDemoEnabled)
             {
                 throw new CustomValidationException("Demo mode is currently disabled.");
             }
-            // Get and validate configured demo user.
+
+            // Get configured demo user.
             string demoUserId = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_USER_ID_KEY)
                 ?? throw new CustomValidationException("The demo user has not been configured in the application.");
             AppUser demoUser = await _userManager.FindByIdAsync(demoUserId)
                 ?? throw new NotFoundException("Users", demoUserId);
-            var roles = await _userManager.GetRolesAsync(demoUser);
+
             // Validate demo user to have the correct demo role.
+            var roles = await _userManager.GetRolesAsync(demoUser);
             if (!roles.Contains(Role.DEMO_NAME) || roles.Count != 1 || !demoUser.Enabled)
             {
                 await DisableDemoModeAsync();
-                throw new CustomValidationException("Demo mode is not available due to a configuration error."); 
-            }            
+                throw new CustomValidationException(CONFIGURATION_ERROR_MESSAGE); 
+            }
+
             // Authenticate demo user.
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            await _jwtService.IssueDemoTokenAsync(demoUser, context);
             await _signInManager.SignInAsync(demoUser, isPersistent: false);
-            await HandleTokenAccessAsync(demoUser, context);
+            scope.Complete();
             return demoUser;
         }
 
@@ -91,7 +97,7 @@ namespace markit.Infraestructure.Security.Services
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             await _externalTokenService.ClearShortLivedAsync(user.Id);
-            await _jwtService.Revoke(user);
+            await _jwtService.RevokeAsync(user);
             context.Response.Cookies.Delete(Token.ACCESS_TOKEN_NAME);
             context.Response.Cookies.Delete(Token.REFRESH_TOKEN_NAME);
             scope.Complete();
@@ -103,10 +109,10 @@ namespace markit.Infraestructure.Security.Services
                 throw new CustomValidationException("The user has not yet been fully configured");
         }
 
-        private async Task HandleTokenAccessAsync(AppUser user, HttpContext context)
+        private async Task IssueTokenPairAsync(AppUser user, HttpContext context)
         {
-            TokenModel tokens = await _jwtService.GenerateTokens(user);
-            _jwtService.SetInsideCookie(tokens, context);
+            TokenModel tokens = await _jwtService.GenerateTokenPairAsync(user);
+            _jwtService.SetTokenPairInCookies(tokens, context);
         }
 
         private async Task DisableDemoModeAsync()

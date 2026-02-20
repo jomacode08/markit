@@ -1,5 +1,6 @@
-﻿using markit.Application.Common.Helpers;
+﻿﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
@@ -18,22 +19,25 @@ namespace markit.Infraestructure.Security.Services
 {
     public class JwtService : IJwtService
     {
+        private readonly ISettingsService _settingsService;
         private readonly JwtSettings _jwtSettings;
         private readonly UserManager<AppUser> _userManager;
 
         public JwtService(
+            ISettingsService settingsService,
             IOptions<JwtSettings> jwtSettings,
-            UserManager<AppUser> userManager
-        )
+            UserManager<AppUser> userManager)
         {
+            _settingsService = settingsService;
             _jwtSettings = jwtSettings.Value;
             _userManager = userManager;
         }
 
-        public async Task<TokenModel> GenerateTokens(AppUser user)
+        public async Task<TokenModel> GenerateTokenPairAsync(AppUser user)
         {
             if (!user.Enabled) throw new CustomValidationException("The user does not have sufficient permissions to continue.");
-            string accessToken = await GenerateAccessToken(user);
+            DateTime accessTokenExpirationDate = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenDurationInMinutes);
+            string accessToken = await GenerateAccessTokenAsync(user, accessTokenExpirationDate);
             string refreshToken = GenerateRefreshToken();
 
             await StoreRefreshTokenInDatabase(
@@ -45,26 +49,26 @@ namespace markit.Infraestructure.Security.Services
             return new TokenModel(accessToken, refreshToken);
         }
 
-        public void SetInsideCookie(TokenModel tokenModel, HttpContext context)
+        public void SetTokenPairInCookies(TokenModel tokenModel, HttpContext context)
         {
-            DateTime expiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenDurationInMinutes);
+            DateTime expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshTokenDurationInMinutes);
             // Access token
             SetHttpOnlyCookie(
                 context,
                 key: Token.ACCESS_TOKEN_NAME,
                 token: tokenModel.AccessToken,
-                expiresIn
+                expiresAt
             );
             // RefreshToken
             SetHttpOnlyCookie(
                 context,
                 key: Token.REFRESH_TOKEN_NAME,
                 token: tokenModel.RefreshToken,
-                expiresIn
+                expiresAt
             );
         }
 
-        public async Task<TokenModel> Refresh(TokenModel tokens)
+        public async Task<TokenModel> RefreshAsync(TokenModel tokens)
         {
             string accessToken = tokens.AccessToken;
             string refreshToken = tokens.RefreshToken;
@@ -101,13 +105,12 @@ namespace markit.Infraestructure.Security.Services
                 throw new UnauthorizedAccessException("The current user doesn't have a valid session");
 
             DateTime? expiresAt = ParseDateOrNull(refreshExpirationTimeStr);
-            if (refreshToken != storedRefreshToken || expiresAt is null || expiresAt <= DateTime.Now)
+            if (refreshToken != storedRefreshToken || expiresAt is null || expiresAt <= DateTime.UtcNow)
                 throw new UnauthorizedAccessException("Invalid token refresh");
-
-            return await GenerateTokens(user);
+            return await GenerateTokenPairAsync(user);
         }
 
-        public async Task Revoke(AppUser user)
+        public async Task RevokeAsync(AppUser user)
         {
             await _userManager.RemoveAuthenticationTokenAsync(
                 user,
@@ -118,6 +121,25 @@ namespace markit.Infraestructure.Security.Services
                 user,
                 LoginProvider.Internal.GetName(),
                 Token.EXPIRES_AT_TOKEN_NAME
+            );
+        }
+
+        public async Task IssueDemoTokenAsync(AppUser user, HttpContext context)
+        {
+            bool isDemo = await _userManager.IsInRoleAsync(user, Role.DEMO_NAME);
+            if (!isDemo || !user.Enabled) throw new CustomValidationException("The user does not have sufficient permissions to continue.");
+            string? demoTokenDurationInMinutesValue = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES);
+
+            if (!int.TryParse(demoTokenDurationInMinutesValue, out int demoTokenDurationInMinutes))
+                throw new CustomValidationException("Demo mode is not available due to a configuration error.");
+
+            DateTime expiresAt = DateTime.UtcNow.AddMinutes(demoTokenDurationInMinutes);
+            string token = await GenerateAccessTokenAsync(user, expiresAt);
+            SetHttpOnlyCookie(
+                context,
+                key : Token.ACCESS_TOKEN_NAME,
+                token,
+                expiresAt
             );
         }
 
@@ -164,11 +186,11 @@ namespace markit.Infraestructure.Security.Services
             );
         }
 
-        private void SetHttpOnlyCookie(HttpContext context, string key, string token, DateTime expiresIn)
+        private void SetHttpOnlyCookie(HttpContext context, string key, string token, DateTime expiresAt)
         {
             CookieOptions cookieOptions = new()
             {
-                Expires = expiresIn,
+                Expires = expiresAt,
                 HttpOnly = true,
                 IsEssential = true,
                 SameSite = SameSiteMode.None,
@@ -182,7 +204,7 @@ namespace markit.Infraestructure.Security.Services
             );
         }
 
-        private async Task<string> GenerateAccessToken(AppUser user)
+        private async Task<string> GenerateAccessTokenAsync(AppUser user, DateTime expiresAt)
         {
             IEnumerable<Claim> roleClaims = await GetUserRoleClaims(user);
             IEnumerable<Claim> claims = new[]
@@ -205,7 +227,7 @@ namespace markit.Infraestructure.Security.Services
                     issuer: _jwtSettings.Issuer,
                     audience: _jwtSettings.Audience,
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenDurationInMinutes),
+                    expires: expiresAt,
                     signingCredentials: signingCredentials
             );
 
