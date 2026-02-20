@@ -1,8 +1,9 @@
-﻿using markit.Application.Contracts.Authentication;
+﻿﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Demo;
 using markit.Application.Models.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,19 @@ namespace markit.Infraestructure.Security.Services.Demo
             await EnsureDemoUserIsValidAsync(demoUser);
             await AuthenticateDemoUserAsync(demoUser, context);
             return demoUser;
+        }
+
+        public async Task<DemoStatus> GetStatusAsync()
+        {
+            bool isDemoEnabled = await IsDemoEnabledAsync();
+            string message = isDemoEnabled 
+                ? "Welcome to Demo!"
+                : "Demo not available.";            
+            return new DemoStatus(
+                Available : isDemoEnabled,
+                LimitReached : false, // TODO: Represent a new future, Quota-tracking will be implemented.
+                message
+            );
         }
 
         private async Task AuthenticateDemoUserAsync(AppUser user, HttpContext context)

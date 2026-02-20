@@ -1,6 +1,7 @@
 ﻿using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Demo;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -31,6 +32,13 @@ namespace markit.API.Controllers.Security
                 roles,
                 demoUser.Picture
             ));
+        }
+
+        [HttpGet]
+        [Route("status")]
+        public async Task<ActionResult<DemoStatus>> GetStatus()
+        {
+            return Ok(await _demoService.GetStatusAsync());
         }
 
         private IReadOnlyList<string> GetUserRolesFromClaims()
