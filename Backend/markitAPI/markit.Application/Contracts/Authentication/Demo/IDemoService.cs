@@ -1,4 +1,5 @@
 ﻿using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Demo;
 using Microsoft.AspNetCore.Http;
 
 namespace markit.Application.Contracts.Authentication.Demo
@@ -6,5 +7,6 @@ namespace markit.Application.Contracts.Authentication.Demo
     public interface IDemoService
     {
         Task<AppUser> LoginAsync(HttpContext context);
+        Task<DemoStatus> GetStatusAsync();
     }
 }
