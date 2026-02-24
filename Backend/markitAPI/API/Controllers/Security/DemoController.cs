@@ -3,7 +3,9 @@ using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Demo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Security
 {
@@ -19,6 +21,7 @@ namespace markit.API.Controllers.Security
         }
 
         [HttpPost]
+        [EnableRateLimiting(RateLimiterPolicies.DEMO_LOGIN_QUOTA)]
         public async Task<ActionResult<AuthenticatedUser>> Login()
         {
             AppUser demoUser = await _demoService.LoginAsync(HttpContext);
