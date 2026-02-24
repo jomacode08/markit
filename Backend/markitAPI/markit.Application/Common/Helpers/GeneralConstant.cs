@@ -1,7 +1,20 @@
-﻿namespace markit.Application.Helpers
+﻿﻿namespace markit.Application.Helpers
 {
     public static class GeneralConstant
     {
+        public static class AuthenticationItems
+        {
+            public static readonly string LOGIN_PURPOSE_KEY = "LoginPurpose";
+            public static readonly string CURRENT_USERID_KEY = "CurrentUserId";
+        }
+
+        public static class AuthorizationPolicies
+        {
+            public const string ADMIN_ONLY = "AdminOnly";
+            public const string CAN_ESCALATE = "CanEscalate";
+            public const string DEMO_ONLY = "DemoOnly";
+        }
+
         public static class Configuration
         {
             public static readonly string JWT_SECTION_NAME = "JwtSettings";
@@ -12,26 +25,32 @@
             public static readonly string MEILISEARCH_SECTION_NAME = "MeiliSearchSettings";
             public static readonly string SPA_SECTION_NAME = "SpaSettings";
             public static readonly string DEMO_SECTION_NAME = "DemoSettings";
+            public static readonly string RATE_LIMITING = "RateLimiting";
         }
 
-        public static class AuthenticationItems
+        public static class CustomClaimType
         {
-            public static readonly string LOGIN_PURPOSE_KEY = "LoginPurpose";
-            public static readonly string CURRENT_USERID_KEY = "CurrentUserId";
+            public static readonly string ProfilePictureUrl = "prof_pic_url";
+            public static readonly string CreatorId = "creatorId";
         }
 
-        public static class  AuthorizationPolicies
+        public static class Marks
         {
-            public const string ADMIN_ONLY = "AdminOnly";
-            public const string CAN_ESCALATE = "CanEscalate";
-            public const string DEMO_ONLY = "DemoOnly";
+            public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
+            public static readonly string MARK_PLACEHOLDER = "New mark";
+            public static readonly string MAIN_COLLECTION_NAME = "My marks";
         }
 
-        public static class Token
+        public static class MeiliSearch
         {
-            public static readonly string ACCESS_TOKEN_NAME = "access_token";
-            public static readonly string REFRESH_TOKEN_NAME = "refresh_token";
-            public static readonly string EXPIRES_AT_TOKEN_NAME = "expires_at";
+            public static readonly string INDEX_PRIMARY_KEY_NAME = "id";
+            public static readonly string COLLECTION_INDEX_UID = "collections";
+            public static readonly string MARK_INDEX_UID = "marks";
+        }
+
+        public static class RateLimiterPolicies
+        {
+            public const string DEMO_LOGIN_QUOTA = "DemoLoginQuota";
         }
 
         public static class Role
@@ -59,24 +78,11 @@
             public const string DEMO_TOKEN_DURATION_IN_MINUTES = "Demo:TokenDurationInMinutes";
         }
 
-        public static class CustomClaimType
+        public static class Token
         {
-            public static readonly string ProfilePictureUrl = "prof_pic_url";
-            public static readonly string CreatorId = "creatorId";
-        }
-
-        public static class Marks
-        {
-            public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
-            public static readonly string MARK_PLACEHOLDER = "New mark";
-            public static readonly string MAIN_COLLECTION_NAME = "My marks";
-        }
-
-        public static class MeiliSearch
-        {
-            public static readonly string INDEX_PRIMARY_KEY_NAME = "id";
-            public static readonly string COLLECTION_INDEX_UID = "collections";
-            public static readonly string MARK_INDEX_UID = "marks";
+            public static readonly string ACCESS_TOKEN_NAME = "access_token";
+            public static readonly string REFRESH_TOKEN_NAME = "refresh_token";
+            public static readonly string EXPIRES_AT_TOKEN_NAME = "expires_at";
         }
     }
 }

@@ -1,42 +1,46 @@
+﻿using Hangfire;
+using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.Demo;
+using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Contracts.GitHub;
+using markit.Application.Contracts.Google;
+using markit.Application.Contracts.MeiliSearch;
 ﻿using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Contracts.Settings;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
+using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.GitHub;
+using markit.Application.Models.Authentication.Google;
+using markit.Application.Models.Authentication.MeiliSearch;
+using markit.Application.Models.MeiliSearch.Documents;
+using markit.Application.Models.Settings;
+using markit.Application.Models.Settings.RateLimiting;
 using markit.Infraestructure.Persistence.EF;
-using markit.Infraestructure.Repositorys.Common;
+using markit.Infraestructure.Persistence.MeiliSearch.Services;
 using markit.Infraestructure.Repositorys;
+using markit.Infraestructure.Repositorys.Common;
+using markit.Infraestructure.Repositorys.MeiliSearch;
 using markit.Infraestructure.Security.Services;
+using markit.Infraestructure.Security.Services.Demo;
+using markit.Infraestructure.Security.Services.ExternalLogin;
+using markit.Infraestructure.Security.Services.GitHub;
+using markit.Infraestructure.Security.Services.Google;
+using markit.Infraestructure.Security.Services.Settings;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using markit.Application.Models.Authentication.Google;
-using markit.Application.Contracts.Authentication;
-using markit.Application.Models.Authentication.AppUser;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using markit.Application.Models.Authentication.MeiliSearch;
-using markit.Infraestructure.Repositorys.MeiliSearch;
-using markit.Application.Contracts.MeiliSearch;
-using markit.Application.Models.MeiliSearch.Documents;
-using Hangfire;
-using markit.Infraestructure.Persistence.MeiliSearch.Services;
-using Microsoft.AspNetCore.Authentication;
-using markit.Application.Contracts.Google;
-using markit.Infraestructure.Security.Services.Google;
-using markit.Infraestructure.Security.Services.ExternalLogin;
-using markit.Application.Contracts.Authentication.ExternalLogin;
-using markit.Application.Models.Authentication.GitHub;
-using markit.Application.Contracts.GitHub;
-using markit.Infraestructure.Security.Services.GitHub;
-using markit.Application.Models.Settings;
-using static markit.Application.Helpers.GeneralConstant.Configuration;
+using System.Threading.RateLimiting;
 using static markit.Application.Helpers.GeneralConstant;
-using markit.Application.Contracts.Settings;
-using markit.Infraestructure.Security.Services.Settings;
-using markit.Application.Contracts.Authentication.Demo;
-using markit.Infraestructure.Security.Services.Demo;
+using static markit.Application.Helpers.GeneralConstant.Configuration;
 
 namespace markit.Infraestructure
 {
@@ -50,6 +54,7 @@ namespace markit.Infraestructure
                 .AddMeiliSearchPersistence(configuration)
                 .AddAuthentication(configuration)
                 .AddAuthorization(configuration)
+                .AddRateLimiter(configuration)
                 .AddHangfire(configuration);
             return services;
         }
@@ -234,5 +239,93 @@ namespace markit.Infraestructure
                 );
             return services;
         }
+
+        private static IServiceCollection AddRateLimiter(this IServiceCollection services, IConfiguration configuration)
+        {
+            const string UNKNOWN_PARTITION_KEY = "unknown";
+            const string SHARED_RESOURCE_PARTITION_KEY = "shared-api-resource";
+
+            RateLimitingOptions rateLimitingOptions = new();
+            services.Configure<RateLimitingOptions>(configuration.GetSection(RATE_LIMITING));
+            configuration.Bind(RATE_LIMITING, rateLimitingOptions);
+            ValidateRateLimitingOptions(rateLimitingOptions);
+
+            VolumeControl volumeControl = rateLimitingOptions.VolumeControl;
+            ConcurrencyControl concurrency = rateLimitingOptions.ConcurrencyControl;
+            DemoLoginQuota demoLoginQuota = rateLimitingOptions.DemoLoginQuota;
+            services.AddRateLimiter(options =>
+            {
+                options.OnRejected = async (context, token) =>
+                {
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                    context.HttpContext.Response.ContentType = "text/plain";
+                    await context.HttpContext.Response.WriteAsync("Too many requests, please try again later.", token);
+                };
+
+                options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
+                    // First Filter: Volume Control
+                    PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>                    
+                        RateLimitPartition.GetSlidingWindowLimiter(
+                            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? UNKNOWN_PARTITION_KEY,
+                            factory: _ => new SlidingWindowRateLimiterOptions
+                            {
+                                PermitLimit = volumeControl.PermitLimit,
+                                Window = TimeSpan.FromMinutes(volumeControl.WindowMinutes),
+                                SegmentsPerWindow = volumeControl.WindowSegments,
+                                QueueLimit = 0
+                            }
+                        )
+                    ),
+                    // Second Filter: Concurrency
+                    PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                        RateLimitPartition.GetConcurrencyLimiter(
+                            partitionKey: SHARED_RESOURCE_PARTITION_KEY,
+                            factory: _ => new ConcurrencyLimiterOptions
+                            {
+                                PermitLimit = concurrency.PermitLimit,
+                                QueueLimit = concurrency.QueueLimit
+                            }
+                        )
+                    )
+                );
+
+                options.AddPolicy(RateLimiterPolicies.DEMO_LOGIN_QUOTA, httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? UNKNOWN_PARTITION_KEY,
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = demoLoginQuota.PermitLimit,
+                            Window = TimeSpan.FromHours(demoLoginQuota.WindowHours),
+                            QueueLimit = 0,
+                        }
+                    )
+                );
+            });
+            return services;
+        }
+
+        private static void ValidateRateLimitingOptions(RateLimitingOptions options)
+        {
+            if (options.VolumeControl.PermitLimit <= 0 ||
+                options.VolumeControl.WindowMinutes <= 0 ||
+                options.VolumeControl.WindowSegments <= 0)
+            {
+                throw new InvalidOperationException(ConstructRateLimitingError(VolumeControl.SectionName));
+            }
+
+            if (options.DemoLoginQuota.PermitLimit <= 0 ||
+                options.DemoLoginQuota.WindowHours <= 0)
+            {
+                throw new InvalidOperationException(ConstructRateLimitingError(DemoLoginQuota.SectionName));
+            }
+
+            if (options.ConcurrencyControl.PermitLimit <= 0 ||
+                options.ConcurrencyControl.QueueLimit < 0)
+            {
+                throw new InvalidOperationException(ConstructRateLimitingError(ConcurrencyControl.SectionName));
+            }
+        }
+
+        private static string ConstructRateLimitingError(string sectionName) => $"Rate limiting configuration section '{RATE_LIMITING}:{sectionName}' is missing or has invalid values.";
     }
 }
