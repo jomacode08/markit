@@ -310,19 +310,19 @@ namespace markit.Infraestructure
                 options.VolumeControl.WindowMinutes <= 0 ||
                 options.VolumeControl.WindowSegments <= 0)
             {
-                throw new InvalidOperationException(ConstructRateLimitingError(options.VolumeControl.SectionName));
+                throw new InvalidOperationException(ConstructRateLimitingError(VolumeControl.SectionName));
             }
 
             if (options.DemoLoginQuota.PermitLimit <= 0 ||
                 options.DemoLoginQuota.WindowHours <= 0)
             {
-                throw new InvalidOperationException(ConstructRateLimitingError(options.DemoLoginQuota.SectionName));
+                throw new InvalidOperationException(ConstructRateLimitingError(DemoLoginQuota.SectionName));
             }
 
             if (options.ConcurrencyControl.PermitLimit <= 0 ||
                 options.ConcurrencyControl.QueueLimit < 0)
             {
-                throw new InvalidOperationException(ConstructRateLimitingError(options.ConcurrencyControl.SectionName));
+                throw new InvalidOperationException(ConstructRateLimitingError(ConcurrencyControl.SectionName));
             }
         }
 

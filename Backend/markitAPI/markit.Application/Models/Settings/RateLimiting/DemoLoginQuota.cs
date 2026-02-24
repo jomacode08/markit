@@ -2,7 +2,7 @@
 {
     public class DemoLoginQuota
     {
-        public string SectionName = "DemoLoginQuota";
+        public const string SectionName = "DemoLoginQuota";
         public int PermitLimit { get; set; }
         public int WindowHours { get; set; }
     }

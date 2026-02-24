@@ -2,7 +2,7 @@
 {
     public class ConcurrencyControl
     {
-        public string SectionName = "Concurrency";
+        public const string SectionName = "ConcurrencyControl";
         public int PermitLimit { get; set; }
         public int QueueLimit { get; set; }
     }
