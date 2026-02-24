@@ -280,7 +280,7 @@ namespace markit.Infraestructure
                     PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                         RateLimitPartition.GetConcurrencyLimiter(
                             partitionKey: SHARED_RESOURCE_PARTITION_KEY,
-                            factory : _ => new ConcurrencyLimiterOptions
+                            factory: _ => new ConcurrencyLimiterOptions
                             {
                                 PermitLimit = concurrency.PermitLimit,
                                 QueueLimit = concurrency.QueueLimit
