@@ -14,6 +14,8 @@ export const ROUTES = {
     MY_MARKS: `/workplace/explore/${ MAIN_COLLECTION_PARAM }`,
     STARRED: '/workplace/starred',
     RECENT: '/workplace/recent',
+    // Settings
+    ACCOUNTS: '/settings/accounts',
     // Others
     NOT_FOUND: '/not-found',
     ERROR: '/error',

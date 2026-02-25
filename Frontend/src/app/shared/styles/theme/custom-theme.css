@@ -354,12 +354,14 @@ button {
     color: #818cf8;
   }
 }
+.p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content {
+  background-color: transparent;
+}
 .p-menu.transparent {
   background-color: transparent;
   border: none;
   .p-menuitem-content {
     margin-bottom: .5rem;
-    background-color: var(--surface-1);
   }
   .p-menuitem-link {
     padding: .85rem 1rem !important;
