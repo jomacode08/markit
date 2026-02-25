@@ -128,7 +128,7 @@ namespace markit.Infraestructure.Security.Services
         {
             bool isDemo = await _userManager.IsInRoleAsync(user, Role.DEMO_NAME);
             if (!isDemo || !user.Enabled) throw new CustomValidationException("The user does not have sufficient permissions to continue.");
-            string? demoTokenDurationInMinutesValue = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES);
+            string? demoTokenDurationInMinutesValue = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY);
 
             if (!int.TryParse(demoTokenDurationInMinutesValue, out int demoTokenDurationInMinutes))
                 throw new CustomValidationException("Demo mode is not available due to a configuration error.");

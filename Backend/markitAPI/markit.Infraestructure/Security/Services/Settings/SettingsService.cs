@@ -4,6 +4,7 @@ using markit.Application.Models.Settings;
 using markit.Infraestructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infraestructure.Security.Services.Settings
 {
@@ -12,6 +13,8 @@ namespace markit.Infraestructure.Security.Services.Settings
         private readonly MarkitDbContext _context;
         private readonly IMemoryCache _cache;
         private const int CACHE_EXPIRE_IN_HOURS = 1;
+        private const string DEMO_SETTINGS_CACHE_KEY = "demo_settings";
+        private const string DEMO_KEY_PREFIX = "Demo:";
 
         public SettingsService(MarkitDbContext context, IMemoryCache cache)
         {
@@ -23,6 +26,27 @@ namespace markit.Infraestructure.Security.Services.Settings
         {
             return await _context.SystemConfigs
                 .FirstOrDefaultAsync(s => s.Id.Equals(key));
+        }
+
+        public async Task<IReadOnlyList<SystemConfig>> GetForDemoAsync()
+        {
+            if (_cache.TryGetValue(DEMO_SETTINGS_CACHE_KEY, out IReadOnlyList<SystemConfig>? cached) && cached != null)
+                return cached;
+
+            var result = await _context.SystemConfigs
+                .AsNoTracking()
+                .Where(s =>
+                    s.Id.Equals(SystemConfigKeys.IS_DEMO_ENABLED_KEY)
+                    || s.Id.Equals(SystemConfigKeys.DEMO_USER_ID_KEY)
+                    || s.Id.Equals(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY)
+                ).ToListAsync();
+
+            _cache.Set(
+                key: DEMO_SETTINGS_CACHE_KEY,
+                value: result.AsReadOnly(),
+                absoluteExpirationRelativeToNow: TimeSpan.FromHours(CACHE_EXPIRE_IN_HOURS)
+            );
+            return result;
         }
 
         public async Task<string?> GetValueAsync(string key)
@@ -54,10 +78,14 @@ namespace markit.Infraestructure.Security.Services.Settings
 
             existing.Value = config.Value;
             existing.Description = config.Description;
-
             _context.Update(existing);
+
             // Invalidate the cache so the next request pulls the fresh DB data.
             _cache.Remove(config.Id);
+            if (config.Id.Contains(DEMO_KEY_PREFIX)) {
+                _cache.Remove(DEMO_SETTINGS_CACHE_KEY);
+            }
+
             await _context.SaveChangesAsync();
         }
     }
