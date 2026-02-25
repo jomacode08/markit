@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Inject, Renderer2, ViewChild } from '@angular/core';
 import { DOCUMENT, NgIf } from '@angular/common';
 
-import { MenuItem } from 'primeng/api';
 import { Menu, MenuModule } from 'primeng/menu';
 
 import { ROUTES } from '../../../../shared/utils/constant';
 import { AuthService } from '../../../../auth/services/auth.service';
+import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
 
 @Component({
   selector: 'app-profile-menu',
@@ -19,7 +19,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
       #profileMenu
       styleClass="popup"
       appendTo="body"
-      [model]="profileMenuItems"
+      [model]="profileMenuItems()"
       [popup]="true"
       (onShow)="disableScroll()"
       (onHide)="enableScroll()"
@@ -48,9 +48,19 @@ import { AuthService } from '../../../../auth/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileMenu {
+  private authService = inject(AuthService);
+  private renderer = inject(Renderer2);
+  @Inject(DOCUMENT) private document = inject(DOCUMENT);
+
   @ViewChild('profileMenu') private profileMenu !: Menu;
   private readonly STOP_SCROLLING_CLASS_NAME = 'stop-scrolling';
-  protected profileMenuItems: MenuItem[] = [
+  protected profileMenuItems = computed(() => [
+    {
+      label: 'Settings',
+      icon: 'fa-solid fa-sliders',
+      route: ROUTES.ACCOUNTS,
+      visible: this.authService.currentUser()?.roles.includes(AuthRole.ADMIN) ?? false,
+    },
     {
       label: 'Profile',
       icon: 'fa-regular fa-user',
@@ -63,13 +73,7 @@ export class ProfileMenu {
         this.authService.logout();
       }
     }
-  ];
-
-  constructor(
-    private authService: AuthService,
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+  ]);
 
   public toggle(event: Event) {
     this.profileMenu.toggle(event);
