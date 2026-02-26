@@ -1,7 +1,11 @@
 ﻿using markit.Application.Contracts.Authentication.Demo;
+using markit.Application.Features.Settings.Queries;
+using markit.Application.Features.Settings.Queries.ViewModels;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Demo;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
@@ -14,12 +18,15 @@ namespace markit.API.Controllers.Security
     public class DemoController : ControllerBase
     {
         private readonly IDemoService _demoService;
+        private readonly IMediator _mediator;
 
-        public DemoController(IDemoService demoService)
+        public DemoController(IDemoService demoService, IMediator mediator)
         {
             _demoService = demoService;
+            _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [EnableRateLimiting(RateLimiterPolicies.DEMO_LOGIN_QUOTA)]
         public async Task<ActionResult<AuthenticatedUser>> Login()
@@ -37,11 +44,20 @@ namespace markit.API.Controllers.Security
             ));
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("status")]
         public async Task<ActionResult<DemoStatus>> GetStatus()
         {
             return Ok(await _demoService.GetStatusAsync());
+        }
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
+        [HttpGet]
+        [Route("settings")]
+        public async Task<ActionResult<DemoSettings>> GetSettings()
+        {
+            return Ok(await _mediator.Send(new GetDemoSettingsQuery()));
         }
 
         private IReadOnlyList<string> GetUserRolesFromClaims()
