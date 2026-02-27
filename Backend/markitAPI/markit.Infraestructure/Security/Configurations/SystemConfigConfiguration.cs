@@ -1,4 +1,5 @@
-﻿using markit.Application.Models.Settings;
+﻿using markit.Application.Common.Helpers;
+using markit.Application.Models.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static markit.Application.Helpers.GeneralConstant;
@@ -16,14 +17,15 @@ namespace markit.Infraestructure.Security.Configurations
         {
             SystemConfig isDemoEnabled = ConstructSetting(
                 key: SystemConfigKeys.IS_DEMO_ENABLED_KEY,
-                value: "false",
-                description: "Configuration that toggles the demo features of the app."
+                value: "false"
             );
             builder.HasData(isDemoEnabled);
         }
 
-        private static SystemConfig ConstructSetting(string key, string value, string description)
+        private static SystemConfig ConstructSetting(string key, string value)
         {
+            string description = Utilities.GetSystemConfigDescription(key)
+                ?? throw new InvalidOperationException($"No description found for system config key: {key}");
             return new SystemConfig()
             {
                 Id = key,

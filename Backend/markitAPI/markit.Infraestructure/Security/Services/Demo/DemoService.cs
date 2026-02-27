@@ -101,11 +101,7 @@ namespace markit.Infraestructure.Security.Services.Demo
 
         private async Task DisableDemoModeAsync()
         {
-            string key = SystemConfigKeys.IS_DEMO_ENABLED_KEY;
-            SystemConfig isDemoEnabledSetting = await _settingsService.GetAsync(key)
-                ?? throw new NotFoundException("SystemConfigs", key);
-            isDemoEnabledSetting.Value = "false";
-            await _settingsService.UpdateAsync(isDemoEnabledSetting);
+            await _settingsService.UpdateAsync(SystemConfigKeys.IS_DEMO_ENABLED_KEY, "false");
             CreateInformationLogEntry(DEMO_MODE_DISABLED_MESSAGE);
         }
 
