@@ -1,8 +1,8 @@
 ﻿using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Helpers;
-using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
 using System.Text.RegularExpressions;
+using static markit.Application.Helpers.GeneralConstant;
 
 
 namespace markit.Application.Common.Helpers
@@ -52,6 +52,17 @@ namespace markit.Application.Common.Helpers
             }
 
             return path;
+        }
+
+        public static string? GetSystemConfigDescription(string key)
+        {
+            return key switch
+            {
+                SystemConfigKeys.IS_DEMO_ENABLED_KEY => "Configuration that toggles the demo features of the app.",
+                SystemConfigKeys.DEMO_USER_ID_KEY => "The ID of the user designated for demo purposes.",
+                SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY => "The validity period (in minutes) for the demo access token.",
+                _ => null
+            };
         }
     }
 }

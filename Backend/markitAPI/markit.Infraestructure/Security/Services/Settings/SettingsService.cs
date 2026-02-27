@@ -12,9 +12,9 @@ namespace markit.Infraestructure.Security.Services.Settings
     {
         private readonly MarkitDbContext _context;
         private readonly IMemoryCache _cache;
-        private const int CACHE_EXPIRE_IN_HOURS = 1;
+        private readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromHours(1);
         private const string DEMO_SETTINGS_CACHE_KEY = "demo_settings";
-        private const string DEMO_KEY_PREFIX = "Demo:";
+        private const string DEMO_KEY_PREFIX = "Demo";
 
         public SettingsService(MarkitDbContext context, IMemoryCache cache)
         {
@@ -44,7 +44,7 @@ namespace markit.Infraestructure.Security.Services.Settings
             _cache.Set(
                 key: DEMO_SETTINGS_CACHE_KEY,
                 value: result.AsReadOnly(),
-                absoluteExpirationRelativeToNow: TimeSpan.FromHours(CACHE_EXPIRE_IN_HOURS)
+                absoluteExpirationRelativeToNow: _defaultCacheExpiration
             );
             return result;
         }
@@ -63,7 +63,7 @@ namespace markit.Infraestructure.Security.Services.Settings
                     _cache.Set(
                         key,
                         value,
-                        absoluteExpirationRelativeToNow: TimeSpan.FromHours(CACHE_EXPIRE_IN_HOURS)
+                        absoluteExpirationRelativeToNow: _defaultCacheExpiration
                     );
                 }
             }
@@ -71,22 +71,78 @@ namespace markit.Infraestructure.Security.Services.Settings
             return value;
         }
 
-        public async Task UpdateAsync(SystemConfig config)
+        public async Task AddAsync(SystemConfig config)
         {
-            SystemConfig existing = await GetAsync(config.Id)
-                ?? throw new NotFoundException("SystemConfigs", config.Id);
+            _context.Add(config);
+            await _context.SaveChangesAsync();
+            InvalidateGroupCache(GetKeyPrefix(config.Id));
+        }
 
-            existing.Value = config.Value;
-            existing.Description = config.Description;
-            _context.Update(existing);
+        public async Task AddRangeAsync(IEnumerable<SystemConfig> configs)
+        {
+            if (configs == null || !configs.Any()) return;
+            _context.AddRange(configs);
+            await _context.SaveChangesAsync();
+            foreach (string prefix in configs.Select(c => GetKeyPrefix(c.Id)).Distinct())
+            {
+                InvalidateGroupCache(GetKeyPrefix(prefix));
+            }
+        }
+
+        public async Task UpdateAsync(string key, string value)
+        {
+            SystemConfig existing = await GetAsync(key)
+                ?? throw new NotFoundException("SystemConfigs", key);
+
+            existing.Value = value;
+            await _context.SaveChangesAsync();
 
             // Invalidate the cache so the next request pulls the fresh DB data.
-            _cache.Remove(config.Id);
-            if (config.Id.Contains(DEMO_KEY_PREFIX)) {
-                _cache.Remove(DEMO_SETTINGS_CACHE_KEY);
+            InvalidateCache(key: key);
+            InvalidateGroupCache(GetKeyPrefix(key));
+        }
+
+        public async Task UpdateRangeAsync(IEnumerable<SystemConfig> configs)
+        {
+            if (configs == null || !configs.Any()) return;
+            _context.UpdateRange(configs);
+            await _context.SaveChangesAsync();
+
+            foreach (SystemConfig config in configs)
+            {
+                InvalidateCache(config.Id);
             }
 
-            await _context.SaveChangesAsync();
+            foreach (string prefix in configs.Select(c => GetKeyPrefix(c.Id)).Distinct())
+            {
+                InvalidateGroupCache(GetKeyPrefix(prefix));
+            }
+        }
+
+        private void InvalidateCache(string key)
+        {
+            _cache.Remove(key);
+        }
+
+        private void InvalidateGroupCache(string prefix)
+        {
+            string? groupKey = GetGroupCacheKey(prefix);
+            if (groupKey != null) InvalidateCache(groupKey);
+        }
+
+        private static string GetKeyPrefix(string key)
+        {
+            int colonIndex = key.IndexOf(':');
+            return colonIndex != -1 ? key[..colonIndex] : key;
+        }
+
+        private static string? GetGroupCacheKey(string prefix)
+        {
+            return prefix switch
+            {
+                DEMO_KEY_PREFIX => DEMO_SETTINGS_CACHE_KEY,
+                _ => null
+            };
         }
     }
 }

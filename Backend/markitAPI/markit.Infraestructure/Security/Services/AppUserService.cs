@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace markit.Infraestructure.Security.Services
 {

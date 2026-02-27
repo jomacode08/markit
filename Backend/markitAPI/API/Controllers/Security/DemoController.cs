@@ -1,4 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication.Demo;
+using markit.Application.Features.Settings.Commands.UpdateDemoSettings;
 using markit.Application.Features.Settings.Queries;
 using markit.Application.Features.Settings.Queries.ViewModels;
 using markit.Application.Models.Authentication;
@@ -58,6 +59,14 @@ namespace markit.API.Controllers.Security
         public async Task<ActionResult<DemoSettings>> GetSettings()
         {
             return Ok(await _mediator.Send(new GetDemoSettingsQuery()));
+        }
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
+        [HttpPut]
+        [Route("settings")]
+        public async Task<ActionResult<DemoSettings>> UpdateSettings([FromBody] UpdateDemoSettingsCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
 
         private IReadOnlyList<string> GetUserRolesFromClaims()
