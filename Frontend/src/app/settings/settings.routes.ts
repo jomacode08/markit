@@ -21,6 +21,15 @@ export const SETTINGS_ROUTES: Routes = [
                 loadComponent: () =>
                     import('./pages/account-list/account-list.component')
                     .then(c => c.AccountListComponent)
+            },        
+            {
+                path: 'demo',
+                title: `Demo`,
+                canActivate: [hasRoleActivateGuard([AuthRole.ADMIN])],
+                canMatch: [hasRoleMatchGuard([AuthRole.ADMIN])],
+                loadComponent: () =>
+                    import('./pages/demo-form/demo-form.component')
+                    .then(c => c.DemoFormComponent)
             }        
         ]
     },

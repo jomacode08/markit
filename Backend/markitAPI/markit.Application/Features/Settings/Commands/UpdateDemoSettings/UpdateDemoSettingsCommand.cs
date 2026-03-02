@@ -122,7 +122,7 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
 
             if (!roles.Contains(Role.DEMO_NAME) || roles.Count != 1 || !user.Enabled)
             {
-                throw new CustomValidationException("The provided demo user is not available or invalid.");
+                throw new CustomValidationException("The provided demo user is not available or is invalid.");
             }
         }
     }
