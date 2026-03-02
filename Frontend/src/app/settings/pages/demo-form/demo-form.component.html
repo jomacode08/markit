@@ -1,0 +1,66 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Is Enabled -->
+    <div class="form-field">
+        <div>
+            <label for="isEnabled">Enabled</label>
+            <p class="form-description">Turn this on to enable the demo features of the app. It will allow users to authenticate using the configured demo user in a period of time.</p>
+        </div>
+        <p-toggleButton 
+            id="isEnabled"
+            formControlName="isEnabled"
+            onLabel="Yes" 
+            offLabel="No"
+        />
+    </div>
+    <!-- User Id -->
+    <div class="form-field">
+        <div>
+            <label for="userId">User ID</label>
+            <p class="form-description">The ID of the user designated for demo purposes.</p>
+        </div>
+        <div>
+            <input
+                id="userId"
+                pInputText
+                formControlName="userId"
+                maxlength="100"
+                autocomplete="off"
+                [class.invalid]="isInvalidField('userId')"
+            />
+            @if (isInvalidField('userId')) {
+                <shared-error-field [validationField]="getValidationField('userId', 'masc', 'user ID')" />
+            }
+        </div>
+    </div>
+    <!-- Token duration -->
+    <div class="form-field">
+        <div>
+            <label for="tokenDurationInMinutes">Token duration</label>
+            <p class="form-description">The validity period (in minutes) for the demo access token.</p>
+        </div>
+        <div>
+            <p-inputNumber
+                inputStyleClass="w-full"
+                inputId="tokenDurationInMinutes"
+                formControlName="tokenDurationInMinutes"
+                autocomplete="off"
+                [class.invalid]="isInvalidField('tokenDurationInMinutes')"
+            />
+            @if (isInvalidField('tokenDurationInMinutes')) {
+                <shared-error-field [validationField]="getValidationField('tokenDurationInMinutes', 'masc', 'token duration')" />
+            }
+        </div>
+    </div>
+
+    <!-- Submit button -->
+     <div class="flex md:justify-content-end">
+         <div class="w-full md:w-10rem">
+             <shared-general-button
+                 severity="secondary"
+                 label="Save changes"
+                 [submit]="true"
+                 [disabled]="isSubmitting()"
+             ></shared-general-button>
+         </div>
+     </div>
+</form>

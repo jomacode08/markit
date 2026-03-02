@@ -17,6 +17,11 @@ export class SettingsLayoutComponent {
         label: 'Accounts',
         icon: 'fa-solid fa-users',
         routerLink: ROUTES.ACCOUNTS,
-      }
+      },
+      {
+        label: 'Demo',
+        icon: 'fa-solid fa-flask',
+        routerLink: ROUTES.DEMO_FORM,
+      },
     ];
 }

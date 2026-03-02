@@ -16,6 +16,7 @@ export const ROUTES = {
     RECENT: '/workplace/recent',
     // Settings
     ACCOUNTS: '/settings/accounts',
+    DEMO_FORM: '/settings/demo',
     // Others
     NOT_FOUND: '/not-found',
     ERROR: '/error',

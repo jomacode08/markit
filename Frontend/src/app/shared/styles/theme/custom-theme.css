@@ -68,6 +68,9 @@ input {
   font-size: .85rem;
   outline: none;
 }
+.p-inputnumber {
+  width: 100%;
+}
 
 /** MultiSelect **/
 .p-multiselect {
@@ -112,6 +115,9 @@ input {
 .p-multiselect-items
 .p-multiselect-item:not(.p-highlight):not(.p-disabled):hover {
   background-color: var(--surface-2);
+}
+.p-element.p-inputwrapper {
+  width: 100%;
 }
 .p-element.p-inputwrapper.invalid .p-multiselect {
   border-color: var(--red-600);

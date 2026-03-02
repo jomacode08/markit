@@ -1,0 +1,16 @@
+.form-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: .25rem;
+}
+
+.form-description {
+  font-size: .85rem;
+  color: var(--text-secondary);
+  margin: .5rem 0 0 0;
+}
