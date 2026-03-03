@@ -33,6 +33,13 @@ export class AuthService {
       tap((authUser) => this.setAuthentication(authUser))
     );
   }
+
+  public demo(): Observable<AuthenticatedUser> {
+    return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/demo`, {})
+    .pipe(
+      tap((authUser) => this.setAuthentication(authUser))
+    );
+  }
   
   public logout(): void {
     this.logoutFromApi().subscribe(() => {

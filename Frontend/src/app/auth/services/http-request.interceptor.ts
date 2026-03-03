@@ -43,7 +43,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       catchError((httpError: HttpErrorResponse) => {
         // Mapping httpError
         const error = httpError.error as ErrorException;
-        const statusCode = error ? error.statusCode : httpError.status;
+        const statusCode = error?.statusCode ?? httpError.status;
 
         // Show error in console for develop environment
         if (environment.production === 'true') {
@@ -78,6 +78,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
             this.showErrorMessage(this.GENERAL_ERROR_MESSAGE);
             break;
 
+          case HttpStatusCode.TooManyRequests: {
+            this.showErrorMessage(error?.message ?? 'Too many requests. Please try again later.');
+            break;
+          }
           default:
           {
             this.showErrorMessage(error.message ?? this.GENERAL_ERROR_MESSAGE);

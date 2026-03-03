@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -18,6 +18,7 @@ import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
 import { firstValueFrom } from 'rxjs';
+import { DemoService } from '../../../settings/services/demo.service';
 
 @Component({
   selector: 'app-login',
@@ -34,8 +35,10 @@ import { firstValueFrom } from 'rxjs';
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent extends ValidatorErrorField {  
-  public submit = signal<boolean>(false);
+export class LoginComponent extends ValidatorErrorField implements OnInit {  
+  protected submit = signal<boolean>(false);
+  protected isDemoAvailable = signal<boolean>(false);
+
   public form : FormGroup<{
     email    : FormControl<string>,
     password : FormControl<string>
@@ -53,12 +56,17 @@ export class LoginComponent extends ValidatorErrorField {
     private popupService : PopupService,
     private router : Router,
     private validator : ValidatorService,
+    private demoService: DemoService,
   ) {
     super()
     this.form = this.fb.nonNullable.group({
       email    : ['', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validator.emailPattern)]],
       password : ['', Validators.required]
     });
+  }
+
+  public ngOnInit(): void {
+    this.checkDemoStatus();
   }
 
   //* Events
@@ -77,6 +85,15 @@ export class LoginComponent extends ValidatorErrorField {
 
   public onGithubLogin(): void {
     this.openAuthPopUp(LoginProvider.GitHub);
+  }
+
+  public onTryDemo(): void {
+    this.setSubmit(true);
+    this.authService.demo()
+    .subscribe({
+        next : () => this.confirmSession(),
+        error : () => this.setSubmit(false)
+    });
   }
 
   //* Methods
@@ -127,5 +144,13 @@ export class LoginComponent extends ValidatorErrorField {
 
   private setSubmit(state: boolean): void {
     this.submit.set(state)
+  }
+
+  private checkDemoStatus(): void {
+    this.demoService.getStatus()
+    .subscribe({
+      next: (status) => this.isDemoAvailable.set(status.available),
+      error: () => this.isDemoAvailable.set(false)
+    });
   }
 }

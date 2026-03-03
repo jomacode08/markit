@@ -86,7 +86,19 @@
                         [disabled]="submit()"
                         (click)="onGithubLogin()"
                     ></shared-general-button>
-                </div>
+                    </div>
+                    <!-- Demo Button -->
+                    @if (isDemoAvailable()) {
+                    <div class="col-12">
+                        <shared-general-button
+                            severity="success"
+                            label="Try Demo"
+                            icon="fa-solid fa-flask"
+                            [disabled]="submit()"
+                            (click)="onTryDemo()"
+                        ></shared-general-button>
+                    </div>
+                }
             </div>
         </footer>
     </article>
