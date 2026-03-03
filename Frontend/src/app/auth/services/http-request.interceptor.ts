@@ -46,7 +46,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         const statusCode = error?.statusCode ?? httpError.status;
 
         // Show error in console for develop environment
-        if (environment.production === 'true') {
+        if (!environment.production) {
           console.log(httpError);
         }
 
