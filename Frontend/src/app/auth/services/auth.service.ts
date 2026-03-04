@@ -48,7 +48,7 @@ export class AuthService {
     this.logoutFromApi()
     .pipe(
       finalize(() => this.invalidateSession())
-    );
+    ).subscribe();
   }
 
   public isAuthenticated(): Observable<boolean> {
