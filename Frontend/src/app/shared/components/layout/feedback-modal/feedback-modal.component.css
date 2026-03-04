@@ -1,0 +1,69 @@
+:host {
+  display: block;
+}
+
+.modal {
+  padding: 2.5rem 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.header, .body {
+  margin-bottom: 2rem;
+  background-color: transparent;
+}
+
+.footer {
+  border-top: 1px dashed var(--border-color);
+}
+
+.icon-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.icon-box div.icon {
+  position: relative;
+  border: 1px solid var(--highlight-border-purple);
+  padding: 1rem;
+  border-radius: .75rem;
+  background-color: var(--highlight-surface-purple);
+}
+.circle {
+  position: absolute;
+  padding: 5px;
+  border-radius: 50%;
+  bottom: -5px;
+}
+.circle.inner {
+  background-color: var(--accent-color);
+  right: 5px;
+}
+.circle.outer {
+  background-color: var(--highlight-border-purple);
+  right: -8px;
+}
+.title {
+  color: var(--text-primary);
+  text-align: center;
+}
+.header-message {
+  color: var(--text-secondary);
+  text-align: center;
+}
+.transparent-box {
+  padding: 1rem;
+  display: flex;
+  background-color: var(--highlight-surface-purple);
+  gap: 1rem;
+  border: 1px solid var(--highlight-border-purple);
+  border-radius: .5rem;
+  color: var(--text-primary);
+}
+.accent-text {
+  color: var(--accent-color);
+}
+.footer-message {
+  font-size: .85rem;
+  color: var(--text-secondary);
+  margin: .5rem 0;
+}

@@ -1,4 +1,4 @@
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, tap } from 'rxjs';
 import { computed, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,8 @@ import { AuthStatus } from '../interfaces/auth-status.enum';
 import { AuthenticatedUser } from '../interfaces/auth-user';
 import { ISAUTHENTICATED_STORAGE_KEY, MARKS_STORAGE_KEY } from '../../shared/utils/constant';
 import { SignInMethods } from '../interfaces/signin-methods';
+import { AuthRole } from '../interfaces/auth-role.enum';
+import { CustomMessageService } from '../../shared/services/custom-message.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -24,6 +26,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private messageService: CustomMessageService,
   ) 
   {}
 
@@ -42,10 +45,10 @@ export class AuthService {
   }
   
   public logout(): void {
-    this.logoutFromApi().subscribe(() => {
-      this.unsetAuthentication();
-      this.router.navigate(['auth']);
-    });
+    this.logoutFromApi()
+    .pipe(
+      finalize(() => this.invalidateSession())
+    );
   }
 
   public isAuthenticated(): Observable<boolean> {
@@ -62,6 +65,7 @@ export class AuthService {
   }
 
   public invalidateSession(): void {
+    if (this.isUserDemo()) this.messageService.showFeedbackDialog();
     this.unsetAuthentication();
     this.router.navigate(['auth']);
   }
@@ -97,4 +101,6 @@ export class AuthService {
   private setAuthFlag(isAuthenticated: boolean) {
     localStorage.setItem(ISAUTHENTICATED_STORAGE_KEY, isAuthenticated ? 'true' : 'false');
   }
+
+  private isUserDemo = () => this._currentUser()?.roles.includes(AuthRole.DEMO) ?? false;
 }

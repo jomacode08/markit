@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { CustomMessage, MessageType } from '../interfaces/message/custom-message.interface';
 import { CustomConfirmDialog } from '../interfaces/message/custom-confirm-dialog.interface';
+import { FeedbackModalComponent } from '../components/layout/feedback-modal/feedback-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ export class CustomMessageService {
 
   constructor(
     private toastService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private dialogService: DialogService,
   ) { }
 
   public showCustom(message: CustomMessage): void {
@@ -69,6 +72,16 @@ export class CustomMessageService {
       reject: () => {
         if (confirm.reject) confirm.reject();
       }
+    });
+  }
+
+  public showFeedbackDialog(): DynamicDialogRef {
+    return this.dialogService.open(FeedbackModalComponent, {
+      width: '30rem',
+      modal: true,
+      closable: true,
+      dismissableMask: true,
+      styleClass: 'custom-dialog',
     });
   }
 }

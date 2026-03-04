@@ -28,6 +28,9 @@ inputs:
   api_url:
     description: 'The configured url of the api'
     required: true
+  contact_email:
+    description: 'Email for contact or support'
+    required: true
 
 runs:
   using: "composite"
@@ -65,6 +68,7 @@ runs:
       env:
         production: ${{ inputs.env_name == 'production' || inputs.env_name == 'staging' }}
         baseApiUrl: ${{ inputs.api_url }}
+        contactEmail: ${{ inputs.contact_email }}
 
     - name: Install pnpm
       uses: pnpm/action-setup@v4

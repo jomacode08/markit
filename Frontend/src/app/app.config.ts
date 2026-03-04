@@ -8,6 +8,7 @@ import { HttpRequestInterceptor } from './auth/services/http-request.interceptor
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TemplatePageTitleStrategy } from './shared/utils/template-page-title-strategy';
 import { AuthService } from './auth/services/auth.service';
+import { DialogService } from 'primeng/dynamicdialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,6 +38,7 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },
     MessageService,
-    ConfirmationService
+    ConfirmationService,
+    DialogService,
   ]
 };

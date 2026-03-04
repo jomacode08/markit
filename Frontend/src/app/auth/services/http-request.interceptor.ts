@@ -15,11 +15,14 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   constructor(
     private injector: Injector,
     private router: Router,
-    private toast: CustomMessageService,
+    private messageService: CustomMessageService
   ) {}
 
   private readonly GENERAL_ERROR_MESSAGE = "Something went wrong, we keep track of this error, but feel free to contact us if refreshing doesn't fix things.";
+  private readonly TOO_MANY_REQUESTS_ERROR_MESSAGE = "Too many requests. Please try again later.";
   private readonly TOKEN_REFRESH_ENDPOINT = 'auth/token/refresh';
+  private readonly DEMO_ENDPOINT = 'auth/demo';
+
   private isRefreshing : boolean = false;
   private refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
 
@@ -62,7 +65,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           }
 
           case HttpStatusCode.BadRequest: {
-            this.showValidationMessage(error.errors);
+            if (error?.errors) this.showValidationMessage(error.errors);
             break;
           }
 
@@ -79,7 +82,8 @@ export class HttpRequestInterceptor implements HttpInterceptor {
             break;
 
           case HttpStatusCode.TooManyRequests: {
-            this.showErrorMessage(error?.message ?? 'Too many requests. Please try again later.');
+            if (request.url.includes(this.DEMO_ENDPOINT)) this.messageService.showFeedbackDialog();
+            this.showErrorMessage(error?.message ?? this.TOO_MANY_REQUESTS_ERROR_MESSAGE);
             break;
           }
           default:
@@ -89,7 +93,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           }
         }
         
-        return throwError(() => new Error(error.message));
+        return throwError(() => new Error(error.message ?? httpError.message));
       })
     );
   }
@@ -145,7 +149,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       title: 'Please verify:',
       message: messageBody
     };
-    this.toast.showCustom(message);
+    this.messageService.showCustom(message);
   }
 
   private showValidationMessage(validations: ValidationError): void {
@@ -154,6 +158,6 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       title: 'Please verify:',
       validations: validations
     };
-    this.toast.showValidations(message);
+    this.messageService.showValidations(message);
   }
 }

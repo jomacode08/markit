@@ -35,6 +35,7 @@ jobs:
           vps_project_path: ${{ secrets.VPS_PROJECT_PATH }}
           vps_systemctl_name: ${{ secrets.VPS_SYSTEMCTL_NAME }}
           api_url: ${{ vars.BASE_API_URL }}
+          contact_email: ${{ vars.CONTACT_EMAIL }}
 
   # --- PRODUCTION: Runs only when manually triggered ---
   deploy-production:
