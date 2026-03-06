@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ROUTES } from '../../utils/constant';
 
 @Component({
   selector: 'app-unauthorized',
@@ -11,8 +12,8 @@ import { RouterLink } from '@angular/router';
         <h1>401</h1>
         <h2>Unauthorized Access</h2>
         <p>You don't have permission to access this resource.</p>
-        <button routerLink="/auth/login">
-          Go to Login
+        <button [routerLink]="HOME_ROUTE">
+          Go to Home
         </button>
       </div>
     </div>
@@ -74,4 +75,6 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class UnauthorizedComponent { }
+export class UnauthorizedComponent {
+  protected readonly HOME_ROUTE : string = ROUTES.HOME_URL;
+}
