@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, EventEmitter, input, OnDestroy, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { DataViewModule } from 'primeng/dataview';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { CollectionItem, CollectionItemAction, CollectionItemType } from '../../interfaces/collection-item';
 import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
@@ -27,6 +29,7 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
     DataViewModule,
     FloatingMenuComponent,
     IntersectionDirective,
+    ProgressSpinnerModule,
     TimeAgoPipe,
   ],
   providers: [DialogService],
@@ -74,7 +77,8 @@ export class CollectionItemDataViewComponent implements OnDestroy {
       }
     },
   ];
-  
+   
+  public displaySpinner = signal<boolean>(false);
   public currentItems = computed(() => signal(this.items()));
   public menuTarget ?: CollectionItem;
   public dialogReference ?: DynamicDialogRef;
@@ -87,8 +91,13 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     private collectionItemActionService: CollectionItemActionService,
     private dialogService : DialogService,
     private messageService : CustomMessageService,
-    private router : Router,
-  ) {}
+    private router : Router
+  ) {
+    toObservable(this.loading).pipe(
+      takeUntilDestroyed(),
+      debounceTime(300)
+    ).subscribe((state) => this.displaySpinner.set(state));
+  }
 
   public ngOnDestroy(): void {
     if (this.dialogReference) this.dialogReference.destroy();
