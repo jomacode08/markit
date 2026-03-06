@@ -34,7 +34,7 @@ export class SigninMethodsComponent {
   private refresTrigger$ = new Subject<void>();
   public signInMethods$ : Observable<SignInMethods>;
   public currentEmail : string | undefined;
-  public submibt = signal<boolean>(false);
+  public isSubmit = signal<boolean>(false);
 
   constructor(
     private authService: AuthService,
@@ -64,6 +64,9 @@ export class SigninMethodsComponent {
       message: CONFIRMATION_MESSAGE,
       accept: () => {
         this.removeLogin(loginProvider);
+      },
+      reject: () => {
+        this.setSubmit(false);
       }
     });
   }
@@ -112,6 +115,6 @@ export class SigninMethodsComponent {
     });
   }
 
-  private setSubmit = (state: boolean) => this.submibt.update(() => state);
+  private setSubmit = (state: boolean) => this.isSubmit.update(() => state);
   private refreshSignInMethods = () => this.refresTrigger$.next();
 }

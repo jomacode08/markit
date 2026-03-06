@@ -53,14 +53,14 @@
                         <shared-general-button
                             label="Remove"
                             severity="danger"
-                            [disabled]="submibt()"
+                            [disabled]="isSubmit()"
                             (click)="onRemoveLogin(externalMethod)"
                         />
                     }@else {                        
                         <shared-general-button
                             label="Configure"
                             severity="secondary"
-                            [disabled]="submibt()"
+                            [disabled]="isSubmit()"
                             (click)="onConfigureLogin(externalMethod)"
                         />
                     }
