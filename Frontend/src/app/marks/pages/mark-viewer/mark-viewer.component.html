@@ -26,7 +26,7 @@
                 <!-- Navigators -->
                  <block-navigator
                     [blockIndex]="currentBlockIndex()"
-                    [blocksLength]="currentMark().blocks.length"
+                    [blocks]="currentMark().blocks"
                     (positionChanged)="modifyActiveBlock($event)"
                  />
                 <!-- New block button -->

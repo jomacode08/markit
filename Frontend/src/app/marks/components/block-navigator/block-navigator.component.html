@@ -1,8 +1,8 @@
 <button
     type="button"
     aria-label="Navigate to left"
-    pTooltip="Go to left"
     tooltipPosition="top"
+    [pTooltip]="previousBlockName()"
     [disabled]="blockIndex() === 0"
     (click)="onNavigateBackwardBtnClick()"
 >
@@ -11,9 +11,9 @@
 <button
     type="button"
     aria-label="Navigate to right"
-    pTooltip="Go to right"
     tooltipPosition="top"
-    [disabled]="blockIndex() === blocksLength() - 1"
+    [pTooltip]="nextBlockName()"
+    [disabled]="blockIndex() === blocks().length - 1"
     (click)="onNavigateForwardBtnClick()"
 >
     <span class="fa-solid fa-angle-right"></span>
