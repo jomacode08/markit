@@ -14,7 +14,7 @@ input {
   border: none;
   width: 100%;
   padding: 0.5rem;
-  background-color: var(--surface-1);
+  background-color: var(--paper-bg);
   color: var(--text-primary);
 }
 
@@ -31,10 +31,6 @@ input {
 }
 #addBlockBtn:hover {
   color: var(--text-primary);
-  span {
-    transition: 0.3s all ease;
-    color: var(--green-400)
-  }
 }
 
 .block-item {
@@ -44,8 +40,9 @@ input {
   gap: 1rem;
   padding: 0.5rem;
   margin-bottom: .5rem;
-  transition: 0.3s all ease;
   border-radius: .5rem;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease-in-out;
 }
 .block-item.active {
   border: 1px solid var(--border-color);
@@ -60,7 +57,7 @@ input {
 
 #addBlockBtn:hover, .block-item:hover {
   cursor: pointer;
-  background-color: var(--surface-1);
+  border-color: var(--border-color);
 }
 
 button.block-info {

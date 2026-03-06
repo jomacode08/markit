@@ -139,7 +139,7 @@ export class BlockMenuComponent implements OnInit {
   private removeBlockByIndex( blockIndex: number ): void {
     this.blocks.update(current => {
       current.splice(blockIndex, 1);
-      return current;
+      return [...current];
     });
   }
 

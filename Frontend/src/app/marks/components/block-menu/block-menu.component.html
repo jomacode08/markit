@@ -30,12 +30,24 @@
             }
             <!-- Action buttons -->
             <div class="block-buttons">
-                <p-button
-                    styleClass="w-2rem p-0 border-none text-secondary"
-                    [pTooltip]="block.editable ? 'Save' : 'Update'"
-                    [icon]="block.editable ? 'fa fa-check' : 'fa fa-pencil'"
-                    (onClick)="onUpdateBlockButtonClick($index)"
-                />
+                @if (block.editable) {
+                    <!-- Save Button -->
+                    <p-button
+                        styleClass="w-2rem p-0 border-none text-green-400"
+                        [pTooltip]="'Save'"
+                        [icon]="'fa fa-check'"
+                        (onClick)="onUpdateBlockButtonClick($index)"
+                    />
+                } @else {
+                    <!-- Edit Button -->
+                    <p-button
+                        styleClass="w-2rem p-0 border-none text-secondary"
+                        [pTooltip]="'Update'"
+                        [icon]="'fa fa-pencil'"
+                        (onClick)="onUpdateBlockButtonClick($index)"
+                    />
+                }
+                <!-- Delete Button -->
                 <p-button
                     styleClass="w-2rem p-0 border-none text-secondary"
                     icon="fa fa-trash"
@@ -53,7 +65,7 @@
         aria-label="Add block"
         (click)="onAddBlockButtonClick()"
     >
-        <span class="fa fa-plus mr-2"></span>Add block
+        <span class="fa fa-plus mr-2 text-green-400"></span>Add block
     </button>
 </div>
 <!-- Footer -->
@@ -74,7 +86,7 @@
             [disabled]="!canSaveChanges()"
             (click)="onSaveChangesButtonClick()"
         >
-            Save
+            Confirm
         </button>
     </div>
 </div>
