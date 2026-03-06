@@ -2,9 +2,10 @@
     #sidebar
     id="floating-menu"
     position="bottom"
-    modal="false"
     showCloseIcon="false"
-    [visible]="isSideBarVisible()"
+    [modal]="dismissible()"
+    [dismissible]="dismissible()"
+    [(visible)]="isSideBarVisible"
 >
     <ng-template pTemplate="header">
         <!-- Close button -->

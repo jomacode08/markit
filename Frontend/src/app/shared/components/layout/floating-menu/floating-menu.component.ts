@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal, ViewChild } from '@angular/core';
+import {  Component, computed, input, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Sidebar,SidebarModule } from 'primeng/sidebar';
@@ -21,10 +21,11 @@ export class FloatingMenuComponent {
 
   //* Reactive Inputs
   public options = input.required<FloatingMenuOption[]>();
+  public dismissible = input<boolean>(false);
 
   //* Configuration 
+  public isSideBarVisible : boolean = false;
   public isBackButtonVisible: boolean = false;
-  public isSideBarVisible = signal<boolean>(false);
   public currentOptions = computed(() => signal(this.options()));
 
   public onOptionClick( option: FloatingMenuOption ): void {
@@ -45,7 +46,7 @@ export class FloatingMenuComponent {
   }
 
   public toggle(): void {
-    this.isSideBarVisible.update(state => !state);
+    this.isSideBarVisible = !this.isSideBarVisible;
   }
 
   public getColorStyleDeclaration( color?: string ): string {

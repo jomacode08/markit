@@ -80,7 +80,7 @@ a {
         width: calc(100vw - var(--main-bar-width-md));
     }
     .wrapper-floating-button {
-      z-index: 1103;
+      z-index: 1200;
       right: 2.5rem !important;
       bottom: 2.5rem !important;
     }

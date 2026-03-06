@@ -468,9 +468,6 @@ button {
   border: 0 none;
   padding: 0;
 }
-.p-component-overlay {
-  background-color: rgb(18, 18, 18, 0.4) !important;
-}
 
 /** Chips */
 .p-chip {
@@ -521,6 +518,12 @@ button {
 .p-overlaypanel.p-overlaypanel-flipped:after,
 .p-overlaypanel.p-overlaypanel-flipped:before {
   display: none !important;
+}
+.p-dialog-mask.p-component-overlay {
+  background-color: rgb(18, 18, 18, 0.4) !important;
+}
+.p-sidebar-mask.p-component-overlay {
+  background-color: rgb(0,0,0, 0) !important;
 }
 
 /** Panel **/
