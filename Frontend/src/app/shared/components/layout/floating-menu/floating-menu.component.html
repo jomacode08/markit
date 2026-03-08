@@ -41,13 +41,13 @@
                     <!-- Icon -->
                     <span
                         [class]="option.icon"
-                        [ngClass]="{ 'active' : option.isActive?.() ?? false }"
+                        [ngClass]="{ 'active' : (option.isActive?.() && !option.color) }"
                         [style]="getColorStyleDeclaration(option.color)"
                     ></span>
                     <!-- Label -->
                     <span 
                         class="label"
-                        [ngClass]="{'font-semibold' : option.isActive?.() ?? false }"
+                        [ngClass]="{'font-semibold' : option.isActive?.() }"
                     >
                         {{ option.label }}
                     </span>
