@@ -57,11 +57,14 @@ namespace markit.Infraestructure.Security.Services
 
         public async Task LogoutAsync(AppUser user, HttpContext context)
         {
+            bool isDemo = await IsDemoUser(user);
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-            await _externalTokenService.ClearShortLivedAsync(user.Id);
+
+            if (!isDemo) await _externalTokenService.ClearShortLivedAsync(user);
             await _jwtService.RevokeAsync(user);
             context.Response.Cookies.Delete(Token.ACCESS_TOKEN_NAME);
             context.Response.Cookies.Delete(Token.REFRESH_TOKEN_NAME);
+
             scope.Complete();
         }
 
@@ -75,6 +78,11 @@ namespace markit.Infraestructure.Security.Services
         {
             TokenModel tokens = await _jwtService.GenerateTokenPairAsync(user);
             _jwtService.SetTokenPairInCookies(tokens, context);
+        }
+
+        private async Task<bool> IsDemoUser(AppUser user)
+        {
+            return await _userManager.IsInRoleAsync(user, Role.DEMO_NAME);
         }
     }
 }

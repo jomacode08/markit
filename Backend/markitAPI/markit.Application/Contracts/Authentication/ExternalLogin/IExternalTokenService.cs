@@ -7,6 +7,6 @@ namespace markit.Application.Contracts.Authentication.ExternalLogin
     public interface IExternalTokenService
     {
         Task StoreAsync(LoginProvider provider, AppUser user, IEnumerable<AuthenticationToken> tokens);
-        Task ClearShortLivedAsync(string userId);
+        Task ClearShortLivedAsync(AppUser user);
     }
 }

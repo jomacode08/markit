@@ -28,10 +28,8 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             _userManager = userManager;
         }
 
-        public async Task ClearShortLivedAsync(string userId)
+        public async Task ClearShortLivedAsync(AppUser user)
         {
-            AppUser user = await _userManager.FindByIdAsync(userId)
-                ?? throw new NotFoundException("Users", userId);
             await _googleApiService.ClearShortLivedTokensAsync(user);
             await _gitHubApiService.ClearShortLivedTokensAsync(user);
         }
