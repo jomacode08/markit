@@ -107,6 +107,13 @@
   }
 
   /** Code Styling */
+  code {
+    background-color: var(--surface-2);
+    border-radius: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.25em 0.3em;
+  }
   pre {
     background: var(--surface-1);
     font-family: 'Fira Code', monospace;
