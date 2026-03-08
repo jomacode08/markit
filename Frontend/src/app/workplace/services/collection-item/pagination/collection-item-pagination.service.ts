@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, finalize, Subject } from 'rxjs';
 
 import { CollectionItem } from '../../../interfaces/collection-item';
 import { environment } from '../../../../../environments/environment';
@@ -44,8 +44,9 @@ export class CollectionItemPaginationService {
   private hasNextPage : boolean = true;
   private isResetEnabled : boolean = false;
   private sortOrder : SortPaginationOrder = SortPaginationOrder.Descending;
+  private items: CollectionItem[] = [];
 
-  private itemsSubject = new BehaviorSubject<CollectionItem[]>([]);
+  private itemsSubject = new Subject<CollectionItem[]>();
   private typeSubject = new BehaviorSubject<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   
@@ -81,8 +82,9 @@ export class CollectionItemPaginationService {
       finalize(() => this.loadingSubject.next(false))
     )
     .subscribe((page) => {
-      const currentItems = this.isResetEnabled ? [] : this.itemsSubject.value;
-      this.itemsSubject.next([...currentItems, ...page.items]);
+      const currentItems = this.isResetEnabled ? [] : this.items;
+      this.items = [...currentItems, ...page.items];
+      this.itemsSubject.next(this.items);
       this.cursor = page.newCursor;
       this.hasNextPage = page.hasNextPage;
       this.isResetEnabled = this.isResetEnabled ? false : this.isResetEnabled;
