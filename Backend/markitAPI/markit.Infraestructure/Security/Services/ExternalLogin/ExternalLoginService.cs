@@ -135,7 +135,11 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                         ?? throw new InvalidOperationException($"Something went wrong with user creation and their email link: {externalUser.Email}");
                     await _userManager.AddLoginAsync(user, loginInfo);
                 }
-                await HandleProviderTokens(loginInfo.AuthenticationTokens, provider, user);
+                await HandleProviderTokens(
+                    providerTokens : [..loginInfo.AuthenticationTokens],
+                    provider,
+                    user
+                );
                 await HandleApiTokenAccess(user, context);
                 scope.Complete();
                 // === Transaction end ===
@@ -168,7 +172,11 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                         // Get and store provider tokens.
                         if (loginInfo.AuthenticationTokens == null)
                             throw new InvalidOperationException("The authentication tokens must be provided by the login provider.");
-                        await HandleProviderTokens(loginInfo.AuthenticationTokens, provider, user);
+                        await HandleProviderTokens(
+                            providerTokens: [..loginInfo.AuthenticationTokens],
+                            provider,
+                            user
+                        );
                         scope.Complete();
                     }
                     return $"{_spaRedirectUrl}?state=success&purpose=link";
@@ -254,11 +262,12 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         }
 
         private async Task HandleProviderTokens(
-            IEnumerable<AuthenticationToken> providerTokens,
+            List<AuthenticationToken> providerTokens,
             LoginProvider provider,
             AppUser user
         )
         {
+            EnsureExpirationToken(providerTokens);
             await _externalTokenService.StoreAsync(provider, user, providerTokens);
         }
 
@@ -283,6 +292,22 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         {
             _logger.LogError($"External login failed: {{Message}}", message);
             return $"{spaRedirectUrl}?state=failure&error={message}";
+        }
+
+        private static void EnsureExpirationToken(List<AuthenticationToken> tokens)
+        {
+            AuthenticationToken? expirationToken = tokens.FirstOrDefault(
+                t => t.Name.Equals(Token.EXPIRES_AT_TOKEN_NAME, StringComparison.OrdinalIgnoreCase)
+            );          
+
+            if (expirationToken is null)
+            {
+                tokens.Add(new AuthenticationToken()
+                {
+                    Name = Token.EXPIRES_AT_TOKEN_NAME,
+                    Value = Token.LONG_LIVED_TOKEN_EXPIRES_AT_VALUE
+                });
+            }
         }
         #endregion
     }

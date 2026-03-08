@@ -50,6 +50,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
             string? expiresAtStr = await GetAsync(EXPIRES_AT_TOKEN_NAME);
             if (string.IsNullOrEmpty(expiresAtStr) || string.IsNullOrEmpty(accessToken))
                 throw new InvalidOperationException("No access token information found");
+            if (expiresAtStr.Equals(LONG_LIVED_TOKEN_EXPIRES_AT_VALUE, StringComparison.OrdinalIgnoreCase)) return false;
 
             if (DateTime.TryParse(expiresAtStr, out var expiresAt))
             {

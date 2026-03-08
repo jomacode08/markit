@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using markit.Application.Exceptions;
 using markit.Application.Contracts.GitHub;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infraestructure.Security.Services.ExternalLogin
 {
@@ -52,10 +53,14 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
 
         public static IEnumerable<AuthenticationToken> ValidateTokens(LoginProvider provider, IEnumerable<AuthenticationToken> authenticationTokens)
         {
-            string[] token_names_to_find = ["access_token", "refresh_token", "expires_at"];
+            string[] tokensToFind = [
+                Token.ACCESS_TOKEN_NAME,
+                Token.REFRESH_TOKEN_NAME,
+                Token.EXPIRES_AT_TOKEN_NAME
+            ];
 
             IEnumerable<AuthenticationToken> foundedTokens = authenticationTokens
-                .Where(t => token_names_to_find.Contains(t.Name));
+                .Where(t => tokensToFind.Contains(t.Name));
 
             if (!foundedTokens.Any())
                 throw new InvalidOperationException($"The tokens weren't provided by the login provider: {provider.GetName()}");
