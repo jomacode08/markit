@@ -9,7 +9,6 @@ using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Settings;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -118,14 +117,16 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             {
                 // Extract external login information.
                 ExternalLoginInfo loginInfo = await GetAndValidateLoginInfoAsync();
-                ExternalUser externalUser = ConstructExternalUserFromClaims(claims: loginInfo.Principal.Claims, loginProvider: provider);
                 if (loginInfo.AuthenticationTokens == null) throw new InvalidOperationException(AUTHENTICATION_TOKENS_NOT_FOUND_ERROR_MESSAGE);
-
                 // Find user by external login.
                 AppUser? user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
                 bool requireAccountLinking = false;
                 if (user is null)
                 {
+                    ExternalUser externalUser = ConstructExternalUserFromClaims(
+                        claims: loginInfo.Principal.Claims,
+                        loginProvider: provider
+                    );
                     // Find user by the email included in claims.
                     user = await _userManager.FindByEmailAsync(externalUser.Email)
                     ?? throw new CustomValidationException(ACCOUNT_DOESNT_EXIST_ERROR_MESSAGE);

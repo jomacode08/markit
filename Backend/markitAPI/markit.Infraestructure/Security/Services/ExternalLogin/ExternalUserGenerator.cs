@@ -48,18 +48,19 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         {
             const string USER_NAME_CLAIM_TYPE = $"{IDENTITY_CLAIM_NAMESPACE}/name";
             const string NAME_CLAIM_TYPE = "urn:github:name";
+            const string DEFAULT_FIRST_NAME = "Markit";
             const string DEFAULT_LAST_NAME = "Creator";
 
             string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
             string? name = GetClaimValue(NAME_CLAIM_TYPE);
             string? userName = GetClaimValue(USER_NAME_CLAIM_TYPE);
 
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(userName)) {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userName)) {
                 throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
             }
 
             return new ExternalUser(
-                FirstName: name,
+                FirstName: name ?? DEFAULT_FIRST_NAME,
                 LastName: DEFAULT_LAST_NAME,
                 email
             );
