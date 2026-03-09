@@ -1,23 +1,21 @@
-﻿using System.Security.Claims;
-using System.Transactions;
-using AutoMapper;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
 using markit.Application.Exceptions;
-using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Settings;
-using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infraestructure.Security.Services.ExternalLogin
@@ -25,8 +23,6 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
     public class ExternalLoginService : IExternalLoginService
     {
         private readonly ILogger<ExternalLoginService> _logger;
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
         private readonly IJwtService _jwtService;
         private readonly IGoogleApiService _googleApiService;
         private readonly IGitHubApiService _gitHubApiService;
@@ -39,11 +35,18 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         private readonly LoginProvider[] _providers;
         private readonly string _spaRedirectUrl;
 
+        private const string ACCOUNT_DOESNT_EXIST_ERROR_MESSAGE = "The account doesn't exist.";
+        private const string AUTHENTICATION_TOKENS_NOT_FOUND_ERROR_MESSAGE = "The authentication tokens were not found.";
+        private const string AUTHENTICATION_PROPERTIES_NOT_FOUND_ERROR_MESSAGE = "The authentication properties were not found.";
+        private const string REVOKE_LOGIN_FAILED_ERROR_MESSAGE = "There was a problem while revoking the login, please try again later.";
+        private const string LOGIN_INFO_NOT_FOUND_ERROR_MESSAGE = "The login information was not found, external cookie is lost or expired.";
+        private const string NO_LINKED_ACCOUNT_TO_REMOVE_ERROR_MESSAGE = "There is no linked account to remove.";
+        private const string PASSWORD_REQUIRED_TO_REMOVE_LINKED_ACCOUNT_ERROR_MESSAGE = "You need to set a password to delete your linked account.";
+        private const string ACCOUNT_ALREADY_LINKED_ERROR_MESSAGE = "The account is already linked.";
+
         public ExternalLoginService
         (
             ILogger<ExternalLoginService> logger,
-            IMediator mediator,
-            IMapper mapper,
             IJwtService jwtService,
             IOptions<SpaSettings> spaSettings,
             IGoogleApiService googleApiService,
@@ -54,8 +57,6 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             UserManager<AppUser> userManager)
         {
             _logger = logger;
-            _mediator = mediator;
-            _mapper = mapper;
             _jwtService = jwtService;
             _spaSettings = spaSettings.Value;
             _googleApiService = googleApiService;
@@ -86,7 +87,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                         identifier,
                         configured
                     )
-                ); 
+                );
             }
 
             return externalSignInMethods;
@@ -115,28 +116,28 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         {
             try
             {
-                ExternalLoginInfo loginInfo = await GetAndValidateLoginInfo();
+                // Extract external login information.
+                ExternalLoginInfo loginInfo = await GetAndValidateLoginInfoAsync();
+                ExternalUser externalUser = ConstructExternalUserFromClaims(claims: loginInfo.Principal.Claims, loginProvider: provider);
+                if (loginInfo.AuthenticationTokens == null) throw new InvalidOperationException(AUTHENTICATION_TOKENS_NOT_FOUND_ERROR_MESSAGE);
+
+                // Find user by external login.
                 AppUser? user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
-                if (loginInfo.AuthenticationTokens == null)
-                    throw new InvalidOperationException("The authentication tokens must be provided by the login provider");
+                bool requireAccountLinking = false;
+                if (user is null)
+                {
+                    // Find user by the email included in claims.
+                    user = await _userManager.FindByEmailAsync(externalUser.Email)
+                    ?? throw new CustomValidationException(ACCOUNT_DOESNT_EXIST_ERROR_MESSAGE);
+                    requireAccountLinking = true;
+                }
 
                 // === Transaction start ===
                 using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                if (user == null)
-                {
-                    // Create a new account.
-                    ExternalUser externalUser =  ConstructExternalUserFromClaims(
-                        claims: loginInfo.Principal.Claims,
-                        loginProvider: provider
-                    );
-                    await CreateAccount(externalUser);
-                    // Link the user with the external login.
-                    user = await _userManager.FindByEmailAsync(externalUser.Email)
-                        ?? throw new InvalidOperationException($"Something went wrong with user creation and their email link: {externalUser.Email}");
-                    await _userManager.AddLoginAsync(user, loginInfo);
-                }
+                // Ensure external login existence.
+                if (requireAccountLinking) await _userManager.AddLoginAsync(user, loginInfo);
                 await HandleProviderTokens(
-                    providerTokens : [..loginInfo.AuthenticationTokens],
+                    providerTokens: [.. loginInfo.AuthenticationTokens],
                     provider,
                     user
                 );
@@ -156,14 +157,13 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         {
             try
             {
-                ExternalLoginInfo loginInfo = await GetAndValidateLoginInfo();
+                ExternalLoginInfo loginInfo = await GetAndValidateLoginInfoAsync();
                 AuthenticationProperties properties = loginInfo.AuthenticationProperties
-                    ?? throw new InvalidOperationException("The authentication properties were not supplied");
+                    ?? throw new InvalidOperationException(AUTHENTICATION_PROPERTIES_NOT_FOUND_ERROR_MESSAGE);
 
-                if (properties.Items.TryGetValue(AuthenticationItems.CURRENT_USERID_KEY, out string? userId)
-                    && userId != null)
+                if (properties.Items.TryGetValue(AuthenticationItems.CURRENT_USERID_KEY, out string? userId) && userId != null)
                 {
-                    await ValidateExistentLogins(provider, loginInfo.ProviderKey, userId);
+                    await ValidateExistentLogin(provider, loginInfo.ProviderKey);
                     AppUser user = await GetUser(userId);
                     using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
                     {
@@ -171,9 +171,9 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                         await _userManager.AddLoginAsync(user, loginInfo);
                         // Get and store provider tokens.
                         if (loginInfo.AuthenticationTokens == null)
-                            throw new InvalidOperationException("The authentication tokens must be provided by the login provider.");
+                            throw new InvalidOperationException(AUTHENTICATION_TOKENS_NOT_FOUND_ERROR_MESSAGE);
                         await HandleProviderTokens(
-                            providerTokens: [..loginInfo.AuthenticationTokens],
+                            providerTokens: [.. loginInfo.AuthenticationTokens],
                             provider,
                             user
                         );
@@ -182,7 +182,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                     return $"{_spaRedirectUrl}?state=success&purpose=link";
                 }
 
-                throw new InvalidOperationException("Invalid or missed authentication properties.");
+                throw new InvalidOperationException(AUTHENTICATION_PROPERTIES_NOT_FOUND_ERROR_MESSAGE);
             }
             catch (Exception ex)
             {
@@ -202,7 +202,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
                 _ => throw new InvalidOperationException($"Invalid or not implemented login provider: {provider.GetName()}")
             };
 
-            if (!accessRevoked) throw new CustomValidationException("Revoke login failed: it wasn't possible to revoke provider access");
+            if (!accessRevoked) throw new CustomValidationException(REVOKE_LOGIN_FAILED_ERROR_MESSAGE);
 
             try
             {
@@ -221,10 +221,10 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         #endregion
 
         #region Helpers
-        private async Task<ExternalLoginInfo> GetAndValidateLoginInfo()
+        private async Task<ExternalLoginInfo> GetAndValidateLoginInfoAsync()
         {
             return await _signInManager.GetExternalLoginInfoAsync()
-                ?? throw new InvalidOperationException("Login information not found, external cookie is lost or expired");
+                ?? throw new InvalidOperationException(LOGIN_INFO_NOT_FOUND_ERROR_MESSAGE);
         }
 
         private async Task<AppUser> GetUser(string userId)
@@ -236,29 +236,19 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         private async Task<UserLoginInfo> ValidateLoginRevoke(AppUser user, LoginProvider provider)
         {
             IList<UserLoginInfo> logins = await _userManager.GetLoginsAsync(user);
-            if (!logins.Any()) throw new InvalidOperationException("The user doesn't have any external linked account");
+            if (!logins.Any()) throw new InvalidOperationException(NO_LINKED_ACCOUNT_TO_REMOVE_ERROR_MESSAGE);
 
             bool hasPassword = await _userManager.HasPasswordAsync(user);
-            if (!hasPassword && logins.Count <= 1) throw new CustomValidationException("You need to set a password to delete your linked account.");
+            if (!hasPassword && logins.Count <= 1) throw new CustomValidationException(PASSWORD_REQUIRED_TO_REMOVE_LINKED_ACCOUNT_ERROR_MESSAGE);
 
             return logins.FirstOrDefault(l => l.LoginProvider.Equals(provider.GetName()))
                 ?? throw new InvalidOperationException($"There isn't a linked account for the {provider.GetName()} provider.");
         }
 
-        private async Task ValidateExistentLogins(
-            LoginProvider provider,
-            string providerKey,
-            string userId)
+        private async Task ValidateExistentLogin(LoginProvider provider, string providerKey)
         {
             AppUser? userWithLogin = await _userManager.FindByLoginAsync(provider.GetName(), providerKey);
-            if (userWithLogin != null && userWithLogin.Id.Equals(userId)) throw new CustomValidationException("The account is already linked.");
-            if (userWithLogin != null && userWithLogin.Id != userId) throw new CustomValidationException("The account is already linked by another user.");
-        }
-
-        private async Task CreateAccount(ExternalUser externalUser)
-        {
-            CreateAccountCommand command = ConstructCreateAccountCommand(externalUser);
-            await _mediator.Send(command);
+            if (userWithLogin != null) throw new CustomValidationException(ACCOUNT_ALREADY_LINKED_ERROR_MESSAGE);
         }
 
         private async Task HandleProviderTokens(
@@ -283,11 +273,6 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
             return generator.Generate(loginProvider);
         }
 
-        private CreateAccountCommand ConstructCreateAccountCommand(ExternalUser externalUser)
-        {
-            return _mapper.Map<CreateAccountCommand>(externalUser);
-        }
-
         private string LogAndRedirectError(string message, string spaRedirectUrl)
         {
             _logger.LogError($"External login failed: {{Message}}", message);
@@ -298,7 +283,7 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         {
             AuthenticationToken? expirationToken = tokens.FirstOrDefault(
                 t => t.Name.Equals(Token.EXPIRES_AT_TOKEN_NAME, StringComparison.OrdinalIgnoreCase)
-            );          
+            );
 
             if (expirationToken is null)
             {
