@@ -128,12 +128,8 @@ describe('DataTableComponent', () => {
       expect(component.pageSelected).toBeDefined();
     });
 
-    it('should have edit output emitter', () => {
-      expect(component.edit).toBeDefined();
-    });
-
-    it('should have delete output emitter', () => {
-      expect(component.delete).toBeDefined();
+    it('should have actionTriggered output emitter', () => {
+      expect(component.actionTriggered).toBeDefined();
     });
 
     it('should emit pageSelected when page changes', (done) => {
@@ -143,26 +139,6 @@ describe('DataTableComponent', () => {
       });
 
       component.pageSelected.emit(2);
-    });
-
-    it('should emit edit with row data', (done) => {
-      const testData = mockData[0];
-      component.edit.subscribe((data: any) => {
-        expect(data).toEqual(testData);
-        done();
-      });
-
-      component.edit.emit(testData);
-    });
-
-    it('should emit delete with row data', (done) => {
-      const testData = mockData[1];
-      component.delete.subscribe((data: any) => {
-        expect(data).toEqual(testData);
-        done();
-      });
-
-      component.delete.emit(testData);
     });
   });
 
@@ -357,30 +333,6 @@ describe('DataTableComponent', () => {
 
       expect(editButton).toBeTruthy();
       expect(deleteButton).toBeTruthy();
-    });
-
-    it('should emit edit event when edit button is clicked', () => {
-      fixture.componentRef.setInput('enableActions', true);
-      fixture.detectChanges();
-
-      spyOn(component.edit, 'emit');
-
-      const editButton = compiled.querySelector('button[aria-label="Edit"]') as HTMLButtonElement;
-      editButton?.click();
-
-      expect(component.edit.emit).toHaveBeenCalledWith(mockData[0]);
-    });
-
-    it('should emit delete event when delete button is clicked', () => {
-      fixture.componentRef.setInput('enableActions', true);
-      fixture.detectChanges();
-
-      spyOn(component.delete, 'emit');
-
-      const deleteButton = compiled.querySelector('button[aria-label="Delete"]') as HTMLButtonElement;
-      deleteButton?.click();
-
-      expect(component.delete.emit).toHaveBeenCalledWith(mockData[0]);
     });
   });
 

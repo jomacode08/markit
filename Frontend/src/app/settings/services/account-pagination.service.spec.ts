@@ -52,14 +52,14 @@ describe('AccountPaginationService', () => {
       expect(service.status()).toBe(AccountPaginationStatus.fetching);
       
       // Clean up pending request
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, []));
     });
 
     it('should make HTTP GET request with correct URL parameters', () => {
       service.loadPage(2);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=2&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=2&limit=10`);
       expect(req.request.method).toBe('GET');
       
       req.flush(createMockPagination(2, []));
@@ -73,7 +73,7 @@ describe('AccountPaginationService', () => {
 
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, mockAccounts, 2, 20));
 
       setTimeout(() => {
@@ -85,7 +85,7 @@ describe('AccountPaginationService', () => {
     it('should update totalItems signal with value from response', (done) => {
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, [], 5, 50));
 
       setTimeout(() => {
@@ -97,7 +97,7 @@ describe('AccountPaginationService', () => {
     it('should update totalPages signal with value from response', (done) => {
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, [], 5, 50));
 
       setTimeout(() => {
@@ -110,7 +110,7 @@ describe('AccountPaginationService', () => {
       service.loadPage(1);
       expect(service.status()).toBe(AccountPaginationStatus.fetching);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, []));
 
       setTimeout(() => {
@@ -128,14 +128,14 @@ describe('AccountPaginationService', () => {
       ];
 
       service.loadPage(1);
-      const req1 = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req1 = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req1.flush(createMockPagination(1, mockAccounts1));
 
       setTimeout(() => {
         expect(service.accounts()).toEqual(mockAccounts1);
 
         service.loadPage(2);
-        const req2 = httpMock.expectOne(`${BASE_URL}?page=2&limit=10`);
+        const req2 = httpMock.expectOne(`${BASE_URL}/all?page=2&limit=10`);
         req2.flush(createMockPagination(2, mockAccounts2));
 
         setTimeout(() => {
@@ -150,7 +150,7 @@ describe('AccountPaginationService', () => {
     it('should handle HTTP errors gracefully', (done) => {
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.error(new ProgressEvent('error'));
 
       setTimeout(() => {
@@ -164,7 +164,7 @@ describe('AccountPaginationService', () => {
       service.loadPage(1);
       expect(service.status()).toBe(AccountPaginationStatus.fetching);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.error(new ProgressEvent('error'));
 
       setTimeout(() => {
@@ -180,7 +180,7 @@ describe('AccountPaginationService', () => {
 
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.error(new ProgressEvent('error'));
 
       setTimeout(() => {
@@ -194,7 +194,7 @@ describe('AccountPaginationService', () => {
     it('should handle 404 error', (done) => {
       service.loadPage(999);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=999&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=999&limit=10`);
       req.flush('Not found', { status: 404, statusText: 'Not Found' });
 
       setTimeout(() => {
@@ -206,7 +206,7 @@ describe('AccountPaginationService', () => {
     it('should handle 500 error', (done) => {
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
 
       setTimeout(() => {
@@ -224,7 +224,7 @@ describe('AccountPaginationService', () => {
 
       service.loadPage(1);
 
-      const req = httpMock.expectOne(`${BASE_URL}?page=1&limit=10`);
+      const req = httpMock.expectOne(`${BASE_URL}/all?page=1&limit=10`);
       req.flush(createMockPagination(1, mockAccounts, 3, 25));
 
       setTimeout(() => {

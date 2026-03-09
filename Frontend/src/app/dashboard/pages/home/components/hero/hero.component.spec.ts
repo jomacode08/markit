@@ -271,7 +271,7 @@ describe('HeroComponent', () => {
       expect(mark.collectionId).toBe(5);
       expect(mark.blocks).toBeDefined();
       expect(mark.blocks.length).toBe(1);
-      expect(mark.blocks[0].content).toBe('Test content');
+      expect(mark.blocks[0].content).toBe('<p>Test content</p>');
     });
 
     it('should create block with default block name', () => {
@@ -280,7 +280,7 @@ describe('HeroComponent', () => {
       const mark = component['constructMarkFromFormData']();
       
       expect(mark.blocks[0].title).toBeDefined();
-      expect(mark.blocks[0].content).toBe(content);
+      expect(mark.blocks[0].content).toBe(`<p>${content}</p>`);
     });
   });
 

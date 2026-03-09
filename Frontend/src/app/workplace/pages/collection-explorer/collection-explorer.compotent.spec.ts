@@ -27,6 +27,7 @@ import { FloatingActionButtonComponent } from '../../../shared/components/ui/but
 })
 class MockFloatingMenuComponent {
     public options = input.required<FloatingMenuOption[]>();
+    public dismissible = input<boolean>(false);
     public isSideBarVisible = signal<boolean>(false);
     public toggle(): void {
         this.isSideBarVisible.update(state => !state);

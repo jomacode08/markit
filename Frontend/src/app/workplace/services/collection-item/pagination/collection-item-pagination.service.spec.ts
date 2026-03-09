@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { CollectionItemPage, CollectionItemPaginationService, CollectionItemTypeFilter } from './collection-item-pagination.service';
 import { CollectionItemType } from '../../../interfaces/collection-item';
@@ -93,7 +93,8 @@ describe('CollectionItemService', () => {
     service['filters'].collectionId = 1;
     service['typeSubject'].next(CollectionItemTypeFilter.All);
     service['isResetEnabled'] = false;
-    service['itemsSubject'] = new BehaviorSubject(mockPage.items);
+    service['itemsSubject'] = new Subject();
+    service['items'] = mockPage.items;
     // WHEN    
     service.loadNewPage();
     // THEN
@@ -101,7 +102,7 @@ describe('CollectionItemService', () => {
     expect(req.request.method).toBe('POST');
     req.flush(mockNextPage);
 
-    const newItemsValue = service['itemsSubject'].value;
+    const newItemsValue = service['items'];
     expect(newItemsValue.length).toBe(3);
     expect(newItemsValue[0].name).toBe('Item 1');
     expect(newItemsValue[2].name).toBe('Item 3');

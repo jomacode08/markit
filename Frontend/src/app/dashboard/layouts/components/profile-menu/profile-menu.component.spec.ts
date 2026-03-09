@@ -7,7 +7,6 @@ import { MenuModule } from 'primeng/menu';
 import { ProfileMenu } from './profile-menu.component';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
-import { MenuItemCommandEvent } from 'primeng/api';
 
 describe('ProfileMenu', () => {
     let component: ProfileMenu;
@@ -17,7 +16,7 @@ describe('ProfileMenu', () => {
     let document: Document;
 
     beforeEach(async () => {
-        const authServiceSpy = jasmine.createSpyObj('AuthService', ['logout']);
+        const authServiceSpy = jasmine.createSpyObj('AuthService', ['logout', 'currentUser']);
         const rendererSpy = jasmine.createSpyObj('Renderer2', [
             'addClass',
             'removeClass'
@@ -46,18 +45,25 @@ describe('ProfileMenu', () => {
 
     describe('profileMenuItems', () => {
         it('should initialize with two menu items', () => {
-            expect(component['profileMenuItems'].length).toBe(2);
+            expect(component['profileMenuItems']().length).toBe(3);
+        });
+
+        it('should have Settings menu item with correct properties', () => {
+            const profileItem = component['profileMenuItems']()[0];
+            expect(profileItem.label).toBe('Settings');
+            expect(profileItem.icon).toBe('fa-solid fa-sliders');
+            expect(profileItem.route).toBe(ROUTES.ACCOUNTS);
         });
 
         it('should have Profile menu item with correct properties', () => {
-            const profileItem = component['profileMenuItems'][0];
+            const profileItem = component['profileMenuItems']()[1];
             expect(profileItem.label).toBe('Profile');
             expect(profileItem.icon).toBe('fa-regular fa-user');
             expect(profileItem.route).toBe(ROUTES.PROFILE);
         });
 
         it('should have Sign Out menu item with correct properties', () => {
-            const signOutItem = component['profileMenuItems'][1];
+            const signOutItem = component['profileMenuItems']()[2];
             expect(signOutItem.label).toBe('Sign Out');
             expect(signOutItem.icon).toBe('fa fa-right-to-bracket');
             expect(signOutItem.command).toBeDefined();
@@ -125,10 +131,9 @@ describe('ProfileMenu', () => {
 
     describe('Sign Out functionality', () => {
         it('should call authService.logout when Sign Out command is executed', () => {
-            const signOutItem = component['profileMenuItems'][1];
-            const event: MenuItemCommandEvent = {};
+            const signOutItem = component['profileMenuItems']()[2];
             if (signOutItem.command != null) {
-                signOutItem.command(event);
+                signOutItem.command();
             }
             expect(authService.logout).toHaveBeenCalled();
         });
@@ -154,7 +159,7 @@ describe('ProfileMenu', () => {
 
         it('should pass profileMenuItems to p-menu model', () => {
             const menu = fixture.debugElement.children[0];
-            expect(menu.componentInstance.model).toEqual(component['profileMenuItems']);
+            expect(menu.componentInstance.model).toEqual(component['profileMenuItems']());
         });
 
         it('should have popup mode enabled', () => {
