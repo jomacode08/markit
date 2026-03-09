@@ -301,6 +301,7 @@ button {
   .p-sidebar {
     background-color: var(--surface-1);
     border: 1px solid var(--border-color);
+    z-index: 1104 !important;
   }
   .p-sidebar-header {
     border-bottom: 1px solid var(--border-color);
@@ -319,6 +320,7 @@ button {
     background: transparent;
     height: 6.1rem;
     box-shadow: none;
+    z-index: 1102 !important;
   }
   .p-sidebar-content {
     background-color: var(--surface-1);
