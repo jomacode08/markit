@@ -15,15 +15,14 @@ interface WeekDayBar {
 }
 
 @Component({
-  selector: 'dashboard-daily-mark-activity-chart',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ButtonModule,
-    TooltipModule,
-    MarkActivityPipe,
-  ],
-  template: `
+    selector: 'dashboard-daily-mark-activity-chart',
+    imports: [
+        CommonModule,
+        ButtonModule,
+        TooltipModule,
+        MarkActivityPipe,
+    ],
+    template: `
   <div class="flex gap-4 justify-content-center align-items-end">
     @for (bar of bars(); track $index) {
       <div class="flex flex-column align-items-center justify-content-center">
@@ -42,7 +41,7 @@ interface WeekDayBar {
     }
   </div>
   `,
-  styles: `
+    styles: `
     :host {
       display: block;
     }
@@ -67,7 +66,7 @@ interface WeekDayBar {
       color: var(--text-secondary);
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyMarkActivityChartComponent {
   private readonly MAX_HEIGHT_BAR_IN_PIXELS : number = 65;

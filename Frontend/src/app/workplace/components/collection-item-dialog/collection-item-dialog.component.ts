@@ -12,17 +12,16 @@ import { CollectionItemActionService } from '../../services/collection-item/acti
 import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker/emoji-picker.component';
 
 @Component({
-  selector: 'app-collection-item-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ErrorFieldComponent,
-    ReactiveFormsModule,
-    ProgressSpinnerModule,
-    EmojiPickerComponent,
-],
-  templateUrl: './collection-item-dialog.component.html',
-  styleUrl: './collection-item-dialog.component.css',
+    selector: 'app-collection-item-dialog',
+    imports: [
+        CommonModule,
+        ErrorFieldComponent,
+        ReactiveFormsModule,
+        ProgressSpinnerModule,
+        EmojiPickerComponent,
+    ],
+    templateUrl: './collection-item-dialog.component.html',
+    styleUrl: './collection-item-dialog.component.css'
 })
 export class CollectionItemDialogComponent extends ValidatorErrorField implements OnInit {
   //* Form

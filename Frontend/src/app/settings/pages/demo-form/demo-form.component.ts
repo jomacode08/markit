@@ -16,19 +16,18 @@ import { Router } from '@angular/router';
 import { ROUTES } from '../../../shared/utils/constant';
 
 @Component({
-  selector: 'app-demo-form',
-  standalone: true,
-  imports: [
-    ErrorFieldComponent,
-    GeneralButtonComponent,
-    InputNumberModule,
-    ReactiveFormsModule,
-    SharedModule,
-    ToggleButtonModule,
-  ],
-  styleUrl: './demo-form.component.css',
-  templateUrl: './demo-form.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-demo-form',
+    imports: [
+        ErrorFieldComponent,
+        GeneralButtonComponent,
+        InputNumberModule,
+        ReactiveFormsModule,
+        SharedModule,
+        ToggleButtonModule,
+    ],
+    styleUrl: './demo-form.component.css',
+    templateUrl: './demo-form.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoFormComponent extends ValidatorErrorField implements OnInit {
   private readonly CONFIRMATION_MESSAGE : string = "The demo settings were updated successfully.";

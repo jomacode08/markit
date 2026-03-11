@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-not-found',
-  standalone: true,
-  imports: [RouterLink],
-  template: `
+    selector: 'app-not-found',
+    imports: [RouterLink],
+    template: `
     <div class="error-container">
       <div class="error-content">
         <h1>404</h1>
@@ -17,7 +16,7 @@ import { RouterLink } from '@angular/router';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .error-container {
       display: flex;
       flex-direction: column;

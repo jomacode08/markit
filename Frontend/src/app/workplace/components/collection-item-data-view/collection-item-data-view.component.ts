@@ -21,21 +21,20 @@ import { ROUTES } from '../../../shared/utils/constant';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 
 @Component({
-  selector: 'collection-item-data-view',
-  standalone: true,
-  imports: [
-    CollectionItemIconPipe,
-    CommonModule,
-    DataViewModule,
-    FloatingMenuComponent,
-    IntersectionDirective,
-    ProgressSpinnerModule,
-    TimeAgoPipe,
-  ],
-  providers: [DialogService],
-  templateUrl: './collection-item-data-view.component.html',
-  styleUrl: './collection-item-data-view.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'collection-item-data-view',
+    imports: [
+        CollectionItemIconPipe,
+        CommonModule,
+        DataViewModule,
+        FloatingMenuComponent,
+        IntersectionDirective,
+        ProgressSpinnerModule,
+        TimeAgoPipe,
+    ],
+    providers: [DialogService],
+    templateUrl: './collection-item-data-view.component.html',
+    styleUrl: './collection-item-data-view.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionItemDataViewComponent implements OnDestroy {
   @ViewChild('addItemMenu') private floatingMenu !: FloatingMenuComponent;

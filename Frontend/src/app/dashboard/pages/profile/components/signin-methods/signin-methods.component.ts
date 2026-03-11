@@ -15,17 +15,16 @@ import { RedirectResponse } from '../../../../../auth/interfaces/redirect';
 import { CustomMessageService } from '../../../../../shared/services/custom-message.service';
 
 @Component({
-  selector: 'profile-signin-methods',
-  standalone: true,
-  imports: [
-    SharedModule,
-    GeneralButtonComponent,
-    AsyncPipe,
-    LoginProviderIconPipe,
-],
-  templateUrl: './signin-methods.component.html',
-  styleUrl: './signin-methods.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'profile-signin-methods',
+    imports: [
+        SharedModule,
+        GeneralButtonComponent,
+        AsyncPipe,
+        LoginProviderIconPipe,
+    ],
+    templateUrl: './signin-methods.component.html',
+    styleUrl: './signin-methods.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SigninMethodsComponent {
   private readonly LOGIN_LINKED_SUCCESS_MESSAGE = "The account was successfully linked.";

@@ -6,15 +6,16 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { ROUTES } from '../../../../shared/utils/constant';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-profile-menu',
-  standalone: true,
-  imports: [
-    MenuModule,
-    NgIf
-  ],
-  template: `
+    selector: 'app-profile-menu',
+    imports: [
+        MenuModule,
+        NgIf,
+        RouterModule
+    ],
+    template: `
     <p-menu
       #profileMenu
       styleClass="popup"
@@ -45,7 +46,7 @@ import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
       </ng-template>
     </p-menu>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileMenu {
   private authService = inject(AuthService);

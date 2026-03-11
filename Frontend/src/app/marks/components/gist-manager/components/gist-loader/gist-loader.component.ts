@@ -10,18 +10,17 @@ import { ErrorFieldComponent } from "../../../../../shared/components/layout/err
 import { ValidatorService } from '../../../../../shared/services/validator.service';
 
 @Component({
-  selector: 'gist-loader',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SharedModule,
-    GeneralButtonComponent,
-    ErrorFieldComponent
-],
-  templateUrl: './gist-loader.component.html',
-  styleUrl: './gist-loader.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'gist-loader',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SharedModule,
+        GeneralButtonComponent,
+        ErrorFieldComponent
+    ],
+    templateUrl: './gist-loader.component.html',
+    styleUrl: './gist-loader.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GistLoaderComponent extends ValidatorErrorField {
   @Output()

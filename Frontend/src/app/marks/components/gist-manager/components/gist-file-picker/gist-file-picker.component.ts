@@ -11,12 +11,11 @@ export interface GistFilePickerSharedData {
 }
 
 @Component({
-  selector: 'app-gist-file-picker',
-  standalone: true,
-  imports: [NgClass],
-  templateUrl: './gist-file-picker.component.html',
-  styleUrl: './gist-file-picker.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-gist-file-picker',
+    imports: [NgClass],
+    templateUrl: './gist-file-picker.component.html',
+    styleUrl: './gist-file-picker.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GistFilePickerComponent {
   protected files: GistFile[];

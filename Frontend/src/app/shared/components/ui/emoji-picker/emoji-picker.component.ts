@@ -10,19 +10,18 @@ import { Picker } from 'emoji-picker-element';
 export type Size = 'sm' | 'md' | 'lg';
 
 @Component({
-  selector: 'app-emoji-picker',
-  standalone: true,
-  imports: [OverlayPanelModule, NgClass],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => EmojiPickerComponent),
-      multi: true
-    }
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  styleUrl: './emoji-picker.component.css',
-  template: `
+    selector: 'app-emoji-picker',
+    imports: [OverlayPanelModule, NgClass],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => EmojiPickerComponent),
+            multi: true
+        }
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    styleUrl: './emoji-picker.component.css',
+    template: `
   <!-- Picker button -->
   <button
     type="button"
@@ -52,7 +51,7 @@ export type Size = 'sm' | 'md' | 'lg';
     <emoji-picker #emojiPicker></emoji-picker>
   </p-overlayPanel>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmojiPickerComponent implements ControlValueAccessor, AfterViewInit {
   @ViewChild('panel') private panelRef!: OverlayPanel;

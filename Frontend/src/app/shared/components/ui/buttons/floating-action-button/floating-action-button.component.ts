@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from '@angular/core';
 
 @Component({
-  selector: 'shared-floating-action-button',
-  standalone: true,
-  imports: [],
-  styleUrl: './floating-action-button.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'shared-floating-action-button',
+    imports: [],
+    styleUrl: './floating-action-button.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
   <div class="wrapper-floating-button">
     <div class="floating-button">
       <button type="button" [disabled]="!enabled()" (click)="onButtonClicked()">
@@ -14,7 +13,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, input, Output } from 
       </button>
     </div>
   </div>
-  `,
+  `
 })
 export class FloatingActionButtonComponent {
   public iconClass = input.required<string>();

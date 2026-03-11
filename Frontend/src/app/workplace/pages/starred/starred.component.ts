@@ -7,14 +7,13 @@ import { CollectionItem } from '../../interfaces/collection-item';
 import { CollectionItemPaginationService, CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
 
 @Component({
-  selector: 'app-starred',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CollectionItemDataViewComponent
-  ],
-  templateUrl: './starred.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-starred',
+    imports: [
+        CommonModule,
+        CollectionItemDataViewComponent
+    ],
+    templateUrl: './starred.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StarredComponent implements OnInit, OnDestroy {
   private itemsLoadingSubscription ?: Subscription;

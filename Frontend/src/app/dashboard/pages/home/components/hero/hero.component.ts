@@ -13,15 +13,14 @@ import { MarkService } from '../../../../../marks/services/mark.service';
 import { CustomMessageService } from '../../../../../shared/services/custom-message.service';
 
 @Component({
-  selector: 'home-hero',
-  standalone: true,
-  imports: [
-    EmojiPickerComponent,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './hero.component.html',
-  styleUrl: './hero.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'home-hero',
+    imports: [
+        EmojiPickerComponent,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './hero.component.html',
+    styleUrl: './hero.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeroComponent implements OnInit {
   public submit = signal<boolean>(false);

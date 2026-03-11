@@ -7,14 +7,13 @@ import { defineElement } from "@lordicon/element";
 import { AlertMessageComponent } from './shared/components/layout/alert-message/alert-message.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    AlertMessageComponent,
-    RouterOutlet,
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    imports: [
+        AlertMessageComponent,
+        RouterOutlet,
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'markit-app';

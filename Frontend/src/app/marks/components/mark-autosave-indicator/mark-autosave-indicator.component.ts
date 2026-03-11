@@ -9,14 +9,13 @@ export enum SaveState {
 }
 
 @Component({
-  selector: 'mark-autosave-indicator',
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  templateUrl: './mark-autosave-indicator.component.html',
-  styleUrl: './mark-autosave-indicator.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mark-autosave-indicator',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './mark-autosave-indicator.component.html',
+    styleUrl: './mark-autosave-indicator.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkAutosaveIndicatorComponent {
   public saveState = input.required<SaveState>();

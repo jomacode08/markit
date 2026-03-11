@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 
 import { ROUTES } from '../../../shared/utils/constant';
 @Component({
-  selector: 'mark-breadcrumb',
-  standalone: true,
-  imports: [],
-  template: `
+    selector: 'mark-breadcrumb',
+    imports: [],
+    template: `
     <button
         type="button"
         aria-label="collection"
@@ -17,9 +16,9 @@ import { ROUTES } from '../../../shared/utils/constant';
     </button>
     <span class="separator">/</span>
     <span class="item">{{ emoji() }}{{ markName() }}</span>  
-  `, 
-  styleUrl: './mark-breadcrumb.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  `,
+    styleUrl: './mark-breadcrumb.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkBreadcrumbComponent {
   private router = inject(Router);

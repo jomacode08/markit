@@ -3,10 +3,9 @@ import { RouterLink } from '@angular/router';
 import { CurrentRouteService } from '../../services/current-route.service';
 
 @Component({
-  selector: 'app-error',
-  standalone: true,
-  imports: [RouterLink],
-  template: `
+    selector: 'app-error',
+    imports: [RouterLink],
+    template: `
     <div class="error-container">
       <div class="error-content">
         <h1>500</h1>
@@ -18,7 +17,7 @@ import { CurrentRouteService } from '../../services/current-route.service';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .error-container {
       display: flex;
       flex-direction: column;

@@ -10,18 +10,17 @@ import { ROUTES } from '../../../../shared/utils/constant';
 import { ProfileMenu } from '../profile-menu/profile-menu.component';
 
 @Component({
-  selector: 'app-main-bar',
-  templateUrl: './main-bar.component.html',
-  standalone: true,
-  imports: [
-    ButtonModule,
-    RouterLink,
-    TooltipModule,
-    RouterLinkActive,
-    ProfileMenu,
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  styleUrl: './main-bar.component.css'
+    selector: 'app-main-bar',
+    templateUrl: './main-bar.component.html',
+    imports: [
+        ButtonModule,
+        RouterLink,
+        TooltipModule,
+        RouterLinkActive,
+        ProfileMenu,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    styleUrl: './main-bar.component.css'
 })
 export class MainBarComponent {
   public readonly MAIN_BAR_BRAND_TITLE: string = "Mark it";

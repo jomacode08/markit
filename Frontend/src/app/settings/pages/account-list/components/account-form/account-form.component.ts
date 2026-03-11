@@ -21,19 +21,18 @@ interface RoleOption {
 }
 
 @Component({
-  selector: 'app-account-form',
-  standalone: true,
-  imports: [
-    ButtonModule,
-    ErrorFieldComponent,
-    InputTextModule,
-    MultiSelectModule,
-    PasswordModule,
-    ReactiveFormsModule,
-    ToggleButtonModule,
-  ],
-  templateUrl: './account-form.component.html',
-  styleUrl: './account-form.component.css'
+    selector: 'app-account-form',
+    imports: [
+        ButtonModule,
+        ErrorFieldComponent,
+        InputTextModule,
+        MultiSelectModule,
+        PasswordModule,
+        ReactiveFormsModule,
+        ToggleButtonModule,
+    ],
+    templateUrl: './account-form.component.html',
+    styleUrl: './account-form.component.css'
 })
 export class AccountFormComponent extends ValidatorErrorField implements OnInit {
   public form : FormGroup<{

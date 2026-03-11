@@ -6,7 +6,6 @@ export type SeverityButton = "primary" | "secondary" | "success" | "danger";
 
 @Component({
     selector: 'shared-general-button',
-    standalone: true,
     imports: [
         ButtonModule,
         CommonModule,

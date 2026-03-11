@@ -14,12 +14,11 @@ import { Gist, GistFile } from '../../interfaces/gist';
 import { GistFilePickerComponent, GistFilePickerSharedData } from '../gist-file-picker/gist-file-picker.component';
 
 @Component({
-  selector: 'gist-viewer',
-  standalone: true,
-  imports: [FormsModule, DatePipe, CodeEditor, TooltipModule],
-  templateUrl: './gist-viewer.component.html',
-  styleUrl: './gist-viewer.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'gist-viewer',
+    imports: [FormsModule, DatePipe, CodeEditor, TooltipModule],
+    templateUrl: './gist-viewer.component.html',
+    styleUrl: './gist-viewer.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GistViewerComponent {
   //* Inputs & Outputs

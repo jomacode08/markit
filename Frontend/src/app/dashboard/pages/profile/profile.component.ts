@@ -16,21 +16,20 @@ import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/ge
 import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DividerModule,
-    ErrorFieldComponent,
-    GeneralButtonComponent,
-    RadioButtonModule,
-    ReactiveFormsModule,
-    SigninMethodsComponent,
-  ],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-profile',
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DividerModule,
+        ErrorFieldComponent,
+        GeneralButtonComponent,
+        RadioButtonModule,
+        ReactiveFormsModule,
+        SigninMethodsComponent,
+    ],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent extends ValidatorErrorField implements OnInit {
   //** Form

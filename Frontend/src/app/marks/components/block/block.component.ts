@@ -30,24 +30,23 @@ type UriValidationContext = {
 }
 
 @Component({
-  selector: 'marks-block',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    NgxTiptapModule,
-    SkeletonModule,
-  ],
-  templateUrl: './block.component.html',
-  styleUrl: './block.component.css',
-  encapsulation: ViewEncapsulation.None,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => BlockComponent),
-      multi: true
-    }
-  ]
+    selector: 'marks-block',
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgxTiptapModule,
+        SkeletonModule,
+    ],
+    templateUrl: './block.component.html',
+    styleUrl: './block.component.css',
+    encapsulation: ViewEncapsulation.None,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => BlockComponent),
+            multi: true
+        }
+    ]
 })
 export class BlockComponent implements OnInit, ControlValueAccessor {
   //* Configuration

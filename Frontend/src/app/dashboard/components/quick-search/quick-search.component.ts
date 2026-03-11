@@ -18,16 +18,15 @@ enum SearchState {
 };
 
 @Component({
-  selector: 'app-quick-search',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ProgressSpinnerModule
-],
-  templateUrl: './quick-search.component.html',
-  styleUrl: './quick-search.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-quick-search',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ProgressSpinnerModule
+    ],
+    templateUrl: './quick-search.component.html',
+    styleUrl: './quick-search.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuickSearchComponent implements OnInit, OnDestroy {
   @Output() public onSearchNavigate = new EventEmitter();

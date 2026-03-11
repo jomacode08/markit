@@ -19,13 +19,12 @@ enum DataTableAction {
 }
 
 @Component({
-  selector: 'app-account-list',
-  standalone: true,
-  imports: [TableModule, DataTableComponent],
-  providers: [DialogService],
-  templateUrl: './account-list.component.html',
-  styleUrl: './account-list.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-account-list',
+    imports: [TableModule, DataTableComponent],
+    providers: [DialogService],
+    templateUrl: './account-list.component.html',
+    styleUrl: './account-list.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent implements OnDestroy {
   private dialogRef ?: DynamicDialogRef;

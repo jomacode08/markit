@@ -3,12 +3,11 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Block } from '../../interfaces/block';
 
 @Component({
-  selector: 'block-navigator',
-  standalone: true,
-  imports: [TooltipModule],
-  templateUrl: './block-navigator.component.html',
-  styleUrl: './block-navigator.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'block-navigator',
+    imports: [TooltipModule],
+    templateUrl: './block-navigator.component.html',
+    styleUrl: './block-navigator.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockNavigatorComponent {
   public blockIndex = input.required<number>();

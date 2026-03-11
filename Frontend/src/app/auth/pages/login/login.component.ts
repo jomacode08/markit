@@ -21,19 +21,18 @@ import { firstValueFrom } from 'rxjs';
 import { DemoService } from '../../../settings/services/demo.service';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    GeneralButtonComponent,
-    ErrorFieldComponent,
-    PasswordModule,
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-login',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        GeneralButtonComponent,
+        ErrorFieldComponent,
+        PasswordModule,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent extends ValidatorErrorField implements OnInit {  
   protected submit = signal<boolean>(false);

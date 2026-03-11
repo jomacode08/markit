@@ -13,19 +13,18 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 import { HeroComponent } from './components/hero/hero.component';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    DailyMarkActivityChartComponent,
-    HeroComponent,
-    RouterModule,
-    TimeAgoPipe
-  ],
-  providers: [DialogService],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-home',
+    imports: [
+        CommonModule,
+        DailyMarkActivityChartComponent,
+        HeroComponent,
+        RouterModule,
+        TimeAgoPipe
+    ],
+    providers: [DialogService],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
   public report$ : Observable<DashboardReport>;

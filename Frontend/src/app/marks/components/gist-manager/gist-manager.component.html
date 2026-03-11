@@ -1,6 +1,6 @@
 <p-panel
     styleClass="mb-2 fadein animation-duration-500"
-    [ngClass]="{ 'selected' : this.selected}"
+    [ngClass]="{ 'selected' : selected }"
     [toggleable]="true"
     [collapsed]="!gist() && managerState() === managerStates.active"
     (collapsedChange)="onPanelToggle($event)"
@@ -10,7 +10,7 @@
     <ng-template pTemplate="header">
         <h2 class="text-sm font-normal border-none m-0">
             <span [class]="'header-icon mr-2 ' + (managerState() | GistManagerIcon)"></span>
-            {{ this.header() }}
+            {{ header() }}
         </h2>
     </ng-template>
     <!-- Icon buttons -->

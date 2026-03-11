@@ -36,28 +36,27 @@ import { ROUTES } from '../../../shared/utils/constant';
 import { SharedData } from './../../components/block-menu/block-menu.component';
 
 @Component({
-  standalone: true,
-  imports: [
-    BlockComponent,
-    BlockNavigatorComponent,
-    ButtonModule,
-    ChipModule,
-    CommonModule,
-    EmojiPickerComponent,
-    FloatingActionButtonComponent,
-    FloatingMenuComponent,
-    GalleriaModule,
-    MarkAutosaveIndicatorComponent,
-    MarkBreadcrumbComponent,
-    ProgressSpinnerModule,
-    ReactiveFormsModule,
-    SkeletonModule,
-    TooltipModule,
-  ],
-  providers: [DialogService],
-  templateUrl: './mark-viewer.component.html',
-  styleUrl: './mark-viewer.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        BlockComponent,
+        BlockNavigatorComponent,
+        ButtonModule,
+        ChipModule,
+        CommonModule,
+        EmojiPickerComponent,
+        FloatingActionButtonComponent,
+        FloatingMenuComponent,
+        GalleriaModule,
+        MarkAutosaveIndicatorComponent,
+        MarkBreadcrumbComponent,
+        ProgressSpinnerModule,
+        ReactiveFormsModule,
+        SkeletonModule,
+        TooltipModule,
+    ],
+    providers: [DialogService],
+    templateUrl: './mark-viewer.component.html',
+    styleUrl: './mark-viewer.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   //* Configuration

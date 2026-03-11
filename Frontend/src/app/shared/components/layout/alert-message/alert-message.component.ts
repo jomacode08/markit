@@ -6,15 +6,14 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
-  selector: 'shared-alert-message',
-  standalone: true,
-  imports: [
-    ConfirmDialogModule,
-    CommonModule,
-    ToastModule,
-  ],
-  templateUrl: './alert-message.component.html',
-  styleUrls: ['./alert-message.component.scss']
+    selector: 'shared-alert-message',
+    imports: [
+        ConfirmDialogModule,
+        CommonModule,
+        ToastModule,
+    ],
+    templateUrl: './alert-message.component.html',
+    styleUrls: ['./alert-message.component.scss']
 })
 export class AlertMessageComponent {
 

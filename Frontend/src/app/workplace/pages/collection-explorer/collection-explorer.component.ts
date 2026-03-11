@@ -20,20 +20,19 @@ import { CollectionItemPaginationService, CollectionItemTypeFilter } from '../..
 import { CollectionItemDialogComponent } from '../../components/collection-item-dialog/collection-item-dialog.component';
 
 @Component({
-  standalone: true,
-  imports: [
-    ButtonModule,
-    CollectionExplorerBreadcrumbComponent,
-    CollectionItemDataViewComponent,
-    CommonModule,
-    FloatingMenuComponent,
-    FloatingActionButtonComponent,
-    FormsModule
-  ],
-  providers: [DialogService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './collection-explorer.component.html',
-  styleUrl: './collection-explorer.component.css',
+    imports: [
+        ButtonModule,
+        CollectionExplorerBreadcrumbComponent,
+        CollectionItemDataViewComponent,
+        CommonModule,
+        FloatingMenuComponent,
+        FloatingActionButtonComponent,
+        FormsModule
+    ],
+    providers: [DialogService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './collection-explorer.component.html',
+    styleUrl: './collection-explorer.component.css'
 })
 export class CollectionExplorerComponent implements OnDestroy, OnInit {
   @ViewChild('addItemMenu') private floatingMenu !: FloatingMenuComponent;

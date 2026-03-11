@@ -18,20 +18,19 @@ type NodeAttributes = {
 }
 
 @Component({
-  selector: 'gist-manager',
-  standalone: true,
-  imports: [
-    NgxTiptapModule,
-    GistLoaderComponent,
-    GistViewerComponent,
-    NgClass,
-    PanelModule,
-    GistManagerIconPipe,
-    TooltipModule,
-],
-  templateUrl: './gist-manager.component.html',
-  styleUrl: './gist-manager.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'gist-manager',
+    imports: [
+        NgxTiptapModule,
+        GistLoaderComponent,
+        GistViewerComponent,
+        NgClass,
+        PanelModule,
+        GistManagerIconPipe,
+        TooltipModule,
+    ],
+    templateUrl: './gist-manager.component.html',
+    styleUrl: './gist-manager.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GistManagerComponent extends AngularNodeViewComponent implements OnInit, OnDestroy {
   private readonly NODE_ATTRIBUTES_NAMES = {

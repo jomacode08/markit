@@ -13,18 +13,17 @@ import { SidebarConfig, SidebarContentType } from '../interfaces/sidebar-config'
 import { NavigationMenuComponent } from './components/navigation-menu/navigation-menu.component';
 
 @Component({
-  selector: 'app-app-layout',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MainBarComponent,
-    QuickSearchComponent,
-    RouterModule,
-    SidebarModule,
-    NavigationMenuComponent,
-  ],
-  templateUrl: './app-layout.component.html',
-  styleUrl: './app-layout.component.css'
+    selector: 'app-app-layout',
+    imports: [
+        CommonModule,
+        MainBarComponent,
+        QuickSearchComponent,
+        RouterModule,
+        SidebarModule,
+        NavigationMenuComponent,
+    ],
+    templateUrl: './app-layout.component.html',
+    styleUrl: './app-layout.component.css'
 })
 export class AppLayoutComponent {
   //* General configuration

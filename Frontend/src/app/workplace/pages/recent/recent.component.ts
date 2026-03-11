@@ -7,14 +7,13 @@ import { CollectionItem } from '../../interfaces/collection-item';
 import { CollectionItemPaginationService, CollectionItemTypeFilter, SortPaginationOrder } from '../../services/collection-item/pagination/collection-item-pagination.service';
 
 @Component({
-  selector: 'app-recent',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CollectionItemDataViewComponent
-  ],
-  templateUrl: './recent.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-recent',
+    imports: [
+        CommonModule,
+        CollectionItemDataViewComponent
+    ],
+    templateUrl: './recent.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentComponent implements OnInit, OnDestroy {
     private itemsLoadingSubscription ?: Subscription;

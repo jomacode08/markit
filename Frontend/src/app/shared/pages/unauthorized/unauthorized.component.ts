@@ -3,10 +3,9 @@ import { RouterLink } from '@angular/router';
 import { ROUTES } from '../../utils/constant';
 
 @Component({
-  selector: 'app-unauthorized',
-  standalone: true,
-  imports: [RouterLink],
-  template: `
+    selector: 'app-unauthorized',
+    imports: [RouterLink],
+    template: `
     <div class="error-container">
       <div class="error-content">
         <h1>401</h1>
@@ -18,7 +17,7 @@ import { ROUTES } from '../../utils/constant';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .error-container {
       display: flex;
       flex-direction: column;

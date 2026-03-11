@@ -6,12 +6,11 @@ import { Column } from './interfaces/column';
 import { Action, ActionEvent } from './interfaces/action';
 
 @Component({
-  selector: 'shared-data-table',
-  standalone: true,
-  imports: [TableModule],
-  styleUrl: './data-table.component.css',
-  templateUrl: './data-table.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'shared-data-table',
+    imports: [TableModule],
+    styleUrl: './data-table.component.css',
+    templateUrl: './data-table.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataTableComponent<T = unknown> {
   //* Inputs

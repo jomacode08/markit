@@ -24,17 +24,16 @@ export interface OnCloseResponse {
 }
 
 @Component({
-  selector: 'app-block-menu',
-  standalone: true,
-  imports: [
-    ButtonModule,
-    CommonModule,
-    FormsModule,
-    TooltipModule,
-  ],
-  templateUrl: './block-menu.component.html',
-  styleUrl: './block-menu.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-block-menu',
+    imports: [
+        ButtonModule,
+        CommonModule,
+        FormsModule,
+        TooltipModule,
+    ],
+    templateUrl: './block-menu.component.html',
+    styleUrl: './block-menu.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockMenuComponent implements OnInit {
   public currentBlockId ?: number;

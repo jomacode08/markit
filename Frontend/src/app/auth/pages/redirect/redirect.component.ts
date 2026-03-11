@@ -8,14 +8,13 @@ import { PopupService } from '../../../shared/services/popup.service';
 export type AuthProcessState = 'idle' | 'authorized' | 'error';
 
 @Component({
-  selector: 'app-status',
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './redirect.component.html',
-  styleUrl: './redirect.component.css',
+    selector: 'app-status',
+    imports: [
+        CommonModule
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './redirect.component.html',
+    styleUrl: './redirect.component.css'
 })
 export class RedirectComponent implements OnInit {
   public errorMessage = signal<string>('');

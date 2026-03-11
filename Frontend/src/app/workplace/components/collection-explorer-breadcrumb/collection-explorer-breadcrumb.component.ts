@@ -6,12 +6,11 @@ import { CollectionPath } from '../../interfaces/collection';
 import { ROUTES } from '../../../shared/utils/constant';
 
 @Component({
-  selector: 'collection-explorer-breadcrumb',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './collection-explorer-breadcrumb.component.html',
-  styleUrl: './collection-explorer-breadcrumb.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'collection-explorer-breadcrumb',
+    imports: [CommonModule],
+    templateUrl: './collection-explorer-breadcrumb.component.html',
+    styleUrl: './collection-explorer-breadcrumb.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionExplorerBreadcrumbComponent {
   public pathSegments = input.required<CollectionPath[]>();

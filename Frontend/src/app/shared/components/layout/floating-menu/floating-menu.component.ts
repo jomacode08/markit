@@ -6,14 +6,13 @@ import { Sidebar,SidebarModule } from 'primeng/sidebar';
 import { FloatingMenuOption } from './floating-menu-option';
 
 @Component({
-  selector: 'shared-floating-menu',
-  standalone: true,
-  imports: [
-    CommonModule,
-    SidebarModule
-  ],
-  templateUrl: './floating-menu.component.html',
-  styleUrl: './floating-menu.component.css'
+    selector: 'shared-floating-menu',
+    imports: [
+        CommonModule,
+        SidebarModule
+    ],
+    templateUrl: './floating-menu.component.html',
+    styleUrl: './floating-menu.component.css'
 })
 export class FloatingMenuComponent {
   @ViewChild('sidebar')
