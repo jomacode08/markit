@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Injector, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { LinkProtocolOptions } from './../../../../../node_modules/@tiptap/extension-link/dist/link.d';
+import type { LinkProtocolOptions } from '@tiptap/extension-link';
 
 //* Tiptap Extensions
 import { Editor } from '@tiptap/core';
-import { NgxTiptapModule } from 'ngx-tiptap';
+import { TiptapEditorDirective } from 'ngx-tiptap';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Highlighter from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
-import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
+import TaskList from '@tiptap/extension-task-list';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 
@@ -32,20 +32,20 @@ type UriValidationContext = {
 @Component({
     selector: 'marks-block',
     imports: [
-        CommonModule,
-        FormsModule,
-        NgxTiptapModule,
-        SkeletonModule,
+      CommonModule,
+      FormsModule,
+      SkeletonModule,
+      TiptapEditorDirective,
     ],
     templateUrl: './block.component.html',
     styleUrl: './block.component.css',
     encapsulation: ViewEncapsulation.None,
     providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => BlockComponent),
-            multi: true
-        }
+      {
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => BlockComponent),
+        multi: true
+      }
     ]
 })
 export class BlockComponent implements OnInit, ControlValueAccessor {

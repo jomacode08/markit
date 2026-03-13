@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal
 import { NgClass } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AngularNodeViewComponent, NgxTiptapModule } from 'ngx-tiptap';
+import { AngularNodeViewComponent, TiptapDraggableDirective } from 'ngx-tiptap';
 import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -20,13 +20,13 @@ type NodeAttributes = {
 @Component({
     selector: 'gist-manager',
     imports: [
-        NgxTiptapModule,
-        GistLoaderComponent,
-        GistViewerComponent,
-        NgClass,
-        PanelModule,
-        GistManagerIconPipe,
-        TooltipModule,
+      GistLoaderComponent,
+      GistManagerIconPipe,
+      GistViewerComponent,
+      NgClass,
+      PanelModule,
+      TiptapDraggableDirective,
+      TooltipModule,
     ],
     templateUrl: './gist-manager.component.html',
     styleUrl: './gist-manager.component.css',
@@ -112,8 +112,8 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
 
   private getNodeAttributes() : NodeAttributes | null {
     if (this.node === null) return null;
-    const gistIdAttr = this.node.attrs[this.NODE_ATTRIBUTES_NAMES.gistId];
-    const titleAttr  = this.node.attrs[this.NODE_ATTRIBUTES_NAMES.title];
+    const gistIdAttr = this.node().attrs[this.NODE_ATTRIBUTES_NAMES.gistId];
+    const titleAttr  = this.node().attrs[this.NODE_ATTRIBUTES_NAMES.title];
     const attrs = [gistIdAttr, titleAttr];
     
     const badFormat : boolean = attrs.some(attr => 
@@ -145,7 +145,8 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
       }
       const { gist } = response;
       this.setUpGistState(response.gist);
-      this.updateAttributes({
+      const updateAttributes = this.updateAttributes();
+      updateAttributes({
         gistId: gist.id,
         title: gist.title
       });
