@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, Inject, Renderer2, ViewChild } from '@angular/core';
-import { DOCUMENT, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, Inject, Renderer2, ViewChild, DOCUMENT } from '@angular/core';
+import { NgIf } from '@angular/common';
 
 import { Menu, MenuModule } from 'primeng/menu';
 

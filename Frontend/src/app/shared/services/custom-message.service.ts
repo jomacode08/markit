@@ -75,7 +75,7 @@ export class CustomMessageService {
     });
   }
 
-  public showFeedbackDialog(): DynamicDialogRef {
+  public showFeedbackDialog(): DynamicDialogRef<FeedbackModalComponent> | null {
     return this.dialogService.open(FeedbackModalComponent, {
       width: '30rem',
       modal: true,

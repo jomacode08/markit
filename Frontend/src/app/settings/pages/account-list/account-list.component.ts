@@ -27,7 +27,7 @@ enum DataTableAction {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent implements OnDestroy {
-  private dialogRef ?: DynamicDialogRef;
+  private dialogRef ?: DynamicDialogRef<AccountFormComponent> | null;
   protected accounts : Signal<AccountSummary[]>;
   protected cols : Column[];
   protected status : Signal<AccountPaginationStatus>;
@@ -130,7 +130,7 @@ export class AccountListComponent implements OnDestroy {
       data: accountData ?? {}
     });
 
-    this.dialogRef.onClose.subscribe((result : Account) => {
+    this.dialogRef?.onClose.subscribe((result : Account) => {
       if (result) {
         this.accountPaginationService.loadPage(1);
         this.messageService.showGeneralSuccess(CONFIRMATION_MESSAGE);

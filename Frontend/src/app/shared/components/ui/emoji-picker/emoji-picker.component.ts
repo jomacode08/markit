@@ -2,8 +2,8 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHE
 import { NgClass } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import 'emoji-picker-element';
+import { Popover, PopoverModule } from 'primeng/popover';
 
 import { Picker } from 'emoji-picker-element';
 
@@ -11,13 +11,13 @@ export type Size = 'sm' | 'md' | 'lg';
 
 @Component({
     selector: 'app-emoji-picker',
-    imports: [OverlayPanelModule, NgClass],
+    imports: [PopoverModule, NgClass],
     providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => EmojiPickerComponent),
-            multi: true
-        }
+      {
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => EmojiPickerComponent),
+        multi: true
+      }
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     styleUrl: './emoji-picker.component.css',
@@ -42,19 +42,19 @@ export type Size = 'sm' | 'md' | 'lg';
     }
   </button>
   <!-- Overlay panel -->
-  <p-overlayPanel #panel>
+  <p-popover #panel>
     <div class="picker-header">
       <button type="button" aria-label="Delete emoji" (click)="onDeleteEmojiBtnClick()">
         Delete
       </button>
     </div>
     <emoji-picker #emojiPicker></emoji-picker>
-  </p-overlayPanel>
+  </p-popover>
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmojiPickerComponent implements ControlValueAccessor, AfterViewInit {
-  @ViewChild('panel') private panelRef!: OverlayPanel;
+  @ViewChild('panel') private panelRef!: Popover;
   @ViewChild('emojiPicker', { static: false }) private emojiPickerRef!: ElementRef;
   @Input() public size : Size = 'lg';
   public isDisabled = signal<boolean>(false);

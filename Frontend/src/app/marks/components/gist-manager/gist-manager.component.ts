@@ -102,7 +102,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
     }
   }
 
-  public onPanelToggle(collapsed: boolean): void {
+  public onPanelToggle(collapsed : boolean | undefined): void {
     if (!collapsed && !this.gist() && this.inputId) {
       this.fetchGist(this.inputId);
     }

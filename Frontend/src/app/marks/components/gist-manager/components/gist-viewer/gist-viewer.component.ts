@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -30,7 +30,7 @@ export class GistViewerComponent {
     return this.gist().files.at(this.currentFileIndex());
   });
   //* GistPicker dynamic dialog
-  private gistPickerDialogRef: DynamicDialogRef | undefined;
+  private gistPickerDialogRef ?: DynamicDialogRef<GistFilePickerComponent> | null;
   private gistPickerDialogConfig = computed<DynamicDialogConfig>(() => {
     return {
       header: 'Gist files',

@@ -3,7 +3,7 @@ import { Component, signal, ChangeDetectionStrategy, OnInit } from '@angular/cor
 import { delay, Observable, tap } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
@@ -18,14 +18,14 @@ import { SigninMethodsComponent } from './components/signin-methods/signin-metho
 @Component({
     selector: 'app-profile',
     imports: [
-        CalendarModule,
-        CommonModule,
-        DividerModule,
-        ErrorFieldComponent,
-        GeneralButtonComponent,
-        RadioButtonModule,
-        ReactiveFormsModule,
-        SigninMethodsComponent,
+      CommonModule,
+      DatePickerModule,
+      DividerModule,
+      ErrorFieldComponent,
+      GeneralButtonComponent,
+      RadioButtonModule,
+      ReactiveFormsModule,
+      SigninMethodsComponent,
     ],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css',

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Renderer2 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Renderer2, DOCUMENT } from '@angular/core';
+
 
 import { MenuModule } from 'primeng/menu';
 

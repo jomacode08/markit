@@ -1,22 +1,21 @@
 import {  Component, computed, input, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Sidebar,SidebarModule } from 'primeng/sidebar';
-
+import { Drawer, DrawerModule } from 'primeng/drawer';
 import { FloatingMenuOption } from './floating-menu-option';
 
 @Component({
     selector: 'shared-floating-menu',
     imports: [
-        CommonModule,
-        SidebarModule
+      CommonModule,
+      DrawerModule
     ],
     templateUrl: './floating-menu.component.html',
     styleUrl: './floating-menu.component.css'
 })
 export class FloatingMenuComponent {
   @ViewChild('sidebar')
-  public sideBarRef !: Sidebar;
+  public sideBarRef !: Drawer;
 
   //* Reactive Inputs
   public options = input.required<FloatingMenuOption[]>();

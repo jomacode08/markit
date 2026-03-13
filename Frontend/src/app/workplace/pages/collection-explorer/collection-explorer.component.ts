@@ -54,17 +54,17 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   };
 
   //* Configuration
-  private dialogReference: DynamicDialogRef | undefined;
-  private itemsLoadingSubscription ?: Subscription;
-  private itemsFilterSubscription ?: Subscription;
+  private dialogReference?: DynamicDialogRef<CollectionItemDialogComponent> | null;
+  private itemsLoadingSubscription?: Subscription;
+  private itemsFilterSubscription?: Subscription;
   public loading = signal<boolean>(false);
 
   //* Collection
-  private collectionId ?: number;
-  public collection$ : Observable<Collection | null>;
+  private collectionId?: number;
+  public collection$: Observable<Collection | null>;
 
   //* Collection Items
-  public items$ : Observable<CollectionItem[]>;
+  public items$: Observable<CollectionItem[]>;
   public currentFilter = signal<CollectionItemTypeFilter>(CollectionItemTypeFilter.All);
 
   //* Floating menu
@@ -169,7 +169,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     );
     
     // Subscribe to the onClose event of the dialog
-    this.dialogReference.onClose.subscribe(async (itemTypeId: number) => {
+    this.dialogReference?.onClose.subscribe(async (itemTypeId: number) => {
       this.dialogReference = undefined;
       if (itemTypeId > 0) {
         this.changeFloatingMenuState();

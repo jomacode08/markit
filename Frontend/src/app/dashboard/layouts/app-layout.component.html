@@ -16,7 +16,7 @@
 
 <!-- Side Bar -->
 <ng-container *ngIf="sideBarConfig() as config">
-    <p-sidebar
+    <p-drawer
         id="main-sidebar"
         styleClass="h-full"
         showCloseIcon="false"
@@ -49,5 +49,5 @@
                 }
             </div>
         </ng-template>
-    </p-sidebar>
+    </p-drawer>
 </ng-container>

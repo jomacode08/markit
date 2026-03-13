@@ -61,7 +61,7 @@ import { SharedData } from './../../components/block-menu/block-menu.component';
 export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   //* Configuration
   @ViewChild('floatingMenu') private floatingMenu !: FloatingMenuComponent;
-  private blockMenuDialogRef: DynamicDialogRef | undefined;
+  private blockMenuDialogRef ?: DynamicDialogRef<BlockMenuComponent> | null;
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
 
@@ -197,7 +197,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       }
     });
 
-    this.blockMenuDialogRef.onClose
+    this.blockMenuDialogRef?.onClose
     .subscribe(async ( response: OnCloseResponse ) => 
       await this.handleOnCloseBlockMenu(response)
     );
@@ -205,7 +205,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   private async handleOnCloseBlockMenu(response: OnCloseResponse): Promise<void> {
     // Clean dialog reference
-    this.blockMenuDialogRef = undefined;
+    this.blockMenuDialogRef = null;
     if (response == null) return;
     // A new block was selected
     if (response.selectedBlockId != null) {

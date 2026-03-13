@@ -3,7 +3,7 @@ import { Component, Signal, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 
 import { MainBarComponent } from './components/main-bar/main-bar.component';
 import { CurrentRouteService } from '../../shared/services/current-route.service';
@@ -15,12 +15,12 @@ import { NavigationMenuComponent } from './components/navigation-menu/navigation
 @Component({
     selector: 'app-app-layout',
     imports: [
-        CommonModule,
-        MainBarComponent,
-        QuickSearchComponent,
-        RouterModule,
-        SidebarModule,
-        NavigationMenuComponent,
+      CommonModule,
+      DrawerModule,
+      MainBarComponent,
+      QuickSearchComponent,
+      RouterModule,
+      NavigationMenuComponent,
     ],
     templateUrl: './app-layout.component.html',
     styleUrl: './app-layout.component.css'

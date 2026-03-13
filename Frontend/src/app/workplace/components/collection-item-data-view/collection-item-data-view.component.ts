@@ -80,7 +80,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
   public displaySpinner = signal<boolean>(false);
   public currentItems = computed(() => signal(this.items()));
   public menuTarget ?: CollectionItem;
-  public dialogReference ?: DynamicDialogRef;
+  public dialogReference ?: DynamicDialogRef<CollectionItemDialogComponent> | null;
 
   get collectionItemTypeFilters(): CollectionItemTypeFilter[] {
     return Object.keys(CollectionItemTypeFilter) as CollectionItemTypeFilter[];
@@ -149,7 +149,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     );
     
     // Subscribe to the onClose event of the dialog
-    this.dialogReference.onClose.subscribe(async (itemTypeId: number) => {
+    this.dialogReference?.onClose.subscribe(async (itemTypeId: number) => {
       this.dialogReference = undefined;
       if (itemTypeId > 0) {
         this.changeMenuState();
