@@ -6,16 +6,16 @@
     [totalRecords]="totalItems()"
     [rows]="rowsPerPage()"
     (onLazyLoad)="loadDataLazy($event)"
-    styleClass="p-datatable-sm"
+    class="p-datatable-sm"
 >
-    <ng-template pTemplate="emptymessage">
+    <ng-template #emptymessage>
         <tr>
             <td [attr.colspan]="columns().length + 1" class="text-center">
                 No records found
             </td>
         </tr>
     </ng-template>
-    <ng-template pTemplate="header">
+    <ng-template #header>
         <tr>
             <!-- Dynamic headers -->
             @for (column of columns(); track $index) {
@@ -28,7 +28,7 @@
             }
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData>
+    <ng-template #body let-rowData>
         <tr>
             <!-- Dynamic columns -->
             @for (column of columns(); track $index) {

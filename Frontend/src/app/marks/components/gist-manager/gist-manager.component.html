@@ -7,14 +7,14 @@
     tiptapDraggable
 >
     <!-- Header -->
-    <ng-template pTemplate="header">
+    <ng-template #header>
         <h2 class="text-sm font-normal border-none m-0">
             <span [class]="'header-icon mr-2 ' + (managerState() | GistManagerIcon)"></span>
-            {{ header() }}
+            {{ title() }}
         </h2>
     </ng-template>
     <!-- Icon buttons -->
-    <ng-template pTemplate="icons">
+    <ng-template #icons>
         <button
             id="reloadBtn"
             class="p-panel-header-icon"

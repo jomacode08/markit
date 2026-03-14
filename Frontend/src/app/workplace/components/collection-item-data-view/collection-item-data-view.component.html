@@ -28,7 +28,7 @@
     [loading]="false"
     emptyMessage=" "
 >
-    <ng-template pTemplate="list" let-items>
+    <ng-template #list let-items>
         <!-- List template -->
         @for ( item of items; track $index) {
             <div appIntersection (viewChange)="onItemViewChange.emit($index)" class="item">

@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
     imports: [
         MenuModule,
         NgIf,
-        RouterModule
+        RouterModule,
     ],
     template: `
     <p-menu
@@ -25,7 +25,7 @@ import { RouterModule } from '@angular/router';
       (onShow)="disableScroll()"
       (onHide)="enableScroll()"
     >
-      <ng-template pTemplate="item" let-item>
+      <ng-template #item let-item>
         <ng-container *ngIf="item.route; else elseBlock">
           <a [routerLink]="item.route" class="p-menuitem-link">
             <i [class]="item.icon"></i>

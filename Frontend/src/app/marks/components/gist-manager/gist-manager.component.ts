@@ -42,7 +42,7 @@ export class GistManagerComponent extends AngularNodeViewComponent implements On
   protected currentFileName = signal<string | undefined>(undefined);
   protected errorMessage = signal<string | undefined>(undefined);
 
-  protected header = computed<string>(() => {
+  protected title = computed<string>(() => {
     switch (this.managerState()) {
       case ManagerStates.idle:
         return 'Load Gist from URL';
