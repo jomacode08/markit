@@ -2,6 +2,22 @@ import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 
 export const CustomPreset = definePreset(Aura, {
+    primitive: {
+        surkit: {
+            0: '#ffffff',
+            50: ' #f0f2fa',
+            100: '#bbbec8',
+            200: '#8a8c95',
+            300: '#696b73',
+            400: '#54565d',
+            500: '#46484e',
+            600: '#3c3e43',
+            700: '#34363b',
+            800: '#2d2e32',
+            900: '#232429',
+            950: '#1a1b1e'
+        },
+    },
     semantic: {
         primary: {
             50: '{indigo.50}',
@@ -19,18 +35,18 @@ export const CustomPreset = definePreset(Aura, {
         colorScheme: {
             dark: {
                 surface: {
-                    0: '#ffffff',
-                    50: ' #f0f2fa',
-                    100: '#bbbec8',
-                    200: '#8a8c95',
-                    300: '#696b73',
-                    400: '#54565d',
-                    500: '#46484e',
-                    600: '#3c3e43',
-                    700: '#34363b',
-                    800: '#2d2e32',
-                    900: '#232429',
-                    950: '#1a1b1e'
+                    0: '{surkit.0}',
+                    50: '{surkit.50}',
+                    100: '{surkit.100}',
+                    200: '{surkit.200}',
+                    300: '{surkit.300}',
+                    400: '{surkit.400}',
+                    500: '{surkit.500}',
+                    600: '{surkit.600}',
+                    700: '{surkit.700}',
+                    800: '{surkit.800}',
+                    900: '{surkit.900}',
+                    950: '{surkit.950}'
                 },
             }
         }
