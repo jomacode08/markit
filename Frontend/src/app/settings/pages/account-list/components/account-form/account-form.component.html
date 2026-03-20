@@ -44,7 +44,8 @@
           optionValue="value"
           placeholder="Select roles"
           appendTo="body"
-          styleClass="w-full"
+          class="w-full"
+          size="small"
           [options]="roleOptions"
           [class.invalid]="isInvalidField('roles')"
         />
@@ -130,20 +131,22 @@
 
   <!-- modal-footer section -->
   <div class="modal-footer">
-    <button
+    <p-button
       type="button"
-      class="cancel-btn"
-      (click)="onCancel()"
+      size="small"
+      aria-label="Cancel"
+      label="Cancel"
+      severity="secondary"
+      (onClick)="onCancel()"
       [disabled]="submit()"
-      aria-label="Cancel">
-      Cancel
-    </button>
-    <button
+    />
+    <p-button
       type="submit"
-      class="save-btn"
+      size="small"
+      aria-label="Save"
+      label="Save"
+      severity="primary"
       [disabled]="submit()"
-      aria-label="Save">
-      Save
-    </button>
+    />
   </div>
 </form>

@@ -222,10 +222,10 @@ export const CustomPreset = definePreset(Aura, {
         multiselect: {
             root: {
                 background: '{surface.900}',
-                invalidBorderColor: '{red.500}'
+                invalidBorderColor: '{red.500}',
             },
             overlay: {
-                background: '{surface.900}'
+                background: '{surface.900}',
             },
             list: {
                 header: {
@@ -235,6 +235,9 @@ export const CustomPreset = definePreset(Aura, {
             css: ({dt}) => `
                 .p-multiselect-header {
                     border-bottom: 1px solid ${dt('surface.700')};
+                }
+                .p-multiselect-option {
+                    font-size: .875rem;
                 }
             `
         },

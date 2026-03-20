@@ -127,6 +127,7 @@ export class AccountListComponent implements OnDestroy {
       header : HEADER,
       width: '500px',
       styleClass: 'custom-dialog',
+      closable: true,
       data: accountData ?? {}
     });
 
