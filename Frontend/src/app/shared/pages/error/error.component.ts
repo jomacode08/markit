@@ -1,18 +1,25 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-error',
-    imports: [RouterLink],
+    imports: [ButtonModule, RouterLink],
     template: `
     <div class="error-container">
       <div class="error-content shadow-4">
         <h1>500</h1>
         <h2>Something Went Wrong</h2>
         <p>We're experiencing some technical difficulties. Please try again later.</p>
-        <button routerLink="/">
-          Go to Home
-        </button>
+        <p-button
+          styleClass="w-6"
+          type="button"
+          severity="danger"
+          size="small"
+          label="Go to home"
+          ariaLabel="Go to home"
+          routerLink="/"
+        />
       </div>
     </div>
   `,
@@ -64,21 +71,6 @@ import { RouterLink } from '@angular/router';
 
     .general-button {
       min-width: 150px;
-    }
-
-    button {
-      cursor: pointer;  
-      font-size: 1rem;
-      min-width: 200px;
-      padding: .5rem;
-      color: var(--text-secondary);
-      border-radius: .25rem;
-      border: 1px solid var(--p-highlight-danger-border);
-      background-color: var(--p-highlight-danger-background);
-      transition: 0.3s all ease;
-    }
-    button:hover {
-      color: var(--text-primary);
     }
   `]
 })

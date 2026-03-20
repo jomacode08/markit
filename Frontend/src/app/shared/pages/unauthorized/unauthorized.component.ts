@@ -1,19 +1,25 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ROUTES } from '../../utils/constant';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-unauthorized',
-    imports: [RouterLink],
+    imports: [ButtonModule, RouterLink],
     template: `
     <div class="error-container">
       <div class="error-content shadow-4">
         <h1>401</h1>
         <h2>Unauthorized Access</h2>
         <p>You don't have permission to access this resource.</p>
-        <button [routerLink]="HOME_ROUTE">
-          Go to Home
-        </button>
+        <p-button
+          styleClass="w-6"
+          type="button"
+          severity="primary"
+          size="small"
+          label="Go to home"
+          ariaLabel="Go to home"
+          routerLink="/"
+        />
       </div>
     </div>
   `,
@@ -56,23 +62,6 @@ import { ROUTES } from '../../utils/constant';
         color: var(--text-secondary);
         margin-bottom: 2rem;
     }
-
-    button {
-      cursor: pointer;  
-      font-size: 1rem;
-      min-width: 200px;
-      padding: .5rem;
-      color: var(--text-secondary);
-      border-radius: .25rem;
-      border: 1px solid var(--p-highlight-primary-border);
-      background-color: var(--p-highlight-primary-background);
-      transition: 0.3s all ease;
-    }
-    button:hover {
-      color: var(--text-primary);
-    }
   `]
 })
-export class UnauthorizedComponent {
-  protected readonly HOME_ROUTE : string = ROUTES.HOME_URL;
-}
+export class UnauthorizedComponent {}
