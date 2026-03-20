@@ -20,17 +20,17 @@ export const CustomPreset = definePreset(Aura, {
     },
     semantic: {
         primary: {
-            50: '{indigo.50}',
-            100: '{indigo.100}',
-            200: '{indigo.200}',
-            300: '{indigo.300}',
-            400: '{indigo.400}',
-            500: '{indigo.500}',
-            600: '{indigo.600}',
-            700: '{indigo.700}',
-            800: '{indigo.800}',
-            900: '{indigo.900}',
-            950: '{indigo.950}'
+            50: '{violet.50}',
+            100: '{violet.100}',
+            200: '{violet.200}',
+            300: '{violet.300}',
+            400: '{violet.400}',
+            500: '{violet.500}',
+            600: '{violet.600}',
+            700: '{violet.700}',
+            800: '{violet.800}',
+            900: '{violet.900}',
+            950: '{violet.950}'
         },
         colorScheme: {
             dark: {
@@ -48,6 +48,28 @@ export const CustomPreset = definePreset(Aura, {
                     900: '{surkit.900}',
                     950: '{surkit.950}'
                 },
+                highlight: {
+                    primary: {
+                        background: 'color-mix(in srgb, {primary.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                    },
+                    info: {
+                        background: 'color-mix(in srgb, {blue.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                    },
+                    success: {
+                        background: 'color-mix(in srgb, {green.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                    },
+                    warning: {
+                        background: 'color-mix(in srgb, {amber.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {amber.500}, transparent 70%)',
+                    },
+                    danger: {
+                        background: 'color-mix(in srgb, {red.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                    },
+                }
             }
         }
     },
@@ -78,13 +100,17 @@ export const CustomPreset = definePreset(Aura, {
                 dark: {
                     root: {
                         primary: {
-                            background: 'var(--highlight-surface-purple)',
-                            borderColor: 'var(--highlight-border-purple)',
-                            color: 'var(--text-color)',
+                            background: '{highlight.primary.background}',
+                            color: '{primary.100}',
+                            borderColor: '{highlight.primary.border}',
                             // Hover
-                            hoverBackground: 'var(--highlight-border-purple)',
-                            hoverColor: 'var(--text-color)',
-                            hoverBorderColor: 'var(--highlight-border-purple)'
+                            hoverBackground: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                            hoverColor: '{primary.100}',
+                            hoverBorderColor: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {primary.500}, transparent 60%)',
+                            activeColor: '{primary.200}',
+                            activeBorderColor: 'color-mix(in srgb, {primary.500}, transparent 70%)'
                         },
                         secondary: {
                             background: 'transparent',
@@ -96,31 +122,43 @@ export const CustomPreset = definePreset(Aura, {
                             hoverBorderColor: 'var(--border-color)'
                         },
                         success: {
-                            background: 'var(--highlight-surface-green)',
-                            borderColor: 'var(--highlight-border-green)',
-                            color: 'var(--text-color)',
+                            background: '{highlight.success.background}',
+                            color: '{green.100}',
+                            borderColor: '{highlight.success.border}',
                             // Hover
-                            hoverBackground: 'var(--highlight-border-green)',
-                            hoverColor: 'var(--text-color)',
-                            hoverBorderColor: 'var(--highlight-border-green)'
+                            hoverBackground: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                            hoverColor: '{green.100}',
+                            hoverBorderColor: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {green.500}, transparent 60%)',
+                            activeColor: '{green.200}',
+                            activeBorderColor: 'color-mix(in srgb, {green.500}, transparent 70%)'
                         },
                         danger: {
-                            background: 'var(--highlight-surface-red)',
-                            borderColor: 'var(--highlight-border-red)',
-                            color: 'var(--text-color)',
+                            background: '{highlight.danger.background}',
+                            color: '{red.100}',
+                            borderColor: '{highlight.danger.border}',
                             // Hover
-                            hoverBackground: 'var(--highlight-border-red)',
-                            hoverColor: 'var(--text-color)',
-                            hoverBorderColor: 'var(--highlight-border-red)'
+                            hoverBackground: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                            hoverColor: '{red.100}',
+                            hoverBorderColor: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {red.500}, transparent 60%)',
+                            activeColor: '{red.200}',
+                            activeBorderColor: 'color-mix(in srgb, {red.500}, transparent 70%)'
                         },
                         info: {
-                            background: 'var(--highlight-surface-blue)',
-                            borderColor: 'var(--highlight-border-blue)',
-                            color: 'var(--text-color)',
+                            background: '{highlight.info.background}',
+                            color: '{blue.100}',
+                            borderColor: '{highlight.info.border}',
                             // Hover
-                            hoverBackground: 'var(--highlight-border-blue)',
-                            hoverColor: 'var(--text-color)',
-                            hoverBorderColor: 'var(--highlight-border-blue)'
+                            hoverBackground: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                            hoverColor: '{blue.100}',
+                            hoverBorderColor: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {blue.500}, transparent 60%)',
+                            activeColor: '{blue.200}',
+                            activeBorderColor: 'color-mix(in srgb, {blue.500}, transparent 70%)'
                         }
                     },
                     text: {
@@ -264,7 +302,7 @@ export const CustomPreset = definePreset(Aura, {
             colorScheme: {
                 dark: {
                     navButton: {
-                        selectedBackground: 'var(--highlight-surface-purple)'
+                        selectedBackground: 'var(--highlight-primary-background)'
                     }
                 }
             },

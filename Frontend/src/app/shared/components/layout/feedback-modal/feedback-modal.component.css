@@ -23,10 +23,10 @@
 }
 .icon-box div.icon {
   position: relative;
-  border: 1px solid var(--highlight-border-purple);
+  border: 1px solid var(--p-highlight-primary-border);
   padding: 1rem;
   border-radius: .75rem;
-  background-color: var(--highlight-surface-purple);
+  background-color: var(--p-highlight-primary-background);
 }
 .circle {
   position: absolute;
@@ -39,7 +39,7 @@
   right: 5px;
 }
 .circle.outer {
-  background-color: var(--highlight-border-purple);
+  background-color: var(--p-highlight-primary-border);
   right: -8px;
 }
 .title {
@@ -53,9 +53,9 @@
 .transparent-box {
   padding: 1rem;
   display: flex;
-  background-color: var(--highlight-surface-purple);
+  background-color: var(--p-highlight-primary-background);
   gap: 1rem;
-  border: 1px solid var(--highlight-border-purple);
+  border: 1px solid var(--p-highlight-primary-border);
   border-radius: .5rem;
   color: var(--text-primary);
 }

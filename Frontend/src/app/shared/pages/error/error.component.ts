@@ -73,8 +73,8 @@ import { RouterLink } from '@angular/router';
       padding: .5rem;
       color: var(--text-secondary);
       border-radius: .25rem;
-      border: 1px solid var(--highlight-border-red);
-      background-color: var(--highlight-surface-red);
+      border: 1px solid var(--p-highlight-danger-border);
+      background-color: var(--p-highlight-danger-background);
       transition: 0.3s all ease;
     }
     button:hover {

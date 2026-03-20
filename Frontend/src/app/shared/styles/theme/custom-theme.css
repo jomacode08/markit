@@ -10,18 +10,6 @@
       /* Surface borders */
       --surface-border: rgba(255, 255, 255, 0.12);
       --surface-border-hover: rgba(255, 255, 255, 0.18);
-      /* Highlight surfaces - subtle colored backgrounds */
-      --highlight-surface-red: rgba(239, 68, 68, 0.3);
-      --highlight-surface-purple: rgba(132, 94, 247, 0.15);
-      --highlight-surface-green: rgba(16, 185, 129, 0.15);
-      --highlight-surface-blue: rgba(59, 130, 246, 0.15);
-      --highlight-surface-amber: rgba(245, 158, 11, 0.15);
-      /* Highlight borders - for additional emphasis */
-      --highlight-border-red: rgba(239, 68, 68, 0.5);
-      --highlight-border-purple: rgba(132, 94, 247, 0.3);
-      --highlight-border-green: rgba(16, 185, 129, 0.3);
-      --highlight-border-blue: rgba(59, 130, 246, 0.3);
-      --highlight-border-amber: rgba(245, 158, 11, 0.3);
   }
 
   body {
@@ -140,7 +128,7 @@
     }
   }
   .p-menu-item-link-active {
-    background-color: var(--highlight-border-purple);
+    background-color: var(--p-highlight-primary-border);
     border-left: 2px solid var(--accent-color);
     i {
       color: var(--secondary-accent);
@@ -270,7 +258,7 @@
     border-radius: 0;
   }
   .p-paginator-page-selected{
-    border: 1px solid var(--highlight-border-purple);
+    border: 1px solid var(--p-highlight-primary-border);
   }
   .p-paginator .p-paginator-pages .p-paginator-page,
   .p-paginator-first.p-paginator-element.p-link,

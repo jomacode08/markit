@@ -64,8 +64,8 @@ import { ROUTES } from '../../utils/constant';
       padding: .5rem;
       color: var(--text-secondary);
       border-radius: .25rem;
-      border: 1px solid var(--highlight-border-purple);
-      background-color: var(--highlight-surface-purple);
+      border: 1px solid var(--p-highlight-primary-border);
+      background-color: var(--p-highlight-primary-background);
       transition: 0.3s all ease;
     }
     button:hover {

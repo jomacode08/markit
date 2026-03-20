@@ -15,7 +15,6 @@ import { ValidatorErrorField } from '../../../shared/utils/validator-error-field
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
-import { Skeleton } from "primeng/skeleton";
 
 @Component({
     selector: 'app-profile',
@@ -28,8 +27,7 @@ import { Skeleton } from "primeng/skeleton";
     InputTextModule,
     RadioButtonModule,
     ReactiveFormsModule,
-    SigninMethodsComponent,
-    Skeleton
+    SigninMethodsComponent
 ],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css',

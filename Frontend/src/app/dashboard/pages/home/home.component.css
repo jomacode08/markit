@@ -148,13 +148,13 @@ button.access:hover {
 }
 
 .stat-container.highlight-primary {
-  background-color: var(--highlight-surface-purple) !important;
-  border: 1px solid var(--highlight-border-purple) !important;
+  background-color: var(--p-highlight-primary-background) !important;
+  border: 1px solid var(--p-highlight-primary-border) !important;
 }
 
 .stat-container.highlight-success {
-  background-color: var(--highlight-surface-green) !important;
-  border: 1px solid var(--highlight-border-green) !important;
+  background-color: var(--p-highlight-success-background) !important;
+  border: 1px solid var(--p-highlight-success-border) !important;
 }
 
 .small-text {
