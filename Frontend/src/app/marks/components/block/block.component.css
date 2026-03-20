@@ -108,14 +108,14 @@
 
   /** Code Styling */
   code {
-    background-color: var(--surface-2);
+    background-color: var(--p-surface-800);
     border-radius: 0.4rem;
     font-size: 0.85rem;
     font-weight: 600;
     padding: 0.25em 0.3em;
   }
   pre {
-    background: var(--surface-1);
+    background: var(--p-surface-900);
     font-family: 'Fira Code', monospace;
     font-size: 0.95rem;
     line-height: 1.6;

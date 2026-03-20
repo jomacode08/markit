@@ -21,10 +21,10 @@ button {
 }
 .file-item:hover {
   cursor: pointer;
-  background-color: var(--surface-2);
+  background-color: var(--p-surface-800);
 }
 .file-item.active {
-  background-color: var(--surface-2);
+  background-color: var(--p-surface-800);
 }
 .file-numerator {
   padding: .25rem .5rem;

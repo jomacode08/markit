@@ -31,7 +31,7 @@ button:disabled {
 }
 
 input {
-  background-color: var(--paper-bg);
+  background-color: var(--p-surface-950);
   border-radius: 0;
   margin: 0;
 }
@@ -51,7 +51,7 @@ input:disabled {
   
 .icon, .name, .message {
   border: 1px solid var(--border-color);
-  background-color: var(--paper-bg);
+  background-color: var(--p-surface-950);
 }
 
 .message {

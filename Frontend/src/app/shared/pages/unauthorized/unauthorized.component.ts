@@ -7,7 +7,7 @@ import { ROUTES } from '../../utils/constant';
     imports: [RouterLink],
     template: `
     <div class="error-container">
-      <div class="error-content">
+      <div class="error-content shadow-4">
         <h1>401</h1>
         <h2>Unauthorized Access</h2>
         <p>You don't have permission to access this resource.</p>
@@ -25,15 +25,14 @@ import { ROUTES } from '../../utils/constant';
       justify-content: center;
       height: 100vh;
       text-align: center;
-      background-color: var(--paper-bg);
+      background-color: var(--p-surface-950);
     }
 
     .error-content {
       padding: 2rem;
-      background-color: var(--surface-2);
+      background-color: var(--p-surface-800);
       border: 1px solid var(--surface-border);
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px var(--shadow-color);
     }
 
     h1 {

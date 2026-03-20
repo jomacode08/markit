@@ -16,7 +16,7 @@
 .floating-button {
   padding: .25rem;
   border: 1px solid var(--border-color);
-  background-color: var(--paper-bg);
+  background-color: var(--p-surface-950);
 }
 
 .floating-button button {

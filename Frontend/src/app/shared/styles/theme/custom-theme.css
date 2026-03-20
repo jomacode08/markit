@@ -1,23 +1,12 @@
 @layer project {
   :root {
-      --paper-bg: #1a1b1e;
       --text-primary: #e9ecef;
       --text-secondary: #adb5bd;
       --text-foreground: rgba(255, 255, 255, 0.6);
       --border-color: #343a40;
-      --shadow-color: rgba(0, 0, 0, 0.3);
       --accent-color: #845ef7;
       --accent-hover: #7950f2;
       --secondary-accent: rgb(129 140 248 / 1);
-      /* Surface system */
-      --surface-1: #232429;    /* Subtle elevation, good for cards */
-      --surface-2: #2d2e32;    /* Medium elevation, for dialogs */
-      --surface-3: #34363b;    /* Higher elevation, for modals */
-      --surface-4: #3c3e43;    /* Highest elevation, for dropdowns */
-      --surface-accent : #2A253F;
-      /* Surface overlays with transparency */
-      --surface-overlay-1: rgba(35, 36, 41, 0.95);  /* For floating menus */
-      --surface-overlay-2: rgba(45, 46, 50, 0.90);  /* For tooltips */
       /* Surface borders */
       --surface-border: rgba(255, 255, 255, 0.12);
       --surface-border-hover: rgba(255, 255, 255, 0.18);
@@ -37,7 +26,7 @@
 
   body {
     color: var(--text-primary);
-    background-color: var(--paper-bg);
+    background-color: var(--p-surface-950);
     scrollbar-color: rgb(255, 255, 255, 0.3);
   }
 
@@ -75,7 +64,7 @@
   }
   p-button:not(.p-menu-item-link-active) {
     .p-button.nav-button:hover {
-      background-color: var(--surface-2);
+      background-color: var(--p-surface-800);
     }
   }
 
@@ -116,7 +105,7 @@
     height: 6.1rem;
     border: none;
     .p-drawer-content {
-      background-color: var(--surface-1);
+      background-color: var(--p-surface-900);
       display: flex;
       justify-content: center;
       padding: 0.5rem 2rem;
@@ -155,7 +144,7 @@
   .p-menu.popup {
     z-index: 1104 !important;
     min-width: auto;
-    background-color: var(--surface-2);
+    background-color: var(--p-surface-800);
     border: 1px solid var(--surface-border);
     padding: .5rem 0;
     .p-menu-item-link {
@@ -166,7 +155,7 @@
       margin: 0;
     }
     .p-menu-item-content:hover {
-      background-color: var(--surface-3);
+      background-color: var(--p-surface-700);
     }
   }
   .p-menu:not(.popup) {
@@ -193,7 +182,7 @@
   /** Dialogs */
   .p-dialog {
     .p-dialog-header {
-      background-color: var(--surface-1);
+      background-color: var(--p-surface-900);
       border-top-left-radius:  6px;
       border-top-right-radius: 6px;
       .p-dialog-title {
@@ -253,7 +242,6 @@
   }
 
   /** Data table */
-  
   .p-datatable .p-datatable-thead > tr > th {
     background-color: transparent;
     color: var(--text-primary);
@@ -294,7 +282,7 @@
   .p-paginator-prev.p-paginator-element.p-link:hover,
   .p-paginator-next.p-paginator-element.p-link:hover,
   .p-paginator-last.p-paginator-element.p-link:hover {
-    background-color: var(--surface-1);
+    background-color: var(--p-surface-900);
   }
   /** Utils */
   .h-50 {
@@ -303,7 +291,6 @@
 
   /* Emoji picker element styling */
   emoji-picker {
-    --background: var(--surface-overlay-1);
     --border-color: var(var(--border-color));
     --border-size: 0px;
     --emoji-size: 1.25rem;

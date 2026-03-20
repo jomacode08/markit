@@ -1,13 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CurrentRouteService } from '../../services/current-route.service';
 
 @Component({
     selector: 'app-error',
     imports: [RouterLink],
     template: `
     <div class="error-container">
-      <div class="error-content">
+      <div class="error-content shadow-4">
         <h1>500</h1>
         <h2>Something Went Wrong</h2>
         <p>We're experiencing some technical difficulties. Please try again later.</p>
@@ -25,15 +24,14 @@ import { CurrentRouteService } from '../../services/current-route.service';
       justify-content: center;
       height: 100vh;
       text-align: center;
-      background-color: var(--paper-bg);
+      background-color: var(--p-surface-950);
     }
 
     .error-content {
       padding: 2rem;
-      background-color: var(--surface-2);
+      background-color: var(--p-surface-800);
       border: 1px solid var(--surface-border);
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px var(--shadow-color);
     }
 
     h1 {

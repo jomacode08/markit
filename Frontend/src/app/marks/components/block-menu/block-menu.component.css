@@ -14,7 +14,7 @@ input {
   border: none;
   width: 100%;
   padding: 0.5rem;
-  background-color: var(--paper-bg);
+  background-color: var(--p-surface-950);
   color: var(--text-primary);
 }
 

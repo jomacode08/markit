@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
     imports: [RouterLink],
     template: `
     <div class="error-container">
-      <div class="error-content">
+      <div class="error-content shadow-4">
         <h1>404</h1>
         <h2>Page Not Found</h2>
         <p>The page you are looking for doesn't exist or has been moved.</p>
@@ -24,15 +24,14 @@ import { RouterLink } from '@angular/router';
       justify-content: center;
       height: 100vh;
       text-align: center;
-      background-color: var(--paper-bg);
+      background-color: var(--p-surface-950);
     }
 
     .error-content {
       padding: 2rem;
-      background-color: var(--surface-2);
+      background-color: var(--p-surface-800);
       border: 1px solid var(--surface-border);
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px var(--shadow-color);
     }
 
     h1 {

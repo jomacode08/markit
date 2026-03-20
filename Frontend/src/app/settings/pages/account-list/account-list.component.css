@@ -12,5 +12,5 @@
   }
 }
 #addAccountBtn:hover {
-  background-color: var(--surface-1);
+  background-color: var(--p-surface-900);
 }

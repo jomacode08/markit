@@ -5,7 +5,7 @@
 }
 
 article {
-  background-color: var(--surface-1);
+  background-color: var(--p-surface-900);
   border-radius: .75rem;
   border: 1px solid var(--surface-border);
 }
@@ -27,6 +27,6 @@ article {
   color: var(--text-secondary);
   font-weight: 300;
   span {
-    background-color: var(--surface-1);
+    background-color: var(--p-surface-900);
   }
 }

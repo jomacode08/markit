@@ -13,7 +13,7 @@
   border: 1px solid var(--border-color);
   border-radius: .375rem;
   padding: .5rem 0;
-  background-color: var(--paper-bg);
+  background-color: var(--p-surface-950);
 }
 .search-box:focus-within {
   outline: 2px solid transparent; 
@@ -70,7 +70,7 @@ span.fa-search{
   padding: .5rem 0;
 }
 .item-result:hover {
-  background-color: var(--surface-2);
+  background-color: var(--p-surface-800);
 }
 .item-result .name {
   font-weight: 500;

@@ -17,12 +17,12 @@ button {
 }
 
 .filter-container .filter:hover {
-  background-color: var(--surface-1);
+  background-color: var(--p-surface-900);
 }
 
 .filter-container .filter.active {
   color: var(--text-primary);
-  background-color: var(--surface-2);
+  background-color: var(--p-surface-800);
   font-weight: 500;
 }
 
@@ -41,7 +41,7 @@ button {
 }
 
 .item:hover {
-  background-color: var(--surface-1);
+  background-color: var(--p-surface-900);
   cursor: pointer;
 }
 
@@ -88,7 +88,7 @@ button {
 .search-icon {
   border-radius: 9999px;
   padding: 1rem;
-  background-color: var(--paper-bg)
+  background-color: var(--p-surface-950)
 }
 .search-icon .fa {
   font-size: 48px;

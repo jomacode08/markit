@@ -1,6 +1,6 @@
 #main-bar-container {
   z-index: 1103;
-  background-color: var(--surface-1);
+  background-color: var(--p-surface-900);
 }
 
 #main-container {
