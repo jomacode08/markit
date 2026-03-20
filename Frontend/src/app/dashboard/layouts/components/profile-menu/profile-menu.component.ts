@@ -27,20 +27,20 @@ import { RouterModule } from '@angular/router';
     >
       <ng-template #item let-item>
         <ng-container *ngIf="item.route; else elseBlock">
-          <a [routerLink]="item.route" class="p-menuitem-link">
+          <a [routerLink]="item.route" class="p-menu-item-link">
             <i [class]="item.icon"></i>
-            <span class="ml-3 p-menuitem-text">{{ item.label }}</span>
+            <span class="ml-3">{{ item.label }}</span>
           </a>
         </ng-container>
         <ng-template #elseBlock>
           <button
             type="button"
-            class="p-menuitem-link border-none"
+            class="p-menu-item-link border-none"
             [attr.aria-label]="item.label"
             (click)="item.command"
           >
             <i [class]="item.icon"></i>
-            <span class="ml-3 p-menuitem-text">{{ item.label }}</span>
+            <span class="ml-3">{{ item.label }}</span>
           </button>
         </ng-template>
       </ng-template>

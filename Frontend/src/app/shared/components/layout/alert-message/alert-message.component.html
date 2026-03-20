@@ -55,7 +55,10 @@
 <!-- Confirm Dialog -->
 <p-confirmDialog styleClass="max-w-10 md:max-w-25rem" #confirmDialog>
     <ng-template #message let-message>
-        <div class="p-confirm-dialog-message">
+        <div class="p-confirmdialog-icon">
+            <i [ngClass]="message.icon"></i>
+        </div>
+        <div class="p-confirmdialog-message">
             {{ message.message }}
         </div>
     </ng-template>

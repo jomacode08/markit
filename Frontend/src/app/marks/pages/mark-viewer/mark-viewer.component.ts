@@ -5,10 +5,8 @@ import { CommonModule } from '@angular/common';
 import { Component, signal, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { ChipModule } from 'primeng/chip';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Editor } from '@tiptap/core';
-import { GalleriaModule } from 'primeng/galleria';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -40,12 +38,10 @@ import { SharedData } from './../../components/block-menu/block-menu.component';
         BlockComponent,
         BlockNavigatorComponent,
         ButtonModule,
-        ChipModule,
         CommonModule,
         EmojiPickerComponent,
         FloatingActionButtonComponent,
         FloatingMenuComponent,
-        GalleriaModule,
         MarkAutosaveIndicatorComponent,
         MarkBreadcrumbComponent,
         ProgressSpinnerModule,

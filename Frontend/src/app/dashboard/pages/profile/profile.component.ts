@@ -3,8 +3,10 @@ import { Component, signal, ChangeDetectionStrategy, OnInit } from '@angular/cor
 import { delay, Observable, tap } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
+import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
 import { Creator, Gender } from './../../interfaces/creator';
@@ -12,21 +14,23 @@ import { CreatorService } from '../../services/creator.service';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
+import { Skeleton } from "primeng/skeleton";
 
 @Component({
     selector: 'app-profile',
     imports: [
-      CommonModule,
-      DatePickerModule,
-      DividerModule,
-      ErrorFieldComponent,
-      GeneralButtonComponent,
-      RadioButtonModule,
-      ReactiveFormsModule,
-      SigninMethodsComponent,
-    ],
+    ButtonModule,
+    CommonModule,
+    DatePickerModule,
+    DividerModule,
+    ErrorFieldComponent,
+    InputTextModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
+    SigninMethodsComponent,
+    Skeleton
+],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush

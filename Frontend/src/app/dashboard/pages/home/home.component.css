@@ -169,3 +169,10 @@ button.access:hover {
 .border-dashed-b {
   border-bottom: 1px dashed var(--border-color);
 }
+
+.text-red {
+  color: var(--p-red-400);
+}
+.text-green {
+  color: var(--p-green-400);
+}

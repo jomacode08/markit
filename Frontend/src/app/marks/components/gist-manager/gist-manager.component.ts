@@ -3,6 +3,7 @@ import { NgClass } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AngularNodeViewComponent, TiptapDraggableDirective } from 'ngx-tiptap';
+import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -20,6 +21,7 @@ type NodeAttributes = {
 @Component({
     selector: 'gist-manager',
     imports: [
+      ButtonModule,
       GistLoaderComponent,
       GistManagerIconPipe,
       GistViewerComponent,

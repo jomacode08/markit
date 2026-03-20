@@ -4,7 +4,7 @@
         <div class="grid my-5">
             <!-- Picture -->
             <div class="col-12 md:col-5 flex justify-content-center">
-                <div class="p-avatar">
+                <div class="avatar">
                     @if (creator.picture) {
                         <img class="border-circle" [src]="convertToLargerImageUrl(creator.picture)" alt="user picture" referrerpolicy="no-referrer">
                     }
@@ -70,7 +70,6 @@
                     class="w-full"
                     formControlName="birthDate"
                     inputId="birthDate"
-                    inputStyleClass="square"
                     dateFormat="dd/mm/yy"
                     dataType="string"
                     [maxDate]="maxBirthDate"
@@ -112,13 +111,14 @@
             <!-- Submit Button -->
              <div class="flex justify-content-end">
                  <div class="w-full md:w-12rem">
-                     <shared-general-button
-                         severity="primary"
-                         label="Update profile"
-                         icon="fa fa-pencil"
-                         [submit]="true"
-                         [disabled]="submit()"
-                     ></shared-general-button>
+                    <p-button
+                        type="submit"
+                        size="small"
+                        severity="primary"
+                        label="Update profile"
+                        icon="fa fa-pencil"
+                        [disabled]="submit()"
+                    />
                  </div>
              </div>
         </form>

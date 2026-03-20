@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { CollectionItem, CollectionItemAction, CollectionItemType } from './../../interfaces/collection-item';
@@ -14,11 +16,13 @@ import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker
 @Component({
     selector: 'app-collection-item-dialog',
     imports: [
-        CommonModule,
-        ErrorFieldComponent,
-        ReactiveFormsModule,
-        ProgressSpinnerModule,
-        EmojiPickerComponent,
+      ButtonModule,
+      CommonModule,
+      EmojiPickerComponent,
+      ErrorFieldComponent,
+      InputTextModule,
+      ReactiveFormsModule,
+      ProgressSpinnerModule,
     ],
     templateUrl: './collection-item-dialog.component.html',
     styleUrl: './collection-item-dialog.component.css'

@@ -2,15 +2,16 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { finalize } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SharedModule } from 'primeng/api';
-import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { DemoService } from '../../services/demo.service';
 import { DemoSettings } from '../../interfaces/demo-settings';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
-import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { Router } from '@angular/router';
 import { ROUTES } from '../../../shared/utils/constant';
@@ -18,12 +19,13 @@ import { ROUTES } from '../../../shared/utils/constant';
 @Component({
     selector: 'app-demo-form',
     imports: [
-        ErrorFieldComponent,
-        GeneralButtonComponent,
-        InputNumberModule,
-        ReactiveFormsModule,
-        SharedModule,
-        ToggleButtonModule,
+      ButtonModule,
+      ErrorFieldComponent,
+      InputTextModule,
+      InputNumberModule,
+      ReactiveFormsModule,
+      SharedModule,
+      ToggleSwitchModule,
     ],
     styleUrl: './demo-form.component.css',
     templateUrl: './demo-form.component.html',

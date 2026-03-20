@@ -26,19 +26,9 @@ label {
   border: 1px solid var(--border-color);
 }
 
-.icon-container, .item-name input {
+.icon-container {
   padding: .5rem .75rem;
   border-radius: .375rem;
-}
-.item-name input {
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-primary);
-  background-color: transparent;
-  width: 100%;
-  border: none;
-}
-.item-name input::placeholder {
-  color: var(--text-secondary)
 }
 .item-name, .item-emoji {
   display: flex;

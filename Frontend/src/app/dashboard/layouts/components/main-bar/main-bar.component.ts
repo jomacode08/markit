@@ -13,11 +13,11 @@ import { ProfileMenu } from '../profile-menu/profile-menu.component';
     selector: 'app-main-bar',
     templateUrl: './main-bar.component.html',
     imports: [
-        ButtonModule,
-        RouterLink,
-        TooltipModule,
-        RouterLinkActive,
-        ProfileMenu,
+      ButtonModule,
+      RouterLink,
+      TooltipModule,
+      RouterLinkActive,
+      ProfileMenu,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     styleUrl: './main-bar.component.css'

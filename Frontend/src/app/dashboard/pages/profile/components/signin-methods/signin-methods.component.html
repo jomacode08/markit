@@ -10,11 +10,13 @@
                 </div>
             </header>
             <footer class="action">
-                <shared-general-button
+                <p-button
+                    type="button"
+                    size="small"
+                    severity="info"
                     label="Change"
-                    severity="secondary"
                     [disabled]="true"
-                    />
+                />
             </footer>
         </article>
         <!-- Password -->
@@ -29,10 +31,12 @@
                 </div>
             </header>
             <footer class="action">
-                <shared-general-button
+                <p-button
+                    type="button"
+                    size="small"
+                    severity="info"
                     [label]="signInMethods.hasPassword ? 'Change':'Configure'"
                     [disabled]="true"
-                    severity="secondary"
                 />
             </footer>
         </article>
@@ -49,17 +53,21 @@
                     </div>
                 </header>
                 <footer class="action">
-                    @if (externalMethod.configured) {                        
-                        <shared-general-button
+                    @if (externalMethod.configured) {  
+                        <p-button
+                            type="button"
+                            size="small"
                             label="Remove"
                             severity="danger"
                             [disabled]="isSubmit()"
                             (click)="onRemoveLogin(externalMethod)"
                         />
                     }@else {                        
-                        <shared-general-button
+                        <p-button
+                            type="button"
+                            size="small"
                             label="Configure"
-                            severity="secondary"
+                            severity="info"
                             [disabled]="isSubmit()"
                             (click)="onConfigureLogin(externalMethod)"
                         />

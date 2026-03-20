@@ -7,6 +7,7 @@
         <div class="grid">
             <div class="col-12 md:col-9">
                 <input
+                    pInputText
                     id="url"
                     formControlName="url"
                     type="text"
@@ -16,10 +17,11 @@
                 >
             </div>
             <div class="col-12 md:col-3">
-                <shared-general-button
+                <p-button
+                    type="submit"
+                    size="small"
                     label="Load Gist"
                     severity="primary"
-                    [submit]="true"
                 />
             </div>
         </div>

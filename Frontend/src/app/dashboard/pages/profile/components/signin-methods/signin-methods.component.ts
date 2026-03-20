@@ -2,9 +2,9 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 
+import { ButtonModule } from 'primeng/button';
 import { SharedModule } from 'primeng/api';
 
-import { GeneralButtonComponent } from "../../../../../shared/components/ui/buttons/general-button.component";
 import { AuthService } from '../../../../../auth/services/auth.service';
 import { ExternalSignInMethod, LoginProvider, LoginPurpose, SignInMethods } from '../../../../../auth/interfaces/signin-methods';
 import { LoginProviderIconPipe } from '../../../../../shared/pipes/login-provider-icon.pipe';
@@ -17,10 +17,10 @@ import { CustomMessageService } from '../../../../../shared/services/custom-mess
 @Component({
     selector: 'profile-signin-methods',
     imports: [
-        SharedModule,
-        GeneralButtonComponent,
-        AsyncPipe,
-        LoginProviderIconPipe,
+      AsyncPipe,
+      ButtonModule,
+      SharedModule,
+      LoginProviderIconPipe,
     ],
     templateUrl: './signin-methods.component.html',
     styleUrl: './signin-methods.component.css',

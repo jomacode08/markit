@@ -5,8 +5,8 @@ import { DatePipe } from '@angular/common';
 import { CodeEditor } from '@acrodata/code-editor';
 import { DynamicDialogRef, DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Extension } from '@codemirror/state';
+import { InputTextModule } from 'primeng/inputtext';
 import { languages } from '@codemirror/language-data';
-import { TooltipModule } from 'primeng/tooltip';
 
 import { CodeEditorOptions } from '../../interfaces/code-editor/code-editor-options';
 import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme';
@@ -15,7 +15,12 @@ import { GistFilePickerComponent, GistFilePickerSharedData } from '../gist-file-
 
 @Component({
     selector: 'gist-viewer',
-    imports: [FormsModule, DatePipe, CodeEditor, TooltipModule],
+    imports: [
+      CodeEditor,
+      DatePipe,
+      FormsModule,
+      InputTextModule,
+    ],
     templateUrl: './gist-viewer.component.html',
     styleUrl: './gist-viewer.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush

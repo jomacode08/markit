@@ -7,6 +7,7 @@
             <!-- Block information -->
             @if (block.editable) {
                 <input
+                    pInputText
                     id="{{ 'title' + $index }}"
                     maxlength="255"
                     type="text"
@@ -33,7 +34,8 @@
                 @if (block.editable) {
                     <!-- Save Button -->
                     <p-button
-                        styleClass="w-2rem p-0 border-none text-green-400"
+                        styleClass="w-2rem p-0 border-none text-green"
+                        text
                         [pTooltip]="'Save'"
                         [icon]="'fa fa-check'"
                         (onClick)="onUpdateBlockButtonClick($index)"
@@ -42,6 +44,7 @@
                     <!-- Edit Button -->
                     <p-button
                         styleClass="w-2rem p-0 border-none text-secondary"
+                        text
                         [pTooltip]="'Update'"
                         [icon]="'fa fa-pencil'"
                         (onClick)="onUpdateBlockButtonClick($index)"
@@ -52,6 +55,7 @@
                     styleClass="w-2rem p-0 border-none text-secondary"
                     icon="fa fa-trash"
                     pTooltip="Delete"
+                    text
                     [disabled]="block.id === currentBlockId || blocks().length === 1"
                     (onClick)="onDeleteBlockButtonClick($index)"
                 />
@@ -65,28 +69,30 @@
         aria-label="Add block"
         (click)="onAddBlockButtonClick()"
     >
-        <span class="fa fa-plus mr-2 text-green-400"></span>Add block
+        <span class="fa fa-plus mr-2"></span>Add block
     </button>
 </div>
 <!-- Footer -->
 <div class="modal-footer flex align-items-center justify-content-end">
     <div class="flex gap-2">
-        <button
+        <p-button
             id="cancelBtn"
             type="button"
+            size="small"
+            severity="secondary"
+            label="Cancel"
             aria-label="Cancel"
             (click)="onCancel()"
-        >
-            Cancel
-        </button>
-        <button
+        />
+        <p-button
             id="saveBtn"
             type="button"
+            size="small"
+            severity="primary"
+            label="Confirm"
             aria-label="Save"
             [disabled]="!canSaveChanges()"
             (click)="onSaveChangesButtonClick()"
-        >
-            Confirm
-        </button>
+        />
     </div>
 </div>

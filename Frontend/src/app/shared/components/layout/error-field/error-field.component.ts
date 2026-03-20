@@ -3,9 +3,10 @@ import { ValidationField } from '../../../interfaces/form/validation-field.inter
 import { ErrorFieldMessagePipe } from '../../../pipes/error-field-message.pipe';
 
 @Component({
-    selector: 'shared-error-field',
-    imports: [ErrorFieldMessagePipe],
-    templateUrl: './error-field.component.html'
+  selector: 'shared-error-field',
+  imports: [ErrorFieldMessagePipe],
+  templateUrl: './error-field.component.html',
+  styleUrl: './error-field.component.css'
 })
 export class ErrorFieldComponent {
   

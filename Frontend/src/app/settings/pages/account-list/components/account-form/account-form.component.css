@@ -35,10 +35,6 @@ label {
   font-weight: 500;
 }
 
-input.invalid {
-  border-color: var(--red-600);
-}
-
 button {
   padding: 0.5rem 1rem;
   border-radius: 6px;

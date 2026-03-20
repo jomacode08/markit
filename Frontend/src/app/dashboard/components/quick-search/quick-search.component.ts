@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { debounceTime, filter, Subject, switchMap } from 'rxjs';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { SearchFilters, DocumentService } from '../../services/document.service';
 import { Router } from '@angular/router';
@@ -22,7 +23,8 @@ enum SearchState {
     imports: [
         CommonModule,
         FormsModule,
-        ProgressSpinnerModule
+        InputTextModule,
+        ProgressSpinnerModule,
     ],
     templateUrl: './quick-search.component.html',
     styleUrl: './quick-search.component.css',

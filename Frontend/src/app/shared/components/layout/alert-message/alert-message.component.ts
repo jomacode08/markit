@@ -12,8 +12,7 @@ import { ToastModule } from 'primeng/toast';
         CommonModule,
         ToastModule,
     ],
-    templateUrl: './alert-message.component.html',
-    styleUrls: ['./alert-message.component.scss']
+    templateUrl: './alert-message.component.html'
 })
 export class AlertMessageComponent {
 

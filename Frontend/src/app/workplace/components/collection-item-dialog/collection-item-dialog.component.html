@@ -9,11 +9,11 @@
             <label for="name" class="text-sm font-medium mb-2">Name</label>
             <input
                 #nameInput
+                pInputText
                 id="name"
                 autocomplete="off"
                 formControlName="name"
                 maxlength="255"
-                pInputText
                 type="text"
                 placeholder="Enter name..."
             />
@@ -38,30 +38,25 @@
 
     <div class="modal-footer w-full flex justify-content-end gap-2">
         <!-- Cancel button -->
-        <button
+        <p-button
             id="cancelBtn"
             type="button"
+            severity="secondary"
+            label="Cancel"
+            size="small"
             aria-label="cancel"
-            (click)="onCancel()"
-        >
-            Cancel
-        </button>
+            (onClick)="onCancel()"
+        />
         <!-- Submit button -->
-        <button
+        <p-button
             id="saveBtn"
             type="submit"
-            aria-label="create"
+            severity="primary"
+            label="Cancel"
+            size="small"
+            label="Save"
+            aria-label="Save"
             [disabled]="submit"
-        >
-            <div class="flex justify-content-center align-items-center">
-                <span [ngClass]="{ 'mr-2': submit }" >Save</span>
-                @if (submit) {
-                    <p-progressSpinner
-                        [style]="{ display: 'flex', width: '1rem', height: '1rem' }"
-                        strokeWidth="4"
-                    ></p-progressSpinner>
-                }
-            </div>
-        </button>
+        />
     </div>
 </form>

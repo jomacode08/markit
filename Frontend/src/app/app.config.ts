@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { CustomPreset } from './shared/styles/theme/custom-preset';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,7 +28,13 @@ export const appConfig: ApplicationConfig = {
     ),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: CustomPreset,
+        options: {
+          cssLayer: {
+            name: 'primeng',
+            order: 'primeng, project'
+          }
+        }
       }
     }),
     {

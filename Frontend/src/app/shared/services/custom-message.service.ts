@@ -66,6 +66,9 @@ export class CustomMessageService {
       message: confirm.message,
       header: confirm.header,
       icon: confirm.icon ?? 'fa fa-warning',
+      acceptIcon: 'fa-solid fa-check',
+      rejectIcon: 'fa-solid fa-xmark',
+      rejectButtonProps: { severity: 'danger' },
       accept: () => {
         confirm.accept();
       },

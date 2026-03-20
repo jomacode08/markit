@@ -15,18 +15,19 @@
     </ng-template>
     <!-- Icon buttons -->
     <ng-template #icons>
-        <button
+        <p-button
             id="reloadBtn"
-            class="p-panel-header-icon"
             type="button"
-            aria-label="Reload"
+            severity="secondary"
+            ariaLabel="Reload"
+            icon="fa fa-arrows-rotate"
             pTooltip="Reload"
             tooltipPosition="top"
+            rounded
+            text
             [disabled]="!gist() && managerState() === managerStates.active"
             (click)="onReloadButtonClick()"
-        >
-            <span class="fa fa-arrows-rotate"></span>    
-        </button>
+        />
     </ng-template>
     <!-- Body -->
     @defer (when gist() != undefined) {

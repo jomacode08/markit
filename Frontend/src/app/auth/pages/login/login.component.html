@@ -47,12 +47,13 @@
                 </div>
                 <!-- Login submit -->
                 <div>
-                    <shared-general-button
+                    <p-button
+                        type="submit"
                         severity="primary"
                         label="Sign In"
+                        size="small"
                         [disabled]="submit()"
-                        [submit]="true"
-                    ></shared-general-button>
+                    />
                 </div>
             </div>
         </form>
@@ -69,34 +70,40 @@
             <div class="grid">
                 <!-- Google Button -->
                 <div class="col-12 md:col-6">
-                    <shared-general-button
-                        severity="secondary"
+                    <p-button
+                        type="button"
+                        severity="info"
                         label="Google"
+                        size="small"
                         icon="fa-brands fa-google"
                         [disabled]="submit()"
                         (click)="onGoogleLogin()"
-                    ></shared-general-button>
+                    />
                 </div>
                 <!-- GitHub Button -->
                 <div class="col-12 md:col-6">
-                    <shared-general-button
-                        severity="secondary"
+                    <p-button
+                        type="button"
+                        severity="info"
                         label="GitHub"
+                        size="small"
                         icon="fa-brands fa-github"
                         [disabled]="submit()"
                         (click)="onGithubLogin()"
-                    ></shared-general-button>
-                    </div>
-                    <!-- Demo Button -->
-                    @if (isDemoAvailable()) {
+                    />
+                </div>
+                <!-- Demo Button -->
+                @if (isDemoAvailable()) {
                     <div class="col-12">
-                        <shared-general-button
+                        <p-button
+                            type="button"
                             severity="success"
                             label="Try Demo"
-                            icon="fa-solid fa-flask"
+                            size="small"
+                            icon="fa-solid  fa-flask"
                             [disabled]="submit()"
                             (click)="onTryDemo()"
-                        ></shared-general-button>
+                        />
                     </div>
                 }
             </div>

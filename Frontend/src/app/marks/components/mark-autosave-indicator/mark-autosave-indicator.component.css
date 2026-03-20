@@ -22,10 +22,10 @@ button {
 }
 
 .saved {
-  color: var(--green-500);
+  color: var(--p-green-500);
 }
 .error {
-  color: var(--yellow-500);
+  color: var(--p-yellow-500);
 }
 
 .spinner {

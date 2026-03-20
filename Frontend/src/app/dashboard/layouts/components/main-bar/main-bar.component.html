@@ -10,7 +10,7 @@
             <!-- Menu button for screens <= sm -->
             <p-button
                 class="md:hidden w-full"
-                styleClass="nav-button up-down-transition"
+                styleClass="nav-button"
                 icon="fa fa-bars"
                 pTooltip="Menu"
                 (onClick)="onShowNavigationSidebar.emit(navigationRutes)"
@@ -18,7 +18,7 @@
             <!-- Search -->
             <p-button
                 class="w-full"
-                styleClass="nav-button up-down-transition"
+                styleClass="nav-button"
                 icon="fa fa-search"
                 pTooltip="Search"
                 showDelay="250"
@@ -30,7 +30,7 @@
                     class="w-full hidden md:block"
                     styleClass="nav-button"
                     showDelay="250"
-                    routerLinkActive="p-menuitem-link-active"
+                    routerLinkActive="p-menu-item-link-active"
                     [pTooltip]="item.label"
                     [icon]="item.icon"
                     [routerLink]="item.route"
@@ -45,7 +45,7 @@
             <button
                 type="button"
                 aria-label="Profile image"
-                class="p-avatar border-none"
+                class="avatar border-none"
                 (click)="profileMenu.toggle($event)"
             >
                 @if ( userPictureUrl ) {

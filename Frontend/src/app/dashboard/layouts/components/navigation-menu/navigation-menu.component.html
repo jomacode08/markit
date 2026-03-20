@@ -10,7 +10,7 @@
         styleClass="transparent w-full py-3"
     >
         <ng-template #item let-item>
-            <a [routerLink]="item.route" routerLinkActive="p-menuitem-link-active" class="p-menuitem-link">
+            <a [routerLink]="item.route" routerLinkActive="p-menu-item-link-active" class="p-menu-item-link">
                 <i [class]="item.icon"></i>
                 <span class="ml-3 p-menuitem-text">{{ item.label }}</span>
             </a>
@@ -20,7 +20,7 @@
 <!-- User information and logout -->
 <div class="p-3 border-top-1 border-gray">
     <div class="flex align-items-center">
-        <div class="p-avatar">
+        <div class="avatar">
             @if ( userPictureUrl ) {
                 <img
                     [src]="userPictureUrl"

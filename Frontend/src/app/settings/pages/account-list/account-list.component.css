@@ -2,12 +2,15 @@
   display: block;
 }
 
-button {
+#addAccountBtn {
   padding: .5rem;
   cursor: pointer;
   border: 1px solid var(--border-color);
   transition: background-color 0.3s ease;
+  span.fa {
+    color: var(--p-green-400);
+  }
 }
-button:hover {
+#addAccountBtn:hover {
   background-color: var(--surface-1);
 }

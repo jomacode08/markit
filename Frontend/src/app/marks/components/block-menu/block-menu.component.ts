@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal, ChangeDetectionStrategy, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { Block } from './../../interfaces/block';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
@@ -29,6 +30,7 @@ export interface OnCloseResponse {
         ButtonModule,
         CommonModule,
         FormsModule,
+        InputTextModule,
         TooltipModule,
     ],
     templateUrl: './block-menu.component.html',

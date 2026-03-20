@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 
+import { InputTextModule } from 'primeng/inputtext';
+
 import { EmojiPickerComponent } from '../../../../../shared/components/ui/emoji-picker/emoji-picker.component';
 import { CollectionService } from '../../../../../workplace/services/collection.service';
 import { Block } from '../../../../../marks/interfaces/block';
@@ -15,8 +17,9 @@ import { CustomMessageService } from '../../../../../shared/services/custom-mess
 @Component({
     selector: 'home-hero',
     imports: [
-        EmojiPickerComponent,
-        ReactiveFormsModule,
+      EmojiPickerComponent,
+      InputTextModule,
+      ReactiveFormsModule,
     ],
     templateUrl: './hero.component.html',
     styleUrl: './hero.component.css',

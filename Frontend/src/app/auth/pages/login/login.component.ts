@@ -3,14 +3,15 @@ import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, sig
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { AuthRequest } from '../../interfaces/auth-request';
 import { AuthService } from '../../services/auth.service';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { ExternalLoginService } from '../../services/external-login.service';
-import { GeneralButtonComponent } from '../../../shared/components/ui/buttons/general-button.component';
 import { LoginProvider, LoginPurpose } from '../../interfaces/signin-methods';
 import { POPUP_NAMES } from '../../../shared/utils/constant';
 import { PopupService } from '../../../shared/services/popup.service';
@@ -23,11 +24,12 @@ import { DemoService } from '../../../settings/services/demo.service';
 @Component({
     selector: 'app-login',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        GeneralButtonComponent,
-        ErrorFieldComponent,
-        PasswordModule,
+      ButtonModule,
+      CommonModule,
+      InputTextModule,
+      ReactiveFormsModule,
+      ErrorFieldComponent,
+      PasswordModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './login.component.html',

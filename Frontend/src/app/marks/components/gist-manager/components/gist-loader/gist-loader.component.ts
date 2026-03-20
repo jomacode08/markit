@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { SharedModule } from 'primeng/api';
 
-import { GeneralButtonComponent } from "../../../../../shared/components/ui/buttons/general-button.component";
 import { ValidatorErrorField } from '../../../../../shared/utils/validator-error-field';
 import { ErrorFieldComponent } from "../../../../../shared/components/layout/error-field/error-field.component";
 import { ValidatorService } from '../../../../../shared/services/validator.service';
@@ -12,11 +13,12 @@ import { ValidatorService } from '../../../../../shared/services/validator.servi
 @Component({
     selector: 'gist-loader',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        SharedModule,
-        GeneralButtonComponent,
-        ErrorFieldComponent
+      ButtonModule,
+      CommonModule,
+      ErrorFieldComponent,
+      InputTextModule,
+      ReactiveFormsModule,
+      SharedModule,
     ],
     templateUrl: './gist-loader.component.html',
     styleUrl: './gist-loader.component.css',

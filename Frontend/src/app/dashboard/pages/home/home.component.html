@@ -113,7 +113,7 @@
                     <div class="text-sm  mb-2">New this week</div>
                     <div class="text-3xl font-bold">
                         <span id="weekMarksCount">{{ report.stats.weekMarksCount }}</span>
-                        <span *ngIf="true" class="fa-solid fa-fire text-red-400 text-2xl ml-2"></span>
+                        <span *ngIf="true" class="fa-solid fa-fire text-red text-2xl ml-2"></span>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@
                     </div>
                     <div
                         class="text-3xl font-bold"
-                        [ngClass]="{ 'text-green-400' : report.stats.todayMarksCount > 0}"
+                        [ngClass]="{ 'text-green' : report.stats.todayMarksCount > 0}"
                     >
                         <span>{{ report.stats.todayMarksCount > 0 ? '+ ' : '' }}</span>
                         <span id="todayMarksCount">{{ report.stats.todayMarksCount }}</span>

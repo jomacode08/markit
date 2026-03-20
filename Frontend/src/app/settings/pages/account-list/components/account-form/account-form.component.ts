@@ -6,7 +6,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
-import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { Account, PasswordRequest } from '../../../../interfaces/account';
 import { AccountService } from '../../../../services/account.service';
@@ -23,13 +23,13 @@ interface RoleOption {
 @Component({
     selector: 'app-account-form',
     imports: [
-        ButtonModule,
-        ErrorFieldComponent,
-        InputTextModule,
-        MultiSelectModule,
-        PasswordModule,
-        ReactiveFormsModule,
-        ToggleButtonModule,
+      ButtonModule,
+      ErrorFieldComponent,
+      InputTextModule,
+      MultiSelectModule,
+      PasswordModule,
+      ReactiveFormsModule,
+      ToggleSwitchModule,
     ],
     templateUrl: './account-form.component.html',
     styleUrl: './account-form.component.css'

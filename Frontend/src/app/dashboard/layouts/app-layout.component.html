@@ -9,7 +9,7 @@
         id="main-container"
         [ngClass]="{ 'max-width' : url() != homeUrl }"    
     >
-        <h1 *ngIf="titleComponent().length > 0" class="text-2xl font-medium mt-0 mb-4">{{ titleComponent() }}</h1>
+        <p *ngIf="titleComponent().length > 0" class="text-2xl font-medium mt-0 mb-4">{{ titleComponent() }}</p>
         <router-outlet />
     </section>
 </div>
@@ -18,8 +18,8 @@
 <ng-container *ngIf="sideBarConfig() as config">
     <p-drawer
         id="main-sidebar"
-        styleClass="h-full"
         showCloseIcon="false"
+        styleClass="main-sidebar"
         [modal]="false"
         [visible]="isSidebarVisible()"
         [position]="width <= 576 ? 'bottom' : 'left'"
