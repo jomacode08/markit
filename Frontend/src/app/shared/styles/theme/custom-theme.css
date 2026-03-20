@@ -50,6 +50,11 @@
     background-color: transparent;
     color: #ffffff;
   }
+  .external-login-button {
+    .p-button-icon {
+      font-size: 1.125rem;
+    }
+  }
   .p-button.nav-button {
     width: 100%;
     background-color: transparent;
