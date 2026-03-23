@@ -29,7 +29,7 @@ button {
 .file-numerator {
   padding: .25rem .5rem;
   margin-right: .5rem;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 
 button.file-info {
@@ -38,7 +38,7 @@ button.file-info {
   width: 100%;
   padding: .5rem;
   text-align: start;
-  color: var(--text-primary);
+  color: var(--p-text-color);
 
   .file-name {
     display: inline-block;
@@ -51,7 +51,7 @@ button.file-info {
     font-weight: 300;
     padding: .25rem .5rem;
     background: var(--p-highlight-info-background);
-    color: var(--text-primary);
+    color: var(--p-text-color);
     border-radius: 9999px;
   }
 }

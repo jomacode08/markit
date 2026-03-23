@@ -24,7 +24,7 @@ button.lg > span {
 }
 
 .picker-header {
-    border-bottom: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--p-overlay-modal-border-color);
     display: flex;
     justify-content: end;
     padding: 0 .5rem .5rem .5rem;

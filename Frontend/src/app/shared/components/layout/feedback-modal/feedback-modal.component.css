@@ -4,7 +4,7 @@
 
 .modal {
   padding: 2.5rem 2rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--p-content-border-color);
 }
 
 .header, .body {
@@ -13,7 +13,7 @@
 }
 
 .footer {
-  border-top: 1px dashed var(--border-color);
+  border-top: 1px dashed var(--p-content-border-color);
 }
 
 .icon-box {
@@ -35,7 +35,7 @@
   bottom: -5px;
 }
 .circle.inner {
-  background-color: var(--accent-color);
+  background-color: var(--p-primary-500);
   right: 5px;
 }
 .circle.outer {
@@ -43,11 +43,11 @@
   right: -8px;
 }
 .title {
-  color: var(--text-primary);
+  color: var(--p-text-color);
   text-align: center;
 }
 .header-message {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   text-align: center;
 }
 .transparent-box {
@@ -57,13 +57,13 @@
   gap: 1rem;
   border: 1px solid var(--p-highlight-primary-border);
   border-radius: .5rem;
-  color: var(--text-primary);
+  color: var(--p-text-color);
 }
 .accent-text {
-  color: var(--accent-color);
+  color: var(--p-primary-500);
 }
 .footer-message {
   font-size: .85rem;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   margin: .5rem 0;
 }

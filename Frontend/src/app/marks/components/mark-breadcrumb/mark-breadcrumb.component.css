@@ -6,11 +6,11 @@
 }
 
 .separator {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   padding: 0 .25rem;
 }
 .item {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   font-weight: 400;
   padding: .125rem 0.25rem;
   border: none;
@@ -20,5 +20,5 @@
 .item.collection:hover {
   cursor: pointer;
   background-color: var(--p-surface-800);
-  color: var(--text-primary)
+  color: var(--p-text-color)
 }

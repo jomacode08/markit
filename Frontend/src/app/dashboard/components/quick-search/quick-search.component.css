@@ -10,7 +10,7 @@
 
 .search-box {
   display: flex;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
   border-radius: .375rem;
   padding: .5rem 0;
   background-color: var(--p-surface-950);
@@ -18,8 +18,8 @@
 .search-box:focus-within {
   outline: 2px solid transparent; 
   outline-offset: 2px;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 0px #fff, 0 0 0 calc(1px + 0px) var(--accent-color), 0 0 #0000;
+  border-color: var(--p-primary-500);
+  box-shadow: 0 0 0 0px #fff, 0 0 0 calc(1px + 0px) var(--p-primary-500), 0 0 #0000;
 }
 span.fa-search{
   display: flex;
@@ -27,19 +27,19 @@ span.fa-search{
   padding: 0 1rem;
 }
 .search-box .fa-search {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 .search-box > input {
   background-color: transparent;
   border: none;
-  color: var(--text-primary);
+  color: var(--p-text-color);
   width: 100%;
   padding: 0;
 }
 
 .filters {
   display: flex;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--p-content-border-color);
   padding: 0 1rem;
 }
 .filters > button.filter {
@@ -49,10 +49,10 @@ span.fa-search{
   font-size: .875rem;
   line-height: 1.25rem;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 .filter.active {
-  border-bottom: 2px solid var(--accent-color) !important;
+  border-bottom: 2px solid var(--p-primary-500) !important;
 }
 
 .results {
@@ -90,7 +90,7 @@ span.fa-search{
 }
 .no-results p {
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   font-weight: 300;
 }
 .no-results i {
@@ -98,18 +98,18 @@ span.fa-search{
   font-size: 2rem;
 }
 .no-results i.gray {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 .no-results i.purple-highlight {
-  color: var(--secondary-accent);
+  color: var(--p-secondary-500);
 }
 
 .error-btn {
   cursor: pointer;
   border: none;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   transition: 0.3s ease;
 }
 .error-btn:hover {
-  color: var(--secondary-accent);
+  color: var(--p-secondary-500);
 }

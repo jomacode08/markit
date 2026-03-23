@@ -5,16 +5,16 @@
 button#fileBtn {
   border: none;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   transition: all 0.3s ease;
 }
 button#fileBtn:hover {
-  color: var(--accent-color);
+  color: var(--p-primary-500);
 }
 
 header {
   padding: 0 1.25rem 1rem 1.25rem;
-  border-bottom: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--p-overlay-modal-border-color);
 }
 
 body {

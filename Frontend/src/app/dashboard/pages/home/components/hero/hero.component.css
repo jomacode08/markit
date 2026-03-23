@@ -21,7 +21,7 @@ button {
 button:hover:not(:disabled) {
   span {
     text-decoration: underline;
-    color: var(--text-primary);
+    color: var(--p-text-color);
   }
 }
 button:disabled {
@@ -36,26 +36,26 @@ input {
   margin: 0;
 }
 input:disabled {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 
 .bg-pattern {
   background: repeating-radial-gradient(
     circle,
-    var(--border-color) 0px,
-    var(--border-color) 1px,
+    var(--p-content-border-color) 0px,
+    var(--p-content-border-color) 1px,
     transparent 1px,
     transparent 10px
   ) 0% 0% / 20px 20px;
 }
   
 .icon, .name, .message {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
   background-color: var(--p-surface-950);
 }
 
 .message {
-  color: var(--text-primary);
+  color: var(--p-text-color);
   display: flex;
   align-items: center;
   justify-content: center;

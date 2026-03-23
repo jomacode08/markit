@@ -58,16 +58,16 @@ a {
         position: sticky;
         width: var(--main-bar-width-md);
         top: 0;
-        border-right: 1px solid var(--border-color);
+        border-right: 1px solid var(--p-content-border-color);
 
         nav {
             height: 100%;
             flex-direction: column;
             .brand {
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid var(--p-content-border-color);
             }
             .profile {
-                border-top: 1px solid var(--border-color);
+                border-top: 1px solid var(--p-content-border-color);
             }
         }
     }
@@ -93,14 +93,14 @@ a {
         bottom: 0;
         left: 0;
         justify-content: space-between;
-        border-top: 1px solid var(--border-color);
+        border-top: 1px solid var(--p-content-border-color);
     }
     #main-bar-container {
         width: 100%;
         position: sticky;
         top: 0;
         background-color: var(--p-surface-950);
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--p-content-border-color);
 
         nav{
             width: 100%;

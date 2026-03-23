@@ -32,21 +32,23 @@ export const CustomPreset = definePreset(Aura, {
             900: '{violet.900}',
             950: '{violet.950}'
         },
+        secondary: {
+            50: '{indigo.50}',
+            100: '{indigo.100}',
+            200: '{indigo.200}',
+            300: '{indigo.300}',
+            400: '{indigo.400}',
+            500: '{indigo.500}',
+            600: '{indigo.600}',
+            700: '{indigo.700}',
+            800: '{indigo.800}',
+            900: '{indigo.900}',
+            950: '{indigo.950}'
+        },
         colorScheme: {
             dark: {
-                surface: {
-                    0: '{surkit.0}',
-                    50: '{surkit.50}',
-                    100: '{surkit.100}',
-                    200: '{surkit.200}',
-                    300: '{surkit.300}',
-                    400: '{surkit.400}',
-                    500: '{surkit.500}',
-                    600: '{surkit.600}',
-                    700: '{surkit.700}',
-                    800: '{surkit.800}',
-                    900: '{surkit.900}',
-                    950: '{surkit.950}'
+                content: {
+                    borderColor: '{zinc-700}'
                 },
                 highlight: {
                     primary: {
@@ -69,6 +71,30 @@ export const CustomPreset = definePreset(Aura, {
                         background: 'color-mix(in srgb, {red.500}, transparent 85%)',
                         border: 'color-mix(in srgb, {red.500}, transparent 70%)',
                     },
+                },
+                overlay: {
+                    modal: {
+                        borderColor: '{zinc.700}',
+                    },
+                },
+                surface: {
+                    0: '{surkit.0}',
+                    50: '{surkit.50}',
+                    100: '{surkit.100}',
+                    200: '{surkit.200}',
+                    300: '{surkit.300}',
+                    400: '{surkit.400}',
+                    500: '{surkit.500}',
+                    600: '{surkit.600}',
+                    700: '{surkit.700}',
+                    800: '{surkit.800}',
+                    900: '{surkit.900}',
+                    950: '{surkit.950}'
+                },
+                text: {
+                    color: '#e9ecef',
+                    hoverColor: '#adb5bd',
+                    mutedColor: '#ffffff99',
                 }
             }
         }
@@ -114,12 +140,12 @@ export const CustomPreset = definePreset(Aura, {
                         },
                         secondary: {
                             background: 'transparent',
-                            borderColor: 'var(--border-color)',
-                            color: 'var(--text-color)',
+                            borderColor: '{content.borderColor}',
+                            color: '{text.color}',
                             // Hover
                             hoverBackground: '{surface.900}',
-                            hoverColor: 'var(--text-color)',
-                            hoverBorderColor: 'var(--border-color)'
+                            hoverColor: '{text.color}',
+                            hoverBorderColor: '{content.borderColor}'
                         },
                         success: {
                             background: '{highlight.success.background}',
@@ -164,7 +190,7 @@ export const CustomPreset = definePreset(Aura, {
                     text: {
                         secondary: {
                             // Hover
-                            color: 'var(--text-foreground)',
+                            color: '{text.mutedColor}',
                             hoverBackground: '{surface.800}',
                         }
                     }
@@ -184,7 +210,7 @@ export const CustomPreset = definePreset(Aura, {
         divider: {
             content: {
                 background: '{surface.950}',
-                color: 'var(--primary-text)'
+                color: '{text.color}'
             },
             css: () => `
                 .p-divider-content {
@@ -195,7 +221,7 @@ export const CustomPreset = definePreset(Aura, {
         confirmdialog: {
             icon: {
                 size: '3rem',
-                color: 'var(--secondary-accent)'
+                color: '{secondary.500}'
             }
         },
         dataview: {
@@ -236,7 +262,7 @@ export const CustomPreset = definePreset(Aura, {
                 dark: {
                     root: {
                         background: '{surface.900}',
-                        borderColor: '{surface.700}',
+                        borderColor: '{content.borderColor}',
                         placeholderColor: '{surface.300}'
                     }
                 }
@@ -266,8 +292,8 @@ export const CustomPreset = definePreset(Aura, {
                 dark: {
                     item: {
                         icon: {
-                            color: 'var(--text-secondary)',
-                            focusColor: 'var(--text-primary)'
+                            color: '{text.hoverColor}',
+                            focusColor: '{text-color}'
                         }
                     }
                 }
@@ -302,7 +328,7 @@ export const CustomPreset = definePreset(Aura, {
             colorScheme: {
                 dark: {
                     navButton: {
-                        selectedBackground: 'var(--highlight-primary-background)'
+                        selectedBackground: '{highlight.primary.background}'
                     }
                 }
             },
@@ -365,8 +391,8 @@ export const CustomPreset = definePreset(Aura, {
             colorScheme: {
                 dark: {
                     root: {
-                        background: '{primary.400}',
-                        color: '{primary.950}'
+                        background: '{secondary.400}',
+                        color: '{secondary.950}'
                     }
                 }
             },

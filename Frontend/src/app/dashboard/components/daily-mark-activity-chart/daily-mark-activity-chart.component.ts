@@ -50,12 +50,12 @@ interface WeekDayBar {
       border-radius: 0;
       margin-bottom: .25rem;
       padding: 0;
-      border: 1px solid var(--accent-color);
+      border: 1px solid var(--p-primary-500);
       cursor: pointer;
       background: repeating-linear-gradient(
         45deg,
-        var(--accent-color) 0px,
-        var(--accent-color) 1px,
+        var(--p-primary-500) 0px,
+        var(--p-primary-500) 1px,
         transparent 1px,
         transparent 2px
       ) 0% 0% / 2px 2px;
@@ -63,7 +63,7 @@ interface WeekDayBar {
     .bar-label {
       font-size: .75rem;
       line-height: 1rem;
-      color: var(--text-secondary);
+      color: var(--p-text-hover-color);
     }
   `,
     changeDetection: ChangeDetectionStrategy.OnPush

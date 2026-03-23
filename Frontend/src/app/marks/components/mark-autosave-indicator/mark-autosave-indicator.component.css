@@ -18,7 +18,7 @@ button {
 }
 
 .status {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 
 .saved {
@@ -30,7 +30,7 @@ button {
 
 .spinner {
   animation: spin 0.8s linear infinite;
-  color: var(--accent-color);
+  color: var(--p-primary-500);
 }
 
 @keyframes spin {

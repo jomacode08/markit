@@ -18,23 +18,23 @@ button.item {
 }
 button.item:hover:enabled {
   span.fa {
-    color: var(--text-primary);
+    color: var(--p-text-color);
   }
 }
 button.item:disabled {
   color: var(--p-surface-700);
 }
 span.fa {
-  color: var(--text-foreground);
+  color: var(--p-text-muted-color);
   transition: 0.5s;
 }
 span.label {
   font-size: 1rem;
-  color: var(--text-foreground);
+  color: var(--p-text-muted-color);
   margin-top: 0.25rem;
 }
 .active {
-  color: var(--secondary-accent) !important;
+  color: var(--p-secondary-500) !important;
 }
 
 .scroll-container {

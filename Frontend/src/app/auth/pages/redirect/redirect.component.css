@@ -39,22 +39,22 @@
 }
 
 .message-title {
-    color: var(--text-primary);
+    color: var(--p-text-color);
     margin: 0;
     font-weight: 600;
 }
 
 .message-description {
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     margin: 0;
     line-height: 1.6;
     font-size: 1rem;
 }
 
 .message-detail {
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--p-content-border-color);
     padding-top: .25rem;
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     margin: 0;
     line-height: 1.6;
     font-size: 0.85rem;

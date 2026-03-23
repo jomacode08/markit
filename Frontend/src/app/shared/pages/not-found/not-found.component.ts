@@ -37,7 +37,7 @@ import { ButtonModule } from 'primeng/button';
     .error-content {
       padding: 2rem;
       background-color: var(--p-surface-800);
-      border: 1px solid var(--surface-border);
+      border: 1px solid var(--p-overlay-modal-border-color);
       border-radius: 0.5rem;
     }
 
@@ -55,11 +55,11 @@ import { ButtonModule } from 'primeng/button';
     h2 {
       font-size: 2rem !important;
       margin: 1rem 0;
-      color: var(--text-primary);
+      color: var(--p-text-color);
     }
 
     p {
-      color: var(--text-secondary);
+      color: var(--p-text-hover-color);
       margin-bottom: 2rem;
     }
   `]

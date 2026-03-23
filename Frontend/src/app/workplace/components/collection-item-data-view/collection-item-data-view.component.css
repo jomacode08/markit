@@ -10,9 +10,9 @@ button {
 .filter-container .filter {
   font-size: .95rem;
   padding: 0.5rem 0.75rem;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   border-radius: .5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
   transition: all 0.3s ease;
 }
 
@@ -21,7 +21,7 @@ button {
 }
 
 .filter-container .filter.active {
-  color: var(--text-primary);
+  color: var(--p-text-color);
   background-color: var(--p-surface-800);
   font-weight: 500;
 }
@@ -29,7 +29,7 @@ button {
 .item {
   display: flex;
   transition: background-color 0.3s ease;
-  border: 1px dashed var(--border-color);
+  border: 1px dashed var(--p-content-border-color);
   margin-bottom: .75rem;
 
   #collectionItemBtn {
@@ -50,7 +50,7 @@ button {
   border-radius: .5rem;
   margin-right: .75rem;
   font-size: 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
 }
 
 .grid > div {
@@ -68,7 +68,7 @@ button {
 }
 
 .actions-container button:hover span {
-  color: var(--text-primary) !important;
+  color: var(--p-text-color) !important;
 }
 
 .search-background-icon {

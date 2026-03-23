@@ -7,15 +7,15 @@
   background-repeat: repeat, repeat;
   background-image: linear-gradient(
     45deg,
-    var(--border-color) 1px,
+    var(--p-content-border-color) 1px,
     transparent 1px
   ),
-  linear-gradient(-45deg, var(--border-color) 1px, transparent 1px);
+  linear-gradient(-45deg, var(--p-content-border-color) 1px, transparent 1px);
   background-size: 10px 10px;
   background-origin: padding-box, padding-box;
   background-clip: border-box, border-box;
   span.fa-regular {
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     border-radius: .5rem;
   }
 }
@@ -26,7 +26,7 @@
 }
 .dashed-container:not(:first-child) {
   border-style: dashed;
-  border-color: var(--border-color);
+  border-color: var(--p-content-border-color);
   border-width: 1px 0 0 0;
 }
 .dashed-container > :first-child {
@@ -34,7 +34,7 @@
   max-width: 50rem;
   border-width: 0 1px;
   border-style: dashed;
-  border-color: var(--border-color);
+  border-color: var(--p-content-border-color);
   margin: 0 10px;
 }
 
@@ -46,12 +46,12 @@ button {
 button.view-all {
   font-size: .875rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   transition: all 0.3s ease;
 }
 
 button.view-all:hover {
-  color: var(--text-primary);
+  color: var(--p-text-color);
 }
 
 button.recent-mark {
@@ -91,7 +91,7 @@ button.recent-mark>.mark-description {
   padding: 3px;
 }
 .mark-item:not(:first-child) {
-  border-top: 1px dashed var(--border-color);
+  border-top: 1px dashed var(--p-content-border-color);
 }
 
 .mark-description>.icon {
@@ -100,13 +100,13 @@ button.recent-mark>.mark-description {
   margin-right: .75rem;
   font-size: 1.15rem;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
 }
 
 .quick-access,
 .access-item {
-  border-right: 1px dashed var(--border-color);
-  border-bottom: 1px dashed var(--border-color);
+  border-right: 1px dashed var(--p-content-border-color);
+  border-bottom: 1px dashed var(--p-content-border-color);
 }
 
 .quick-access h3,
@@ -121,7 +121,7 @@ button.recent-mark>.mark-description {
 .quick-access .access-wrapper {
   border-radius: 12px;
   padding: 4px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
 }
 
 .quick-access button.access {
@@ -133,7 +133,7 @@ button.recent-mark>.mark-description {
   padding: 1rem;
   border-radius: 8px;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
 }
 
 button.access:hover {
@@ -144,7 +144,7 @@ button.access:hover {
   height: 100%;
   padding: 1rem;
   transition: transform 0.2s ease;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
 }
 
 .stat-container.highlight-primary {
@@ -160,14 +160,14 @@ button.access:hover {
 .small-text {
   font-size: .75rem;
   text-align: start;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
 }
 
 .border-dashed-r {
-  border-right: 1px dashed var(--border-color);
+  border-right: 1px dashed var(--p-content-border-color);
 }
 .border-dashed-b {
-  border-bottom: 1px dashed var(--border-color);
+  border-bottom: 1px dashed var(--p-content-border-color);
 }
 
 .text-red {

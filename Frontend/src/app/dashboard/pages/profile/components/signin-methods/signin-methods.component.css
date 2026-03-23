@@ -4,12 +4,12 @@
 
 .rounded-card {
   height: 100%;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--p-overlay-modal-border-color);
   border-radius: 6px;
 }
 
 .card-item:not(:first-child){
-  border-top: 1px solid var(--surface-border);
+  border-top: 1px solid var(--p-overlay-modal-border-color);
 }
 
 .card-item {

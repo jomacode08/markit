@@ -7,9 +7,9 @@ button {
   cursor: pointer;
   border: none;
   padding: 0;
-  color: var(--text-primary);
+  color: var(--p-text-color);
 }
 button:disabled {
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   cursor: default;
 }

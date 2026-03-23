@@ -25,7 +25,7 @@ button {
     font-size: 1.75rem;
     font-weight: 600;
     background-color: var(--p-surface-950);
-    color: var(--text-primary);
+    color: var(--p-text-color);
     padding: 0;
   }
 

@@ -7,7 +7,7 @@
 article {
   background-color: var(--p-surface-900);
   border-radius: .75rem;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--p-overlay-modal-border-color);
 }
 
 .divider {
@@ -16,7 +16,7 @@ article {
   display: flex;
   align-items: center;
   div {
-    border-color: var(--surface-border);
+    border-color: var(--p-overlay-modal-border-color);
   }
 }
 .divider-label {
@@ -24,7 +24,7 @@ article {
   display: flex;
   justify-content: center;
   font-size: .875rem;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   font-weight: 300;
   span {
     background-color: var(--p-surface-900);

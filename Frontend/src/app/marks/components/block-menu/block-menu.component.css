@@ -15,13 +15,13 @@ input {
   width: 100%;
   padding: 0.5rem;
   background-color: var(--p-surface-950);
-  color: var(--text-primary);
+  color: var(--p-text-color);
 }
 
 #addBlockBtn {
   width: 100%;
   text-align: start;
-  color: var(--text-secondary);
+  color: var(--p-text-hover-color);
   padding: 0;
   padding: 0.5rem;
   transition: 0.3s all ease;
@@ -30,7 +30,7 @@ input {
   }
 }
 #addBlockBtn:hover {
-  color: var(--text-primary);
+  color: var(--p-text-color);
 }
 
 .block-item {
@@ -45,29 +45,29 @@ input {
   transition: border-color 0.3s ease-in-out;
 }
 .block-item.active {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
     background-image: repeating-linear-gradient(
     45deg,
     transparent,
     transparent 5px,
-    var(--surface-border) 5px,
-    var(--surface-border) 6px
+    var(--p-overlay-modal-border-color) 5px,
+    var(--p-overlay-modal-border-color) 6px
   );
 }
 
 #addBlockBtn:hover, .block-item:hover {
   cursor: pointer;
-  border-color: var(--border-color);
+  border-color: var(--p-content-border-color);
 }
 
 button.block-info {
   width: 100%;
   padding: 0.5rem 0 !important;
   text-align: start;
-  color: var(--text-primary);
+  color: var(--p-text-color);
 
   .block-date {
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     font-size: 0.75rem;
   }
 

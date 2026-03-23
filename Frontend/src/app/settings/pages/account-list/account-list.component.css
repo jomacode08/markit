@@ -5,7 +5,7 @@
 #addAccountBtn {
   padding: .5rem;
   cursor: pointer;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--p-content-border-color);
   transition: background-color 0.3s ease;
   span.fa {
     color: var(--p-green-400);

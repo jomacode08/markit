@@ -5,5 +5,5 @@
 }
 
 .border-gray {
-  border-color: var(--border-color);
+  border-color: var(--p-content-border-color);
 }

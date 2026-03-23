@@ -1,19 +1,6 @@
 @layer project {
-  :root {
-      --text-primary: #e9ecef;
-      --text-secondary: #adb5bd;
-      --text-foreground: rgba(255, 255, 255, 0.6);
-      --border-color: #343a40;
-      --accent-color: #845ef7;
-      --accent-hover: #7950f2;
-      --secondary-accent: rgb(129 140 248 / 1);
-      /* Surface borders */
-      --surface-border: rgba(255, 255, 255, 0.12);
-      --surface-border-hover: rgba(255, 255, 255, 0.18);
-  }
-
   body {
-    color: var(--text-primary);
+    color: var(--p-text-color);
     background-color: var(--p-surface-950);
     scrollbar-color: rgb(255, 255, 255, 0.3);
   }
@@ -27,10 +14,10 @@
   }
 
   .text-primary {
-    color: var(--text-primary);
+    color: var(--p-text-color);
   }
   .text-secondary {
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
   }
 
   /** Button */
@@ -47,12 +34,12 @@
     width: 100%;
     background-color: transparent;
     padding: .5rem;
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     border: none;
     border-radius: 0;
   }
   .p-button.nav-button:focus {
-    color: var(--text-primary);
+    color: var(--p-text-color);
     box-shadow: none;
   }
   p-button:not(.p-menu-item-link-active) {
@@ -79,7 +66,7 @@
   .p-drawer.main-sidebar {
     z-index: 1104 !important;
     .p-drawer-header {
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--p-content-border-color);
       height: 64px;
     }
     .p-drawer-content {
@@ -104,7 +91,7 @@
       padding: 0.5rem 2rem;
       border-width: 1px 1px 0 1px;
       border-style: solid;
-      border-color: var(--border-color);
+      border-color: var(--p-content-border-color);
     }
     .p-drawer-header {
       position: relative;
@@ -123,22 +110,22 @@
     .p-menu-item-link {
       display: block;
       i {
-        color: var(--text-secondary);
+        color: var(--p-text-hover-color);
       }
     }
   }
   .p-menu-item-link-active {
     background-color: var(--p-highlight-primary-border);
-    border-left: 2px solid var(--accent-color);
+    border-left: 2px solid var(--p-primary-500);
     i {
-      color: var(--secondary-accent);
+      color: var(--p-secondary-500);
     }
   }
   .p-menu.popup {
     z-index: 1104 !important;
     min-width: auto;
     background-color: var(--p-surface-800);
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--p-overlay-modal-border-color);
     padding: .5rem 0;
     .p-menu-item-link {
       padding: .25rem 1rem;
@@ -146,9 +133,11 @@
     }
     .p-menu-item-content {
       margin: 0;
+      transition: background-color 0.3s ease;
     }
     .p-menu-item-content:hover {
       background-color: var(--p-surface-700);
+      color: var(--p-text-color);
     }
   }
   .p-menu:not(.popup) {
@@ -181,15 +170,15 @@
       .p-dialog-title {
         font-size: 1rem;
         font-weight: 600;
-        color: var(--text-primary);
+        color: var(--p-text-color);
       }
       .p-dialog-close-button {
-        color: var(--text-foreground);
+        color: var(--p-text-muted-color);
         transition: color 0.3s ease;
       }
       .p-dialog-close-button:hover {
         background-color: transparent;
-        color: var(--text-primary);
+        color: var(--p-text-color);
       }
     }
   }
@@ -211,7 +200,7 @@
       margin: 1rem 0;
 
       .p-confirmdialog-message {
-        color: var(--text-secondary);
+        color: var(--p-text-hover-color);
       }
     }
 
@@ -230,22 +219,22 @@
   /** Panel **/
   .ProseMirror-selectednode {
     .p-panel {
-      border-color: var(--surface-border-hover);
+      border-color: var(--p-overlay-modal-border-color);
     }
   }
 
   /** Data table */
   .p-datatable .p-datatable-thead > tr > th {
     background-color: transparent;
-    color: var(--text-primary);
+    color: var(--p-text-color);
     border-width: 1px 0 1px 0;
     border-style: solid;
-    border-color: var(--border-color);
+    border-color: var(--p-content-border-color);
     font-size: .85rem;
   }
   .p-datatable .p-datatable-tbody > tr {
     background-color: transparent;
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
   }
   .p-datatable .p-datatable-tbody > tr > td {
     border: none;
@@ -254,7 +243,7 @@
   .p-paginator {
     border-width: 1px 0;
     border-style: solid;
-    border-color: var(--border-color);
+    border-color: var(--p-content-border-color);
     border-radius: 0;
   }
   .p-paginator-page-selected{
@@ -284,11 +273,11 @@
 
   /* Emoji picker element styling */
   emoji-picker {
-    --border-color: var(var(--border-color));
+    --p-content-border-color: var(var(--p-content-border-color));
     --border-size: 0px;
     --emoji-size: 1.25rem;
-    --input-border-color: var(--border-color);
-    --outline-color: var(--surface-border-hover);
+    --input-border-color: var(--p-content-border-color);
+    --outline-color: var(--p-overlay-modal-border-color);
     --outline-size: 2px;
   }
 
@@ -305,8 +294,8 @@
       45deg,
       transparent,
       transparent 5px,
-      var(--surface-border) 5px,
-      var(--surface-border) 6px
+      var(--p-overlay-modal-border-color) 5px,
+      var(--p-overlay-modal-border-color) 6px
     );
   }
 

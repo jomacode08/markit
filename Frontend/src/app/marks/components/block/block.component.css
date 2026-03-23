@@ -11,7 +11,7 @@
   padding-left: 0.5px;
 
   h1,h2,h3 {
-    border-bottom: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--p-overlay-modal-border-color);
     padding: 0.5rem 0;
   }
 
@@ -34,7 +34,7 @@
 
   hr {
     border: none;
-    border-top: 1px solid var(--surface-border);
+    border-top: 1px solid var(--p-overlay-modal-border-color);
     margin: 2rem 0;
   }
 
@@ -52,7 +52,7 @@
       margin-bottom: .25em;
     }
     li::marker {
-      color: var(--text-secondary);
+      color: var(--p-text-hover-color);
       font-weight: bold;
     }
   }
@@ -84,7 +84,7 @@
       width:  1.5rem;
       background-color: transparent;
       appearance: none;
-      border: 1px solid var(--surface-border);
+      border: 1px solid var(--p-overlay-modal-border-color);
     }
 
     input[type="checkbox"]:checked {
@@ -98,11 +98,11 @@
 
   /** Link styles */
   a {
-    color: var(--secondary-accent);
+    color: var(--p-secondary-500);
     cursor: pointer;
 
     &:hover {
-      color: var(--secondary-accent-hover);
+      color: var(--p-secondary-500-hover);
     }
   }
 
@@ -120,7 +120,7 @@
     font-size: 0.95rem;
     line-height: 1.6;
     padding: 1em;
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--p-overlay-modal-border-color);
     overflow-x: auto;
   
     code {

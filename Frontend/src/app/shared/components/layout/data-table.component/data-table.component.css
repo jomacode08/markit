@@ -10,7 +10,7 @@ button.action-button {
 }
 button.action-button span {
     font-size: .85rem;
-    color: var(--text-secondary);
+    color: var(--p-text-hover-color);
     transition: color .3s ease-in;
 }
 button.action-button:hover {
