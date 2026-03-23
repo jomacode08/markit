@@ -50,9 +50,6 @@ importers:
       '@fortawesome/fontawesome-free':
         specifier: ^6.6.0
         version: 6.7.2
-      '@lordicon/element':
-        specifier: ^1.10.0
-        version: 1.11.0
       '@primeuix/themes':
         specifier: ^2.0.3
         version: 2.0.3
@@ -101,9 +98,6 @@ importers:
       emoji-picker-element:
         specifier: ^1.26.3
         version: 1.28.1
-      lottie-web:
-        specifier: ^5.12.2
-        version: 5.13.0
       lowlight:
         specifier: ^3.3.0
         version: 3.3.0
@@ -1021,12 +1015,6 @@ packages:
     resolution: {integrity: sha512-IY+r3bxKW6Q6sIPiMC0L533DEfRJSXibjSI3Ft/w9Q8KQBNqEIvUFXt+09wV8S5BRk0a8uSF19YWxuRwEfI90g==}
     cpu: [x64]
     os: [win32]
-
-  '@lordicon/element@1.11.0':
-    resolution: {integrity: sha512-9EftG9Y6o4Qdd83p2ftoGxgw4WQJK+V75Q5WsNzDpPhacPuDbBFqiBAaNeBQegtl7Neqsr+cmQ5b2MHTixUxBA==}
-
-  '@lordicon/helpers@1.11.0':
-    resolution: {integrity: sha512-ambh76d15jAdGaKYXBCjR9AlTJUB6aGx4H8vlradyfT37GbLlwiG+HfC8MTq9RTM08pBHRKFPWnWOxa34NUIAw==}
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
@@ -2534,9 +2522,6 @@ packages:
   log4js@6.9.1:
     resolution: {integrity: sha512-1somDdy9sChrr9/f4UlzhdaGfDR2c/SaD2a4T7qEkG4jTS57/B3qmnjLYePwQ8cqWnUHZI0iAKxMBpCZICiZ2g==}
     engines: {node: '>=8.0'}
-
-  lottie-web@5.13.0:
-    resolution: {integrity: sha512-+gfBXl6sxXMPe8tKQm7qzLnUy5DUPJPKIyRHwtpCpyUEYjHYRJC/5gjUvdkuO2c3JllrPtHXH5UJJK8LRYl5yQ==}
 
   lowlight@3.3.0:
     resolution: {integrity: sha512-0JNhgFoPvP6U6lE/UdVsSq99tn6DhjjpAj5MxG49ewd2mOBVtwWYIT8ClyABhq198aXXODMU6Ox8DrGy/CpTZQ==}
@@ -4563,12 +4548,6 @@ snapshots:
   '@lmdb/lmdb-win32-x64@3.4.2':
     optional: true
 
-  '@lordicon/element@1.11.0':
-    dependencies:
-      '@lordicon/helpers': 1.11.0
-
-  '@lordicon/helpers@1.11.0': {}
-
   '@marijn/find-cluster-break@1.0.2': {}
 
   '@modelcontextprotocol/sdk@1.26.0(zod@4.1.13)':
@@ -6129,8 +6108,6 @@ snapshots:
       streamroller: 3.1.5
     transitivePeerDependencies:
       - supports-color
-
-  lottie-web@5.13.0: {}
 
   lowlight@3.3.0:
     dependencies:
