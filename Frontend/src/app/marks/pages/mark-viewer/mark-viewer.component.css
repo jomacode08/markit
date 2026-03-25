@@ -27,6 +27,7 @@ button {
     background-color: var(--p-surface-950);
     color: var(--p-text-color);
     padding: 0;
+    outline: none;
   }
 
   input#markName::placeholder {

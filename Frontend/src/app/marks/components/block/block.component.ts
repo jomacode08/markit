@@ -24,6 +24,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, Subject } from 'rxjs';
 import GistBlockExtension from '../../extensions/gist-block.extension';
 import { TableNodeViewComponent } from '../tiptap/table-node-view/table-node-view.component';
+import { deleteTableSelection } from '../../../shared/utils/tiptap';
 
 type UriValidationContext = {
   defaultValidate: (url: string) => boolean;
@@ -90,6 +91,12 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
               injector: inject(Injector),
             }
           )
+        },
+        addKeyboardShortcuts() {
+          return {
+            ...this.parent?.(),
+            Backspace: () => deleteTableSelection(this.editor),
+          }
         }
       }),
       TableCell,
