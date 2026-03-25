@@ -237,10 +237,6 @@
         margin-bottom: 0;
       }
     }
-    
-    tr:not(:last-child) {
-      border-bottom: 1px solid var(--p-overlay-modal-border-color);
-    }
 
     th {
       text-align: left;
