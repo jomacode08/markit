@@ -5,12 +5,13 @@ import type { LinkProtocolOptions } from '@tiptap/extension-link';
 
 //* Tiptap Extensions
 import { Editor } from '@tiptap/core';
-import { TiptapEditorDirective } from 'ngx-tiptap';
+import { AngularNodeViewRenderer, TiptapEditorDirective } from 'ngx-tiptap';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Highlighter from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
+import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import TextAlign from '@tiptap/extension-text-align';
@@ -22,6 +23,7 @@ import { common, createLowlight } from 'lowlight'
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, Subject } from 'rxjs';
 import GistBlockExtension from '../../extensions/gist-block.extension';
+import { TableNodeViewComponent } from '../tiptap/table-node-view/table-node-view.component';
 
 type UriValidationContext = {
   defaultValidate: (url: string) => boolean;
@@ -58,9 +60,6 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   public input: string = "";
   public editor = new Editor({
     extensions: [
-      StarterKit.configure({
-        codeBlock: false,
-      }),
       CodeBlockLowlight.configure({
         lowlight : createLowlight(common),
       }),
@@ -76,11 +75,28 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       }).extend({
         inclusive: false,
       }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
       Placeholder.configure({
         placeholder: 'Type something here'
+      }),
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      Table
+      .extend({
+        addNodeView() {
+          return AngularNodeViewRenderer(
+            TableNodeViewComponent,
+            {
+              injector: inject(Injector),
+            }
+          )
+        }
+      }),
+      TableCell,
+      TableRow,
+      TableHeader,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
       }),
       TaskList,
       TaskItem.configure({

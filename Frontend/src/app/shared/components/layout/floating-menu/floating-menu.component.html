@@ -42,7 +42,10 @@
                     <!-- Icon -->
                     <span
                         [class]="option.icon"
-                        [ngClass]="{ 'active' : (option.isActive?.() && !option.color) }"
+                        [ngClass]="{
+                            'icon' : true,
+                            'active' : (option.isActive?.() && !option.color) 
+                        }"
                         [style]="getColorStyleDeclaration(option.color)"
                     ></span>
                     <!-- Label -->

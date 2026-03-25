@@ -6,6 +6,13 @@ import { Signal } from '@angular/core';
 export function createTextFormattingOptions( editor: Signal<Editor | undefined> ): FloatingMenuOption[] {
     return [
     {
+      label: 'Table',
+      icon: 'fa-solid fa-table',
+      command: () => editor()?.chain().focus().insertTable().run(),
+      isActive: () => isNodeMarkActive(editor(), { name: 'tableCell' })
+        || isNodeMarkActive(editor(), { name: 'tableHeader' })
+    },
+    {
       label: 'Bold',
       icon: 'fa fa-bold',
       command: () => editor()?.chain().focus().toggleBold().run(),
