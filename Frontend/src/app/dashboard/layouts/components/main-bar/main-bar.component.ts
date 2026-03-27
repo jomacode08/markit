@@ -22,9 +22,7 @@ import { ProfileMenu } from '../profile-menu/profile-menu.component';
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     styleUrl: './main-bar.component.css'
 })
-export class MainBarComponent {
-  public readonly MAIN_BAR_BRAND_TITLE: string = "Mark it";
-  
+export class MainBarComponent {  
   public navigationRutes : MenuItem[] = [
     {
       label: 'Dashboard',
