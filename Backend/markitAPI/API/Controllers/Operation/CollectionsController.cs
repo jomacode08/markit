@@ -1,12 +1,14 @@
 ﻿using markit.API.Controllers.Common;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
+using markit.Application.Features.Collections.Commands.MoveCollectionCommand;
 using markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
 using markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Helpers;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -58,6 +60,20 @@ namespace markit.API.Controllers.Operation
             return Ok(page);
         }
 
+        [Authorize(GeneralConstant.AuthorizationPolicies.CAN_ESCALATE)]
+        [HttpPost]
+        [Route("{id:int}/move")]
+        public async Task<IActionResult> Move([FromRoute] int id, [FromBody] MoveCollectionCommandDto dto)
+        {
+            MoveCollectionCommand command = new(
+                collectionId: id,
+                parentId: dto.ParentId,
+                creatorId: _sessionService.GetCreatorId()    
+            );
+            await _mediator.Send(command);
+            return NoContent();
+        } 
+
         [HttpPost]
         public async Task<ActionResult<CollectionViewModel>> Create([FromBody] CreateCollectionCommand command)
         {
@@ -85,7 +101,7 @@ namespace markit.API.Controllers.Operation
                 isFavorite: true
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]
@@ -98,7 +114,7 @@ namespace markit.API.Controllers.Operation
                 isFavorite: false
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
@@ -109,7 +125,7 @@ namespace markit.API.Controllers.Operation
                 creatorId: _sessionService.GetCreatorId()
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
     }
 }
