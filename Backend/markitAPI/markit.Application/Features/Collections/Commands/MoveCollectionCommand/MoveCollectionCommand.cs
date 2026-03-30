@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Commands.MoveCollectionCommand
 {
-    public class MoveCollectionCommand( int collectionId, int parentId, int creatorId) : IRequest<Unit>
+    public class MoveCollectionCommand(int collectionId, int parentId, int creatorId) : IRequest<Unit>
     {
         public int CollectionId { get; init; } = collectionId;
         public int ParentId { get; init; } = parentId;

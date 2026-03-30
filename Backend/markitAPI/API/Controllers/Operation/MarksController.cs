@@ -1,11 +1,13 @@
 ﻿using markit.API.Controllers.Common;
 using markit.Application.Features.Marks.Commands.CreateMarkCommand;
 using markit.Application.Features.Marks.Commands.DeleteMarkCommand;
+using markit.Application.Features.Marks.Commands.MoveMarkCommand;
 using markit.Application.Features.Marks.Commands.RenameMarkCommand;
 using markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusCommand;
 using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries;
 using markit.Application.Features.Marks.Queries.ViewModels;
+using markit.Application.Helpers;
 using markit.Infraestructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -73,7 +75,22 @@ namespace markit.API.Controllers.Operation
                 isFavorite: true
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
+        }
+
+        [Authorize(GeneralConstant.AuthorizationPolicies.CAN_ESCALATE)]
+        [HttpPut]
+        [Route("{id:int}/parent")]
+        public async Task<IActionResult> Move([FromRoute] int id, [FromBody] MoveMarkCommandDto dto)
+        {
+            MoveMarkCommand command = new(
+                markId: id,
+                collectionId: dto.CollectionId,
+                creatorId: _sessionService.GetCreatorId()
+            );
+
+            await _mediator.Send(command);
+            return NoContent();
         }
 
         [HttpDelete]
@@ -86,7 +103,7 @@ namespace markit.API.Controllers.Operation
                 isFavorite: false
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]
@@ -98,7 +115,7 @@ namespace markit.API.Controllers.Operation
                 creatorId: _sessionService.GetCreatorId()
             );
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
         }
     }
 }
