@@ -7,7 +7,7 @@ using markit.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery
+namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreator
 {
     public class GetMainCollectionByCreatorQuery(int creatorId) : IRequest<CollectionViewModel>
     {
@@ -33,13 +33,13 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
 
         public async Task<CollectionViewModel> Handle(GetMainCollectionByCreatorQuery request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistency(request.CreatorId);
+            await ValidateCreatorExistence(request.CreatorId);
 
             var mainCollection = await GetMainCollection(request.CreatorId);
             return MapCollection(mainCollection);
         }
 
-        private async Task ValidateCreatorExistency(int creatorId)
+        private async Task ValidateCreatorExistence(int creatorId)
         {
             _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
@@ -48,7 +48,7 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
         private async Task<Collection> GetMainCollection(int creatorId)
         {
             var result = await _unitOfWork.CollectionRepository.GetAsync(c => c.CreatorId == creatorId && c.IsMain)
-                ?? throw new CustomValidationException($"The main collection of the creator with ID: {creatorId} must be configurated");
+                ?? throw new CustomValidationException($"The main collection of the creator with ID: {creatorId} must be configured");
 
             return result[0];
         }
@@ -64,7 +64,7 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
             }
             catch (FormatException ex)
             {
-                _logger.LogError(ex.Message, ex);
+                _logger.LogError("{message}", ex.Message);
             }
 
             return collectionVm;

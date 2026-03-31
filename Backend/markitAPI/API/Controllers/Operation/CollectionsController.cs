@@ -6,7 +6,8 @@ using markit.Application.Features.Collections.Commands.SetCollectionFavoriteStat
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
-using markit.Application.Features.Collections.Queries.GetMainCollectionByCreatorQuery;
+using markit.Application.Features.Collections.Queries.GetCollectionTreeQuery;
+using markit.Application.Features.Collections.Queries.GetMainCollectionByCreator;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Helpers;
 using markit.Infraestructure.Security.Services;
@@ -46,6 +47,15 @@ namespace markit.API.Controllers.Operation
             GetMainCollectionByCreatorQuery collectionQuery = new(creatorId : _sessionService.GetCreatorId());
             CollectionViewModel collection = await _mediator.Send(collectionQuery);
             return Ok(collection);
+        }
+
+        [HttpGet]
+        [Route("tree")]
+        public async Task<ActionResult<CollectionNode>> GetTree()
+        {
+            GetCollectionTreeQuery query = new(creatorId: _sessionService.GetCreatorId());
+            CollectionNode root = await _mediator.Send(query);
+            return Ok(root);
         }
 
         [HttpPost]
