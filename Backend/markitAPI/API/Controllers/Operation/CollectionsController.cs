@@ -51,10 +51,10 @@ namespace markit.API.Controllers.Operation
 
         [HttpGet]
         [Route("tree")]
-        public async Task<ActionResult<CollectionNode>> GetTree()
+        public async Task<ActionResult<TreeNode>> GetTree()
         {
             GetCollectionTreeQuery query = new(creatorId: _sessionService.GetCreatorId());
-            CollectionNode root = await _mediator.Send(query);
+            TreeNode root = await _mediator.Send(query);
             return Ok(root);
         }
 

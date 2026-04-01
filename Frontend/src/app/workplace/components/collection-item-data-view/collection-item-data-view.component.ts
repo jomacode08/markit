@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, EventEmitter, input, OnDestroy, Output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { debounceTime, finalize, takeUntil } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
@@ -19,17 +19,18 @@ import { FloatingMenuOption } from '../../../shared/components/layout/floating-m
 import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 import { ROUTES } from '../../../shared/utils/constant';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
+import { CollectionTreeDialogComponent, CollectionTreeDialogData } from '../collection-tree-dialog/collection-tree-dialog.component';
 
 @Component({
     selector: 'collection-item-data-view',
     imports: [
-        CollectionItemIconPipe,
-        CommonModule,
-        DataViewModule,
-        FloatingMenuComponent,
-        IntersectionDirective,
-        ProgressSpinnerModule,
-        TimeAgoPipe,
+      CollectionItemIconPipe,
+      CommonModule,
+      DataViewModule,
+      FloatingMenuComponent,
+      IntersectionDirective,
+      ProgressSpinnerModule,
+      TimeAgoPipe,
     ],
     providers: [DialogService],
     templateUrl: './collection-item-data-view.component.html',
@@ -68,6 +69,14 @@ export class CollectionItemDataViewComponent implements OnDestroy {
       }
     },
     {
+      label: 'Move',
+      icon: 'fa-regular fa-folder-open',
+      command: () => {
+        if (this.menuTarget === undefined) return;
+        this.moveItem(this.menuTarget);
+      }
+    },
+    {
       label: 'Delete',
       icon: 'fa fa-trash',
       command: () => {
@@ -80,7 +89,8 @@ export class CollectionItemDataViewComponent implements OnDestroy {
   public displaySpinner = signal<boolean>(false);
   public currentItems = computed(() => signal(this.items()));
   public menuTarget ?: CollectionItem;
-  public dialogReference ?: DynamicDialogRef<CollectionItemDialogComponent> | null;
+  public collectionItemDialogRef ?: DynamicDialogRef<CollectionItemDialogComponent> | null;
+  public collectionTreeDialogRef ?: DynamicDialogRef<CollectionTreeDialogComponent> | null;
 
   get collectionItemTypeFilters(): CollectionItemTypeFilter[] {
     return Object.keys(CollectionItemTypeFilter) as CollectionItemTypeFilter[];
@@ -99,7 +109,8 @@ export class CollectionItemDataViewComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.dialogReference) this.dialogReference.destroy();
+    if (this.collectionItemDialogRef) this.collectionItemDialogRef.destroy();
+    if (this.collectionTreeDialogRef) this.collectionTreeDialogRef.destroy();
   }
 
   public onItemSelected(item: CollectionItem): void {
@@ -143,14 +154,14 @@ export class CollectionItemDataViewComponent implements OnDestroy {
       action
     };
 
-    this.dialogReference = this.dialogService.open(
+    this.collectionItemDialogRef = this.dialogService.open(
       CollectionItemDialogComponent,
       this.DYNAMIC_DIALOG_CONFIG(header, data)
     );
     
     // Subscribe to the onClose event of the dialog
-    this.dialogReference?.onClose.subscribe(async (itemTypeId: number) => {
-      this.dialogReference = undefined;
+    this.collectionItemDialogRef?.onClose.subscribe(async (itemTypeId: number) => {
+      this.collectionItemDialogRef = undefined;
       if (itemTypeId > 0) {
         this.changeMenuState();
         this.onItemUpdated.emit(collectionItem);
@@ -172,6 +183,27 @@ export class CollectionItemDataViewComponent implements OnDestroy {
           }
         );
       }
+    });
+  }
+
+  private moveItem(item: CollectionItem): void {
+    const header = `Select destination collection`;
+    const data : CollectionTreeDialogData = {
+      itemToMove : item
+    }
+
+    this.collectionTreeDialogRef = this.dialogService.open(
+      CollectionTreeDialogComponent,
+      this.DYNAMIC_DIALOG_CONFIG(header, data)
+    );
+
+    this.collectionTreeDialogRef?.onClose.subscribe(
+      (success: boolean | undefined) => {
+        this.collectionTreeDialogRef = undefined;
+        if (success === true) {
+          this.changeMenuState();
+          this.onItemUpdated.emit(item);
+        }
     });
   }
 

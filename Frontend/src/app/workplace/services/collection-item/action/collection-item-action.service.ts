@@ -78,4 +78,10 @@ export class CollectionItemActionService {
   public softDelete( item: CollectionItem ): Observable<boolean> {
     return this.http.delete<boolean>(`${ this.BASE_URL(item.type) }/${ item.typeId }`);
   }
+
+  public move( itemToMove: CollectionItem, collectionId: number ): Observable<void> {
+    const body = { parentId: collectionId };
+    const URL = `${ this.BASE_URL(itemToMove.type) }/${itemToMove.typeId}/move`;
+    return this.http.post<void>(URL, body);
+  }
 }

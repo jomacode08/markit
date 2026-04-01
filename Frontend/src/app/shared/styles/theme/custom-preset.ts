@@ -407,6 +407,24 @@ export const CustomPreset = definePreset(Aura, {
             root: {
                 width: '50px'
             }
+        },
+        tree: {
+            colorScheme: {
+                dark: {
+                    node: {
+                        hoverColor: '{text.color}'
+                    },
+                    nodeToggleButton: {
+                        hoverColor: '{text.color}'
+                    }
+                }
+            },
+            css: () => `
+                .p-tree.md-size {
+                    height: 250px;
+                    overflow-y: auto;
+                }
+            `
         }
     }
 });

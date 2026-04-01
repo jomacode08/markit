@@ -21,13 +21,13 @@ import { CollectionItemDialogComponent } from '../../components/collection-item-
 
 @Component({
     imports: [
-        ButtonModule,
-        CollectionExplorerBreadcrumbComponent,
-        CollectionItemDataViewComponent,
-        CommonModule,
-        FloatingMenuComponent,
-        FloatingActionButtonComponent,
-        FormsModule
+      ButtonModule,
+      CollectionExplorerBreadcrumbComponent,
+      CollectionItemDataViewComponent,
+      CommonModule,
+      FloatingMenuComponent,
+      FloatingActionButtonComponent,
+      FormsModule
     ],
     providers: [DialogService],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -130,7 +130,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   }
 
   public onItemViewChange(itemIndex: number, itemsLength: number):void {
-    if (itemIndex != itemsLength - 1) return;
+    if (itemIndex !== itemsLength - 1) return;
     this.collectionItemPaginationService.loadNewPage();
   }
 

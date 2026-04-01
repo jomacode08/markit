@@ -1,0 +1,68 @@
+<div class="modal-body">
+    <!-- Operation preview -->
+    <section class="preview">
+        <div class="preview-item">
+            <span class="preview-icon" [ngClass]="itemToBeMoved().type | collectionItemIcon"></span>
+            <span class="preview-label">{{ itemToBeMoved().name }}</span>
+        </div>
+        <div class="connector">
+            <span class="fa-solid fa-arrow-right"></span>
+        </div>
+        <div class="preview-item">
+            <span class="preview-label">{{ selectedNode?.label ?? '?' }}</span>
+        </div>
+    </section>
+    @if (nodes()) {
+        <!-- Collection tree -->
+        <p-tree
+            [value]="nodes()"
+            [(selection)]="selectedNode"
+            class="md-size w-full"
+            selectionMode="single"
+            ariaLabel="Select destination folder"
+        >
+            <ng-template let-node pTemplate="default">
+                <span 
+                    class="node-icon"
+                    [ngClass]="node.expanded ? 'fa-regular fa-folder-open' : 'fa-regular fa-folder'"
+                ></span>
+                <span [ngClass]="{ 'active-node' : node.key === currentItemIdString() }">
+                    {{ node.label }}
+                </span>
+            </ng-template>
+        </p-tree>
+    }
+    @else if (this.showErrorTemplate()){
+        <div class="secondary-container">
+            <span class="error-icon fa-solid fa-circle-exclamation"></span>
+            <span class="error-label">Something went wrong, please try again later.</span>
+        </div>
+    }
+    @else {
+        <div class="secondary-container">
+            <p-progressSpinner
+                [style]="{ width: '1.5rem', height: '1.5rem' }"
+                strokeWidth="4"
+            ></p-progressSpinner>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <p-button
+      type="button"
+      size="small"
+      aria-label="Cancel"
+      label="Cancel"
+      severity="secondary"
+      (onClick)="onCancel()"
+      [disabled]="isSubmissionActive()"
+    />
+    <p-button
+      type="button"
+      size="small"
+      aria-label="Confirm"
+      label="Confirm"
+      severity="primary"
+      (onClick)="onConfirm()"
+      [disabled]="isSubmissionActive() || !selectedNode"
+    /></div>

@@ -2,6 +2,6 @@
 {
     public class MoveMarkCommandDto
     {
-        public int CollectionId { get; set; }
+        public int ParentId { get; set; }
     }
 }

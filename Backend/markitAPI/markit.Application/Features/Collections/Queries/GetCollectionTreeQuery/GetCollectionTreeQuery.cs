@@ -8,12 +8,12 @@ using markit.Application.Exceptions;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
 {
-    public class GetCollectionTreeQuery(int creatorId) : IRequest<CollectionNode>
+    public class GetCollectionTreeQuery(int creatorId) : IRequest<TreeNode>
     {
         public int CreatorId { get; init; } = creatorId;
     }
 
-    public class GetCollectionTreeQueryHandler : IRequestHandler<GetCollectionTreeQuery, CollectionNode>
+    public class GetCollectionTreeQueryHandler : IRequestHandler<GetCollectionTreeQuery, TreeNode>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
@@ -32,23 +32,23 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
             _logger = logger;
         }
 
-        public async Task<CollectionNode> Handle(GetCollectionTreeQuery request, CancellationToken cancellationToken)
+        public async Task<TreeNode> Handle(GetCollectionTreeQuery request, CancellationToken cancellationToken)
         {
             int mainCollectionId = await GetMainCollectionIdAsync(request.CreatorId);
-            List<CollectionNode> hierarchy = await GetCollectionHierarchyNodesAsync(mainCollectionId);
+            List<TreeNode> hierarchy = await GetTreeNodes(mainCollectionId);
             return BuildTree(hierarchy, request.CreatorId);
         }
 
-        private CollectionNode BuildTree(List<CollectionNode> hierarchy, int creatorId)
+        private TreeNode BuildTree(List<TreeNode> hierarchy, int creatorId)
         {
-            ILookup<int?, CollectionNode> lookup = hierarchy.ToLookup(x => x.ParentId);
+            ILookup<string?, TreeNode> lookup = hierarchy.ToLookup(x => x.ParentKey);
 
-            foreach (CollectionNode node in hierarchy)
+            foreach (TreeNode node in hierarchy)
             {
-                node.Children = lookup[node.Id];
+                node.Children = lookup[node.Key];
             }
 
-            CollectionNode? root = lookup[null].FirstOrDefault();
+            TreeNode? root = lookup[null].FirstOrDefault();
             
             if (root is null)
             {
@@ -59,18 +59,17 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
             return root;
         }
 
-        private async Task<List<CollectionNode>> GetCollectionHierarchyNodesAsync(int mainCollectionId)
+        private async Task<List<TreeNode>> GetTreeNodes(int mainCollectionId)
         {
             List<Collection> hierarchy = await _unitOfWork.CollectionRepository
                 .GetHierarchyRecursively(rootCollectionId: mainCollectionId);
             return [.. hierarchy.Select(
-                n => new CollectionNode
+                c => new TreeNode
                 {
-                    Id = n.Id,
-                    Name = n.Name,
-                    ParentId = n.ParentId,
-                    IsMain = n.IsMain,
-                    Emoji = n.Emoji,
+                    Key = c.Id.ToString(),
+                    ParentKey = c.ParentId?.ToString(),
+                    Data = c.Id.ToString(),
+                    Label = c.Name
                 })
             ];
         }

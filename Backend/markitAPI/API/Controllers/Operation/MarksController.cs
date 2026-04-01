@@ -79,13 +79,13 @@ namespace markit.API.Controllers.Operation
         }
 
         [Authorize(GeneralConstant.AuthorizationPolicies.CAN_ESCALATE)]
-        [HttpPut]
-        [Route("{id:int}/parent")]
+        [HttpPost]
+        [Route("{id:int}/move")]
         public async Task<IActionResult> Move([FromRoute] int id, [FromBody] MoveMarkCommandDto dto)
         {
             MoveMarkCommand command = new(
                 markId: id,
-                collectionId: dto.CollectionId,
+                collectionId: dto.ParentId,
                 creatorId: _sessionService.GetCreatorId()
             );
 
