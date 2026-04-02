@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, OnInit, signal, WritableSignal } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TreeModule } from 'primeng/tree';
@@ -10,8 +11,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CollectionItem } from '../../interfaces/collection-item';
 import { CollectionService } from '../../services/collection.service';
 import { CollectionItemActionService } from '../../services/collection-item/action/collection-item-action.service';
-import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface CollectionTreeDialogData {
   itemToMove : CollectionItem
@@ -21,7 +20,6 @@ export interface CollectionTreeDialogData {
   selector: 'app-collection-tree-dialog',
   imports: [
     ButtonModule,
-    CollectionItemIconPipe,
     NgClass,
     TreeModule,
     ProgressSpinnerModule,

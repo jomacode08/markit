@@ -29,6 +29,14 @@
     color: var(--p-surface-200);
   }
 }
+.preview-source,.preview-destiny {
+  padding: .25rem .5rem;
+}
+.preview-source {
+  border: 1px solid var(--p-highlight-info-border);
+  background-color: var(--p-highlight-info-background);
+  border-radius: .5rem;
+}
 
 .active-node {
   font-weight: 600;

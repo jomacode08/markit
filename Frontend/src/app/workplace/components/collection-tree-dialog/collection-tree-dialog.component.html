@@ -1,15 +1,19 @@
 <div class="modal-body">
     <!-- Operation preview -->
     <section class="preview">
-        <div class="preview-item">
-            <span class="preview-icon" [ngClass]="itemToBeMoved().type | collectionItemIcon"></span>
+        <div class="preview-source">
             <span class="preview-label">{{ itemToBeMoved().name }}</span>
         </div>
         <div class="connector">
             <span class="fa-solid fa-arrow-right"></span>
         </div>
-        <div class="preview-item">
-            <span class="preview-label">{{ selectedNode?.label ?? '?' }}</span>
+        <div class="preview-destiny">
+            @if (selectedNode) {
+                <span class="preview-label">{{ selectedNode.label }}</span>
+            }
+            @else {
+                <span class="fa-regular fa-folder"></span>
+            }
         </div>
     </section>
     @if (nodes()) {
@@ -32,12 +36,14 @@
             </ng-template>
         </p-tree>
     }
+    <!-- Error template -->
     @else if (this.showErrorTemplate()){
         <div class="secondary-container">
             <span class="error-icon fa-solid fa-circle-exclamation"></span>
             <span class="error-label">Something went wrong, please try again later.</span>
         </div>
     }
+    <!-- Loading template -->
     @else {
         <div class="secondary-container">
             <p-progressSpinner
@@ -65,4 +71,5 @@
       severity="primary"
       (onClick)="onConfirm()"
       [disabled]="isSubmissionActive() || !selectedNode"
-    /></div>
+    />
+</div>
