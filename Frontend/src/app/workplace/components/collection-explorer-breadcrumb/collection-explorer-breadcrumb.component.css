@@ -4,23 +4,29 @@
 
 button.path-segment {
   padding: 0;
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 400;
   line-height: 2rem;
   border: none;
   cursor: pointer;
-  color: rgb(255, 255, 255, 0.8);
   transition: color 0.3s ease;
 }
 
 button.path-segment:hover {
-  color: rgb(255, 255, 255);
-}
-
-span.separator {
-  color: rgb(255, 255, 255, 0.6);
+  color: var(--p-text-color);
+  .root-icon {
+    color: var(--p-text-color);
+  }
 }
 
 .active {
-  color: rgb(255, 255, 255);
+  color: var(--p-text-color);
+  font-weight: 500;
+}
+.root-icon {
+  transition: color 0.3s ease;
+}
+
+.root-icon, .path-segment, .separator {
+  color: var(--p-text-muted-color);
 }

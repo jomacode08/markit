@@ -13,11 +13,16 @@
                     {{ segment.emoji }} {{ segment.name }}
                 </span>
             }
+            @else if ($index === 0) {
+                <span class="root-icon fa-regular fa-folder"></span>
+            }
             @else {
                 <span>{{ segment.name }}</span>
             }
         </button>
-        <span *ngIf="$index != pathSegments().length - 1" class="fa fa-angle-right separator"></span>
+        @if ($index < pathSegments().length - 1) {
+            <span class="fa fa-angle-right separator"></span>
+        }
     }
 
 </div>
