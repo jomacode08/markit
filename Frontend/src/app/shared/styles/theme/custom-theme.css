@@ -121,23 +121,11 @@
       color: var(--p-secondary-500);
     }
   }
-  .p-menu.popup {
+  .p-tieredmenu.popup {
     z-index: 1104 !important;
     min-width: auto;
-    background-color: var(--p-surface-800);
-    border: 1px solid var(--p-overlay-modal-border-color);
-    padding: .5rem 0;
-    .p-menu-item-link {
-      padding: .25rem 1rem;
+    .p-tieredmenu-item-link {
       font-size: .85rem;
-    }
-    .p-menu-item-content {
-      margin: 0;
-      transition: background-color 0.3s ease;
-    }
-    .p-menu-item-content:hover {
-      background-color: var(--p-surface-700);
-      color: var(--p-text-color);
     }
   }
   .p-menu:not(.popup) {

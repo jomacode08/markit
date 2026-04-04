@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, TitleStrategy, withRouterConfig, withViewTransitions } from '@angular/router';
@@ -11,8 +11,8 @@ import { TemplatePageTitleStrategy } from './shared/utils/template-page-title-st
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
 import { CustomPreset } from './shared/styles/theme/custom-preset';
+import { THEME } from './shared/utils/constant';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,10 +30,11 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: CustomPreset,
         options: {
+          darkModeSelector: `.${THEME.DARK_MODE_SELECTOR}`,
           cssLayer: {
             name: 'primeng',
-            order: 'primeng, project'
-          }
+            order: 'primeng, project',
+          },
         }
       }
     }),
@@ -48,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: (authService: AuthService) => () => authService.inicializeAuth(),
+      useFactory: (authService: AuthService) => () => authService.setupAuthentication(),
       deps: [AuthService],
       multi: true
     },

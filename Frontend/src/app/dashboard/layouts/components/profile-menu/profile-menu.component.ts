@@ -1,22 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, inject, Inject, Renderer2, ViewChild, DOCUMENT } from '@angular/core';
-import { NgIf } from '@angular/common';
-
-import { Menu, MenuModule } from 'primeng/menu';
-
-import { ROUTES } from '../../../../shared/utils/constant';
-import { AuthService } from '../../../../auth/services/auth.service';
-import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
+import { ChangeDetectionStrategy, Component, computed, inject, Renderer2, ViewChild, DOCUMENT } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
+import { MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
+import { TieredMenu, TieredMenuModule } from 'primeng/tieredmenu';
+
+import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
+import { AuthService } from '../../../../auth/services/auth.service';
+import { ROUTES } from '../../../../shared/utils/constant';
+import { ThemeService } from '../../../../shared/services/theme.service';
 
 @Component({
     selector: 'app-profile-menu',
     imports: [
-        MenuModule,
-        NgIf,
-        RouterModule,
+      MenuModule,
+      RouterModule,
+      TieredMenuModule,
     ],
     template: `
-    <p-menu
+    <p-tiered-menu
       #profileMenu
       styleClass="popup"
       appendTo="body"
@@ -24,48 +26,45 @@ import { RouterModule } from '@angular/router';
       [popup]="true"
       (onShow)="disableScroll()"
       (onHide)="enableScroll()"
-    >
-      <ng-template #item let-item>
-        <ng-container *ngIf="item.route; else elseBlock">
-          <a [routerLink]="item.route" class="p-menu-item-link">
-            <i [class]="item.icon"></i>
-            <span class="ml-3">{{ item.label }}</span>
-          </a>
-        </ng-container>
-        <ng-template #elseBlock>
-          <button
-            type="button"
-            class="p-menu-item-link border-none"
-            [attr.aria-label]="item.label"
-            (click)="item.command"
-          >
-            <i [class]="item.icon"></i>
-            <span class="ml-3">{{ item.label }}</span>
-          </button>
-        </ng-template>
-      </ng-template>
-    </p-menu>
+    />
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileMenu {
   private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
   private renderer = inject(Renderer2);
-  @Inject(DOCUMENT) private document = inject(DOCUMENT);
+  private document = inject(DOCUMENT);
 
-  @ViewChild('profileMenu') private profileMenu !: Menu;
+  @ViewChild('profileMenu') private profileMenu !: TieredMenu;
   private readonly STOP_SCROLLING_CLASS_NAME = 'stop-scrolling';
-  protected profileMenuItems = computed(() => [
+  protected profileMenuItems = computed<MenuItem[]>(() => [
     {
       label: 'Settings',
       icon: 'fa-solid fa-sliders',
-      route: ROUTES.ACCOUNTS,
+      routerLink: ROUTES.ACCOUNTS,
       visible: this.authService.currentUser()?.roles.includes(AuthRole.ADMIN) ?? false,
     },
     {
       label: 'Profile',
       icon: 'fa-regular fa-user',
-      route: ROUTES.PROFILE,
+      routerLink: ROUTES.PROFILE,
+    },
+    {
+      label: 'Theme',
+      icon: 'fa-solid fa-circle-half-stroke',
+      items: [
+        {
+          label: 'Light',
+          icon: 'fa-regular fa-sun',
+          command: () => this.themeService.setLightMode()
+        },
+        {
+          label: 'Dark',
+          icon: 'fa-regular fa-moon',
+          command: () => this.themeService.setDarkMode()
+        }
+      ]
     },
     {
       label: 'Sign Out',
@@ -73,7 +72,7 @@ export class ProfileMenu {
       command: () => {
         this.authService.logout();
       }
-    }
+    },
   ]);
 
   public toggle(event: Event) {

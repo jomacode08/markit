@@ -293,11 +293,29 @@ export const CustomPreset = definePreset(Aura, {
                     item: {
                         icon: {
                             color: '{text.hoverColor}',
-                            focusColor: '{text-color}'
+                            focusColor: '{text.color}'
                         }
                     }
                 }
             }
+        },
+        tieredmenu: {
+            colorScheme: {
+                dark: {
+                    item: {
+                        icon: {
+                            color: '{text.hoverColor}',
+                            focusColor: '{text.color}',
+                            activeColor: '{primary.500}'
+                        }
+                    }
+                }
+            },
+            css: () => `
+                .p-tieredmenu-item-icon {
+                    margin-right: .5rem;
+                }
+            `
         },
         multiselect: {
             root: {

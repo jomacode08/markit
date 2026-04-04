@@ -24,6 +24,13 @@ export const ROUTES = {
     PROFILE: '/dashboard/profile',
 };
 
+export const THEME = {
+    LIGHT_THEME: 'Light',
+    DARK_THEME: 'Dark',
+    DARK_MODE_SELECTOR: 'markit-dark',
+    THEME_PREFERENCE_KEY: 'theme-preference',
+}
+
 export const POPUP_NAMES = {
     SIGN_IN : 'sign-in',
     LINK_ACCOUNT : 'link-account'
