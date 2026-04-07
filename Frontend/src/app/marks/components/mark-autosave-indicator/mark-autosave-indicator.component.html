@@ -9,8 +9,9 @@
     </div>
     <button
         *ngSwitchCase="saveStateType.error"
+        id="retryErrorBtn"
         type="button"
-        class="status cursor-pointer hover:text-white-alpha-90 border-none"
+        class="status cursor-pointer border-none"
         (click)="onRetrySave.emit()"
         >
         <span class="fa fa-triangle-exclamation error"></span>

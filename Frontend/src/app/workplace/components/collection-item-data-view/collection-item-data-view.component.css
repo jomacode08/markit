@@ -98,7 +98,3 @@ button {
 .full-star {
   color: var(--p-yellow-500);
 }
-
-.text-muted {
-  color: var(--p-text-muted-color)
-}

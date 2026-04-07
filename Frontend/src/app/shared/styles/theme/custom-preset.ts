@@ -71,23 +71,23 @@ export const CustomPreset = definePreset(Aura, {
                 },
                 highlight: {
                     primary: {
-                        background: 'color-mix(in srgb, {primary.500}, transparent 85%)',
+                        background: 'color-mix(in srgb, {primary.500}, transparent 80%)',
                         border: 'color-mix(in srgb, {primary.500}, transparent 70%)',
                     },
                     info: {
-                        background: 'color-mix(in srgb, {blue.500}, transparent 85%)',
+                        background: 'color-mix(in srgb, {blue.500}, transparent 80%)',
                         border: 'color-mix(in srgb, {blue.500}, transparent 70%)',
                     },
                     success: {
-                        background: 'color-mix(in srgb, {green.500}, transparent 85%)',
+                        background: 'color-mix(in srgb, {green.500}, transparent 80%)',
                         border: 'color-mix(in srgb, {green.500}, transparent 70%)',
                     },
                     warning: {
-                        background: 'color-mix(in srgb, {amber.500}, transparent 85%)',
+                        background: 'color-mix(in srgb, {amber.500}, transparent 80%)',
                         border: 'color-mix(in srgb, {amber.500}, transparent 70%)',
                     },
                     danger: {
-                        background: 'color-mix(in srgb, {red.500}, transparent 85%)',
+                        background: 'color-mix(in srgb, {red.500}, transparent 80%)',
                         border: 'color-mix(in srgb, {red.500}, transparent 70%)',
                     },
                 },
@@ -510,6 +510,54 @@ export const CustomPreset = definePreset(Aura, {
                     margin-right: .5rem;
                 }
             `
+        },
+        toast: {
+            colorScheme: {
+                light: {
+                    success: {
+                        background: '{highlight.success.background}',
+                        color: '{green.800}',
+                        borderColor: '{highlight.success.border}',
+                    },
+                    info: {
+                        background: '{highlight.info.background}',
+                        color: '{blue.800}',
+                        borderColor: '{highlight.info.border}',
+                    },
+                    warn: {
+                        background: '{highlight.warning.background}',
+                        color: '{amber.800}',
+                        borderColor: '{highlight.warning.border}',
+                    },
+                    error: {
+                        background: '{highlight.danger.background}',
+                        color: '{red.800}',
+                        borderColor: '{highlight.danger.background}',
+                    },
+                },
+                dark: {
+                    success: {
+                        background: '{highlight.success.background}',
+                        color: '{green.100}',
+                        borderColor: '{highlight.success.border}',
+                    },
+                    info: {
+                        background: '{highlight.info.background}',
+                        color: '{blue.100}',
+                        borderColor: '{highlight.info.border}',
+                    },
+                    warn: {
+                        background: '{highlight.warning.background}',
+                        color: '{amber.100}',
+                        borderColor: '{highlight.warning.border}',
+                    },
+                    error: {
+                        background: '{highlight.danger.background}',
+                        color: '{red.100}',
+                        borderColor: '{highlight.danger.background}',
+                    },
+                }
+            }
         },
         multiselect: {
             root: {

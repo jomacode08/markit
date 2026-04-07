@@ -10,6 +10,10 @@ button {
   padding: 0;
 }
 
+button:hover {
+  color: var(--p-text-hover-color);
+}
+
 div,
 button {
   display: flex;
