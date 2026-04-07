@@ -24,6 +24,23 @@ a {
     color: var(--primary-color);
 }
 
+.markit-dark {
+    #auth-background-container {
+        .shape:not(.triangle-md, .triangle-sm) {
+            border-color: #a855f733;
+        }
+        .triangle-md, .triangle-sm {
+            border-bottom-color: #a855f733;
+        }
+        .shape.solid {
+            background-color: #a855f733;
+        }
+        .bg-gradient {
+            background-image: linear-gradient(to bottom right, #1a1b1e , #1a1b1e , #2d1b40);
+        }
+    }
+}
+
 /* xl: Aplica width >= 1200px */
 @media only screen and (min-width: 1200px) {
     .container {

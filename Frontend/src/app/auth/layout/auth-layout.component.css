@@ -18,22 +18,24 @@
     z-index: 10;
 }
 
-.purple-gradient {
+.bg-gradient {
     position: fixed;
     inset: 0;
     z-index: 0;
-    background-image: linear-gradient(to bottom right, #1a1b1e , #1a1b1e , #2d1b40);
     opacity: .8;
     z-index: 0;
+    background-image: linear-gradient(to right, var(--p-surface-50),var(--p-primary-50));
 }
 
 .shape {
     position: fixed;
-    border: 1px solid #a855f733;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--p-primary-500);
     opacity: .5;
 }
 .shape.solid {
-    background-color: #a855f733;
+    background-color: var(--p-primary-500);
 }
 .triangle-md, .triangle-sm{
     width: 0px;
