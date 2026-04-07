@@ -1,6 +1,6 @@
 #main-bar-container {
   z-index: 1103;
-  background-color: var(--p-surface-900);
+  background-color: var(--p-content-elevation-section);
 }
 
 #main-container {
@@ -10,19 +10,24 @@
   padding: 2rem 1.75rem;
 }
 
+#toggleBtn {
+  color: var(--p-text-muted-color);
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
 footer {
   text-align: center;
   padding: 1rem;
   border: 1px solid var(--p-content-border-color);
 }
 
-.text-gradient {
-  color: transparent !important;
-  background-clip: text;
-  -webkit-background-clip: text;
-  background-image: linear-gradient(to right, #c084fc, #6366f1);
-}
-
 .max-width {
   max-width: 70rem;
+}
+
+.title {
+  color: var(--p-primary-400);
+  font-size: 1.25rem;
 }

@@ -1,5 +1,5 @@
 #auth-background-container {
-    background-color: var(--p-surface-950);
+    background-color: var(--p-content-elevation-main);
     display: flex;
     flex-direction: column;
     min-height: 100vh;

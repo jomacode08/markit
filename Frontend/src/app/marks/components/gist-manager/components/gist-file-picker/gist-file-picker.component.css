@@ -21,10 +21,10 @@ button {
 }
 .file-item:hover {
   cursor: pointer;
-  background-color: var(--p-surface-800);
+  background-color: var(--p-content-elevation-card);
 }
 .file-item.active {
-  background-color: var(--p-surface-800);
+  background-color: var(--p-content-elevation-card);
 }
 .file-numerator {
   padding: .25rem .5rem;

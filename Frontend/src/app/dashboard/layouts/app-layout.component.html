@@ -27,12 +27,12 @@
         <!-- Header -->
         <ng-template #header>
             <div class="flex w-full justify-content-between align-items-center">
-                <h2 class="m-0 text-xl text-gradient">{{ config.title }}</h2>
+                <h2 class="m-0 title">{{ config.title }}</h2>
                 <button
-                    class="border-none cursor-pointer p-2"
+                    id="toggleBtn"
                     (click)="toggleSidebar()"
                 >
-                    <span class="fa fa-angle-left text-base text-white-alpha-60"></span>
+                    <span class="fa fa-angle-left text-base"></span>
                 </button>
             </div>
         </ng-template>

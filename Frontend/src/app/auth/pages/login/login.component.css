@@ -5,7 +5,7 @@
 }
 
 article {
-  background-color: var(--p-surface-900);
+  background-color: var(--p-content-elevation-section);
   border-radius: .75rem;
   border: 1px solid var(--p-overlay-modal-border-color);
 }
@@ -27,6 +27,6 @@ article {
   color: var(--p-text-hover-color);
   font-weight: 300;
   span {
-    background-color: var(--p-surface-900);
+    background-color: var(--p-content-elevation-section);
   }
 }

@@ -54,13 +54,13 @@
                             <span class="w-full font-medium text-base text-left">
                                 {{ item.name }}
                             </span>
-                            <span class="w-full font-light text-sm text-white-alpha-60 text-left">
+                            <span class="w-full font-light text-sm text-muted text-left">
                                 {{ item.preview }}
                             </span>
                         </div>
                     </div>
                     <!-- Date -->
-                    <div class="col-4 md:col-6 text-sm text-white-alpha-60">
+                    <div class="col-4 md:col-6 text-sm text-muted">
                         <span class="w-full text-right mr-3">
                             {{ item.updatedAt ?? item.createdAt | timeAgo }}
                         </span>
@@ -70,11 +70,11 @@
                 <div class="actions-container flex-column gap-2 md:flex-row md:gap-3">
                     <!-- Favorite -->
                     <button (click)="onFavoriteClicked(item, $index)" [disabled]="item.updating" type="button">
-                        <span *ngIf="!item.isFavorite; else fullStar" class="fa-regular fa-star text-lg text-white-alpha-60"></span>
+                        <span *ngIf="!item.isFavorite; else fullStar" class="fa-regular fa-star text-lg text-muted"></span>
                     </button>
                     <!-- Other Actions -->
                     <button (click)="onItemActionsClicked(item)" type="button">
-                        <span class="fa fa-ellipsis text-lg text-white-alpha-60"></span>
+                        <span class="fa fa-ellipsis text-lg text-muted"></span>
                     </button>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <p class="mt-5 mb-0 text-xl font-semibold text-white-alpha-90">Nothing to see here</p>
-            <p class="mt-3 mb-0 text-white-alpha-60 max-w-24rem text-center">This place is empty. Create a new item or try a different location.</p>
+            <p class="mt-3 mb-0 text-muted max-w-24rem text-center">This place is empty. Create a new item or try a different location.</p>
         </div>
     </ng-template>
 </p-dataView>

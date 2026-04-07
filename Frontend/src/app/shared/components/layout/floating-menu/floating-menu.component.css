@@ -5,7 +5,7 @@ button {
 }
 button#closeBtn {
   position: absolute;
-  background-color: var(--p-surface-800);
+  background-color: var(--p-content-elevation-card);
   bottom: -1.5rem;
   padding: .5rem .5rem 1.5rem .5rem;
   border-radius: 50%;
@@ -22,7 +22,9 @@ button.item:hover:enabled {
   }
 }
 button.item:disabled {
-  color: var(--p-surface-700);
+  .icon, .label {
+    color: var(--p-text-disabled-color);
+  }
 }
 span.icon {
   color: var(--p-text-muted-color);
@@ -42,17 +44,9 @@ span.label {
   white-space: nowrap;
   overflow: auto;
   gap: 1.5rem;
-}
-/* Firefox */
-.scroll-container {
   scrollbar-width: auto;
-  scrollbar-color: var(--p-surface-600) var(--p-surface-900);
 }
 /*Chromium*/
 .scroll-container::-webkit-scrollbar {
   height: 6px;
-  background-color: var(--p-surface-900);
-}
-.scroll-container::-webkit-scrollbar-thumb {
-  background-color: var(--p-surface-600);
 }

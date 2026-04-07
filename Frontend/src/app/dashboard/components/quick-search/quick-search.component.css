@@ -13,7 +13,7 @@
   border: 1px solid var(--p-content-border-color);
   border-radius: .375rem;
   padding: .5rem 0;
-  background-color: var(--p-surface-950);
+  background-color: var(--p-content-elevation-main);
 }
 .search-box:focus-within {
   outline: 2px solid transparent; 
@@ -32,6 +32,7 @@ span.fa-search{
 .search-box > input {
   background-color: transparent;
   border: none;
+  box-shadow: none;
   color: var(--p-text-color);
   width: 100%;
   padding: 0;
@@ -70,7 +71,7 @@ span.fa-search{
   padding: .5rem 0;
 }
 .item-result:hover {
-  background-color: var(--p-surface-800);
+  background-color: var(--p-content-elevation-card);
 }
 .item-result .name {
   font-weight: 500;
@@ -78,7 +79,7 @@ span.fa-search{
 }
 ::ng-deep .formatted > span {
   padding: .25rem 0;
-  color: #E1D8FD;
+  color: var(--p-text-muted-color);
   background-color: var(--p-highlight-primary-border);
 }
 

@@ -65,7 +65,7 @@ button.recent-mark {
 }
 
 button.recent-mark:hover {
-  background-color: var(--p-surface-900);
+  background-color: var(--p-content-elevation-section);
 }
 
 button.recent-mark>.mark-description {
@@ -137,7 +137,7 @@ button.recent-mark>.mark-description {
 }
 
 button.access:hover {
-  background-color: var(--p-surface-900);
+  background-color: var(--p-content-elevation-section);
 }
 
 .statistics .stat-container {

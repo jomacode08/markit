@@ -1,7 +1,7 @@
 @layer project {
   body {
     color: var(--p-text-color);
-    background-color: var(--p-surface-950);
+    background-color: var(--p-content-elevation-main);
     scrollbar-color: rgb(255, 255, 255, 0.3);
   }
 
@@ -21,9 +21,8 @@
   }
 
   /** Button */
-  button:not(.p-button):not(.p-ripple) {
+  button:not(.p-button):not(.p-ripple):not(.avatar) {
     background-color: transparent;
-    color: #ffffff;
   }
   .external-login-button {
     .p-button-icon {
@@ -44,7 +43,7 @@
   }
   p-button:not(.p-menu-item-link-active) {
     .p-button.nav-button:hover {
-      background-color: var(--p-surface-800);
+      background-color: var(--p-content-elevation-card);
     }
   }
 
@@ -53,13 +52,22 @@
     width: 2rem;
     height: 2rem;
     cursor: pointer;
-    background-image: linear-gradient(to right, #a855f7, #4f46e5);
+    background-color: white;
+    border: none;
     border-radius: 100%;
+    background: #4f46e5;
+    background: -webkit-linear-gradient(to right, #DBD5A4, #649173);
+    background: linear-gradient(to right, #DBD5A4, #649173);
   }
   .avatar img {
     height: 100%;
     width: 100%;
     object-fit: cover;
+  }
+  .markit-dark .avatar {
+    background: #a855f7;
+    background: -webkit-linear-gradient(to right, #a855f7, #4f46e5);
+    background: linear-gradient(to right, #a855f7, #4f46e5);
   }
 
   /** Sidebar */
@@ -85,7 +93,7 @@
     height: 6.1rem;
     border: none;
     .p-drawer-content {
-      background-color: var(--p-surface-900);
+      background-color: var(--p-content-elevation-section);
       display: flex;
       justify-content: center;
       padding: 0.5rem 2rem;
@@ -152,7 +160,7 @@
   /** Dialogs */
   .p-dialog {
     .p-dialog-header {
-      background-color: var(--p-surface-900);
+      background-color: var(--p-overlay-modal-header-background);
       border-top-left-radius:  6px;
       border-top-right-radius: 6px;
       .p-dialog-title {
@@ -204,6 +212,16 @@
     }
   }
 
+  .p-dialog-mask, .p-datatable-mask {
+    z-index: 1104 !important;
+    background: rgba(255, 255, 255, 0.4) !important;
+  }
+  .markit-dark {
+    .p-dialog-mask, .p-datatable-mask {
+      background: rgba(24, 24, 27, 0.45) !important;
+    }
+  }
+
   /** Panel **/
   .ProseMirror-selectednode {
     .p-panel {
@@ -252,7 +270,7 @@
   .p-paginator-prev.p-paginator-element.p-link:hover,
   .p-paginator-next.p-paginator-element.p-link:hover,
   .p-paginator-last.p-paginator-element.p-link:hover {
-    background-color: var(--p-surface-900);
+    background-color: var(--p-content-elevation-section);
   }
   /** Utils */
   .h-50 {
@@ -267,6 +285,7 @@
     --input-border-color: var(--p-content-border-color);
     --outline-color: var(--p-overlay-modal-border-color);
     --outline-size: 2px;
+    --background: transparent;
   }
 
   .emoji {
@@ -292,9 +311,9 @@
   }
 
   .fa-folder {
-    color: rgb(129 140 248 / 1);
+    color: var(--p-secondary-400);
   }
   .fa-note-sticky {
-    color: rgb(192 132 252 / 1);
+    color: var(--p-primary-400);
   }
 }

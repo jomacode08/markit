@@ -29,7 +29,6 @@
 
   p {
     margin: .25rem 0;
-    color: #ced4da !important;
   }
 
   hr {
@@ -108,14 +107,14 @@
 
   /** Code Styling */
   code {
-    background-color: var(--p-surface-800);
+    background-color: var(--p-content-elevation-card);
     border-radius: 0.4rem;
     font-size: 0.85rem;
     font-weight: 600;
     padding: 0.25em 0.3em;
   }
   pre {
-    background: var(--p-surface-900);
+    background: var(--p-content-elevation-section);
     font-family: 'Fira Code', monospace;
     font-size: 0.95rem;
     line-height: 1.6;
@@ -240,7 +239,7 @@
 
     th {
       text-align: left;
-      background-color: var(--p-surface-900);
+      background-color: var(--p-content-elevation-section);
     }
 
     .selectedCell:after {

@@ -99,7 +99,7 @@ a {
         width: 100%;
         position: sticky;
         top: 0;
-        background-color: var(--p-surface-950);
+        background-color: var(--p-content-elevation-main);
         border-bottom: 1px solid var(--p-content-border-color);
 
         nav{

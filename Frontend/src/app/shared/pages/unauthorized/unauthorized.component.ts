@@ -31,12 +31,12 @@ import { ButtonModule } from 'primeng/button';
       justify-content: center;
       height: 100vh;
       text-align: center;
-      background-color: var(--p-surface-950);
+      background-color: var(--p-content-elevation-main);
     }
 
     .error-content {
       padding: 2rem;
-      background-color: var(--p-surface-800);
+      background-color: var(--p-content-elevation-card);
       border: 1px solid var(--p-overlay-modal-border-color);
       border-radius: 0.5rem;
     }

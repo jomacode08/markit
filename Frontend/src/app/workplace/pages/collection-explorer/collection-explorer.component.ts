@@ -49,8 +49,8 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     }
   }
   private readonly ICONS = {
-    FOLDER: 'fa fa-folder',
-    NOTE: 'fa fa-note-sticky',
+    FOLDER: 'fa-regular fa-folder',
+    NOTE: 'fa-regular fa-note-sticky',
   };
 
   //* Configuration

@@ -8,9 +8,9 @@
   border: 1px solid var(--p-content-border-color);
   transition: background-color 0.3s ease;
   span.fa {
-    color: var(--p-green-400);
+    color: var(--p-green-500);
   }
 }
 #addAccountBtn:hover {
-  background-color: var(--p-surface-900);
+  background-color: var(--p-content-elevation-section);
 }

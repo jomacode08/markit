@@ -1,6 +1,6 @@
 .modal-body {
   padding: 1.5rem;
-  background-color: var(--p-surface-950);
+  background-color: var(--p-content-elevation-main);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -8,7 +8,6 @@
 
 .modal-footer {
   padding: 1rem 1.5rem;
-  background-color: var(--p-surface-950);
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;

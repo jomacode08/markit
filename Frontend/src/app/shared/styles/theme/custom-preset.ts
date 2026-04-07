@@ -19,36 +19,55 @@ export const CustomPreset = definePreset(Aura, {
         },
     },
     semantic: {
-        primary: {
-            50: '{violet.50}',
-            100: '{violet.100}',
-            200: '{violet.200}',
-            300: '{violet.300}',
-            400: '{violet.400}',
-            500: '{violet.500}',
-            600: '{violet.600}',
-            700: '{violet.700}',
-            800: '{violet.800}',
-            900: '{violet.900}',
-            950: '{violet.950}'
-        },
-        secondary: {
-            50: '{indigo.50}',
-            100: '{indigo.100}',
-            200: '{indigo.200}',
-            300: '{indigo.300}',
-            400: '{indigo.400}',
-            500: '{indigo.500}',
-            600: '{indigo.600}',
-            700: '{indigo.700}',
-            800: '{indigo.800}',
-            900: '{indigo.900}',
-            950: '{indigo.950}'
-        },
         colorScheme: {
-            dark: {
+            light: {
+                primary: {
+                    50: '{orange.50}',
+                    100: '{orange.100}',
+                    200: '{orange.200}',
+                    300: '{orange.300}',
+                    400: '{orange.400}',
+                    500: '{orange.500}',
+                    600: '{orange.600}',
+                    700: '{orange.700}',
+                    800: '{orange.800}',
+                    900: '{orange.900}',
+                    950: '{orange.950}'
+                },
+                secondary: {
+                    50: '{ blue.50}',
+                    100: '{blue.100}',
+                    200: '{blue.200}',
+                    300: '{blue.300}',
+                    400: '{blue.400}',
+                    500: '{blue.500}',
+                    600: '{blue.600}',
+                    700: '{blue.700}',
+                    800: '{blue.800}',
+                    900: '{blue.900}',
+                    950: '{blue.950}'
+                },
+                surface: {
+                    0: '#ffffff',
+                    50: '{stone.50}',
+                    100: '{stone.100}',
+                    200: '{stone.200}',
+                    300: '{stone.300}',
+                    400: '{stone.400}',
+                    500: '{stone.500}',
+                    600: '{stone.600}',
+                    700: '{stone.700}',
+                    800: '{stone.800}',
+                    900: '{stone.900}',
+                    950: '{stone.950}'
+                },
                 content: {
-                    borderColor: '{zinc-700}'
+                    borderColor: '{surface.300}',
+                    elevation: {
+                        main : '{surface.50}',
+                        section: '{surface.100}',
+                        card: '{surface.200}'
+                    }
                 },
                 highlight: {
                     primary: {
@@ -74,8 +93,46 @@ export const CustomPreset = definePreset(Aura, {
                 },
                 overlay: {
                     modal: {
-                        borderColor: '{zinc.700}',
+                        background: '{content.elevation.main}',
+                        borderColor: '{surface.300}',
+                        header : {
+                            background: '{surface.200}',
+                        }
                     },
+                },
+                text: {
+                    color: '{surface.700}',
+                    hoverColor: '{surface.600}',
+                    mutedColor: '{surface.500}',
+                    disabledColor: '{surface.400}',
+                }
+            },
+            dark: {
+                primary: {
+                    50: '{violet.50}',
+                    100: '{violet.100}',
+                    200: '{violet.200}',
+                    300: '{violet.300}',
+                    400: '{violet.400}',
+                    500: '{violet.500}',
+                    600: '{violet.600}',
+                    700: '{violet.700}',
+                    800: '{violet.800}',
+                    900: '{violet.900}',
+                    950: '{violet.950}'
+                },
+                secondary: {
+                    50: '{indigo.50}',
+                    100: '{indigo.100}',
+                    200: '{indigo.200}',
+                    300: '{indigo.300}',
+                    400: '{indigo.400}',
+                    500: '{indigo.500}',
+                    600: '{indigo.600}',
+                    700: '{indigo.700}',
+                    800: '{indigo.800}',
+                    900: '{indigo.900}',
+                    950: '{indigo.950}'
                 },
                 surface: {
                     0: '{surkit.0}',
@@ -91,10 +148,50 @@ export const CustomPreset = definePreset(Aura, {
                     900: '{surkit.900}',
                     950: '{surkit.950}'
                 },
+                content: {
+                    borderColor: '{zinc.700}',
+                    elevation: {
+                        main : '{surface.950}',
+                        section: '{surface.900}',
+                        card: '{surface.800}'
+                    }
+                },
+                highlight: {
+                    primary: {
+                        background: 'color-mix(in srgb, {primary.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                    },
+                    info: {
+                        background: 'color-mix(in srgb, {blue.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                    },
+                    success: {
+                        background: 'color-mix(in srgb, {green.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                    },
+                    warning: {
+                        background: 'color-mix(in srgb, {amber.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {amber.500}, transparent 70%)',
+                    },
+                    danger: {
+                        background: 'color-mix(in srgb, {red.500}, transparent 85%)',
+                        border: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                    },
+                },
+                overlay: {
+                    modal: {
+                        background: '{content.elevation.main}',
+                        borderColor: '{zinc.700}',
+                        header : {
+                            background: '{surface.900}',
+                        }
+                    },
+                },
                 text: {
                     color: '#e9ecef',
                     hoverColor: '#adb5bd',
                     mutedColor: '#ffffff99',
+                    disabledColor: '{surface.600}',
                 }
             }
         }
@@ -123,6 +220,78 @@ export const CustomPreset = definePreset(Aura, {
             `,
             // Styles by color scheme
             colorScheme: {
+                light: {
+                    root: {
+                        primary: {
+                            background: '{highlight.primary.background}',
+                            color: '{primary.800}',
+                            borderColor: '{highlight.primary.border}',
+                            // Hover
+                            hoverBackground: 'color-mix(in srgb, {primary.500}, transparent 80%)',
+                            hoverColor: '{primary.800}',
+                            hoverBorderColor: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {primary.500}, transparent 70%)',
+                            activeColor: '{primary.800}',
+                            activeBorderColor: 'color-mix(in srgb, {primary.500}, transparent 70%)'
+                        },
+                        secondary: {
+                            background: 'transparent',
+                            borderColor: '{content.borderColor}',
+                            color: '{text.color}',
+                            // Hover
+                            hoverBackground: '{surface.100}',
+                            hoverColor: '{text.color}',
+                            hoverBorderColor: '{content.borderColor}'
+                        },
+                        success: {
+                            background: '{highlight.success.background}',
+                            color: '{green.800}',
+                            borderColor: '{highlight.success.border}',
+                            // Hover
+                            hoverBackground: 'color-mix(in srgb, {green.500}, transparent 80%)',
+                            hoverColor: '{green.800}',
+                            hoverBorderColor: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {green.500}, transparent 70%)',
+                            activeColor: '{green.800}',
+                            activeBorderColor: 'color-mix(in srgb, {green.500}, transparent 70%)'
+                        },
+                        danger: {
+                            background: '{highlight.danger.background}',
+                            color: '{red.800}',
+                            borderColor: '{highlight.danger.border}',
+                            // Hover
+                            hoverBackground: 'color-mix(in srgb, {red.500}, transparent 80%)',
+                            hoverColor: '{red.800}',
+                            hoverBorderColor: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {red.500}, transparent 70%)',
+                            activeColor: '{red.800}',
+                            activeBorderColor: 'color-mix(in srgb, {red.500}, transparent 70%)'
+                        },
+                        info: {
+                            background: '{highlight.info.background}',
+                            color: '{blue.800}',
+                            borderColor: '{highlight.info.border}',
+                            // Hover
+                            hoverBackground: 'color-mix(in srgb, {blue.500}, transparent 80%)',
+                            hoverColor: '{blue.800}',
+                            hoverBorderColor: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                            // Active
+                            activeBackground: 'color-mix(in srgb, {blue.500}, transparent 70%)',
+                            activeColor: '{blue.800}',
+                            activeBorderColor: 'color-mix(in srgb, {blue.500}, transparent 70%)'
+                        }
+                    },
+                    text: {
+                        secondary: {
+                            // Hover
+                            color: '{text.mutedColor}',
+                            hoverBackground: '{surface.800}',
+                        }
+                    }
+                },
                 dark: {
                     root: {
                         primary: {
@@ -194,23 +363,45 @@ export const CustomPreset = definePreset(Aura, {
                             hoverBackground: '{surface.800}',
                         }
                     }
-                }
+                },
             },
         },
         dialog: {
             root: {
-                background: '{surface.950}',
-                borderColor: '{surface.700}',
                 borderRadius: '6px',
             },
             header: {
                 padding: '1rem',
             },
+            colorScheme: {
+                light: {
+                    root: {
+                        background: '{surface.50}',
+                    }
+                },
+                dark: {
+                    root: {
+                        background: '{surface.950}',
+                        borderColor: '{surface.700}',
+                    }
+                }
+            },
         },
         divider: {
             content: {
-                background: '{surface.950}',
                 color: '{text.color}'
+            },
+            colorScheme: {
+                light: {
+                    content: {
+                        background: '{surface.50}',
+                    }
+                },
+                dark: {
+                    content: {
+                        background: '{surface.950}',
+                    }
+                }
             },
             css: () => `
                 .p-divider-content {
@@ -221,7 +412,7 @@ export const CustomPreset = definePreset(Aura, {
         confirmdialog: {
             icon: {
                 size: '3rem',
-                color: '{secondary.500}'
+                color: '{primary.500}'
             }
         },
         dataview: {
@@ -287,6 +478,9 @@ export const CustomPreset = definePreset(Aura, {
             },
             item: {
                 borderRadius: '0px',
+                icon: {
+                    color: '{text-color}'
+                }
             },
             colorScheme: {
                 dark: {
@@ -319,21 +513,24 @@ export const CustomPreset = definePreset(Aura, {
         },
         multiselect: {
             root: {
-                background: '{surface.900}',
                 invalidBorderColor: '{red.500}',
-            },
-            overlay: {
-                background: '{surface.900}',
             },
             list: {
                 header: {
                     padding: '.5rem 1rem'
                 }
             },
-            css: ({dt}) => `
-                .p-multiselect-header {
-                    border-bottom: 1px solid ${dt('surface.700')};
+            colorScheme: {
+                dark: {
+                    root: {
+                        background: '{surface.900}',
+                    },
+                    overlay: {
+                        background: '{surface.900}',
+                    },
                 }
+            },
+            css: ({dt}) => `
                 .p-multiselect-option {
                     font-size: .875rem;
                 }
@@ -376,6 +573,11 @@ export const CustomPreset = definePreset(Aura, {
                     font-size: .875rem;
                 } 
             `
+        },
+        popover: {
+            root: {
+                background: '{overlay-modal-background}'
+            }
         },
         progressspinner: {
             colorScheme: {

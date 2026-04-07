@@ -19,6 +19,6 @@
 }
 .item.collection:hover {
   cursor: pointer;
-  background-color: var(--p-surface-800);
+  background-color: var(--p-content-elevation-card);
   color: var(--p-text-color)
 }

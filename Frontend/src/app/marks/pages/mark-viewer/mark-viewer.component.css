@@ -10,7 +10,7 @@ button {
   align-items: center;
   justify-content: space-between;
   font-size: 0.875rem;
-  background-color: var(--p-surface-950);
+  background-color: var(--p-content-elevation-main);
   z-index: 999;
   padding: .375rem 1rem;
 }
@@ -24,7 +24,7 @@ button {
     border: none;
     font-size: 1.75rem;
     font-weight: 600;
-    background-color: var(--p-surface-950);
+    background-color: var(--p-content-elevation-main);
     color: var(--p-text-color);
     padding: 0;
     outline: none;
