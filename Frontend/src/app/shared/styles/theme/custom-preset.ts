@@ -118,6 +118,7 @@ export const CustomPreset = definePreset(Aura, {
                     hoverColor: '{surface.600}',
                     mutedColor: '{surface.500}',
                     disabledColor: '{surface.400}',
+                    highlightColor: '{primary.200}',
                 }
             },
             dark: {
@@ -218,6 +219,7 @@ export const CustomPreset = definePreset(Aura, {
                     hoverColor: '#adb5bd',
                     mutedColor: '#ffffff99',
                     disabledColor: '{surface.600}',
+                    highlightColor: '#6a468d',
                 }
             }
         }

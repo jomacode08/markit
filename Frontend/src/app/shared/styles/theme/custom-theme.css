@@ -1,4 +1,4 @@
-@layer project {
+@layer project {  
   body {
     color: var(--p-text-color);
     background-color: var(--p-content-elevation-main);
@@ -11,13 +11,6 @@
   }
   ::-webkit-scrollbar {
     width: 8px;
-  }
-
-  .text-primary {
-    color: var(--p-text-color);
-  }
-  .text-secondary {
-    color: var(--p-text-hover-color);
   }
 
   /** Button */
@@ -282,9 +275,32 @@
   .h-50 {
     height: 50% !important;
   }
-
+  .text-primary {
+    color: var(--p-text-color);
+  }
+  .text-secondary {
+    color: var(--p-text-hover-color);
+  }
   .text-muted {
     color: var(--p-text-muted-color);
+  }
+  .lined-background {
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      var(--p-overlay-modal-border-color) 5px,
+      var(--p-overlay-modal-border-color) 6px
+    );
+  }
+  .stop-scrolling {
+    overflow: hidden;
+  }
+  .fa-folder {
+    color: var(--p-secondary-400);
+  }
+  .fa-note-sticky {
+    color: var(--p-primary-400);
   }
   /* Emoji picker element styling */
   emoji-picker {
@@ -296,33 +312,11 @@
     --outline-size: 2px;
     --background: transparent;
   }
-
   .emoji {
     display: inline-block;
     vertical-align: middle;
     line-height: 1;
-    margin-left:  -4px;  /* Adjust as needed */
-    margin-right: -4px; /* Adjust as needed */
-  }
-
-  .lined-background {
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 5px,
-      var(--p-overlay-modal-border-color) 5px,
-      var(--p-overlay-modal-border-color) 6px
-    );
-  }
-
-  .stop-scrolling {
-    overflow: hidden;
-  }
-
-  .fa-folder {
-    color: var(--p-secondary-400);
-  }
-  .fa-note-sticky {
-    color: var(--p-primary-400);
+    margin-left:  -4px;
+    margin-right: -4px;
   }
 }
