@@ -2,6 +2,7 @@
 @import '../src/app/shared/styles/layout/typography.css';
 @import '../src/app/shared/styles/layout/layout.css';
 @import '../src/app/shared/styles/theme/custom-theme.css';
+@import '../src/app/shared/styles/theme/tiptap-editor.css';
 
 /* FontAwesome and Primeflex */
 @import "../node_modules/primeflex/primeflex.css";
