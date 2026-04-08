@@ -125,7 +125,7 @@
     background-color: var(--p-highlight-primary-border);
     border-left: 2px solid var(--p-primary-500);
     i {
-      color: var(--p-secondary-500);
+      color: var(--p-secondary-400);
     }
   }
   .p-tieredmenu.popup {

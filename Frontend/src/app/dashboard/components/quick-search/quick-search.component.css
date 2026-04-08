@@ -102,7 +102,7 @@ span.fa-search{
   color: var(--p-text-hover-color);
 }
 .no-results i.purple-highlight {
-  color: var(--p-secondary-500);
+  color: var(--p-secondary-400);
 }
 
 .error-btn {
@@ -112,5 +112,5 @@ span.fa-search{
   transition: 0.3s ease;
 }
 .error-btn:hover {
-  color: var(--p-secondary-500);
+  color: var(--p-secondary-400);
 }

@@ -97,11 +97,11 @@
 
   /** Link styles */
   a {
-    color: var(--p-secondary-500);
+    color: var(--p-primary-400);
     cursor: pointer;
 
     &:hover {
-      color: var(--p-secondary-500-hover);
+      color: var(--p-primary-500);
     }
   }
 
