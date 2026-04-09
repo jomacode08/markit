@@ -1,10 +1,8 @@
 <div class="dashed-container">
-    <div>&nbsp;</div>
+    <div class="p-2">
+        <div class="bg-papper-pattern"></div>
+    </div>
 </div>
-<!-- Hero -->
-<section class="dashed-container hero">
-    <home-hero/>
-</section>
 <!-- Dashboard -->
 <ng-container *ngIf="report$ | async as report">
     <!-- Recent marks -->
@@ -143,7 +141,9 @@
 </ng-container>
 
 <div class="dashed-container">
-    <div>&nbsp;</div>
+    <div class="p-2">
+        <div class="bg-papper-pattern"></div>
+    </div>
 </div>
 
 <ng-template #noRecentMarksTemplate>

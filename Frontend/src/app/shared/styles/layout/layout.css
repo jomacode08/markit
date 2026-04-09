@@ -41,21 +41,21 @@ a {
     }
 }
 
-/* xl: Aplica width >= 1200px */
+/* xl: width >= 1200px */
 @media only screen and (min-width: 1200px) {
     .container {
         max-width: 40vw !important;
         margin: auto;
     }
 }
-/* lg: Aplica width >= 992px */
+/* lg: width >= 992px */
 @media only screen and (min-width: 992px) {
     .container {
         max-width: 50vw;
         margin: auto;
     }
 }
-/* md: Aplica width >= 768px */
+/* md: width >= 768px */
 @media only screen and (min-width: 768px) {
     .p-drawer.floating-menu {
         display: flex;
@@ -100,7 +100,7 @@ a {
       bottom: 2.5rem !important;
     }
 }
-/* sm: Aplica width <= 768px */
+/* sm: width <= 768px */
 @media only screen and (max-width: 768px) {
     #form-container {
         height: 100vh;

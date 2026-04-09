@@ -53,7 +53,6 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     private authService : AuthService,
     private externalLoginService : ExternalLoginService,
     private fb : FormBuilder,
-    private messageService: CustomMessageService,
     private popupService : PopupService,
     private router : Router,
     private validator : ValidatorService,
@@ -140,7 +139,6 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
   private confirmSession(): void {
     this.setSubmit(false);
     this.router.navigate(['dashboard']);
-    this.messageService.showGeneralSuccess("Successful login!");
   }
 
   private setSubmit(state: boolean): void {

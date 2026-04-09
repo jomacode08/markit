@@ -11,15 +11,6 @@ import { DashboardReport, Stats, WeeklyMarkActivity } from "../../interfaces/das
 import { DashboardService } from "../../services/dashboard.service";
 import { HomeComponent } from "./home.component";
 import { ROUTES } from "../../../shared/utils/constant";
-import { HeroComponent } from "./components/hero/hero.component";
-
-@Component({
-    selector: 'home-hero',
-    standalone: true,
-    template: ''
-})
-class MockHeroComponent {
-}
 
 @Component({
     selector: 'dashboard-daily-mark-activity-chart',
@@ -93,11 +84,9 @@ describe('HomeComponent', () => {
         })
         .overrideComponent(HomeComponent, {
             remove: { imports: [
-                HeroComponent,
                 DailyMarkActivityChartComponent,
             ]},
             add: {imports: [
-                MockHeroComponent,
                 MockDailyMarkActivityChartComponent,
             ]}
         }).compileComponents();

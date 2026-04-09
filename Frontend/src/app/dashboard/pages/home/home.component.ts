@@ -10,16 +10,14 @@ import { DashboardReport } from '../../interfaces/dashboard-report';
 import { DashboardService } from '../../services/dashboard.service';
 import { ROUTES } from './../../../shared/utils/constant';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
-import { HeroComponent } from './components/hero/hero.component';
 
 @Component({
     selector: 'app-home',
     imports: [
-        CommonModule,
-        DailyMarkActivityChartComponent,
-        HeroComponent,
-        RouterModule,
-        TimeAgoPipe
+      CommonModule,
+      DailyMarkActivityChartComponent,
+      RouterModule,
+      TimeAgoPipe
     ],
     providers: [DialogService],
     templateUrl: './home.component.html',

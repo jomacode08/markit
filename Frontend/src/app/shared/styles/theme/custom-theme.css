@@ -293,6 +293,21 @@
       var(--p-overlay-modal-border-color) 6px
     );
   }
+  .bg-papper-pattern {
+    min-height: 3.5rem;
+    background-image: repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(75, 85, 99, 0.06) 2px, rgba(75, 85, 99, 0.06) 3px, transparent 3px, transparent 8px),
+      repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(107, 114, 128, 0.05) 2px, rgba(107, 114, 128, 0.05) 3px, transparent 3px, transparent 8px),
+      repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(55, 65, 81, 0.04) 2px, rgba(55, 65, 81, 0.04) 3px, transparent 3px, transparent 8px),
+      repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(31, 41, 55, 0.03) 2px, rgba(31, 41, 55, 0.03) 3px, transparent 3px, transparent 8px);
+  }
+  .markit-dark {
+    .bg-papper-pattern {
+      background-image: repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(248, 250, 252, 0.06) 2px, rgba(248, 250, 252, 0.06) 3px, transparent 3px, transparent 8px),
+        repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(226, 232, 240, 0.05) 2px, rgba(226, 232, 240, 0.05) 3px, transparent 3px, transparent 8px),
+        repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(203, 213, 225, 0.04) 2px, rgba(203, 213, 225, 0.04) 3px, transparent 3px, transparent 8px),
+        repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(148, 163, 184, 0.03) 2px, rgba(148, 163, 184, 0.03) 3px, transparent 3px, transparent 8px);
+    }
+  }
   .stop-scrolling {
     overflow: hidden;
   }
