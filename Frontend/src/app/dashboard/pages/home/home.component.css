@@ -1,5 +1,7 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
 }
 
 #noRecentMarks,
@@ -175,4 +177,8 @@ button.access:hover {
 }
 .text-green {
   color: var(--p-green-500);
+}
+.bg-papper-pattern {
+  min-height: 3.5rem;
+  height: 100%;
 }
