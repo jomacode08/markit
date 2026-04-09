@@ -316,7 +316,7 @@ export const CustomPreset = definePreset(Aura, {
                         secondary: {
                             // Hover
                             color: '{text.mutedColor}',
-                            hoverBackground: '{surface.800}',
+                            hoverBackground: '{surface.200}',
                         }
                     }
                 },

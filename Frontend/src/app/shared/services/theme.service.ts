@@ -1,9 +1,13 @@
-import {  inject, Injectable } from '@angular/core';
+import {  computed, inject, Injectable, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { THEME } from '../utils/constant';
 
+export type Theme = 'light' | 'dark';
+
 @Injectable({providedIn: 'root'})
 export class ThemeService {
+    public theme = computed<Theme>(() => this._theme());
+    private _theme = signal<Theme>(this.getInitialTheme());
     private document = inject(DOCUMENT);
 
     public setDarkMode(): void {
@@ -28,5 +32,11 @@ export class ThemeService {
             THEME.THEME_PREFERENCE_KEY,
             dark ? THEME.DARK_THEME : THEME.LIGHT_THEME
         );
+        this._theme.set(dark ? 'dark' : 'light');
+    }
+
+    private getInitialTheme(): Theme {
+        const preference = localStorage.getItem(THEME.THEME_PREFERENCE_KEY);
+        return preference === THEME.DARK_THEME ? 'dark' : 'light';
     }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, Output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { CodeEditor } from '@acrodata/code-editor';
 import { DynamicDialogRef, DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
@@ -10,8 +10,10 @@ import { languages } from '@codemirror/language-data';
 
 import { CodeEditorOptions } from '../../interfaces/code-editor/code-editor-options';
 import { customDarkTheme } from '../../interfaces/code-editor/custom-dark-theme';
+import { customLightTheme } from '../../interfaces/code-editor/custom-light-theme';
 import { Gist, GistFile } from '../../interfaces/gist';
 import { GistFilePickerComponent, GistFilePickerSharedData } from '../gist-file-picker/gist-file-picker.component';
+import { ThemeService } from '../../../../../shared/services/theme.service';
 
 @Component({
     selector: 'gist-viewer',
@@ -39,9 +41,9 @@ export class GistViewerComponent {
   private gistPickerDialogConfig = computed<DynamicDialogConfig>(() => {
     return {
       header: 'Gist files',
-      width: '30rem',
+      width: '35rem',
       modal: true,
-      closable: false,
+      closable: true,
       dismissableMask : true,
       styleClass : 'custom-dialog',
       data : {
@@ -59,18 +61,23 @@ export class GistViewerComponent {
       return {
         disabled : false,
         readonly : true,
-        theme : 'dark',
+        theme : this.themeService.theme(),
         setup: 'basic',
         placeHolder : 'Your code here...',
         language : this.file()?.language,
       } as CodeEditorOptions
     }
   );
-  public cmExtensions: Extension[] = [
-    customDarkTheme
-  ];
+  public codeMirrorExtensions = computed<Extension[]>(() => {
+    return this.themeService.theme() === 'dark'
+      ? [customDarkTheme]
+      : [customLightTheme];
+  });
 
-  constructor(private dialogService: DialogService) {}
+  constructor(
+    private dialogService: DialogService,
+    private themeService: ThemeService,
+  ) {}
   
   public openGistPickerDialog() { 
     this.gistPickerDialogRef = this.dialogService.open(

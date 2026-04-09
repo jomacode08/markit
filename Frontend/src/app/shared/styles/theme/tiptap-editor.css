@@ -193,6 +193,10 @@
       color: var(--tt-code-token-operator);
     }
   }
+  /* Code mirror block editor */
+  .cm-focused {
+    outline: none !important;
+  }
 
   /* Tables */
   table {
