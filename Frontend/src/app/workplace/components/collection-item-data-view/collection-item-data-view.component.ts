@@ -20,6 +20,7 @@ import { IntersectionDirective } from '../../../shared/directives/intersection.d
 import { ROUTES } from '../../../shared/utils/constant';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 import { CollectionTreeDialogComponent, CollectionTreeDialogData } from '../collection-tree-dialog/collection-tree-dialog.component';
+import { EmptyStateIconComponent } from '../../../shared/components/ui/empty-state-icon-component/empty-state-icon.component';
 
 @Component({
     selector: 'collection-item-data-view',
@@ -27,6 +28,7 @@ import { CollectionTreeDialogComponent, CollectionTreeDialogData } from '../coll
       CollectionItemIconPipe,
       CommonModule,
       DataViewModule,
+      EmptyStateIconComponent,
       FloatingMenuComponent,
       IntersectionDirective,
       ProgressSpinnerModule,

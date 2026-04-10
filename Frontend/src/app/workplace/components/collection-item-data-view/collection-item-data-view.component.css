@@ -71,30 +71,6 @@ button {
   color: var(--p-text-color) !important;
 }
 
-.search-background-icon {
-  inset: -.25rem;
-  border-radius: 9999px;
-  background-color: #a855f733;
-  animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
-  filter: blur(12px);
-}
-
-@keyframes pulse {
-    50% {
-        opacity: .5
-    }
-}
-
-.search-icon {
-  border-radius: 9999px;
-  padding: 1rem;
-  background-color: var(--p-content-elevation-main)
-}
-.search-icon .fa {
-  font-size: 48px;
-  color: rgb(192 132 252 / 1);
-}
-
 .full-star {
   color: var(--p-yellow-500);
 }
