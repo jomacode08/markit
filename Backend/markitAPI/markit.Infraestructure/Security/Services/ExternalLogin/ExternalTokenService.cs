@@ -5,7 +5,6 @@ using markit.Application.Models.Authentication.Enums;
 using markit.Application.Common.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using markit.Application.Exceptions;
 using markit.Application.Contracts.GitHub;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -31,7 +30,6 @@ namespace markit.Infraestructure.Security.Services.ExternalLogin
         public async Task ClearShortLivedAsync(AppUser user)
         {
             await _googleApiService.ClearShortLivedTokensAsync(user);
-            await _gitHubApiService.ClearShortLivedTokensAsync(user);
         }
 
         public async Task StoreAsync(LoginProvider provider, AppUser user, IEnumerable<AuthenticationToken> tokens)

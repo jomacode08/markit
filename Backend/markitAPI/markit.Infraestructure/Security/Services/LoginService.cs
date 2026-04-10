@@ -34,7 +34,7 @@ namespace markit.Infraestructure.Security.Services
         {
             AppUser? user = await _userManager.FindByEmailAsync(request.Email);
 
-            // Validate the existency of the user
+            // Validate the existence of the user
             if (user == null || !user.AccessType.Equals(AccessType.Internal))
                 throw new CustomValidationException("Invalid email or password.");
 
@@ -50,7 +50,7 @@ namespace markit.Infraestructure.Security.Services
                 throw new CustomValidationException("The account is locked out, try again later.");
             if (!signInResult.Succeeded)
                 throw new CustomValidationException("Invalid email or password.");
-            ValidateCreatorExistency(user);
+            ValidateCreatorExistence(user);
             await IssueTokenPairAsync(user, context);
             return user;
         }
@@ -68,7 +68,7 @@ namespace markit.Infraestructure.Security.Services
             scope.Complete();
         }
 
-        private static void ValidateCreatorExistency(AppUser user)
+        private static void ValidateCreatorExistence(AppUser user)
         {
             if (user.CreatorId == null)
                 throw new CustomValidationException("The user has not yet been fully configured");
