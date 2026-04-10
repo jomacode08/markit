@@ -1,7 +1,7 @@
 .tiptap {
   flex: 1;
   font-size: 16px;
-  padding-left: 0.5px;
+  padding-bottom: 30vh;
 
   --tt-code-block-bg: var(--p-content-elevation-section);
   --tt-code-block-border: var(--p-content-border-color);
@@ -253,7 +253,7 @@
 }
 
 .tiptap p.is-editor-empty:first-child::before {
-  color: rgb(255, 255, 255, 0.4);
+  color: var(--p-text-muted-color);
   font-style: italic;
   content: attr(data-placeholder);
   float: left;
