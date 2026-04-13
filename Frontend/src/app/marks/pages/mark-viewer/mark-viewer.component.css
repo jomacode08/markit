@@ -4,6 +4,10 @@ button {
   padding: 0;
 }
 
+.mark-form {
+  max-width: inherit;
+}
+
 #markMenuBar {
   position: fixed;
   display: flex;
