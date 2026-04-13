@@ -1,8 +1,8 @@
-<article class="fadein animation-duration-1000">
+<article class="gist fadein animation-duration-1000">
     <header>
         <div class="flex flex-wrap gap-3 text-sm text-secondary font-light">
             <div class="flex align-items-center gap-2">
-                <span class="fa-regular fa-user"></span>
+                <span class="fa-brands fa-github"></span>
                 {{ gist().author }}
             </div>
             <div class="flex align-items-center gap-2">
@@ -24,19 +24,24 @@
             </button>
         </div>
     </header>
-    <body>
-        <code-editor
-            #gistEditor
-            indentWithTab="true"
-            [ngModel]="file()?.content"
-            [languages]="languages"
-            [theme]="codeEditorOptions().theme"
-            [setup]="codeEditorOptions().setup"
-            [disabled]="codeEditorOptions().disabled"
-            [readonly]="codeEditorOptions().readonly"
-            [placeholder]="codeEditorOptions().placeHolder"
-            [language]="codeEditorOptions().language"
-            [extensions]="codeMirrorExtensions()"
-        />        
-    </body>
+    <section class="gist-content">
+        @if (file()?.type === MARKDOWN_FILE_TYPE) {
+            <div [innerHTML]="file()?.html"></div>
+        }
+        @else {
+            <code-editor
+                #gistEditor
+                indentWithTab="true"
+                [ngModel]="file()?.content"
+                [languages]="languages"
+                [theme]="codeEditorOptions().theme"
+                [setup]="codeEditorOptions().setup"
+                [disabled]="codeEditorOptions().disabled"
+                [readonly]="codeEditorOptions().readonly"
+                [placeholder]="codeEditorOptions().placeHolder"
+                [language]="codeEditorOptions().language"
+                [extensions]="codeMirrorExtensions()"
+            />        
+        }
+    </section>
 </article>

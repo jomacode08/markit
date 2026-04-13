@@ -4,26 +4,27 @@ export enum GistResponseStatus {
 }
 
 export interface GistResponse {
-    status : GistResponseStatus,
-    errorMessage ?: string,
-    gist ?: Gist,
+    status: GistResponseStatus,
+    errorMessage?: string,
+    gist?: Gist,
 }
 
 export interface Gist {
-    id : string,
-    url : string,
-    title : string,
-    description : string,
-    author : string,
-    createdAt : Date,
-    files : GistFile[],
+    id: string,
+    url: string,
+    title: string,
+    description: string,
+    author: string,
+    createdAt: Date,
+    files: GistFile[],
 }
 
 export interface GistFile {
-    id : string,
-    fileName : string,
-    type : string,
-    content : string,
-    rawUrl : string,
+    id: string,
+    fileName: string,
+    type: string,
+    content: string,
+    rawUrl: string,
     language?: string,
+    html?: string,
 }

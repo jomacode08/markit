@@ -28,6 +28,7 @@ import { ThemeService } from '../../../../../shared/services/theme.service';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GistViewerComponent {
+  public readonly MARKDOWN_FILE_TYPE: string = "text/markdown"; 
   //* Inputs & Outputs
   public gist = input.required<Gist>();
   @Output() public onFileChanged = new EventEmitter<string>();
@@ -78,8 +79,8 @@ export class GistViewerComponent {
     private dialogService: DialogService,
     private themeService: ThemeService,
   ) {}
-  
-  public openGistPickerDialog() { 
+
+  public openGistPickerDialog() {
     this.gistPickerDialogRef = this.dialogService.open(
       GistFilePickerComponent,
       this.gistPickerDialogConfig(),

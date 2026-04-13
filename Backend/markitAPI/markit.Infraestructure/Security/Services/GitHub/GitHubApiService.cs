@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using static markit.Application.Helpers.GeneralConstant.Token;
 using Microsoft.AspNetCore.Http;
 using markit.Application.Features.Gists.Queries.ViewModels;
+using Markdig;
+using Ganss.Xss;
 
 namespace markit.Infraestructure.Security.Services.GitHub
 {
@@ -21,8 +23,11 @@ namespace markit.Infraestructure.Security.Services.GitHub
         private readonly GitHubAuthSettings _settings;
         private readonly UserManager<AppUser> _userManager;
         private readonly HttpClient _httpClient;
-
         private GitHubClient? _client;
+
+        private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .Build();
 
         public GitHubApiService(
             IOptions<GitHubAuthSettings> settings,
@@ -70,6 +75,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
         {
             GitHubClient client = await GetOrCreateClient(user);
             Gist gist = await client.Gist.Get(gistId);
+            const string MARKDOWN_FILE_TYPE = "text/markdown";
 
             List<GistFileViewModel> gistFilesVm = new(gist.Files.Count);
             foreach (GistFile file in gist.Files.Values) {
@@ -79,7 +85,10 @@ namespace markit.Infraestructure.Security.Services.GitHub
                     file.Type,
                     file.Content,
                     file.RawUrl,
-                    file.Language
+                    file.Language,
+                    Html: MARKDOWN_FILE_TYPE.Equals(file.Type, StringComparison.OrdinalIgnoreCase)
+                        ? SanitizeHtml(ConvertMarkdownToHtml(file.Content))
+                        : null
                 ));
             }
 
@@ -140,23 +149,20 @@ namespace markit.Infraestructure.Security.Services.GitHub
             string requestUri = $"/applications/{_settings.ClientId}/grant";
             string appNameSanitized = _settings.AppName.Trim().Replace("-", string.Empty);
 
-            // Construct the Basic Authentication header
-            string credentials = $"{_settings.ClientId}:{_settings.ClientSecret}";
-            string base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
-            // Set the User-Agent header
-            _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(appNameSanitized, "1.0"));
-            // Set the Accept header for GitHub API
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-
             // Prepare the request
             var requestBody = new { access_token = accessToken };
             string jsonContent = JsonConvert.SerializeObject(requestBody);
+            string credentials = $"{_settings.ClientId}:{_settings.ClientSecret}";
+            string base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
             StringContent content = new(jsonContent, Encoding.UTF8, "application/json");
+            
             HttpRequestMessage request = new(HttpMethod.Delete, requestUri)
             {
                 Content = content
             };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
+            request.Headers.UserAgent.Add(new ProductInfoHeaderValue(appNameSanitized, "1.0"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
             try
             {
@@ -170,7 +176,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
                 {
                     // Handle other potential non-success status codes.
                     string reason = await response.Content.ReadAsStringAsync();
-                    _logger.LogError($"Token revocation failed. Status: {{status}}. Reason: {{reason}}", [response.StatusCode, reason]);
+                    _logger.LogError("Token revocation failed. Status: {Status}. Reason: {Reason}", response.StatusCode, reason);
                     return false;
                 }
             }
@@ -178,6 +184,18 @@ namespace markit.Infraestructure.Security.Services.GitHub
             {
                 throw new BadHttpRequestException($"Token http revocation request failed: { ex.Message }");
             }
+        }
+
+        private static string SanitizeHtml(string html)
+        {
+            HtmlSanitizer sanitizer = new();
+            return sanitizer.Sanitize(html);
+        }
+
+        private static string ConvertMarkdownToHtml(string markdown)
+        {
+            if (string.IsNullOrEmpty(markdown)) return string.Empty;
+            return Markdown.ToHtml(markdown, _markdownPipeline);
         }
         #endregion
     }

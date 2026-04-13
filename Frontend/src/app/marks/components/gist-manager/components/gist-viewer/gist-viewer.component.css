@@ -2,6 +2,22 @@
   display: block;
 }
 
+article.gist {
+  header {
+    padding: 0 1.25rem 1rem 1.25rem;
+    border-bottom: 1px solid var(--p-overlay-modal-border-color);
+  }
+  
+  .gist-content {
+    background-color: var(--p-content-elevation-main);
+    padding: 1rem;
+    border: none;
+    border-radius: 0 0 .5rem .5rem;
+    max-height: 50vh;
+    overflow: auto;
+  }
+}
+
 button#fileBtn {
   border: none;
   cursor: pointer;
@@ -10,15 +26,4 @@ button#fileBtn {
 }
 button#fileBtn:hover {
   color: var(--p-primary-500);
-}
-
-header {
-  padding: 0 1.25rem 1rem 1.25rem;
-  border-bottom: 1px solid var(--p-overlay-modal-border-color);
-}
-
-body {
-  padding: 1rem;
-  border: none;
-  border-radius: 0 0 .5rem .5rem;
 }

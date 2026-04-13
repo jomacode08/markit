@@ -16,6 +16,7 @@
         string Type,
         string Content,
         string RawUrl,
-        string? Language
+        string? Language,
+        string? Html = null
     );
 }

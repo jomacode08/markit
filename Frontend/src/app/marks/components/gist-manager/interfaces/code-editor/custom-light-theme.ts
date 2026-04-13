@@ -8,7 +8,7 @@ export const customLightTheme: Extension = EditorView.theme({
   },
   // Styles for the gutter area (line numbers, fold markers, etc.)
   '.cm-gutters': {
-    backgroundColor: 'transparent',
+    backgroundColor: 'var(--p-content-elevation-main)',
   },
   '.cm-activeLineGutter': {
     backgroundColor: 'var(--p-secondary-100)',
