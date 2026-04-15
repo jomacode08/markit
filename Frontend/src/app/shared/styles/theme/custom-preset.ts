@@ -628,6 +628,18 @@ export const CustomPreset = definePreset(Aura, {
             content: {
                 padding: '0px'
             },
+            colorScheme: {
+                dark: {
+                    root: {
+                        background: '{surface.900}'
+                    }
+                },
+                light: {
+                    root: {
+                        background: '{surface.100}'
+                    }
+                }
+            },
             css: ({dt}) => `
                 .p-panel-header-actions {
                     display: flex;
