@@ -1,4 +1,4 @@
-# <img width="50" height="50" alt="favicon-96x96" src="https://github.com/user-attachments/assets/c528987c-695c-40d6-9953-1d104875b433" /> Markit
+# <img width="50" alt="favicon-96x96" src=".github/assets/markit_logo.png" /> Markit
 
 A nice place to capture your ideas, plan, document or just clarify your mind and leave a mark. Built using **.NET** and **Angular**.
 
@@ -6,7 +6,9 @@ A nice place to capture your ideas, plan, document or just clarify your mind and
 [![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff&style=flat-square)](#)
 [![Angular](https://img.shields.io/badge/Angular-%23DD0031.svg?logo=angular&logoColor=white&style=flat-square)](#)
 
-<img height="800" alt="markit_shot" src="https://github.com/user-attachments/assets/348f233a-14aa-491c-9649-ac32bf9dc1f9" />
+<div align="center">
+    <img width="700" alt="markit_shot" src=".github/assets/markit_shot.png" />
+</div>
 
 ## 🌟Highlights
 
@@ -33,10 +35,10 @@ Markit was created to provide an intuitive, functional environment enriched with
 ### Screenshots
 
 <div align="center">
-<img width="392" alt="mark_viewer_shot_dark" src="https://github.com/user-attachments/assets/7c6ed331-be67-4499-b8be-44b05f99ba6b" />
-<img width="392" alt="gist_shot_dark" src="https://github.com/user-attachments/assets/9c7eb190-10b0-424c-841c-e71a4b5b800a" />
-<img width="392" alt="dashboard_shot_dark" src="https://github.com/user-attachments/assets/d4d97dfe-6879-47cd-aea7-e1128dc73749" />
-<img width="392" alt="explorer_shot_dark" src="https://github.com/user-attachments/assets/b7881754-cf42-471f-9469-e52d413e7716" />
+    <img width="392" alt="mark_viewer_shot_dark" src=".github/assets/mark_viewer_shot_dark.png" />
+    <img width="392" alt="gist_shot_dark" src=".github/assets/gist_shot_dark.png" />
+    <img width="392" alt="dashboard_shot_dark" src=".github/assets/dashboard_shot_dark.png" />
+    <img width="392" alt="explorer_shot_dark" src=".github/assets/explorer_shot_dark.png" />
 </div>
 
 
