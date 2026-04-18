@@ -15,7 +15,7 @@
                 <!-- Auto save indicator -->
                 <mark-autosave-indicator
                     [saveState]="saveState()"
-                    (onRetrySave)="retryMarkSave()"
+                    (retrySave)="retryMarkSave()"
                 />
             </div>
             <div class="flex gap-3">
@@ -73,8 +73,8 @@
                 >
                     <marks-block
                         formControlName="content"
-                        (onEditorSelected)="onEditorSelected($event)"
-                        (onValueChange)="onEditorValueChanged($event)"
+                        (editorSelected)="onEditorSelected($event)"
+                        (debouncedChange)="onEditorValueChanged($event)"
                     />
                 </div>
             </ng-container>

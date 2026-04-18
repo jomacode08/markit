@@ -1,8 +1,6 @@
 <tiptap-editor
     id="editor"
     [editor]="editor"
-    [(ngModel)]="input"
-    (ngModelChange)="onEditorInputChange($event)"
     (blur)="onTouched()"
     (mousedown)="onEditorClick()"
 />

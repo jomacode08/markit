@@ -53,12 +53,11 @@ type UriValidationContext = {
 })
 export class BlockComponent implements OnInit, ControlValueAccessor {
   //* Configuration
-  @Output() public onEditorSelected = new EventEmitter<Editor>();
-  @Output() public onValueChange = new EventEmitter<string>();
+  @Output() public editorSelected = new EventEmitter<Editor>();
+  @Output() public debouncedChange = new EventEmitter<string>();
   private injector = inject(Injector);
   
   private debouncer = new Subject<string>();
-  public input: string = "";
   public editor = new Editor({
     extensions: [
       CodeBlockLowlight.configure({
@@ -111,14 +110,19 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       }),
       Underline,
       GistBlockExtension(this.injector)
-    ]
+    ],
+    onUpdate: ({editor}) => {
+      const content = editor.getHTML();
+      this.onChange(content);
+      this.debouncer.next(content);
+    }
   });
 
   //* Lyfecycle hooks
   ngOnInit(): void {
     this.debouncer.pipe(
       debounceTime(1000)
-    ).subscribe((value) => this.onValueChange.emit(value));
+    ).subscribe((value) => this.debouncedChange.emit(value));
   }
 
   ngOnDestroy(): void {
@@ -127,11 +131,11 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   }
 
   //* ControlValueAccessor implementation
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
-  writeValue(value: any): void {
-    this.input = value;
+  writeValue(value: string): void {
+    this.editor.commands.setContent(value ?? '');
   }
 
   registerOnChange(fn: any): void {
@@ -143,12 +147,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   }
 
   //* Events
-  onEditorClick = (): void => this.onEditorSelected.emit(this.editor);
-  onEditorInputChange(value: string): void {
-    this.input = value;
-    this.onChange(value);
-    this.debouncer.next(value);
-  }
+  onEditorClick = (): void => this.editorSelected.emit(this.editor);
   //* Utils
   isValidUri(url: string, ctx: UriValidationContext): boolean {
     try {

@@ -19,7 +19,7 @@ export enum SaveState {
 })
 export class MarkAutosaveIndicatorComponent {
   public saveState = input.required<SaveState>();
-  @Output() public onRetrySave = new EventEmitter<void>();
+  @Output() public retrySave = new EventEmitter<void>();
   get saveStateType(): typeof SaveState {
     return SaveState;
   }
