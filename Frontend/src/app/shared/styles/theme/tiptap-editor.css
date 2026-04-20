@@ -47,6 +47,8 @@
   mark {
     box-decoration-break: clone;
     padding: 0 .25rem;
+    background: var(--p-text-highlight-color);
+    color: var(--p-text-color);
   }
 
   ul,ol {

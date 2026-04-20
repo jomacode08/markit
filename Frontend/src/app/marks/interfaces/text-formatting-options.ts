@@ -65,11 +65,10 @@ export function createTextFormattingOptions( editor: Signal<Editor | undefined> 
     {
       label: 'Highlight',
       icon: 'fa fa-highlighter',
-      command: () => editor()?.chain().focus().toggleHighlight({ color: 'var(--p-text-highlight-color)' }).run(),
+      command: () => editor()?.chain().focus().toggleHighlight().run(),
       isActive: () => {
         return isNodeMarkActive(editor(), {
-          name: 'highlight',
-          color: "var(--p-text-highlight-color)"
+          name: 'highlight'
         })
       },
     },
@@ -121,10 +120,6 @@ function isNodeMarkActive(editor: Editor | undefined, nodeMark : NodeMark): bool
         case 'alignment':
         if (textAlign === undefined) return false;
         return editor.isActive({ textAlign });
-
-        case 'highlight':
-        if (color === undefined) return false;
-        return editor.isActive(name, { color });
 
         default:
         return editor.isActive(name);
