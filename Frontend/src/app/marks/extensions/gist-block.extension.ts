@@ -48,6 +48,13 @@ const GistBlockExtension = (injector : Injector): Node => {
          return ['gist-block', mergeAttributes(HTMLAttributes)]
       },
 
+      renderMarkdown(node) {
+         const gistId: string | null = node.attrs?.gistId;
+         const title: string | null = node.attrs?.title;
+         if (!gistId || !title) return '<gist-block/>';
+         return `<gist-block gistId="${gistId}" title="${title}"/>`
+      },
+
       addNodeView() {
          return AngularNodeViewRenderer(GistManagerComponent, {
             injector,
@@ -63,7 +70,7 @@ const GistBlockExtension = (injector : Injector): Node => {
          return {
             insertGistBlock:
             () => ({ commands }) => {
-               return commands.insertContent('<gist-block></gist-block>');
+               return commands.insertContent('<gist-block/>');
             }
          }
       }

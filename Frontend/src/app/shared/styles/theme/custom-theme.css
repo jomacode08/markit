@@ -224,7 +224,7 @@
   /** Panel **/
   .ProseMirror-selectednode {
     .p-panel {
-      border-color: var(--p-overlay-modal-border-color);
+      border-color: var(--p-highlight-primary-border);
     }
   }
 

@@ -24,56 +24,6 @@ export function createTextFormattingOptions( editor: Signal<Editor | undefined> 
       isActive: () => isNodeMarkActive(editor(), { name: 'underline' }),
     },
     {
-      label: 'Align',
-      icon: 'fa fa-align-left',
-      children: [
-        {
-          label: 'Left',
-          icon: 'fa fa-align-left',
-          command: () => editor()?.chain().focus().setTextAlign('left').run(),
-          isActive: () => {
-            return isNodeMarkActive(editor(), {
-              name: 'alignment',
-              textAlign: 'left'
-            });
-          },
-        },
-        {
-          label: 'Center',
-          icon: 'fa fa-align-center',
-          command: () => editor()?.chain().focus().setTextAlign('center').run(),
-          isActive: () => {
-            return isNodeMarkActive(editor(), {
-              name: 'alignment',
-              textAlign: 'center'
-            });
-          },
-        },
-        {
-          label: 'Right',
-          icon: 'fa fa-align-right',
-          command: () => editor()?.chain().focus().setTextAlign('right').run(),
-          isActive: () => {
-            return isNodeMarkActive(editor(), {
-              name: 'alignment',
-              textAlign: 'right'
-            });
-          },
-        },
-        {
-          label: 'Justify',
-          icon: 'fa fa-align-justify',
-          command: () => editor()?.chain().focus().setTextAlign('justify').run(),
-          isActive: () => {
-            return isNodeMarkActive(editor(), {
-              name: 'alignment',
-              textAlign: 'justify'
-            });
-          },
-        },
-      ],
-    },
-    {
       label: 'Heading',
       icon: 'fa fa-heading',
       children: [

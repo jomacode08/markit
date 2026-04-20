@@ -5,6 +5,7 @@ import type { LinkProtocolOptions } from '@tiptap/extension-link';
 
 //* Tiptap Extensions
 import { Editor } from '@tiptap/core';
+import { Markdown } from '@tiptap/markdown';
 import { AngularNodeViewRenderer, TiptapEditorDirective } from 'ngx-tiptap';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Highlighter from '@tiptap/extension-highlight';
@@ -63,6 +64,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       CodeBlockLowlight.configure({
         lowlight : createLowlight(common),
       }),
+      GistBlockExtension(this.injector),
       Highlighter.configure({
         multicolor: true,
       }),
@@ -75,6 +77,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       }).extend({
         inclusive: false,
       }),
+      Markdown,
       Placeholder.configure({
         placeholder: 'Type something here'
       }),
@@ -108,11 +111,11 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       TaskItem.configure({
         nested: true,
       }),
-      Underline,
-      GistBlockExtension(this.injector)
+      Underline
     ],
+    contentType: 'markdown',
     onUpdate: ({editor}) => {
-      const content = editor.getHTML();
+      const content = editor.getMarkdown();
       this.onChange(content);
       this.debouncer.next(content);
     }
@@ -135,7 +138,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   onTouched: () => void = () => {};
 
   writeValue(value: string): void {
-    this.editor.commands.setContent(value ?? '');
+    this.editor.commands.setContent(value ?? '', { contentType: 'markdown' });
   }
 
   registerOnChange(fn: any): void {
