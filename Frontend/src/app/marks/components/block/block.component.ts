@@ -138,7 +138,10 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   onTouched: () => void = () => {};
 
   writeValue(value: string): void {
-    this.editor.commands.setContent(value ?? '', { contentType: 'markdown' });
+    this.editor.commands.setContent(value ?? '', {
+      contentType: 'markdown',
+      emitUpdate: false
+    });
   }
 
   registerOnChange(fn: any): void {
