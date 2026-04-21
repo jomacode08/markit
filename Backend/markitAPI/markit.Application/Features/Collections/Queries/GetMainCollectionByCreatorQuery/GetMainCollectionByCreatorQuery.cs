@@ -60,7 +60,7 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
             // Add path
             try
             {
-                collectionVm.Path = Utilities.CreateCollectionPath(collection);
+                collectionVm.Path = collection.CreatePath();
             }
             catch (FormatException ex)
             {

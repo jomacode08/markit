@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿﻿using AutoMapper;
 using markit.Application.Common.Helpers;
 using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Blocks.Queries.ViewModels;
@@ -83,7 +83,7 @@ namespace markit.Application.Mappings
                 .ForMember(
                     dest => dest.Preview,
                     opt => opt.MapFrom(src => src.Marks != null 
-                    ? $"{ src.Marks.Count } marks" 
+                    ? $"{src.Marks.Count} marks" 
                     : GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW)
                 );
             #endregion
@@ -249,7 +249,7 @@ namespace markit.Application.Mappings
                 )
                 .ForMember(
                     dest => dest.Preview,
-                    opt => opt.MapFrom(src => Utilities.CreateMarkPreview(src))
+                    opt => opt.MapFrom(src => src.ConstructPreview())
                 );
             #endregion
         }
