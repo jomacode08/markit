@@ -12,8 +12,7 @@ using Microsoft.Extensions.Logging;
 using static markit.Application.Helpers.GeneralConstant.Token;
 using Microsoft.AspNetCore.Http;
 using markit.Application.Features.Gists.Queries.ViewModels;
-using Markdig;
-using Ganss.Xss;
+using markit.Application.Common.Helpers;
 
 namespace markit.Infraestructure.Security.Services.GitHub
 {
@@ -24,10 +23,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
         private readonly UserManager<AppUser> _userManager;
         private readonly HttpClient _httpClient;
         private GitHubClient? _client;
-
-        private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .Build();
 
         public GitHubApiService(
             IOptions<GitHubAuthSettings> settings,
@@ -87,7 +82,7 @@ namespace markit.Infraestructure.Security.Services.GitHub
                     file.RawUrl,
                     file.Language,
                     Html: MARKDOWN_FILE_TYPE.Equals(file.Type, StringComparison.OrdinalIgnoreCase)
-                        ? SanitizeHtml(ConvertMarkdownToHtml(file.Content))
+                        ? Utilities.SanitizeHtml(Utilities.ConvertMarkdownToHtml(file.Content))
                         : null
                 ));
             }
@@ -184,18 +179,6 @@ namespace markit.Infraestructure.Security.Services.GitHub
             {
                 throw new BadHttpRequestException($"Token http revocation request failed: { ex.Message }");
             }
-        }
-
-        private static string SanitizeHtml(string html)
-        {
-            HtmlSanitizer sanitizer = new();
-            return sanitizer.Sanitize(html);
-        }
-
-        private static string ConvertMarkdownToHtml(string markdown)
-        {
-            if (string.IsNullOrEmpty(markdown)) return string.Empty;
-            return Markdown.ToHtml(markdown, _markdownPipeline);
         }
         #endregion
     }
