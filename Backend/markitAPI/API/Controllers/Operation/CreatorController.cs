@@ -4,7 +4,7 @@ using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries;
 using markit.Application.Features.Creators.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
-using markit.Infraestructure.Security.Services;
+using markit.infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

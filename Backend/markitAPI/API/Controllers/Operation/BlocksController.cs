@@ -2,7 +2,7 @@
 using markit.Application.Features.Blocks.Commands.PatchBlockCommand;
 using markit.Application.Features.Blocks.Commands.PatchBlockContentCommand;
 using markit.Application.Features.Blocks.Queries.ViewModels;
-using markit.Infraestructure.Security.Services;
+using markit.infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

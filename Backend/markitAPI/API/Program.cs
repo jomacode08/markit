@@ -1,11 +1,11 @@
-using markit.Infraestructure;
+using markit.infrastructure;
 using markit.Application;
 using System.Text.Json.Serialization;
 using markit.API.Middleware;
-using markit.Infraestructure.Persistence.EF;
+using markit.infrastructure.Persistence.EF;
 using Serilog;
 using System.Text.Json;
-using markit.Infraestructure.Persistence.MeiliSearch.Managers;
+using markit.infrastructure.Persistence.MeiliSearch.Managers;
 using Hangfire;
 using markit.Application.Helpers;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -31,7 +31,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddMemoryCache();
-builder.Services.AddInfraestructureServices(builder.Configuration);
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 
 // -- Add Cors Policy. --

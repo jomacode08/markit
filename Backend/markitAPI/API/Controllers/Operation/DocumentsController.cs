@@ -2,7 +2,7 @@
 using markit.Application.Features.Reports.Search;
 using markit.Application.Features.Reports.Search.ViewModels;
 using markit.Application.Models.MeiliSearch.Search;
-using markit.Infraestructure.Security.Services;
+using markit.infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
