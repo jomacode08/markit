@@ -19,25 +19,25 @@ namespace markit.infrastructure.Repositorys.Marks
 			var collections = context
 				.Collections
 				.FromSql($@"
-					WITH CollectionHierarchy AS (
+					WITH RECURSIVE collection_hierarchy AS (
 						SELECT 
-							c1.Id, c1.Name, c1.Path, c1.PathNames, c1.IsMain,
-							c1.ParentId, c1.CreatorId, c1.IsFavorite, c1.DocumentId, c1.LastSync, c1.Emoji,
-							c1.CreatedDate, c1.CreatedBy, c1.UpdatedDate, c1.UpdatedBy, c1.Enable
-						FROM Collections as c1
-						WHERE c1.Id = { rootCollectionId } AND Enable = 1
+							c1.id, c1.name, c1.path, c1.path_names, c1.is_main,
+							c1.parent_id, c1.creator_id, c1.is_favorite, c1.document_id, c1.last_sync, c1.emoji,
+							c1.created_date, c1.created_by, c1.updated_date, c1.updated_by, c1.enable
+						FROM collections AS c1
+						WHERE c1.id = {rootCollectionId} AND c1.enable = true
 
 						UNION ALL
 
 						SELECT
-							c2.Id, c2.Name, c2.Path, c2.PathNames, c2.IsMain,
-							c2.ParentId, c2.CreatorId, c2.IsFavorite, c2.DocumentId, c2.LastSync, c2.Emoji,
-							c2.CreatedDate, c2.CreatedBy, c2.UpdatedDate, c2.UpdatedBy, c2.Enable
-						FROM Collections AS c2
-						INNER JOIN CollectionHierarchy ch ON c2.ParentId = ch.Id
-						WHERE c2.Enable = 1
+							c2.id, c2.name, c2.path, c2.path_names, c2.is_main,
+							c2.parent_id, c2.creator_id, c2.is_favorite, c2.document_id, c2.last_sync, c2.emoji,
+							c2.created_date, c2.created_by, c2.updated_date, c2.updated_by, c2.enable
+						FROM collections AS c2
+						INNER JOIN collection_hierarchy ch ON c2.parent_id = ch.id
+						WHERE c2.enable = true
 					)
-					SELECT * FROM CollectionHierarchy;
+					SELECT * FROM collection_hierarchy;
                 ").IgnoreQueryFilters();
 
             return await collections.ToListAsync();
