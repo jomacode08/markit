@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "markit.Application", "marki
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "markit.Domain", "markit.Domain\markit.Domain.csproj", "{ABAC46DB-30E8-4926-BB06-8B8943F48276}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "markit.infrastructure", "markit.infrastructure\markit.infrastructure.csproj", "{C80DF849-16E0-42CE-AF06-5CB8D298CD80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "markit.Infrastructure", "markit.Infrastructure\markit.Infrastructure.csproj", "{C80DF849-16E0-42CE-AF06-5CB8D298CD80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

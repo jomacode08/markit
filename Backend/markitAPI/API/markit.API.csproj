@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\markit.Application\markit.Application.csproj" />
-    <ProjectReference Include="..\markit.infrastructure\markit.infrastructure.csproj" />
+    <ProjectReference Include="..\markit.Infrastructure\markit.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
