@@ -32,7 +32,7 @@ namespace markit.infrastructure.Persistence.EF
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "An error ocurred while seeding the database: {ex.Message}" , ex.Message);
+                    logger.LogError(ex, "An error occurred while seeding the database: {ex.Message}" , ex.Message);
                     throw;
                 }
             }

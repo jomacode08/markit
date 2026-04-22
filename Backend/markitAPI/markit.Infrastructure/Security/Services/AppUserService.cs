@@ -40,7 +40,7 @@ namespace markit.infrastructure.Security.Services
                     UserName = u.UserName ?? "",
                     AccessType = u.AccessType,
                     CreatedDate = u.CreatedDate,
-                    IsLocked = u.LockoutEnd > DateTime.UtcNow,
+                    IsLocked = u.LockoutEnd != null && u.LockoutEnd > DateTime.UtcNow,
                     Enabled = u.Enabled
                 }).ToListAsync();
 

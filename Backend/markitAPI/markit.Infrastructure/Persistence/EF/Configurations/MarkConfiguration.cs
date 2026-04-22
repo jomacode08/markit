@@ -9,8 +9,7 @@ namespace markit.infrastructure.Persistence.EF.Configurations
         public void Configure(EntityTypeBuilder<Mark> builder)
         {
             builder.Property(c => c.Emoji)
-                .IsUnicode()
-                .UseCollation("Latin1_General_100_CI_AS_SC");
+                .IsUnicode();
         }
     }
 }

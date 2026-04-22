@@ -31,7 +31,7 @@ namespace markit.infrastructure.Security.Configurations
             {
                 Id = id,
                 Name = name,
-                NormalizedName = name.ToLower(),
+                NormalizedName = name.ToUpper(),
             };
         }
     }

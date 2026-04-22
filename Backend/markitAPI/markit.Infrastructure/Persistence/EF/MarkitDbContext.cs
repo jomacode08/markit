@@ -65,7 +65,7 @@ namespace markit.infrastructure.Persistence.EF
                 {
                     case EntityState.Added:
                     {
-                        entry.Entity.CreatedDate = DateTime.Now;
+                        entry.Entity.CreatedDate = DateTime.UtcNow;
                         entry.Entity.Enable = true;
                         entry.Entity.CreatedBy = userIdentification ?? "System";
                         break;
@@ -73,7 +73,7 @@ namespace markit.infrastructure.Persistence.EF
 
                     case EntityState.Modified:
                     {
-                        entry.Entity.UpdatedDate = DateTime.Now;
+                        entry.Entity.UpdatedDate = DateTime.UtcNow;
                         entry.Entity.UpdatedBy = userIdentification ?? "System";
                         break;
                     }
@@ -86,14 +86,14 @@ namespace markit.infrastructure.Persistence.EF
         private static void ChangeNameSchemas(ModelBuilder builder)
         {
             const string securitySchema = "security";
-            builder.Entity<AppUser>().ToTable("Users", securitySchema);
-            builder.Entity<SystemConfig>().ToTable("SystemConfigs", securitySchema);
-            builder.Entity<IdentityRole>().ToTable("Roles", securitySchema);
-            builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", securitySchema);
-            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", securitySchema);
-            builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", securitySchema);
-            builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", securitySchema);
-            builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", securitySchema);
+            builder.Entity<AppUser>().ToTable("users", securitySchema);
+            builder.Entity<SystemConfig>().ToTable("system_configs", securitySchema);
+            builder.Entity<IdentityRole>().ToTable("roles", securitySchema);
+            builder.Entity<IdentityRoleClaim<string>>().ToTable("role_claims", securitySchema);
+            builder.Entity<IdentityUserRole<string>>().ToTable("user_roles", securitySchema);
+            builder.Entity<IdentityUserClaim<string>>().ToTable("user_claims", securitySchema);
+            builder.Entity<IdentityUserLogin<string>>().ToTable("user_logins", securitySchema);
+            builder.Entity<IdentityUserToken<string>>().ToTable("user_tokens", securitySchema);
         }
 
         private static void AddQueryFilters(ModelBuilder builder) {

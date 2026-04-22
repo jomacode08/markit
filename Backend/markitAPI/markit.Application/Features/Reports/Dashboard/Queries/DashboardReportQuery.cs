@@ -108,7 +108,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
 
         private async Task<IReadOnlyList<Mark>> GetMarksOfTheCurrentWeekAsync(int creatorId)
         {
-            DateTime today = GetDateZeroTime(DateTime.Now);
+            DateTime today = GetDateZeroTime(DateTime.UtcNow);
             DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);
             return await _unitOfWork.MarkRepository
             .GetAsync(
@@ -119,7 +119,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
 
         private static DateTime GetDateZeroTime(DateTime date)
         {
-            return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+            return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, DateTimeKind.Utc);
         }
     }
 }

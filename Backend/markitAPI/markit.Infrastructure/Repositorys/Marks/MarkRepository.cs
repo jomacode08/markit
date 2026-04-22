@@ -108,7 +108,7 @@ namespace markit.infrastructure.Repositorys.Marks
                 ?? throw new NotFoundException("Mark", markId);
 
             mark.DocumentId = documentId;
-            mark.LastSync = DateTime.Now;
+            mark.LastSync = DateTime.UtcNow;
 
             await UpdateAsync(mark);
             return mark;

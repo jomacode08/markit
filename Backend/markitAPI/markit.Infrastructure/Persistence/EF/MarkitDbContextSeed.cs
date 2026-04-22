@@ -18,7 +18,7 @@ namespace markit.infrastructure.Persistence.EF
         )
         {
             // Aplicate any pending migration or create database for the first time.
-            await context.Database.MigrateAsync();
+           await context.Database.MigrateAsync();
             // Validate if the database is active
             bool databaseIsActive = await context.Database.CanConnectAsync();
             if (!databaseIsActive) throw new Exception("It hasn't been posible to connect to the database");

@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.PostgreSql;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
@@ -71,7 +72,8 @@ namespace markit.infrastructure
             // Database connection
             services.AddDbContext<MarkitDbContext>(
                 options => options
-                    .UseSqlServer(connString)
+                    .UseNpgsql(connString, o => o.SetPostgresVersion(18, 0))
+                    .UseSnakeCaseNamingConvention()
                     .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))
             );
 
@@ -216,7 +218,9 @@ namespace markit.infrastructure
         private static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
         {
             string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
-            services.AddHangfire(config => config.UseSqlServerStorage(connString));
+            services.AddHangfire(config => 
+                config.UsePostgreSqlStorage(c => c.UseNpgsqlConnection(connString))
+            );
             services.AddHangfireServer();
             return services;
         }

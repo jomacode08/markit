@@ -110,7 +110,7 @@ namespace markit.infrastructure.Repositorys.Marks
 				?? throw new NotFoundException("Collection", collectionId);
 
 			collection.DocumentId = documentId;
-			collection.LastSync = DateTime.Now;
+			collection.LastSync = DateTime.UtcNow;
 
 			await UpdateAsync(collection);
 			return collection;
