@@ -72,7 +72,7 @@ namespace markit.infrastructure
             // Database connection
             services.AddDbContext<MarkitDbContext>(
                 options => options
-                    .UseNpgsql(connString, o => o.SetPostgresVersion(18, 0))
+                    .UseNpgsql(connString, o => o.SetPostgresVersion(17, 0))
                     .UseSnakeCaseNamingConvention()
                     .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))
             );
