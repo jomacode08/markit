@@ -1,19 +1,16 @@
-﻿using markit.Domain.Entities;
+using markit.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NpgsqlTypes;
 
 namespace markit.infrastructure.Persistence.EF.Configurations
 {
-    public class MarkConfiguration : IEntityTypeConfiguration<Mark>
+    public class BlockConfiguration : IEntityTypeConfiguration<Block>
     {
-        public void Configure(EntityTypeBuilder<Mark> builder)
+        public void Configure(EntityTypeBuilder<Block> builder)
         {
-            builder.Property(c => c.Emoji)
-                .IsUnicode();
-
             builder.Property<NpgsqlTsVector>("SearchVector")
-                .IsGeneratedTsVectorColumn("english", "Name");
+                .IsGeneratedTsVectorColumn("english", "Title", "Content");
 
             builder.HasIndex("SearchVector")
                 .HasMethod("GIN");

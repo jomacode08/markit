@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using markit.infrastructure.Persistence.EF;
 namespace markit.infrastructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    partial class MarkitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260424002209_AddSearchVectorToMarksAndBlocks")]
+    partial class AddSearchVectorToMarksAndBlocks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
