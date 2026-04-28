@@ -1,11 +1,9 @@
 ﻿using System.Transactions;
 using AutoMapper;
-using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -22,17 +20,14 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
 
     public class CreateMarkCommandHandler : IRequestHandler<CreateMarkCommand, MarkViewModel>
     {
-        private readonly IDocumentJobService<MarkDocument> _documentJobService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public CreateMarkCommandHandler(
-            IDocumentJobService<MarkDocument> documentJobService,
             IUnitOfWork unitOfWork,
             IMapper mapper
         )
         {
-            _documentJobService = documentJobService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -45,20 +40,19 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
                 request.CollectionId = (await GetMainCollection(request.CreatorId)).Id;
             }
 
-            await ValidateCreatorExistency(request.CreatorId);
+            await ValidateCreatorExistence(request.CreatorId);
             await ValidateCollection(request.CollectionId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 Mark mark = _mapper.Map<Mark>(request);
                 await AddMarkAsync(mark);
-                CreateDocumentBackgroundJob(mark, request.CreatorId);
                 var markViewModel = _mapper.Map<MarkViewModel>(mark);
             scope.Complete();
 
             return markViewModel;
         }
 
-        private async Task ValidateCreatorExistency(int creatorId)
+        private async Task ValidateCreatorExistence(int creatorId)
         {
            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
                 ?? throw new NotFoundException("Creator", creatorId);
@@ -82,14 +76,5 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
         }
 
         private async Task AddMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.AddAsync(mark);
-
-        private void CreateDocumentBackgroundJob(Mark mark, int creatorId)
-        {
-            MarkDocument document = new(mark.Name, mark.Id, creatorId);
-            _documentJobService.ScheduleAddAsync(
-                document,
-                continueWith: () => _unitOfWork.MarkRepository.UpdateSyncModelAsync(mark.Id, document.Id)
-            );
-        }
     }
 }

@@ -6,7 +6,6 @@
 	- Fill the `UserDefaultSettings` with the default credentials for the Admin -> if it's the first time that you are going to create the database.
 	Otherwise, updating this information will not make any changes.
 	- Fill the `GoogleSettings.ClientId` that the app uses for authentication purposes
-	- Fill the `MeiliSearchSettings`: The app needs an active MeiliSearch instance to perform search operations, ensure that you have one for develop and provide the necessary settings in `appsettings.json` file
 
 2. Start the app. If you create a new migration, it would apply automatically once the app start.
 	- Start the IIS Express server

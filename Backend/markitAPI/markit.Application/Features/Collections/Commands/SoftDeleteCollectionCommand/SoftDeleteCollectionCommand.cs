@@ -1,8 +1,6 @@
 ﻿using markit.Application.Common.Helpers;
-using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 using System.Transactions;
@@ -17,18 +15,12 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
     public class DeleteCollectionCommandHandler : IRequestHandler<SoftDeleteCollectionCommand, bool>
     {
-        private readonly IDocumentJobService<CollectionDocument> _documentJobService;
-        private readonly IDocumentRepository<CollectionDocument> _documentRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteCollectionCommandHandler(
-            IDocumentJobService<CollectionDocument> documentJobService,
-            IDocumentRepository<CollectionDocument> documentRepository,
             IUnitOfWork unitOfWork
         )
         {
-            _documentJobService = documentJobService;
-            _documentRepository = documentRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -36,13 +28,8 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
         {
             var collection = await ValidateCollectionExistency(request.CollectionId, request.CreatorId);
             List<Collection> hierarchy = await GetHierarchy(collectionId: request.CollectionId);
-
-            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                await SoftDeleteOnCascade(hierarchy);
-                await _unitOfWork.Complete();
-                await CreateDocumentBackgroundJob(collection);
-            scope.Complete();
-
+            await SoftDeleteOnCascade(hierarchy);
+            await _unitOfWork.Complete();
             return true;
         }
 
@@ -87,19 +74,6 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
             }
 
             return Unit.Value;
-        }
-
-        private async Task CreateDocumentBackgroundJob(Collection collection)
-        {
-            if (collection.DocumentId == null) return;
-
-            CollectionDocument document = await _documentRepository.GetByIdAsync(collection.DocumentId);
-            document.Enabled = false;
-
-            _documentJobService.ScheduleUpdateAsync(
-                document,
-                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
-            );
         }
     }
 }

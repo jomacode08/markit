@@ -1,10 +1,8 @@
 ﻿using System.Transactions;
 using AutoMapper;
-using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 
@@ -28,17 +26,14 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
     public class CreateCollectionCommandHandler : IRequestHandler<CreateCollectionCommand, CollectionViewModel>
     {
-        private readonly IDocumentJobService<CollectionDocument> _documentJobService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public CreateCollectionCommandHandler(
-            IDocumentJobService<CollectionDocument> documentJobService,
             IUnitOfWork unitOfWork,
             IMapper mapper
         )
         {
-            _documentJobService = documentJobService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -55,7 +50,6 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
                 var collection = await CreateCollection(request);
                 Collection? parent = collection.ParentId.HasValue ? await GetCollection((int)collection.ParentId) : null;
                 collection = await UpdateCollectionPath(collection, parent);
-                CreateDocumentBackgroundJob(collection);
                 var collectionViewModel = _mapper.Map<CollectionViewModel>(collection);
 
             scope.Complete();
@@ -106,15 +100,6 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             var collection = _mapper.Map<Collection>(request);
             await _unitOfWork.CollectionRepository.AddAsync(collection);
             return collection;
-        }
-
-        private void CreateDocumentBackgroundJob(Collection collection)
-        {
-            CollectionDocument document = new(collection.Name, collection.Id, collection.CreatorId);
-            _documentJobService.ScheduleAddAsync(
-                document,
-                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
-            );
         }
 
         private async Task<Collection> UpdateCollectionPath(Collection collection, Collection? parent)

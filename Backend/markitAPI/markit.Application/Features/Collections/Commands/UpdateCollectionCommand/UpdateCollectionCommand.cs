@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using markit.Application.Common.Helpers;
-using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 using System.Transactions;
@@ -21,20 +19,14 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
     public class UpdateCollectionCommandHandler : IRequestHandler<UpdateCollectionCommand, CollectionViewModel>
     {
-        private readonly IDocumentJobService<CollectionDocument> _documentJobService;
-        private readonly IDocumentRepository<CollectionDocument> _documentRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public UpdateCollectionCommandHandler(
-            IDocumentJobService<CollectionDocument> documentJobService,
-            IDocumentRepository<CollectionDocument> documentRepository,
             IUnitOfWork unitOfWork,
             IMapper mapper
         )
         {
-            _documentJobService = documentJobService;
-            _documentRepository = documentRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -62,7 +54,6 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
                 }
 
                 await _unitOfWork.Complete(); //Save context changes
-                await CreateDocumentBackgroundJob(collection);
                 var collectionViewModel = _mapper.Map<CollectionViewModel>(collection);
 
             scope.Complete();// Complete transaction
@@ -114,19 +105,6 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
         private static int GetCollectionLevel(string path)
         {
             return path.Split('/').Where(s => s != "").Count();
-        }
-
-        private async Task CreateDocumentBackgroundJob(Collection collection)
-        {
-            if (collection.DocumentId == null) return;
-
-            CollectionDocument document = await _documentRepository.GetByIdAsync(collection.DocumentId);
-            document.Name = collection.Name;
-
-            _documentJobService.ScheduleUpdateAsync(
-                document,
-                () => _unitOfWork.CollectionRepository.UpdateSyncModelAsync(collection.Id, document.Id)
-            );
         }
     }
 }

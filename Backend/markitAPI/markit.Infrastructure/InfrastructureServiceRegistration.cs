@@ -5,7 +5,6 @@ using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
-using markit.Application.Contracts.MeiliSearch;
 ﻿using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Contracts.Settings;
 using markit.Application.Helpers;
@@ -13,15 +12,11 @@ using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.GitHub;
 using markit.Application.Models.Authentication.Google;
-using markit.Application.Models.Authentication.MeiliSearch;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Application.Models.Settings;
 using markit.Application.Models.Settings.RateLimiting;
 using markit.infrastructure.Persistence.EF;
-using markit.infrastructure.Persistence.MeiliSearch.Services;
 using markit.infrastructure.Repositorys;
 using markit.infrastructure.Repositorys.Common;
-using markit.infrastructure.Repositorys.MeiliSearch;
 using markit.infrastructure.Security.Services;
 using markit.infrastructure.Security.Services.Demo;
 using markit.infrastructure.Security.Services.ExternalLogin;
@@ -52,7 +47,6 @@ namespace markit.infrastructure
         {
             services
                 .AddDataBasePersistence(configuration)
-                .AddMeiliSearchPersistence(configuration)
                 .AddAuthentication(configuration)
                 .AddAuthorization(configuration)
                 .AddRateLimiter(configuration)
@@ -82,29 +76,6 @@ namespace markit.infrastructure
             services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
-
-            return services;
-        }
-
-        private static IServiceCollection AddMeiliSearchPersistence(this IServiceCollection services, IConfiguration configuration)
-        {
-            // Bind auth settings configuration data
-            var meiliSearchAuthSettings = new MeiliSearchAuthSettings();
-            services.Configure<MeiliSearchAuthSettings>(configuration.GetSection(MEILISEARCH_SECTION_NAME));
-            configuration.Bind(MEILISEARCH_SECTION_NAME, meiliSearchAuthSettings);
-
-            // Inject repositories
-            services.AddScoped<IDocumentRepository<CollectionDocument>, DocumentRepository<CollectionDocument>>(provider =>
-            {
-                return new DocumentRepository<CollectionDocument>(meiliSearchAuthSettings, GeneralConstant.MeiliSearch.COLLECTION_INDEX_UID);
-            });
-            services.AddScoped<IDocumentRepository<MarkDocument>, DocumentRepository<MarkDocument>>(provider =>
-            {
-                return new DocumentRepository<MarkDocument>(meiliSearchAuthSettings, GeneralConstant.MeiliSearch.MARK_INDEX_UID);
-            });
-
-            // Inject background job service
-            services.AddTransient(typeof(IDocumentJobService<>), typeof(DocumentJobService<>));
 
             return services;
         }

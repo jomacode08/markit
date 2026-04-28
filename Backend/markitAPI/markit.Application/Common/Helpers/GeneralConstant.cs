@@ -22,7 +22,6 @@
             public static readonly string USER_DEFAULT_SECTION_NAME = "UserDefaultSettings";
             public static readonly string GOOGLE_AUTH_SECTION_NAME = "GoogleAuthSettings";
             public static readonly string GITHUB_AUTH_SECTION_NAME = "GitHubAuthSettings";
-            public static readonly string MEILISEARCH_SECTION_NAME = "MeiliSearchSettings";
             public static readonly string SPA_SECTION_NAME = "SpaSettings";
             public static readonly string DEMO_SECTION_NAME = "DemoSettings";
             public static readonly string RATE_LIMITING = "RateLimiting";
@@ -39,13 +38,6 @@
             public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
             public static readonly string MARK_PLACEHOLDER = "New mark";
             public static readonly string MAIN_COLLECTION_NAME = "My marks";
-        }
-
-        public static class MeiliSearch
-        {
-            public static readonly string INDEX_PRIMARY_KEY_NAME = "id";
-            public static readonly string COLLECTION_INDEX_UID = "collections";
-            public static readonly string MARK_INDEX_UID = "marks";
         }
 
         public static class RateLimiterPolicies

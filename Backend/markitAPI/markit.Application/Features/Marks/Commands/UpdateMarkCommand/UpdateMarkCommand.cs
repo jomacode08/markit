@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using markit.Application.Common.Helpers;
-using markit.Application.Contracts.MeiliSearch;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
-using markit.Application.Models.MeiliSearch.Documents;
 using markit.Domain.Entities;
 using MediatR;
 using System.Transactions;
@@ -23,20 +21,14 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
     public class UpdateMarkCommandHandler : IRequestHandler<UpdateMarkCommand, MarkViewModel>
     {
-        private readonly IDocumentRepository<MarkDocument> _documentRepository;
-        private readonly IDocumentJobService<MarkDocument> _documentJobService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public UpdateMarkCommandHandler(
-            IDocumentRepository<MarkDocument> documentRepository,
-            IDocumentJobService<MarkDocument> documentJobService,
             IUnitOfWork unitOfWork,
             IMapper mapper
         )
         {
-            _documentRepository = documentRepository;
-            _documentJobService = documentJobService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -50,7 +42,6 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 _mapper.Map(request, mark, typeof(UpdateMarkCommand), typeof(Mark));
                 await UpdateMarkAsync(mark);
-                if (nameChanged) await CreateDocumentBackgroundJob(mark);
                 var markVm = _mapper.Map<MarkViewModel>(mark);
             scope.Complete();
 
@@ -72,18 +63,5 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
         }
 
         private async Task UpdateMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
-
-        private async Task CreateDocumentBackgroundJob(Mark mark)
-        {
-            if (mark.DocumentId == null) return;
-
-            MarkDocument document = await _documentRepository.GetByIdAsync(mark.DocumentId);
-            document.Name = mark.Name;
-
-            _documentJobService.ScheduleUpdateAsync(
-                document,
-                continueWith: () => _unitOfWork.MarkRepository.UpdateSyncModelAsync(mark.Id, document.Id)
-            );
-        }
     }
 }
