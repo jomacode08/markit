@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { computed, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
 import { Mark } from '../interfaces/mark';
 import { MARKS_STORAGE_KEY } from '../../shared/utils/constant';
 

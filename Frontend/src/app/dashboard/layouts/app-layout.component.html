@@ -44,7 +44,7 @@
                         <app-navigation-menu [navigationItems]="config.navigationItems" />
                     }
                     @case ('Searching') {
-                        <app-quick-search (onSearchNavigate)="toggleSidebar()"/>
+                        <app-quick-search (navigateToTarget)="toggleSidebar()"/>
                     }
                 }
             </div>

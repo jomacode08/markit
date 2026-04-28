@@ -1,83 +1,62 @@
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, EventEmitter, OnDestroy, OnInit, Output, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { debounceTime, Subject, switchMap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { debounceTime, filter, Subject, switchMap } from 'rxjs';
-
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { InputTextModule } from 'primeng/inputtext';
-
-import { SearchFilters, DocumentService } from '../../services/document.service';
 import { Router } from '@angular/router';
-import { ROUTES } from '../../../shared/utils/constant';
-import { DocumentSearch } from '../../interfaces/search/document-search';
 
-enum SearchState {
-  idle,
-  searching,
-  finished,
-  error
-};
+import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+import { EmptyStateIconComponent } from "../../../shared/components/ui/empty-state-icon-component/empty-state-icon.component";
+import { MarkSearchResult } from '../../interfaces/search/mark-search-result';
+import { MarkSearchService, SearchState } from '../../services/mark-search.service';
+import { ROUTES } from '../../../shared/utils/constant';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-quick-search',
     imports: [
-        CommonModule,
-        FormsModule,
-        InputTextModule,
-        ProgressSpinnerModule,
-    ],
+    CommonModule,
+    FormsModule,
+    InputTextModule,
+    ProgressSpinnerModule,
+    EmptyStateIconComponent
+],
     templateUrl: './quick-search.component.html',
     styleUrl: './quick-search.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuickSearchComponent implements OnInit, OnDestroy {
-  @Output() public onSearchNavigate = new EventEmitter();
+  @Output() public navigateToTarget = new EventEmitter();
 
-  public searchInputPlaceholder : string = "Search items...";
   public query : string = "";
   public queryDebouncer = new Subject<string>();
-  public currentFilter = signal<SearchFilters>(SearchFilters.All);
-  public searchResults = signal<DocumentSearch | null>(null);
-  public searchState = signal<SearchState>(SearchState.idle);
-  
-  public showCollections = computed<boolean>(() => {
-    return this.currentFilter() === SearchFilters.All
-    || this.currentFilter() === SearchFilters.Collections;
-  });
-
-  public showMarks = computed<boolean>(() => {
-    return this.currentFilter() === SearchFilters.All
-    || this.currentFilter() === SearchFilters.Marks;
-  });
-
-  get listOfSearchFilters(): SearchFilters[] {
-    return Object.keys(SearchFilters) as SearchFilters[];
-  }
+  public searchInputPlaceholder : string = "Search items...";
+  public searchResults : Signal<MarkSearchResult[]>;
+  public searchState : Signal<SearchState>;
 
   get searchStateEnum(): typeof SearchState {
     return SearchState;
   }
 
   constructor(
-    private documentService: DocumentService,
-    private router : Router,
-  ){}
+    private markSearchService: MarkSearchService,
+    private router: Router,
+    private destroyRef: DestroyRef,
+  ){
+    this.searchResults = computed(() => markSearchService.results());
+    this.searchState = computed(() => markSearchService.searchState());
+    this.query = markSearchService.searchTerm();
+  }
 
   public ngOnInit(): void {
     this.queryDebouncer.pipe(
       debounceTime(500),
-      filter((query) => this.isQueryValid(query)),
       switchMap((query) => {
-        this.setSearchState(SearchState.searching);
-        return this.documentService.search(query, this.currentFilter())
+        return this.markSearchService.search(query);
       }),
-    ).subscribe({
-      next: (results) => {
-        this.searchResults.set(results);
-        this.setSearchState(SearchState.finished);
-      },
-      error : () => this.setSearchState(SearchState.error)
-     });
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   public ngOnDestroy(): void {
@@ -85,25 +64,9 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
   }
 
   public onSearchBoxChanged = (query: string) => this.queryDebouncer.next(query);
-  public onFilterSelected = (filter: SearchFilters) => this.currentFilter.set(filter);
-  private setSearchState = (state: SearchState) => this.searchState.set(state);
-  
-  public navigateToCollectionExplorer(collectionId: number): void {
-    this.router.navigateByUrl(ROUTES.COLLECTION_SEE(collectionId));
-    this.onSearchNavigate.emit();
-  }
   
   public navigateToMarkViewer(markId: number) {
     this.router.navigateByUrl(ROUTES.MARKS_SEE(markId));
-    this.onSearchNavigate.emit();
-  }
-
-  private isQueryValid(query: string): boolean {
-    const isEmpty = !(query.trim().length > 0);
-    if (isEmpty) {
-      this.searchResults.set(null);
-      this.searchState.set(SearchState.idle);
-    }
-    return !isEmpty;
+    this.navigateToTarget.emit();
   }
 }

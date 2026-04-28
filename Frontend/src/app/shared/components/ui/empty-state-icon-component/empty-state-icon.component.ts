@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'shared-empty-state-icon',
   imports: [],
   template: `
+  <div class="flex justify-content-center align-items-center">
     <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100.21 108.89"
       [attr.width]="size"
@@ -24,6 +25,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
             </g>
         </g>
     </svg>
+  </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
