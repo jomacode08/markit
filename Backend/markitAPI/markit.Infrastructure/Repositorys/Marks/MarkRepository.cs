@@ -1,10 +1,12 @@
-﻿using System.Linq.Expressions;
-using markit.Application.Contracts.Persistence.Marks;
+﻿﻿using markit.Application.Contracts.Persistence.Marks;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
+using System.Linq.Expressions;
 
 namespace markit.infrastructure.Repositorys.Marks
 {
@@ -112,6 +114,36 @@ namespace markit.infrastructure.Repositorys.Marks
 
             await UpdateAsync(mark);
             return mark;
+        }
+
+        public async Task<IEnumerable<MarkSearchResult>> SearchAsync(string searchTerm, int creatorId, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm)) return [];
+
+            const string LANGUAGE_CONFIGURATION = "English";
+            const string SEARCH_VECTOR_SHADOW_PROPERTY_NAME = "SearchVector";
+
+            return await context.Marks
+                // Query processing
+                .Include(m => m.Collection)
+                .Where(m => m.Collection != null && m.Collection.CreatorId == creatorId)
+                .Where(m =>
+                    EF.Property<NpgsqlTsVector>(m, SEARCH_VECTOR_SHADOW_PROPERTY_NAME)
+                        .Matches(EF.Functions.WebSearchToTsQuery(LANGUAGE_CONFIGURATION, searchTerm))
+                )
+                // Rank implementation
+                .OrderByDescending(m =>
+                    EF.Property<NpgsqlTsVector>(m, SEARCH_VECTOR_SHADOW_PROPERTY_NAME)
+                        .Rank(EF.Functions.WebSearchToTsQuery(LANGUAGE_CONFIGURATION, searchTerm))
+                )
+                .Take(10)
+                // Query projection
+                .Select(m => new MarkSearchResult
+                {
+                    Id = m.Id,
+                    Name = m.Name
+                })
+                .ToListAsync(cancellationToken);
         }
 
         private static Expression<Func<Mark, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)

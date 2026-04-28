@@ -1,11 +1,13 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Domain.Entities;
 
 namespace markit.Application.Contracts.Persistence.Marks
 {
     public interface IMarkRepository : IAsyncRepository<Mark>
     {
+        Task<int> CountByCreatorIdAsync(int creatorId);
         Task<Mark?> GetWithOrderedBlocks(int id);
         Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
@@ -16,7 +18,7 @@ namespace markit.Application.Contracts.Persistence.Marks
             bool onlyFavorites = false
         );
         Task<List<Mark>> GetMostRecentAsync(int creatorId, int limit);
-        Task<int> CountByCreatorIdAsync(int creatorId);
+        Task<IEnumerable<MarkSearchResult>> SearchAsync(string query, int creatorId, CancellationToken cancellationToken);
         Task<Mark> UpdateSyncModelAsync(int markId, string documentId);
     }
 }

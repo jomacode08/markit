@@ -11,9 +11,9 @@ namespace markit.infrastructure.Repositorys.Common
         private readonly MarkitDbContext _context;
         #region Generic repositories
         public  IAsyncRepository<Creator> CreatorRepository { get; private set; }
-        public IAsyncRepository<Block> BlockRepository { get; private set; }
         #endregion
         #region Custom repositories
+        public IBlockRepository BlockRepository {  get; private set; }
         public ICollectionRepository CollectionRepository { get; private set; }
         public IMarkRepository MarkRepository { get; private set; }
         #endregion
@@ -21,8 +21,8 @@ namespace markit.infrastructure.Repositorys.Common
         public UnitOfWork(MarkitDbContext context)
         {
             _context = context;
+            BlockRepository = new BlockRepository(context);
             CreatorRepository = new BaseRepository<Creator>(context);
-            BlockRepository = new BaseRepository<Block>(context);
             CollectionRepository = new CollectionRepository(context);
             MarkRepository = new MarkRepository(context);
         }

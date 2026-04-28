@@ -39,6 +39,14 @@ namespace markit.API.Controllers.Operation
             return Ok(await _mediator.Send(query));
         }
 
+        [HttpGet]
+        [Route("search")]
+        public async Task<ActionResult<IReadOnlyList<MarkSearchResult>>> Search([FromQuery] string searchTerm)
+        {
+            SearchMarksQuery query = new(searchTerm, _sessionService.GetCreatorId());
+            return Ok(await _mediator.Send(query));
+        }
+
         [HttpPost]
         public async Task<ActionResult<MarkViewModel>> Create([FromBody] CreateMarkCommand command)
         {
