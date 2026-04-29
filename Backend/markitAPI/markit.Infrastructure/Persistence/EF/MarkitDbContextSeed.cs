@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Persistence.EF
+namespace markit.Infrastructure.Persistence.EF
 {
     public static class MarkitDbContextSeed
     {

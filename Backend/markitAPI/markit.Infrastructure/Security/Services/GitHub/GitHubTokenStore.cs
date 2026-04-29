@@ -7,7 +7,7 @@ using markit.Application.Models.Authentication.GitHub;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant.Token;
 
-namespace markit.infrastructure.Security.Services.GitHub
+namespace markit.Infrastructure.Security.Services.GitHub
 {
     /// <summary>
     /// Manages GitHub authentication tokens for a specific user, providing functionality to store,

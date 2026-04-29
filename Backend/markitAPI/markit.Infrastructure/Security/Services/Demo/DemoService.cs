@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services.Demo
+namespace markit.Infrastructure.Security.Services.Demo
 {
     public class DemoService : IDemoService
     {

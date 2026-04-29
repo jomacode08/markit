@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
-using markit.infrastructure.Persistence.EF;
+using markit.Infrastructure.Persistence.EF;
 
 #nullable disable
 
-namespace markit.infrastructure.Migrations
+namespace markit.Infrastructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
     partial class MarkitDbContextModelSnapshot : ModelSnapshot

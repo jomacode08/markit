@@ -1,7 +1,7 @@
 ﻿using markit.API.Controllers.Common;
 using markit.Application.Features.Reports.Dashboard.Queries;
 using markit.Application.Features.Reports.Dashboard.Queries.ViewModels;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

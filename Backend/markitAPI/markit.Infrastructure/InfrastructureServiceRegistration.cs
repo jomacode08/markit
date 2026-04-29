@@ -14,15 +14,15 @@ using markit.Application.Models.Authentication.GitHub;
 using markit.Application.Models.Authentication.Google;
 using markit.Application.Models.Settings;
 using markit.Application.Models.Settings.RateLimiting;
-using markit.infrastructure.Persistence.EF;
-using markit.infrastructure.Repositorys;
-using markit.infrastructure.Repositorys.Common;
-using markit.infrastructure.Security.Services;
-using markit.infrastructure.Security.Services.Demo;
-using markit.infrastructure.Security.Services.ExternalLogin;
-using markit.infrastructure.Security.Services.GitHub;
-using markit.infrastructure.Security.Services.Google;
-using markit.infrastructure.Security.Services.Settings;
+using markit.Infrastructure.Persistence.EF;
+using markit.Infrastructure.Repositorys;
+using markit.Infrastructure.Repositorys.Common;
+using markit.Infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services.Demo;
+using markit.Infrastructure.Security.Services.ExternalLogin;
+using markit.Infrastructure.Security.Services.GitHub;
+using markit.Infrastructure.Security.Services.Google;
+using markit.Infrastructure.Security.Services.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -38,7 +38,7 @@ using System.Threading.RateLimiting;
 using static markit.Application.Helpers.GeneralConstant;
 using static markit.Application.Helpers.GeneralConstant.Configuration;
 
-namespace markit.infrastructure
+namespace markit.Infrastructure
 {
     public static class InfrastructureServiceRegistration
     {

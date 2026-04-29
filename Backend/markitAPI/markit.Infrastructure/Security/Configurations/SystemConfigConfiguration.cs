@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Configurations
+namespace markit.Infrastructure.Security.Configurations
 {
     public class SystemConfigConfiguration : IEntityTypeConfiguration<SystemConfig>
     {

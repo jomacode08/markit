@@ -17,7 +17,7 @@ using System.Security.Claims;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services.ExternalLogin
+namespace markit.Infrastructure.Security.Services.ExternalLogin
 {
     public class ExternalLoginService : IExternalLoginService
     {

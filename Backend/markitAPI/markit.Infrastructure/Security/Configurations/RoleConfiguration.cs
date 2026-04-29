@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Configurations
+namespace markit.Infrastructure.Security.Configurations
 {
     public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
     {

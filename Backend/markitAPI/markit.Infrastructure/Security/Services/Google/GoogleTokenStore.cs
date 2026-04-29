@@ -7,7 +7,7 @@ using markit.Application.Models.Authentication.Enums;
 using Microsoft.AspNetCore.Identity;
 using static markit.Application.Helpers.GeneralConstant.Token;
 
-namespace markit.infrastructure.Security.Services.Google
+namespace markit.Infrastructure.Security.Services.Google
 {
     /// <summary>
     /// Custom implementation class called by Google libraries.

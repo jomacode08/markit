@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace markit.infrastructure.Migrations
+namespace markit.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddSearchVectorToMarksAndBlocks : Migration

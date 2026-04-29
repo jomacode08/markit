@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services
+namespace markit.Infrastructure.Security.Services
 {
     public class JwtService : IJwtService
     {

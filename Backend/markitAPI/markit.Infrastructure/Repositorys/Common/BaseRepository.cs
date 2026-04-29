@@ -1,10 +1,10 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
 using markit.Domain.Common;
-using markit.infrastructure.Persistence.EF;
+using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace markit.infrastructure.Repositorys
+namespace markit.Infrastructure.Repositorys
 {
     public class BaseRepository<T> : IAsyncRepository<T> where T : BaseModel
     {

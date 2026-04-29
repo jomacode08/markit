@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace markit.infrastructure.Persistence.EF.Configurations
+namespace markit.Infrastructure.Persistence.EF.Configurations
 {
     public class CollectionConfiguration : IEntityTypeConfiguration<Collection>
     {

@@ -8,7 +8,7 @@ using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Helpers;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

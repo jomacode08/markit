@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services
+namespace markit.Infrastructure.Security.Services
 {
     public class SessionService : ISessionService
     {

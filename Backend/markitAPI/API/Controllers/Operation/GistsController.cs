@@ -3,7 +3,7 @@ using markit.Application.Exceptions;
 using markit.Application.Features.Gists.Queries;
 using markit.Application.Features.Gists.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

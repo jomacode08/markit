@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using markit.Application.Contracts.GitHub;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services.ExternalLogin
+namespace markit.Infrastructure.Security.Services.ExternalLogin
 {
     public class ExternalTokenService : IExternalTokenService
     {

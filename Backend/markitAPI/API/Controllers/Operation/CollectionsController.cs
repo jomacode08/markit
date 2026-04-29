@@ -10,7 +10,7 @@ using markit.Application.Features.Collections.Queries.GetCollectionTreeQuery;
 using markit.Application.Features.Collections.Queries.GetMainCollectionByCreator;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Helpers;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

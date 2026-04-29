@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace markit.infrastructure.Persistence.EF
+namespace markit.Infrastructure.Persistence.EF
 {
     public static class MigrationManager
     {

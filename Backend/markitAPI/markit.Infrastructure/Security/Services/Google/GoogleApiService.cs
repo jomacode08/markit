@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static markit.Application.Helpers.GeneralConstant.Token;
 
-namespace markit.infrastructure.Security.Services.Google
+namespace markit.Infrastructure.Security.Services.Google
 {
     public class GoogleApiService : IGoogleApiService
     {

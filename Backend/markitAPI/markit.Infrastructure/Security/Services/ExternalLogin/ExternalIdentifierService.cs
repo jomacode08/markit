@@ -7,7 +7,7 @@ using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Google;
 using markit.Application.Contracts.GitHub;
 
-namespace markit.infrastructure.Security.Services.ExternalLogin
+namespace markit.Infrastructure.Security.Services.ExternalLogin
 {
     public class ExternalIdentifierService : IExternalIdentifierService
     {

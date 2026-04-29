@@ -5,7 +5,7 @@ using markit.Application.Exceptions;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

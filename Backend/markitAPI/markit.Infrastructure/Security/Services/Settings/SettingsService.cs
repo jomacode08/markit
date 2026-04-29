@@ -1,12 +1,12 @@
 ﻿using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Settings;
-using markit.infrastructure.Persistence.EF;
+using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using static markit.Application.Helpers.GeneralConstant;
 
-namespace markit.infrastructure.Security.Services.Settings
+namespace markit.Infrastructure.Security.Services.Settings
 {
     public class SettingsService : ISettingsService
     {

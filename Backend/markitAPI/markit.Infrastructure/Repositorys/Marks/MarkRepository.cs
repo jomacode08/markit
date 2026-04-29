@@ -3,12 +3,12 @@ using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Domain.Entities;
-using markit.infrastructure.Persistence.EF;
+using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 using System.Linq.Expressions;
 
-namespace markit.infrastructure.Repositorys.Marks
+namespace markit.Infrastructure.Repositorys.Marks
 {
     public class MarkRepository : BaseRepository<Mark>, IMarkRepository
     {

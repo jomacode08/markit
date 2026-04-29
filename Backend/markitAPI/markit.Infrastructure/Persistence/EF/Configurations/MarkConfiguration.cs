@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NpgsqlTypes;
 
-namespace markit.infrastructure.Persistence.EF.Configurations
+namespace markit.Infrastructure.Persistence.EF.Configurations
 {
     public class MarkConfiguration : IEntityTypeConfiguration<Mark>
     {

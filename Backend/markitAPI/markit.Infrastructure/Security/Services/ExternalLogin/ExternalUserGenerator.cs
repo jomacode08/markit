@@ -3,7 +3,7 @@ using markit.Application.Models.Authentication.Enums;
 using markit.Application.Common.Helpers;
 using markit.Application.Models.Authentication;
 
-namespace markit.infrastructure.Security.Services.ExternalLogin
+namespace markit.Infrastructure.Security.Services.ExternalLogin
 {
     public class ExternalUserGenerator(IEnumerable<Claim> claims)
     {

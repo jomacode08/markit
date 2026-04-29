@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using markit.Application.Features.Gists.Queries.ViewModels;
 using markit.Application.Common.Helpers;
 
-namespace markit.infrastructure.Security.Services.GitHub
+namespace markit.Infrastructure.Security.Services.GitHub
 {
     public class GitHubApiService : IGitHubApiService
     {

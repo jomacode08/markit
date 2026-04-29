@@ -3,15 +3,15 @@ using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Settings;
 using markit.Domain.Common;
 using markit.Domain.Entities;
-using markit.infrastructure.Persistence.EF.Configurations;
-using markit.infrastructure.Security.Configurations;
-using markit.infrastructure.Security.Services;
+using markit.Infrastructure.Persistence.EF.Configurations;
+using markit.Infrastructure.Security.Configurations;
+using markit.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace markit.infrastructure.Persistence.EF
+namespace markit.Infrastructure.Persistence.EF
 {
     public class MarkitDbContext : IdentityDbContext<AppUser>
     {
