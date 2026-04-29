@@ -6,7 +6,7 @@ using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 
-namespace markit.Infrastructure.Repositorys.Marks
+namespace markit.Infrastructure.Repositories.Marks
 {
     public class BlockRepository : BaseRepository<Block>, IBlockRepository
     {

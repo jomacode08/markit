@@ -6,7 +6,7 @@ using markit.Domain.Entities;
 using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace markit.Infrastructure.Repositorys.Marks
+namespace markit.Infrastructure.Repositories.Marks
 {
     public class CollectionRepository : BaseRepository<Collection>, ICollectionRepository
     {

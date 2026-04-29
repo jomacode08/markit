@@ -2,9 +2,9 @@
 using markit.Application.Contracts.Persistence.Marks;
 using markit.Domain.Entities;
 using markit.Infrastructure.Persistence.EF;
-using markit.Infrastructure.Repositorys.Marks;
+using markit.Infrastructure.Repositories.Marks;
 
-namespace markit.Infrastructure.Repositorys.Common
+namespace markit.Infrastructure.Repositories.Common
 {
     public class UnitOfWork : IUnitOfWork
     {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 using System.Linq.Expressions;
 
-namespace markit.Infrastructure.Repositorys.Marks
+namespace markit.Infrastructure.Repositories.Marks
 {
     public class MarkRepository : BaseRepository<Mark>, IMarkRepository
     {

@@ -4,7 +4,7 @@ using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace markit.Infrastructure.Repositorys
+namespace markit.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IAsyncRepository<T> where T : BaseModel
     {
