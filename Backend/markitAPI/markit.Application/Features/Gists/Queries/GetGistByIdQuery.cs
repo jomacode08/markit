@@ -35,13 +35,6 @@ namespace markit.Application.Features.Gists.Queries
         public async Task<GistResponse> Handle(GetGistByIdQuery request, CancellationToken cancellationToken)
         {
             GistResponse response = new();
-            if (!await HasGitHubLogin(request.User))
-            {
-                response.Status = GistResponseStatus.Failure;
-                response.ErrorMessage = "It's necessary to connect your user with a GitHub account.";
-                return response;
-            }
-
             try
             {
                 GistViewModel gist = await _gitHubApiService.GetGistById(request.Id, request.User);
@@ -56,13 +49,6 @@ namespace markit.Application.Features.Gists.Queries
                 response.ErrorMessage = ex.Message;
                 return response;
             }
-        }
-
-        private async Task<bool> HasGitHubLogin(AppUser user)
-        {
-            ExternalSignInMethod? gitHubLogin = (await _externalLoginService.GetByUser(user))
-                .FirstOrDefault(l => l.LoginProvider.Equals(LoginProvider.GitHub));
-            return gitHubLogin?.Configured ?? false;
         }
     }
 }

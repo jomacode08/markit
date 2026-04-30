@@ -13,6 +13,7 @@ using static markit.Application.Helpers.GeneralConstant.Token;
 using Microsoft.AspNetCore.Http;
 using markit.Application.Features.Gists.Queries.ViewModels;
 using markit.Application.Common.Helpers;
+using markit.Application.Exceptions;
 
 namespace markit.Infrastructure.Security.Services.GitHub
 {
@@ -58,11 +59,14 @@ namespace markit.Infrastructure.Security.Services.GitHub
         public async Task<GitHubProfileData> GetProfileAsync(AppUser user)
         {
             GitHubClient client = await GetOrCreateClient(user);
-            var githubUser = await client.User.Current();
+            if (client.Credentials is null || client.Credentials.AuthenticationType == AuthenticationType.Anonymous)
+                throw new CustomValidationException("It's necessary to connect your user with a GitHub account.");
+
+            var gitHubUser = await client.User.Current();
             return new GitHubProfileData(
-                UserName: githubUser.Login,
-                Name: githubUser.Name,
-                Email: githubUser.Email
+                UserName: gitHubUser.Login,
+                Name: gitHubUser.Name,
+                Email: gitHubUser.Email
             );
         }
 
@@ -106,15 +110,15 @@ namespace markit.Infrastructure.Security.Services.GitHub
 
         private async Task<GitHubClient> GetOrCreateClient(AppUser user)
         {
-            _client ??= await CreateOAuthClient(user);
+            _client ??= await CreateGitHubClient(user);
             return _client;
         }
 
-        private async Task<string> GetAndValidateAccessToken(AppUser user)
+        private async Task<string?> GetAndValidateAccessToken(AppUser user)
         {
             GitHubTokenStore tokenStore = new(_userManager, user);
-            string accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME)
-                ?? throw new UnauthorizedAccessException("No access token found");
+            string? accessToken = await tokenStore.GetAsync(ACCESS_TOKEN_NAME);
+            if (accessToken == null) return null;
 
             if (await tokenStore.IsAuthorizationExpiredAsync(accessToken))
             {
@@ -126,9 +130,14 @@ namespace markit.Infrastructure.Security.Services.GitHub
                 : throw new InvalidOperationException("Invalid or unauthorized GitHub access token.");
         }
 
-        private async Task<GitHubClient> CreateOAuthClient(AppUser user)
+        private async Task<GitHubClient> CreateGitHubClient(AppUser user)
         {
-            string accessToken = await GetAndValidateAccessToken(user);
+            string? accessToken = await GetAndValidateAccessToken(user);
+            string userAgent = _settings.AppName;
+            if (string.IsNullOrEmpty(userAgent)) userAgent = "markit-app";
+            // No token found, return an unauthenticated read-only client.
+            if (string.IsNullOrEmpty(accessToken)) return new GitHubClient(new Octokit.ProductHeaderValue(userAgent));
+
             return new GitHubClient(new Octokit.ProductHeaderValue(_settings.AppName))
             {
                 Credentials = new Credentials(accessToken, AuthenticationType.Oauth)
