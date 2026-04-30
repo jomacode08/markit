@@ -57,7 +57,7 @@ runs:
           -c Release \
           -r linux-x64 \
           -o ./release/api \
-          --self-contained true
+          --self-contained false
 
     # Build SPA
     - name: Inject SPA Environment variables 
