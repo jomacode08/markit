@@ -19,6 +19,8 @@ namespace markit.Application.Common.Helpers
                 SystemConfigKeys.IS_DEMO_ENABLED_KEY => "Configuration that toggles the demo features of the app.",
                 SystemConfigKeys.DEMO_USER_ID_KEY => "The ID of the user designated for demo purposes.",
                 SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY => "The validity period (in minutes) for the demo access token.",
+                SystemConfigKeys.AUTH_IS_GOOGLE_ENABLED_KEY => "Configuration that enables or disables Google authentication for the app.",
+                SystemConfigKeys.AUTH_IS_GITHUB_ENABLED_KEY => "Configuration that enables or disables GitHub authentication for the app.",
                 _ => null
             };
         }

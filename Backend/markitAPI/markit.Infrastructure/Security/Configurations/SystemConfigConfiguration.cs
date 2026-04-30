@@ -19,7 +19,22 @@ namespace markit.Infrastructure.Security.Configurations
                 key: SystemConfigKeys.IS_DEMO_ENABLED_KEY,
                 value: "false"
             );
-            builder.HasData(isDemoEnabled);
+
+            SystemConfig isGoogleEnabled = ConstructSetting(
+                key: SystemConfigKeys.AUTH_IS_GOOGLE_ENABLED_KEY,
+                value: "false"
+            );
+
+            SystemConfig isGitHubEnabled = ConstructSetting(
+                key: SystemConfigKeys.AUTH_IS_GITHUB_ENABLED_KEY,
+                value: "false"
+            );
+
+            builder.HasData(
+                isDemoEnabled,
+                isGoogleEnabled,
+                isGitHubEnabled
+            );
         }
 
         private static SystemConfig ConstructSetting(string key, string value)
