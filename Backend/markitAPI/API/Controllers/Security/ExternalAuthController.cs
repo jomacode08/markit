@@ -46,15 +46,17 @@ namespace markit.API.Controllers.Security
 
         [AllowAnonymous]
         [HttpGet("{provider}")]
-        public IActionResult InitiateLogin(LoginProvider provider)
+        public async Task<IActionResult> InitiateLogin(LoginProvider provider)
         {
+            if (!await _externalLoginService.IsEnabledAsync(provider)) return NotFound();
             return InitiateChallenge(provider, purpose: LoginPurpose.SignIn);
         }
 
         [AllowAnonymous]
         [HttpGet("{provider}/account/{token}")]
-        public IActionResult InitiateLinkAccount(LoginProvider provider, string token)
+        public async Task<IActionResult> InitiateLinkAccount(LoginProvider provider, string token)
         {
+            if (!await _externalLoginService.IsEnabledAsync(provider)) return NotFound();
             string? userId = GetUserIdFromLinkToken(token);
             if (userId == null) return BadRequest("Invalid or expired link token.");
 

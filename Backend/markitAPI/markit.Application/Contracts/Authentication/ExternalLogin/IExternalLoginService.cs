@@ -13,5 +13,6 @@ namespace markit.Application.Contracts.Authentication.ExternalLogin
         Task<string> LoginCallback(LoginProvider loginProvider, HttpContext context);
         Task<string> LinkCallback(LoginProvider loginProvider);
         Task Remove(string userId, LoginProvider provider);
+        Task<bool> IsEnabledAsync(LoginProvider provider);
     }
 }

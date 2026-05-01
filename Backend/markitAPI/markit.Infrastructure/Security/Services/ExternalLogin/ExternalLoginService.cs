@@ -3,10 +3,13 @@ using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
+using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Authentication.GitHub;
+using markit.Application.Models.Authentication.Google;
 using markit.Application.Models.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -27,9 +30,12 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         private readonly IGitHubApiService _gitHubApiService;
         private readonly IExternalIdentifierService _externalIdentifierService;
         private readonly IExternalTokenService _externalTokenService;
-        private readonly SpaSettings _spaSettings;
+        private readonly ISettingsService _settingsService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly SpaSettings _spaSettings;
+        private readonly GoogleAuthSettings _googleAuthSettings;
+        private readonly GitHubAuthSettings _gitHubAuthSettings;
 
         private readonly LoginProvider[] _providers;
         private readonly string _spaRedirectUrl;
@@ -42,26 +48,33 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         private const string NO_LINKED_ACCOUNT_TO_REMOVE_ERROR_MESSAGE = "There is no linked account to remove.";
         private const string PASSWORD_REQUIRED_TO_REMOVE_LINKED_ACCOUNT_ERROR_MESSAGE = "You need to set a password to delete your linked account.";
         private const string ACCOUNT_ALREADY_LINKED_ERROR_MESSAGE = "The account is already linked.";
+        private const string LOGIN_PROVIDER_NOT_ENABLED_ERROR_MESSAGE = "The login provider is not enabled.";
 
         public ExternalLoginService
         (
             ILogger<ExternalLoginService> logger,
             IJwtService jwtService,
             IOptions<SpaSettings> spaSettings,
+            IOptions<GoogleAuthSettings> googleAuthSettings,
+            IOptions<GitHubAuthSettings> gitHubAuthSettings,
             IGoogleApiService googleApiService,
             IGitHubApiService gitHubApiService,
             IExternalIdentifierService externalIdentifierService,
             IExternalTokenService externalTokenService,
+            ISettingsService settingsService,
             SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager)
         {
             _logger = logger;
             _jwtService = jwtService;
             _spaSettings = spaSettings.Value;
+            _googleAuthSettings = googleAuthSettings.Value;
+            _gitHubAuthSettings = gitHubAuthSettings.Value;
             _googleApiService = googleApiService;
             _gitHubApiService = gitHubApiService;
             _externalIdentifierService = externalIdentifierService;
             _externalTokenService = externalTokenService;
+            _settingsService = settingsService;
             _signInManager = signInManager;
             _userManager = userManager;
 
@@ -115,6 +128,7 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         {
             try
             {
+                if (!await IsEnabledAsync(provider)) throw new CustomValidationException(LOGIN_PROVIDER_NOT_ENABLED_ERROR_MESSAGE);
                 // Extract external login information.
                 ExternalLoginInfo loginInfo = await GetAndValidateLoginInfoAsync();
                 if (loginInfo.AuthenticationTokens == null) throw new InvalidOperationException(AUTHENTICATION_TOKENS_NOT_FOUND_ERROR_MESSAGE);
@@ -158,6 +172,7 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         {
             try
             {
+                if (!await IsEnabledAsync(provider)) throw new CustomValidationException(LOGIN_PROVIDER_NOT_ENABLED_ERROR_MESSAGE);
                 ExternalLoginInfo loginInfo = await GetAndValidateLoginInfoAsync();
                 AuthenticationProperties properties = loginInfo.AuthenticationProperties
                     ?? throw new InvalidOperationException(AUTHENTICATION_PROPERTIES_NOT_FOUND_ERROR_MESSAGE);
@@ -217,6 +232,28 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
                 _logger.LogError($"Failed to update account settings with userId: {{ID}}. The external access has been removed. {{reason}}", [userId, ex.Message]);
                 throw;
             }
+        }
+
+        public async Task<bool> IsEnabledAsync(LoginProvider provider)
+        {
+            string settingKey = provider switch
+            {
+                LoginProvider.Google => SystemConfigKeys.AUTH_IS_GOOGLE_ENABLED_KEY,
+                LoginProvider.GitHub => SystemConfigKeys.AUTH_IS_GITHUB_ENABLED_KEY,
+                _ => throw new NotImplementedException($"Invalid or not implemented login provider: {provider.GetName()}")
+            };
+
+            string? isProviderEnabledValue = await _settingsService.GetValueAsync(settingKey);
+            if (!bool.TryParse(isProviderEnabledValue, out bool isProviderEnabled)) return false;
+
+            bool hasScheme = provider switch
+            {
+                LoginProvider.Google => _googleAuthSettings.IsConfigured(),
+                LoginProvider.GitHub => _gitHubAuthSettings.IsConfigured(),
+                _ => throw new NotImplementedException($"Invalid or not implemented login provider: {provider.GetName()}")
+            };
+
+            return isProviderEnabled && hasScheme;
         }
 
         #endregion
