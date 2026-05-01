@@ -50,7 +50,7 @@ namespace markit.Infrastructure
                 .AddAuthentication(configuration)
                 .AddAuthorization(configuration)
                 .AddRateLimiter(configuration)
-                .AddHangfire(configuration);
+                .AddHangFire(configuration);
             return services;
         }
 
@@ -91,9 +91,9 @@ namespace markit.Infrastructure
             services.Configure<GoogleAuthSettings>(configuration.GetSection(GOOGLE_AUTH_SECTION_NAME));
             configuration.Bind(GOOGLE_AUTH_SECTION_NAME, googleAuthSettings);
 
-            var githubAuthSettings = new GitHubAuthSettings();
+            var gitHubAuthSettings = new GitHubAuthSettings();
             services.Configure<GitHubAuthSettings>(configuration.GetSection(GITHUB_AUTH_SECTION_NAME));
-            configuration.Bind(GITHUB_AUTH_SECTION_NAME, githubAuthSettings);
+            configuration.Bind(GITHUB_AUTH_SECTION_NAME, gitHubAuthSettings);
 
             var spaSettings = new SpaSettings();
             services.Configure<SpaSettings>(configuration.GetSection(SPA_SECTION_NAME));
@@ -116,7 +116,7 @@ namespace markit.Infrastructure
             services.AddTransient<IExternalLoginService, ExternalLoginService>();
 
             // Configurate authentication
-            services.AddAuthentication(options =>
+            AuthenticationBuilder authBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -144,28 +144,30 @@ namespace markit.Infrastructure
                         return Task.CompletedTask;
                     }
                 };
-            })
-            // Add external login providers
-            .AddGoogle(options =>
-            {
-                options.ClientId = googleAuthSettings.ClientId;
-                options.ClientSecret = googleAuthSettings.ClientSecret;
-                options.AccessType = "offline";
-                options.SaveTokens = true;
-                options.AccessDeniedPath = "/auth/external/access-denied";
-                options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
-                options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
-                options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
-            })
-            .AddGitHub(options =>
-            {
-                options.ClientId = githubAuthSettings.ClientId;
-                options.ClientSecret = githubAuthSettings.ClientSecret;
-                options.SaveTokens = true;
-                options.AccessDeniedPath = "/auth/external/access-denied";
-                options.Scope.Add("read:user");
-                options.Scope.Add("user:email");
             });
+
+            // Add external login providers
+            if (googleAuthSettings.IsConfigured())
+                authBuilder.AddGoogle(options => {
+                    options.ClientId = googleAuthSettings.ClientId;
+                    options.ClientSecret = googleAuthSettings.ClientSecret;
+                    options.AccessType = "offline";
+                    options.SaveTokens = true;
+                    options.AccessDeniedPath = "/auth/external/access-denied";
+                    options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+                    options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                });
+
+            if (gitHubAuthSettings.IsConfigured())
+                authBuilder.AddGitHub(options => {
+                    options.ClientId = gitHubAuthSettings.ClientId;
+                    options.ClientSecret = gitHubAuthSettings.ClientSecret;
+                    options.SaveTokens = true;
+                    options.AccessDeniedPath = "/auth/external/access-denied";
+                    options.Scope.Add("read:user");
+                    options.Scope.Add("user:email");
+                });
 
             // Password configuration
             services.Configure<IdentityOptions>(options => {
@@ -186,7 +188,7 @@ namespace markit.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddHangFire(this IServiceCollection services, IConfiguration configuration)
         {
             string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
             services.AddHangfire(config => 
