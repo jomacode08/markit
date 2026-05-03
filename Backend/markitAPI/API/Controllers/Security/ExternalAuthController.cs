@@ -1,6 +1,7 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Models.Authentication.Enums;
+using markit.Application.Models.Authentication.ExternalAuth;
 using markit.Application.Models.Settings;
 using markit.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -42,6 +43,18 @@ namespace markit.API.Controllers.Security
             var token = Guid.NewGuid().ToString();
             _cache.Set(token, userId, TimeSpan.FromMinutes(2));
             return Ok(new { token });
+        }
+
+        [AllowAnonymous]
+        [HttpGet("status")]
+        public async Task<ActionResult<ExternalAuthStatus>> GetStatus()
+        {
+            bool isGoogleEnabled = await _externalLoginService.IsEnabledAsync(LoginProvider.Google);
+            bool isGitHubEnabled = await _externalLoginService.IsEnabledAsync(LoginProvider.GitHub);
+            return Ok(new ExternalAuthStatus(
+                isGoogleEnabled,
+                isGitHubEnabled
+            ));
         }
 
         [AllowAnonymous]
