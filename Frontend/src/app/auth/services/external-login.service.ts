@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginProvider, LoginPurpose } from '../interfaces/signin-methods';
 import { map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ExternalAuthSettings } from '../../settings/interfaces/external-auth-settings';
 
 interface LinkTokenResponse {
     token: string;
@@ -14,8 +15,16 @@ export class ExternalLoginService {
     
     constructor(private http: HttpClient) { }
 
-    public remove(provider: LoginProvider):Observable<void> {
+    public remove(provider: LoginProvider): Observable<void> {
         return this.http.delete<void>(`${ this.baseUrl }/${ provider }`);
+    }
+
+    public getSettings(): Observable<ExternalAuthSettings> {
+        return this.http.get<ExternalAuthSettings>(`${ this.baseUrl }/settings`);
+    }
+
+    public updateSettings(settings: ExternalAuthSettings): Observable<ExternalAuthSettings> {
+        return this.http.put<ExternalAuthSettings>(`${ this.baseUrl }/settings`, settings);
     }
 
     public getLoginUrlForProvider(

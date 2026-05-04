@@ -1,0 +1,46 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Is Google enabled -->
+    <div class="form-field">
+        <div>
+            <label for="isGoogleEnabled">
+                Google
+            </label>
+            <p class="form-description">Enable Google sign-in to let users authenticate and link their accounts via Google OAuth.</p>
+        </div>
+        <div>
+            <p-toggleSwitch
+                name="isGoogleEnabled"
+                formControlName="isGoogleEnabled"
+                inputId="isGoogleEnabled"
+            />
+        </div>
+    </div>
+    <!-- Is GitHub enabled -->
+    <div class="form-field">
+        <div>
+            <label for="isGitHubEnabled">
+                GitHub
+            </label>
+            <p class="form-description">Enable GitHub sign-in to let users authenticate and link their accounts via GitHub OAuth.</p>
+        </div>
+        <div>
+            <p-toggleSwitch
+                name="isGitHubEnabled"
+                formControlName="isGitHubEnabled"
+                inputId="isGitHubEnabled"
+            />
+        </div>
+    </div>
+    <!-- Submit button -->
+     <div class="flex md:justify-content-end">
+         <div class="w-full md:w-10rem">
+            <p-button
+                type="submit"
+                size="small"
+                severity="primary"
+                label="Save changes"
+                [disabled]="isSubmitting()"
+            />
+         </div>
+     </div>
+</form>

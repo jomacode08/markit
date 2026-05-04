@@ -17,6 +17,7 @@ export const ROUTES = {
     // Settings
     ACCOUNTS: '/settings/accounts',
     DEMO_FORM: '/settings/demo',
+    AUTHENTICATION_SETTINGS: '/settings/authentication',
     // Others
     NOT_FOUND: '/not-found',
     ERROR: '/error',

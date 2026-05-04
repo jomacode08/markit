@@ -30,7 +30,16 @@ export const SETTINGS_ROUTES: Routes = [
                 loadComponent: () =>
                     import('./pages/demo-form/demo-form.component')
                     .then(c => c.DemoFormComponent)
-            }        
+            },       
+            {
+                path: 'authentication',
+                title: `Authentication`,
+                canActivate: [hasRoleActivateGuard([AuthRole.ADMIN])],
+                canMatch: [hasRoleMatchGuard([AuthRole.ADMIN])],
+                loadComponent: () =>
+                    import('./pages/authentication/authentication-settings.component')
+                    .then(c => c.AuthenticationSettingsComponent)
+            },       
         ]
     },
 ];

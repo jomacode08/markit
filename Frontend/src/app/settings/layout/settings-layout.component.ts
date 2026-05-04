@@ -19,6 +19,11 @@ export class SettingsLayoutComponent {
         routerLink: ROUTES.ACCOUNTS,
       },
       {
+        label: 'Authentication',
+        icon: 'fa-solid fa-lock',
+        routerLink: ROUTES.AUTHENTICATION_SETTINGS,
+      },
+      {
         label: 'Demo',
         icon: 'fa-solid fa-flask',
         routerLink: ROUTES.DEMO_FORM,
