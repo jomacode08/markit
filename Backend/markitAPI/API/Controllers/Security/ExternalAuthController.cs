@@ -1,9 +1,12 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Features.Settings.Queries;
+using markit.Application.Features.Settings.Queries.ViewModels;
 using markit.Application.Models.Authentication.Enums;
 using markit.Application.Models.Authentication.ExternalAuth;
 using markit.Application.Models.Settings;
 using markit.Infrastructure.Security.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +23,7 @@ namespace markit.API.Controllers.Security
     {
         private readonly IExternalLoginService _externalLoginService;
         private readonly IMemoryCache _cache;
+        private readonly IMediator _mediator;
         private readonly SpaSettings _spaSettings;
         private readonly SessionService _sessionService;
 
@@ -27,11 +31,13 @@ namespace markit.API.Controllers.Security
             IExternalLoginService externalLoginService,
             IOptions<SpaSettings> spaSettings,
             IMemoryCache cache,
+            IMediator mediator,
             SessionService sessionService)
         {
             _externalLoginService = externalLoginService;
             _spaSettings = spaSettings.Value;
             _sessionService = sessionService;
+            _mediator = mediator;
             _cache = cache;
         }
 
@@ -111,6 +117,13 @@ namespace markit.API.Controllers.Security
         {
             string spaLoginFailureUrl = $"{_spaSettings.BaseUrl}/auth/redirect?state=failure&error=access_denied";
             return Redirect(spaLoginFailureUrl);
+        }
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
+        [HttpGet("settings")]
+        public async Task<ActionResult<ExternalAuthSettings>> GetSettings()
+        {
+            return Ok(await _mediator.Send(new GetExternalAuthSettingsQuery()));
         }
 
         private ChallengeResult InitiateChallenge(LoginProvider provider, LoginPurpose purpose, string? userId = null)
