@@ -89,7 +89,7 @@ namespace markit.Infrastructure.Security.Services.Settings
             }
         }
 
-        public async Task UpdateAsync(string key, string value)
+        public async Task<SystemConfig> UpdateAsync(string key, string value)
         {
             SystemConfig existing = await GetAsync(key)
                 ?? throw new NotFoundException("SystemConfigs", key);
@@ -100,6 +100,8 @@ namespace markit.Infrastructure.Security.Services.Settings
             // Invalidate the cache so the next request pulls the fresh DB data.
             InvalidateCache(key: key);
             InvalidateGroupCache(GetKeyPrefix(key));
+
+            return existing;
         }
 
         public async Task UpdateRangeAsync(IEnumerable<SystemConfig> configs)

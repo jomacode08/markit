@@ -1,5 +1,6 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication.ExternalLogin;
+using markit.Application.Features.Settings.Commands.UpdateExternalAuthSettings;
 using markit.Application.Features.Settings.Queries;
 using markit.Application.Features.Settings.Queries.ViewModels;
 using markit.Application.Models.Authentication.Enums;
@@ -125,6 +126,13 @@ namespace markit.API.Controllers.Security
         {
             return Ok(await _mediator.Send(new GetExternalAuthSettingsQuery()));
         }
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
+        [HttpPut("settings")]
+        public async Task<ActionResult<ExternalAuthSettings>> UpdateSettings([FromBody] UpdateExternalAuthSettingsCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        } 
 
         private ChallengeResult InitiateChallenge(LoginProvider provider, LoginPurpose purpose, string? userId = null)
         {

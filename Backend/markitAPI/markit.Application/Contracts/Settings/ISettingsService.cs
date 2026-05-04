@@ -9,7 +9,7 @@ namespace markit.Application.Contracts.Settings
         Task<string?> GetValueAsync(string key);
         Task AddAsync(SystemConfig config);
         Task AddRangeAsync(IEnumerable<SystemConfig> configs);
-        Task UpdateAsync(string key, string value);
+        Task<SystemConfig> UpdateAsync(string key, string value);
         Task UpdateRangeAsync(IEnumerable<SystemConfig> configs);
     }
 }
