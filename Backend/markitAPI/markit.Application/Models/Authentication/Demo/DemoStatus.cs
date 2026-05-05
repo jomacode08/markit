@@ -2,7 +2,6 @@
 {
     public record DemoStatus(
         bool Available,
-        bool LimitReached,
         string Message
     ) {}
 }

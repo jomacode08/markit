@@ -1,10 +1,12 @@
 ﻿﻿﻿using markit.API.Controllers.Common;
 using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Exceptions;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
+using markit.Application.Models.Authentication.Enums;
 using markit.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,17 +20,20 @@ namespace markit.API.Controllers.Seguridad
     {
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
+        private readonly IDemoService _demoService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SessionService _sessionService;
 
         public AuthController(
             ILoginService loginService,
             IExternalLoginService externalLoginService,
+            IDemoService demoService,
             UserManager<AppUser> userManager,
             SessionService sessionService)
         {
             _loginService = loginService;
             _externalLoginService = externalLoginService;
+            _demoService = demoService;
             _userManager = userManager;
             _sessionService = sessionService;
         }
@@ -49,7 +54,23 @@ namespace markit.API.Controllers.Seguridad
                 user.Picture
             ));
         }
-        
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("options")]
+        public async Task<ActionResult<AuthOptions>> GetAuthOptions()
+        {
+            bool isDemoAvailable = (await _demoService.GetStatusAsync()).Available;
+            bool isGoogleAvailable = await _externalLoginService.IsEnabledAsync(LoginProvider.Google);
+            bool isGitHubAvailable = await _externalLoginService.IsEnabledAsync(LoginProvider.GitHub);
+
+            return Ok(new AuthOptions(
+                isDemoAvailable,
+                isGoogleAvailable,
+                isGitHubAvailable
+            ));
+        }
+
         [HttpGet]
         [Route("me")]
         public ActionResult<AuthenticatedUser> IsAuthenticated()

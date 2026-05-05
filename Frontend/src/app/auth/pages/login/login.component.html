@@ -80,34 +80,38 @@
             </div>
             <div class="grid">
                 <!-- Google Button -->
-                <div class="col-12 md:col-6">
-                    <p-button
-                        type="button"
-                        severity="info"
-                        label="Google"
-                        size="small"
-                        icon="fa-brands fa-google"
-                        class="external-login-button"
-                        [disabled]="submit()"
-                        (click)="onGoogleLogin()"
-                    />
-                </div>
+                @if (authOptions().isGoogleAvailable) {
+                    <div class="col-12 md:col-6">
+                        <p-button
+                            type="button"
+                            severity="info"
+                            label="Google"
+                            size="small"
+                            icon="fa-brands fa-google"
+                            class="external-login-button"
+                            [disabled]="submit()"
+                            (click)="onGoogleLogin()"
+                        />
+                    </div>
+                }
                 <!-- GitHub Button -->
-                <div class="col-12 md:col-6">
-                    <p-button
-                        type="button"
-                        severity="info"
-                        label="GitHub"
-                        size="small"
-                        icon="fa-brands fa-github"
-                        class="external-login-button"
-                        [disabled]="submit()"
-                        (click)="onGithubLogin()"
-                    />
-                </div>
+                @if (authOptions().isGitHubAvailable) {
+                    <div class="col-12 md:col-6">
+                        <p-button
+                            type="button"
+                            severity="info"
+                            label="GitHub"
+                            size="small"
+                            icon="fa-brands fa-github"
+                            class="external-login-button"
+                            [disabled]="submit()"
+                            (click)="onGithubLogin()"
+                        />
+                    </div>
+                }
                 <!-- Demo Button -->
-                @if (isDemoAvailable()) {
-                    <div class="col-12">
+                @if (authOptions().isDemoModeAvailable) {
+                    <div [ngClass]="availableOptionsCounter() % 2 === 0 ? 'col-12 md:col-6' : 'col-12'">
                         <p-button
                             type="button"
                             severity="success"

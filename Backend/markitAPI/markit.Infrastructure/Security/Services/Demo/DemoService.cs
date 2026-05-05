@@ -61,7 +61,6 @@ namespace markit.Infrastructure.Security.Services.Demo
                 : "Demo not available.";            
             return new DemoStatus(
                 Available : isDemoEnabled,
-                LimitReached : false, // TODO: Represent a new future, Quota-tracking will be implemented.
                 message
             );
         }

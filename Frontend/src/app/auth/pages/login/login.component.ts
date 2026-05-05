@@ -1,15 +1,16 @@
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
-import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
+import { AuthOptions } from '../../interfaces/auth-options';
 import { AuthRequest } from '../../interfaces/auth-request';
 import { AuthService } from '../../services/auth.service';
-import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { ExternalLoginService } from '../../services/external-login.service';
 import { LoginProvider, LoginPurpose } from '../../interfaces/signin-methods';
@@ -18,8 +19,6 @@ import { PopupService } from '../../../shared/services/popup.service';
 import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
-import { firstValueFrom } from 'rxjs';
-import { DemoService } from '../../../settings/services/demo.service';
 
 @Component({
     selector: 'app-login',
@@ -38,7 +37,14 @@ import { DemoService } from '../../../settings/services/demo.service';
 })
 export class LoginComponent extends ValidatorErrorField implements OnInit {  
   protected submit = signal<boolean>(false);
-  protected isDemoAvailable = signal<boolean>(false);
+  protected authOptions = signal<AuthOptions>({
+    isDemoModeAvailable : false,
+    isGitHubAvailable: false,
+    isGoogleAvailable: false
+  });
+  protected availableOptionsCounter = computed<number>(() =>
+    Object.values(this.authOptions()).filter(Boolean).length
+  );
 
   public form : FormGroup<{
     email    : FormControl<string>,
@@ -56,7 +62,6 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     private popupService : PopupService,
     private router : Router,
     private validator : ValidatorService,
-    private demoService: DemoService,
   ) {
     super()
     this.form = this.fb.nonNullable.group({
@@ -66,7 +71,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.checkDemoStatus();
+    this.checkAuthOptions();
   }
 
   //* Events
@@ -145,11 +150,8 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     this.submit.set(state)
   }
 
-  private checkDemoStatus(): void {
-    this.demoService.getStatus()
-    .subscribe({
-      next: (status) => this.isDemoAvailable.set(status.available),
-      error: () => this.isDemoAvailable.set(false)
-    });
+  private checkAuthOptions(): void {
+    this.authService.getOptions()
+    .subscribe((options) => this.authOptions.set(options));
   }
 }

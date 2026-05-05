@@ -12,6 +12,7 @@ import { SignInMethods } from '../interfaces/signin-methods';
 import { AuthRole } from '../interfaces/auth-role.enum';
 import { CustomMessageService } from '../../shared/services/custom-message.service';
 import { ThemeService } from '../../shared/services/theme.service';
+import { AuthOptions } from '../interfaces/auth-options';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -60,6 +61,10 @@ export class AuthService {
       map(() => true),
       catchError(() => of(false))
     );
+  }
+
+  public getOptions(): Observable<AuthOptions> {
+    return this.http.get<AuthOptions>(`${ this.baseUrl }/options`);
   }
 
   public getSignInMethods(): Observable<SignInMethods> {
