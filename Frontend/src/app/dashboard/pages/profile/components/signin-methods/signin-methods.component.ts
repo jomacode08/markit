@@ -5,22 +5,23 @@ import { Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from 'primeng/api';
 
+import { AuthOptions } from '../../../../../auth/interfaces/auth-options';
 import { AuthService } from '../../../../../auth/services/auth.service';
+import { CustomMessageService } from '../../../../../shared/services/custom-message.service';
+import { ExternalLoginService } from '../../../../../auth/services/external-login.service';
 import { ExternalSignInMethod, LoginProvider, LoginPurpose, SignInMethods } from '../../../../../auth/interfaces/signin-methods';
 import { LoginProviderIconPipe } from '../../../../../shared/pipes/login-provider-icon.pipe';
-import { ExternalLoginService } from '../../../../../auth/services/external-login.service';
-import { PopupService } from '../../../../../shared/services/popup.service';
 import { POPUP_NAMES } from '../../../../../shared/utils/constant';
+import { PopupService } from '../../../../../shared/services/popup.service';
 import { RedirectResponse } from '../../../../../auth/interfaces/redirect';
-import { CustomMessageService } from '../../../../../shared/services/custom-message.service';
 
 @Component({
     selector: 'profile-signin-methods',
     imports: [
       AsyncPipe,
       ButtonModule,
-      SharedModule,
       LoginProviderIconPipe,
+      SharedModule,
     ],
     templateUrl: './signin-methods.component.html',
     styleUrl: './signin-methods.component.css',
@@ -30,10 +31,15 @@ export class SigninMethodsComponent {
   private readonly LOGIN_LINKED_SUCCESS_MESSAGE = "The account was successfully linked.";
   private readonly LOGIN_REMOVED_SUCCESS_MESSAGE = "The account was successfully removed.";
 
-  private refresTrigger$ = new Subject<void>();
+  private refreshTrigger$ = new Subject<void>();
   public signInMethods$ : Observable<SignInMethods>;
   public currentEmail : string | undefined;
   public isSubmit = signal<boolean>(false);
+  protected authAvailability = signal<AuthOptions>({
+    isDemoModeAvailable : false,
+    isGitHubAvailable: false,
+    isGoogleAvailable: false
+  });
 
   constructor(
     private authService: AuthService,
@@ -41,7 +47,8 @@ export class SigninMethodsComponent {
     private popupService: PopupService,
     private messageService: CustomMessageService,
   ) {
-    this.signInMethods$ = this.refresTrigger$.pipe(
+    this.checkAuthAvailability();
+    this.signInMethods$ = this.refreshTrigger$.pipe(
       startWith(null),
       switchMap(() => authService.getSignInMethods()),
       tap(() => this.currentEmail = this.authService.currentUser()?.email)
@@ -68,6 +75,16 @@ export class SigninMethodsComponent {
         this.setSubmit(false);
       }
     });
+  }
+
+  public isLoginProviderAvailable(provider: LoginProvider): boolean {
+    switch (provider) {
+      case LoginProvider.Google:
+        return this.authAvailability().isGoogleAvailable;
+      case LoginProvider.GitHub:
+        return this.authAvailability().isGitHubAvailable;
+      default: return false;
+    }
   }
 
   private openAuthPopUp(provider: LoginProvider): void {
@@ -114,6 +131,11 @@ export class SigninMethodsComponent {
     });
   }
 
-  private setSubmit = (state: boolean) => this.isSubmit.update(() => state);
-  private refreshSignInMethods = () => this.refresTrigger$.next();
+  private checkAuthAvailability(): void {
+    this.authService.getOptions()
+    .subscribe((options) => this.authAvailability.set(options));
+  }
+
+  private setSubmit = (state: boolean) => this.isSubmit.set(state);
+  private refreshSignInMethods = () => this.refreshTrigger$.next();
 }

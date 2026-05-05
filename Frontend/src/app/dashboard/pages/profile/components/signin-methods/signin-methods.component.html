@@ -9,15 +9,6 @@
                     <div class="font-light text-sm text-secondary">{{ currentEmail }}</div>
                 </div>
             </header>
-            <footer class="action">
-                <p-button
-                    type="button"
-                    size="small"
-                    severity="info"
-                    label="Change"
-                    [disabled]="true"
-                />
-            </footer>
         </article>
         <!-- Password -->
         <article class="card-item">
@@ -68,7 +59,7 @@
                             size="small"
                             label="Configure"
                             severity="info"
-                            [disabled]="isSubmit()"
+                            [disabled]="isSubmit() || !isLoginProviderAvailable(externalMethod.loginProvider)"
                             (click)="onConfigureLogin(externalMethod)"
                         />
                     }
