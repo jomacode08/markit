@@ -4,6 +4,7 @@ A nice place to capture your ideas, plan, document or just clarify your mind and
 
 [![Demo](https://img.shields.io/badge/⭐-Demo%20available-29903b?style=flat-square)](https://www.jomacode.com/markit/demo)
 [![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff&style=flat-square)](#)
+![Postgres](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white&style=flat-square)
 [![Angular](https://img.shields.io/badge/Angular-%23DD0031.svg?logo=angular&logoColor=white&style=flat-square)](#)
 
 <div align="center">
@@ -28,9 +29,8 @@ Markit was created to provide an intuitive, functional environment enriched with
 | Layer        | Technology     | Key Features                                                          |
 | :----------- | :------------- | :-------------------------------------------------------------------- |
 | **Frontend** | **Angular 20** | Standalone Components, Signals, PrimeNG UI, TipTap editor, CodeMirror |
-| **Backend**  | **.NET 8**     | Clean Architecture, CQRS, EF Core                                     |
-| **Database** | **SQL Server** | Relational Data Integrity                                             |
-| **Jobs**     | **Hangfire**   | Reliable Background Processing                                        |
+| **Backend**  | **.NET 9**     | Clean Architecture, CQRS, EF Core                                     |
+| **Database** | **PostgreSQL** | Relational Data Integrity, full-text search                           |
 
 ### Screenshots
 
