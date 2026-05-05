@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using Hangfire.PostgreSql;
-using markit.Application.Contracts.Authentication;
+﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
@@ -49,8 +47,7 @@ namespace markit.Infrastructure
                 .AddDataBasePersistence(configuration)
                 .AddAuthentication(configuration)
                 .AddAuthorization(configuration)
-                .AddRateLimiter(configuration)
-                .AddHangFire(configuration);
+                .AddRateLimiter(configuration);
             return services;
         }
 
@@ -185,16 +182,6 @@ namespace markit.Infrastructure
             services.AddHttpClient<GoogleApiService>();
             services.AddHttpClient<GitHubApiService>();
 
-            return services;
-        }
-
-        private static IServiceCollection AddHangFire(this IServiceCollection services, IConfiguration configuration)
-        {
-            string connString = configuration.GetConnectionString(CONN_STRING_SECTION_NAME) ?? "";
-            services.AddHangfire(config => 
-                config.UsePostgreSqlStorage(c => c.UseNpgsqlConnection(connString))
-            );
-            services.AddHangfireServer();
             return services;
         }
 

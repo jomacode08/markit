@@ -5,7 +5,6 @@ using markit.API.Middleware;
 using markit.Infrastructure.Persistence.EF;
 using Serilog;
 using System.Text.Json;
-using Hangfire;
 using markit.Application.Helpers;
 using Microsoft.AspNetCore.HttpOverrides;
 using markit.Application.Models.Settings;
@@ -71,7 +70,6 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
-app.UseHangfireDashboard();
 app.MapControllers();
 
 await app.SeedDatabase(builder.Configuration);
