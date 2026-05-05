@@ -42,7 +42,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     isGitHubAvailable: false,
     isGoogleAvailable: false
   });
-  protected availableOptionsCounter = computed<number>(() =>
+  protected availableAuthOptionsCounter = computed<number>(() =>
     Object.values(this.authOptions()).filter(Boolean).length
   );
 

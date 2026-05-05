@@ -68,63 +68,66 @@
                 </div>
             </div>
         </form>
-        <footer class="mt-4">
-            <!-- Divider -->
-            <div class="relative mb-4">
-                <div class="divider">
-                    <div class="w-full border-1"></div>
+        <!-- External login -->
+        @if (availableAuthOptionsCounter() > 0) {
+            <footer class="mt-4">
+                <!-- Divider -->
+                <div class="relative mb-4">
+                    <div class="divider">
+                        <div class="w-full border-1"></div>
+                    </div>
+                    <div class="divider-label">
+                        <span class="px-2">Or continue with</span>
+                    </div>
                 </div>
-                <div class="divider-label">
-                    <span class="px-2">Or continue with</span>
+                <div class="grid">
+                    <!-- Google Button -->
+                    @if (authOptions().isGoogleAvailable) {
+                        <div class="col-12 md:col-6">
+                            <p-button
+                                type="button"
+                                severity="info"
+                                label="Google"
+                                size="small"
+                                icon="fa-brands fa-google"
+                                class="external-login-button"
+                                [disabled]="submit()"
+                                (click)="onGoogleLogin()"
+                            />
+                        </div>
+                    }
+                    <!-- GitHub Button -->
+                    @if (authOptions().isGitHubAvailable) {
+                        <div class="col-12 md:col-6">
+                            <p-button
+                                type="button"
+                                severity="info"
+                                label="GitHub"
+                                size="small"
+                                icon="fa-brands fa-github"
+                                class="external-login-button"
+                                [disabled]="submit()"
+                                (click)="onGithubLogin()"
+                            />
+                        </div>
+                    }
+                    <!-- Demo Button -->
+                    @if (authOptions().isDemoModeAvailable) {
+                        <div [ngClass]="availableAuthOptionsCounter() % 2 === 0 ? 'col-12 md:col-6' : 'col-12'">
+                            <p-button
+                                type="button"
+                                severity="success"
+                                label="Try Demo"
+                                size="small"
+                                icon="fa-solid  fa-flask"
+                                class="external-login-button"
+                                [disabled]="submit()"
+                                (click)="onTryDemo()"
+                            />
+                        </div>
+                    }
                 </div>
-            </div>
-            <div class="grid">
-                <!-- Google Button -->
-                @if (authOptions().isGoogleAvailable) {
-                    <div class="col-12 md:col-6">
-                        <p-button
-                            type="button"
-                            severity="info"
-                            label="Google"
-                            size="small"
-                            icon="fa-brands fa-google"
-                            class="external-login-button"
-                            [disabled]="submit()"
-                            (click)="onGoogleLogin()"
-                        />
-                    </div>
-                }
-                <!-- GitHub Button -->
-                @if (authOptions().isGitHubAvailable) {
-                    <div class="col-12 md:col-6">
-                        <p-button
-                            type="button"
-                            severity="info"
-                            label="GitHub"
-                            size="small"
-                            icon="fa-brands fa-github"
-                            class="external-login-button"
-                            [disabled]="submit()"
-                            (click)="onGithubLogin()"
-                        />
-                    </div>
-                }
-                <!-- Demo Button -->
-                @if (authOptions().isDemoModeAvailable) {
-                    <div [ngClass]="availableOptionsCounter() % 2 === 0 ? 'col-12 md:col-6' : 'col-12'">
-                        <p-button
-                            type="button"
-                            severity="success"
-                            label="Try Demo"
-                            size="small"
-                            icon="fa-solid  fa-flask"
-                            class="external-login-button"
-                            [disabled]="submit()"
-                            (click)="onTryDemo()"
-                        />
-                    </div>
-                }
-            </div>
-        </footer>
+            </footer>
+        }
     </article>
 </div>
