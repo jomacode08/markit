@@ -14,7 +14,6 @@ namespace markit.Domain.Entities
         public bool? NameLess { get; set; }
 
         public virtual Collection? Collection { get; set; }
-        public virtual ICollection<Link>? Links { get; set; }
         public virtual ICollection<Block>? Blocks { get; set; }
     }
 }
