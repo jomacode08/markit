@@ -96,7 +96,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     this.setSubmit(true);
     this.authService.demo()
     .subscribe({
-        next : () => this.confirmSession(),
+        next : () => this.navigateToDashboard(),
         error : () => this.setSubmit(false)
     });
   }
@@ -105,7 +105,7 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
   private login(): void {
     this.authService.login(this.authRequest)
     .subscribe({
-        next : () => this.confirmSession(),
+        next : () => this.navigateToDashboard(),
         error : () => this.setSubmit(false)
     });
   }
@@ -135,14 +135,13 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
         const response = event.data as RedirectResponse;
         if (response.purpose != 'sign-in' || response.state === 'failure') return;
         const isAuthenticated = await firstValueFrom(this.authService.isAuthenticated());
-        if (isAuthenticated) this.confirmSession();
+        if (isAuthenticated) this.navigateToDashboard();
         this.popupService.close(POPUP_NAMES.SIGN_IN);
       }
     );
   }
 
-  private confirmSession(): void {
-    this.setSubmit(false);
+  private navigateToDashboard(): void {
     this.router.navigate(['dashboard']);
   }
 
