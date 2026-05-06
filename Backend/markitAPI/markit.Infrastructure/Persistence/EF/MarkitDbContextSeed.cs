@@ -17,8 +17,8 @@ namespace markit.Infrastructure.Persistence.EF
             UserDefaultSettings userDefaultSettings
         )
         {
-            // Aplicate any pending migration or create database for the first time.
-           await context.Database.MigrateAsync();
+            // Applicate any pending migration or create database for the first time.
+            await context.Database.MigrateAsync();
             // Validate if the database is active
             bool databaseIsActive = await context.Database.CanConnectAsync();
             if (!databaseIsActive) throw new Exception("It hasn't been posible to connect to the database");
@@ -37,19 +37,20 @@ namespace markit.Infrastructure.Persistence.EF
 
         private static async Task<int> CreateAdministrator(MarkitDbContext context, UserManager<AppUser> userManager, UserDefaultSettings userDefaultSettings)
         {
+            const string DEFAULT_ADMIN_FIRST_NAME = "Markit";
+            const string DEFAULT_ADMIN_LAST_NAME = "Admin";
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
             // Add creator
             Collection mainCollection = GetMainCollection();
             Creator creator = new()
             {
-                FirstName = userDefaultSettings.FirstName,
-                LastName = userDefaultSettings.LastName,
+                FirstName = DEFAULT_ADMIN_FIRST_NAME,
+                LastName = DEFAULT_ADMIN_LAST_NAME,
                 Collections = [mainCollection]
             };
             context.Creators.Add(creator);
             await context.SaveChangesAsync();
-
 
             // Update main collection path
             mainCollection.Path = $"{mainCollection.Id}";
@@ -60,9 +61,8 @@ namespace markit.Infrastructure.Persistence.EF
             PasswordHasher<AppUser> hasher = new();
             AppUser adminUser = new()
             {
-                Id = userDefaultSettings.Id,
                 UserName = userDefaultSettings.UserName,
-                GivenName = $"{userDefaultSettings.FirstName} {userDefaultSettings.LastName}",
+                GivenName = $"{DEFAULT_ADMIN_FIRST_NAME} {DEFAULT_ADMIN_LAST_NAME}",
                 Email = userDefaultSettings.UserName,
                 NormalizedUserName = userDefaultSettings.UserName.ToUpper(),
                 NormalizedEmail = userDefaultSettings.UserName.ToUpper(),
