@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-feedback-modal',
@@ -9,5 +8,5 @@ import { environment } from '../../../../../environments/environment';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedbackModalComponent {
-  protected readonly CONTACT_EMAIL: string = environment.contactEmail;
+  protected readonly AUTHOR_WEBSITE: string = 'https://www.jomacode.com';
 }
