@@ -1,0 +1,67 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# .NET
+bin/
+obj/
+*.db
+*.user
+*.suo
+*.csproj.user
+*.pubxml.user
+.vs/
+
+# Build outputs
+dist/
+out/
+build/
+tmp/
+out-tsc/
+bazel-out/
+
+# Logs
+Logs/
+*.log
+
+# Environment files
+appsettings.json
+appsettings.*.json
+!appsettings-template.json
+environment.ts
+environment.*.ts
+!environment.template.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+!SETUP.md
+!LICENSE.md
+
+# CI/CD
+.github/
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+
+# Tests
+**/*.spec.ts
+**/*.test.ts
+**/*.spec.js
+**/*.test.js
+__tests__/
