@@ -3,7 +3,7 @@ using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Contracts.GitHub;
 using markit.Application.Contracts.Google;
-﻿using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Contracts.Settings;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
