@@ -8,7 +8,7 @@ A nice place to capture your ideas, plan, document or just clarify your mind and
 [![Angular](https://img.shields.io/badge/Angular-%23DD0031.svg?logo=angular&logoColor=white&style=flat-square)](#)
 
 <div align="center">
-    <img width="700" alt="markit_shot" src=".github/assets/markit_shot.png" />
+    <img width="700" alt="markit_shot" src=".github/assets/markit_shot.webp" />
 </div>
 
 ## 🌟Highlights
@@ -35,10 +35,10 @@ Markit was created to provide an intuitive, functional environment enriched with
 ### Screenshots
 
 <div align="center">
-    <img width="392" alt="mark_viewer_shot_dark" src=".github/assets/mark_viewer_shot_dark.png" />
-    <img width="392" alt="gist_shot_dark" src=".github/assets/gist_shot_dark.png" />
-    <img width="392" alt="dashboard_shot_dark" src=".github/assets/dashboard_shot_dark.png" />
-    <img width="392" alt="explorer_shot_dark" src=".github/assets/explorer_shot_dark.png" />
+    <img width="392" alt="mark_viewer_shot_dark" src=".github/assets/mark_viewer_shot_dark.webp" />
+    <img width="392" alt="gist_shot_dark" src=".github/assets/gist_shot_dark.webp" />
+    <img width="392" alt="dashboard_shot_dark" src=".github/assets/dashboard_shot_dark.webp" />
+    <img width="392" alt="explorer_shot_dark" src=".github/assets/explorer_shot_dark.webp" />
 </div>
 
 ## 🎯 Quick start
