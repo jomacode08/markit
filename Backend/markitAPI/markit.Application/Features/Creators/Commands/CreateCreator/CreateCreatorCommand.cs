@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
-using markit.Application.Helpers;
 using markit.Domain.Entities;
 using MediatR;
 using System.Transactions;
+using static markit.Application.Helpers.GeneralConstant.Marks;
 
 namespace markit.Application.Features.Creators.Commands.CreateCreator
 {
@@ -34,28 +33,31 @@ namespace markit.Application.Features.Creators.Commands.CreateCreator
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             
             Creator creator = _mapper.Map<Creator>(request);
-            await AddCreator(creator);
-            await AddMainCollection(creator.Id);
+            Collection main = ConstructMainCollection();
+            await AddCreator(creator, main);
+            await UpdateCollectionPath(main);
 
             scope.Complete();
             return creator.Id;
         }
 
-        private async Task<Creator> AddCreator(Creator creator)
+        private async Task UpdateCollectionPath(Collection main)
         {
+            main.Path = $"/{main.Id}";
+            await _unitOfWork.CollectionRepository.UpdateAsync(main);
+        }
+
+        private async Task<Creator> AddCreator(Creator creator, Collection mainCollection)
+        {
+            creator.Collections = [mainCollection];
             return await _unitOfWork.CreatorRepository.AddAsync(creator);
         }
 
-        private async Task AddMainCollection(int creatorId)
+        private static Collection ConstructMainCollection() => new()
         {
-            CreateCollectionCommand createCollectionCommand = new()
-            {
-                Name = GeneralConstant.Marks.MAIN_COLLECTION_NAME,
-                IsMain = true,
-                CreatorId = creatorId
-            };
-
-            await _mediator.Send(createCollectionCommand);
-        }
+            Name = MAIN_COLLECTION_NAME,
+            PathNames = $"/{MAIN_COLLECTION_NAME}",
+            IsMain = true,
+        };
     }
 }
