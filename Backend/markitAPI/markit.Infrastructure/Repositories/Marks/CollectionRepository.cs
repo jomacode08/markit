@@ -102,20 +102,6 @@ namespace markit.Infrastructure.Repositories.Marks
 				.CountAsync();
 		}
 
-        public async Task<Collection> UpdateSyncModelAsync(int collectionId, string documentId)
-		{
-			var collection = await context.Collections
-				.IgnoreQueryFilters()
-				.FirstOrDefaultAsync(c => c.Id.Equals(collectionId))
-				?? throw new NotFoundException("Collection", collectionId);
-
-			collection.DocumentId = documentId;
-			collection.LastSync = DateTime.UtcNow;
-
-			await UpdateAsync(collection);
-			return collection;
-		}
-
         private static Expression<Func<Collection, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)
 		{
             if (sortOrder.Equals(SortPaginationOrder.Ascending))

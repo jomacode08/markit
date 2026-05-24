@@ -1,4 +1,5 @@
 ﻿using markit.Application.Models.Authentication.Enums;
+using markit.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,5 +19,7 @@ namespace markit.Application.Models.Authentication.AppUser
 
         [Required]
         public DateTime CreatedDate { get; set; }
+
+        public virtual ICollection<Collection>? Collections {  get; set; }
     }
 }
