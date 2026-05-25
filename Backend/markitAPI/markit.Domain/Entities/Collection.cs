@@ -8,7 +8,7 @@ namespace markit.Domain.Entities
         [Required, MaxLength(255)] public string Name { get; set; } = string.Empty;
         [Required] public bool IsMain { get; set; }
         [Required] public string UserId { get; set; } = string.Empty;
-        [Required] public int CreatorId { get; set; }
+        public int? CreatorId { get; set; }
         [Required] public string PathNames {  get; set; } = string.Empty;
         public bool IsFavorite { get; set; }
         public int? ParentId { get; set; }
