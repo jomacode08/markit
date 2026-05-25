@@ -4,8 +4,7 @@ namespace markit.Application.Features.Accounts.Commands.CreateAccount
 {
     public class AccountRequest
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string[] Roles { get; set; } = [];
         public bool Enabled { get; set; } = false;

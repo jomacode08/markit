@@ -5,7 +5,6 @@ namespace markit.Application.Models.Authentication.AppUser
     public class CreateAppUserRequest(
         string email,
         string name,
-        int creatorId,
         AccessType accessType,
         string[] roles,
         string? password,
@@ -15,7 +14,6 @@ namespace markit.Application.Models.Authentication.AppUser
     {
         private string _Email => email;
         public string Name => name;
-        public int CreatorId => creatorId;
         public string? Password => password;
         public string? Picture => picture;
         public AccessType AccessType => accessType;

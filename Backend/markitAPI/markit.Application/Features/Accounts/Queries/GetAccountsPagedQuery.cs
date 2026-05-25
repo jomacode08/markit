@@ -12,16 +12,16 @@ namespace markit.Application.Features.Accounts.Queries
 
     public class GetAccountsPagedQueryHandler : IRequestHandler<GetAccountsPagedQuery, AppUserPaginationDto>
     {
-        private readonly IAppUserService _appUserservice;
+        private readonly IAppUserService _appUserService;
 
-        public GetAccountsPagedQueryHandler(IAppUserService appUserservice)
+        public GetAccountsPagedQueryHandler(IAppUserService appUserService)
         {
-            _appUserservice = appUserservice;
+            _appUserService = appUserService;
         }
 
         public Task<AppUserPaginationDto> Handle(GetAccountsPagedQuery request, CancellationToken cancellationToken)
         {
-            return _appUserservice.GetPagedAsync(
+            return _appUserService.GetPagedAsync(
                 page: request.PageIndex,
                 pageSize: request.PageSize
             );

@@ -2,7 +2,6 @@
 using markit.Application.Exceptions;
 using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
-using markit.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,12 +14,10 @@ namespace markit.Application.Features.Accounts.Queries.GetAccountByUserId
 
     public class GetAccountByUserIdQueryHandler : IRequestHandler<GetAccountByUserIdQuery, AccountVm>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
 
-        public GetAccountByUserIdQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+        public GetAccountByUserIdQueryHandler(UserManager<AppUser> userManager)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
 
@@ -28,20 +25,13 @@ namespace markit.Application.Features.Accounts.Queries.GetAccountByUserId
         {
             AppUser user = await GetUser(request.UserId);
 
-            if (user.CreatorId is null) 
-                throw new CustomValidationException($"The user with id: { request.UserId } must have a creator configured.");
             if (user.UserName is null)
                 throw new CustomValidationException($"The user with id: { request.UserId } must have a userName configured.");
-
-            int creatorId = user.CreatorId.Value;
-            Creator creator = await GetCreator(creatorId);
 
             return new AccountVm()
             {
                 UserId = user.Id,
-                CreatorId = creatorId,
-                FirstName = creator.FirstName,
-                LastName = creator.LastName,
+                Name = user.UserName,
                 UserName = user.UserName,
                 Enabled = user.Enabled,
                 Roles = await GetUserRoles(user),
@@ -57,12 +47,6 @@ namespace markit.Application.Features.Accounts.Queries.GetAccountByUserId
         private async Task<string[]> GetUserRoles(AppUser user)
         {
             return [..await _userManager.GetRolesAsync(user)];
-        }
-
-        private async Task<Creator> GetCreator(int creatorId)
-        {
-            return await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-                ?? throw new NotFoundException("Creators", creatorId);
         }
     }
 }

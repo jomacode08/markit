@@ -48,8 +48,7 @@ namespace markit.API.Controllers.Security
         {
             CreateAccountCommand command = new()
             {
-                FirstName = dto.Account.FirstName,
-                LastName = dto.Account.LastName,
+                Name = dto.Account.Name,
                 UserName = dto.Account.UserName,
                 Roles = dto.Account.Roles,
                 Password = dto.Password.NewPassword,

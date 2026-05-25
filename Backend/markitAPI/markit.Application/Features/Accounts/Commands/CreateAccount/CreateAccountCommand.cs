@@ -1,17 +1,14 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Features.Accounts.Queries.ViewModels;
-using markit.Application.Features.Creators.Commands.CreateCreator;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using MediatR;
-using System.Transactions;
 
 namespace markit.Application.Features.Account.Commands.CreateAccount
 {
     public class CreateAccountCommand : IRequest<AccountVm>
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public AccessType AccessType { get; set; }
         public string[] Roles { get; set; } = [];
@@ -23,50 +20,32 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, AccountVm>
     {
         private readonly IAppUserService _appUserService;
-        private readonly IMediator _mediator;
 
-        public CreateAccountCommandHandler(IAppUserService appUserService, IMediator mediator)
+        public CreateAccountCommandHandler(IAppUserService appUserService)
         {
             _appUserService = appUserService;
-            _mediator = mediator;
         }
 
         public async Task<AccountVm> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
-            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                int creatorId = await CreateCreator(request.FirstName, request.LastName);
-                CreateAppUserRequest userRequest = ConstructAppUserRequest(request, creatorId);
-                AppUser user = await _appUserService.CreateAsync(userRequest);
-            scope.Complete();
+            CreateAppUserRequest userRequest = ConstructAppUserRequest(request);
+            AppUser user = await _appUserService.CreateAsync(userRequest);
 
             return new AccountVm()
             {
                 UserId = user.Id,
-                CreatorId = creatorId,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                UserName = request.UserName,
-                Roles = request.Roles,
-                Enabled = user.Enabled
+                Name = user.GivenName,
+                Enabled = user.Enabled,
+                UserName = request.Name,
+                Roles = request.Roles
             };
         }
 
-        private async Task<int> CreateCreator(string firstName, string lastName)
-        {
-            CreateCreatorCommand command = new()
-            {
-                FirstName = firstName,
-                LastName = lastName,
-            };
-            return await _mediator.Send(command);
-        }
-
-        private static CreateAppUserRequest ConstructAppUserRequest(CreateAccountCommand request, int creatorId)
+        private static CreateAppUserRequest ConstructAppUserRequest(CreateAccountCommand request)
         {
             return new CreateAppUserRequest(
                 email: request.UserName,
-                name: $"{request.FirstName} {request.LastName}",
-                creatorId: creatorId,
+                name: request.Name,
                 accessType: request.AccessType,
                 roles: request.Roles,
                 password: request.Password,

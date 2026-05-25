@@ -1,7 +1,9 @@
 ﻿using markit.Application.Contracts.Authentication;
+using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
+using markit.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
@@ -12,10 +14,12 @@ namespace markit.Infrastructure.Security.Services
     public class AppUserService : IAppUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AppUserService(UserManager<AppUser> userManager)
+        public AppUserService(UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public AppUser GetByCreatorId(int creatorId)
@@ -36,7 +40,6 @@ namespace markit.Infrastructure.Security.Services
                 .Select(u => new AppUserSummary
                 {
                     Id = u.Id,
-                    CreatorId = u.CreatorId,
                     UserName = u.UserName ?? "",
                     AccessType = u.AccessType,
                     CreatedDate = u.CreatedDate,
@@ -62,15 +65,20 @@ namespace markit.Infrastructure.Security.Services
                 throw new CustomValidationException("The user must have a password.");
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                // User creation
-                AppUser identityUser = ConstructAppUser(request);
-                IdentityResult registrationResult = identityUser.AccessType == AccessType.External
-                    ? await _userManager.CreateAsync(identityUser)
-                    : await _userManager.CreateAsync(identityUser, request.Password!);
-                HandleIdentityResult(registrationResult);
-                // UserRoles creation
-                IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
-                HandleIdentityResult(rolesResult);
+
+            // User creation
+            Collection mainCollection = ConstructMainCollection();
+            AppUser identityUser = ConstructAppUser(request, mainCollection);
+            IdentityResult registrationResult = identityUser.AccessType == AccessType.External
+                ? await _userManager.CreateAsync(identityUser)
+                : await _userManager.CreateAsync(identityUser, request.Password!);
+            HandleIdentityResult(registrationResult);
+            // Assign user to roles
+            IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
+            HandleIdentityResult(rolesResult);
+            // Update main collection path
+            await UpdateMainCollectionPathAsync(mainCollection);
+
             scope.Complete();
             return identityUser;
         }
@@ -106,11 +114,10 @@ namespace markit.Infrastructure.Security.Services
             return userRoles.All(r => Role.All.Contains(r));
         }
 
-        private static AppUser ConstructAppUser(CreateAppUserRequest request)
+        private static AppUser ConstructAppUser(CreateAppUserRequest request, Collection mainCollection)
         {
             return new AppUser()
             {
-                CreatorId = request.CreatorId,
                 GivenName = request.Name,
                 Email = request.Email,
                 UserName = request.Email,
@@ -118,9 +125,17 @@ namespace markit.Infrastructure.Security.Services
                 AccessType = request.AccessType,
                 CreatedDate = DateTime.UtcNow,
                 EmailConfirmed = request.AccessType == AccessType.External,
-                Enabled = request.Enabled
+                Enabled = request.Enabled,
+                Collections = [mainCollection]
             };
         }
+
+        private static Collection ConstructMainCollection() => new()
+        {
+            Name = Marks.MAIN_COLLECTION_NAME,
+            PathNames = $"/{Marks.MAIN_COLLECTION_NAME}",
+            IsMain = true
+        };
 
         private static void HandleIdentityResult(IdentityResult result)
         {
@@ -167,6 +182,12 @@ namespace markit.Infrastructure.Security.Services
                 IdentityResult result = await _userManager.AddToRolesAsync(user, rolesToAdd);
                 HandleIdentityResult(result);
             }
+        }
+
+        private async Task UpdateMainCollectionPathAsync(Collection mainCollection)
+        {
+            mainCollection.Path = $"{mainCollection.Id}";
+            await _unitOfWork.CollectionRepository.UpdateAsync(mainCollection);
         }
         #endregion
     }

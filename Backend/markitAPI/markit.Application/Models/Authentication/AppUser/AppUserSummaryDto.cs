@@ -28,7 +28,6 @@ namespace markit.Application.Models.Authentication.AppUser
     public class AppUserSummary
     {
         public string Id { get; set; } = string.Empty;
-        public int? CreatorId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public AccessType AccessType { get; set; }
         public DateTime CreatedDate { get; set; }
