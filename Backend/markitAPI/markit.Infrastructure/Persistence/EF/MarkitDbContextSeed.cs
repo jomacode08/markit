@@ -26,72 +26,61 @@ namespace markit.Infrastructure.Persistence.EF
             if (!await IsAdminConfigurated(context, userManager))
             {
                 await CreateAdministrator(context, userManager, userDefaultSettings);
-            } 
+            }
         }
 
         private static async Task<bool> IsAdminConfigurated(MarkitDbContext context, UserManager<AppUser> userManager)
         {
             var admins = await userManager.GetUsersInRoleAsync(Role.ADMIN_NAME);
             return admins.Any();
-        } 
+        }
 
-        private static async Task<int> CreateAdministrator(MarkitDbContext context, UserManager<AppUser> userManager, UserDefaultSettings userDefaultSettings)
+        private static async Task<string> CreateAdministrator(MarkitDbContext context, UserManager<AppUser> userManager, UserDefaultSettings userDefaultSettings)
         {
-            const string DEFAULT_ADMIN_FIRST_NAME = "Markit";
-            const string DEFAULT_ADMIN_LAST_NAME = "Admin";
+            Collection mainCollection = ConstructMainCollection();
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
-            // Add creator
-            Collection mainCollection = GetMainCollection();
-            Creator creator = new()
-            {
-                FirstName = DEFAULT_ADMIN_FIRST_NAME,
-                LastName = DEFAULT_ADMIN_LAST_NAME,
-                Collections = [mainCollection]
-            };
-            context.Creators.Add(creator);
-            await context.SaveChangesAsync();
+            // Create administrator user
+            PasswordHasher<AppUser> hasher = new();
+            AppUser admin = ConstructAdministrator(userDefaultSettings, mainCollection);
+            string passwordHashed = hasher.HashPassword(admin, userDefaultSettings.Password);
+            admin.PasswordHash = passwordHashed;
+            await userManager.CreateAsync(admin);
+            await userManager.AddToRoleAsync(admin, Role.ADMIN_NAME);
 
             // Update main collection path
             mainCollection.Path = $"{mainCollection.Id}";
             context.Collections.Update(mainCollection);
             await context.SaveChangesAsync();
 
-            // Add app user
-            PasswordHasher<AppUser> hasher = new();
-            AppUser adminUser = new()
-            {
-                UserName = userDefaultSettings.UserName,
-                GivenName = $"{DEFAULT_ADMIN_FIRST_NAME} {DEFAULT_ADMIN_LAST_NAME}",
-                Email = userDefaultSettings.UserName,
-                NormalizedUserName = userDefaultSettings.UserName.ToUpper(),
-                NormalizedEmail = userDefaultSettings.UserName.ToUpper(),
-                PhoneNumber = "0000000000",
-                PhoneNumberConfirmed = true,
-                EmailConfirmed = true,
-                TwoFactorEnabled = false,
-                LockoutEnabled = false,
-                Enabled = true,
-                AccessFailedCount = 0,
-                AccessType = AccessType.Internal,
-                CreatedDate = DateTime.UtcNow,
-                CreatorId = creator.Id,
-            };
-
-            string passwordHashed = hasher.HashPassword(adminUser, userDefaultSettings.Password);
-            adminUser.PasswordHash = passwordHashed;
-            await userManager.CreateAsync(adminUser);
-            await userManager.AddToRoleAsync(adminUser, Role.ADMIN_NAME);
-
             scope.Complete();
-            return creator.Id;
+            return admin.Id;
         }
 
-        private static Collection GetMainCollection() => new()
+        private static Collection ConstructMainCollection() => new()
         {
             Name = Marks.MAIN_COLLECTION_NAME,
             PathNames = $"/{Marks.MAIN_COLLECTION_NAME}",
             IsMain = true
+        };
+
+        private static AppUser ConstructAdministrator(UserDefaultSettings settings, Collection mainCollection) => new()
+        {
+            UserName = settings.UserName,
+            Email = settings.UserName,
+            NormalizedUserName = settings.UserName.ToUpper(),
+            NormalizedEmail = settings.UserName.ToUpper(),
+            GivenName = "Markit admin",
+            PhoneNumber = "0000000000",
+            PhoneNumberConfirmed = true,
+            EmailConfirmed = true,
+            TwoFactorEnabled = false,
+            LockoutEnabled = false,
+            Enabled = true,
+            AccessFailedCount = 0,
+            AccessType = AccessType.Internal,
+            CreatedDate = DateTime.UtcNow,
+            Collections = [mainCollection]
         };
     }
 }
