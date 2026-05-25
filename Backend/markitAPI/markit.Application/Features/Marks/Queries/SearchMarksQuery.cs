@@ -7,15 +7,15 @@ namespace markit.Application.Features.Marks.Queries
     public class SearchMarksQuery : IRequest<IReadOnlyList<MarkSearchResult>>
     {
         public string SearchTerm { get; }
-        public int CreatorId { get; }
+        public string UserId { get; }
 
-        public SearchMarksQuery(string searchTerm, int creatorId)
+        public SearchMarksQuery(string searchTerm, string userId)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentException("Search term cannot be empty", nameof(searchTerm));
             
             SearchTerm = searchTerm;
-            CreatorId = creatorId;
+            UserId = userId;
         }
     }
 
@@ -32,13 +32,13 @@ namespace markit.Application.Features.Marks.Queries
         {
             List<MarkSearchResult> results = await SearchMarksByContentAsync(
                 searchTerm: request.SearchTerm,
-                creatorId: request.CreatorId,
+                userId: request.UserId,
                 cancellationToken
             );
 
             IEnumerable<MarkSearchResult> marksByName = await SearchMarksByNameAsync(
                 searchTerm: request.SearchTerm,
-                creatorId: request.CreatorId,
+                userId: request.UserId,
                 cancellationToken
             );
 
@@ -56,11 +56,11 @@ namespace markit.Application.Features.Marks.Queries
 
         private async Task<List<MarkSearchResult>> SearchMarksByContentAsync(
             string searchTerm,
-            int creatorId,
+            string userId,
             CancellationToken cancellationToken
         ) 
         {
-            IEnumerable<BlockSearchResult> blocks = await _unitOfWork.BlockRepository.SearchAsync(searchTerm, creatorId, cancellationToken);
+            IEnumerable<BlockSearchResult> blocks = await _unitOfWork.BlockRepository.SearchAsync(searchTerm, userId, cancellationToken);
             var blockDictionary = blocks.GroupBy(b => b.MarkId).ToDictionary(g => g.Key);
             List<MarkSearchResult> marks = [];
 
@@ -81,11 +81,11 @@ namespace markit.Application.Features.Marks.Queries
 
         private async Task<IEnumerable<MarkSearchResult>> SearchMarksByNameAsync(
             string searchTerm,
-            int creatorId,
+            string userId,
             CancellationToken cancellationToken
         )
         {
-            return await _unitOfWork.MarkRepository.SearchAsync(searchTerm, creatorId, cancellationToken);
+            return await _unitOfWork.MarkRepository.SearchAsync(searchTerm, userId, cancellationToken);
         }
     }
 }

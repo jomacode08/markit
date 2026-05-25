@@ -23,7 +23,7 @@ namespace markit.API.Controllers.Operation
         [HttpGet]
         public async Task<ActionResult<DashboardReportVm>> GetReportByCurrentSession()
         {
-            DashboardReportQuery query = new(creatorId: _sessionService.GetCreatorId());
+            DashboardReportQuery query = new(userId: _sessionService.GetUserId());
             return Ok(await _mediator.Send(query));
         }
     }

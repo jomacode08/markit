@@ -23,7 +23,7 @@ namespace markit.API.Controllers.Operation
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<BlockViewModel>> UpdateContent(int id, [FromBody] PatchBlockDto dto)
         {
-            dto.CreatorId = _sessionService.GetCreatorId();
+            dto.UserId = _sessionService.GetUserId();
             PatchBlockContentCommand command = new(id, dto);
             BlockViewModel updatedBlock = await _mediator.Send(command);
             return Ok(updatedBlock);

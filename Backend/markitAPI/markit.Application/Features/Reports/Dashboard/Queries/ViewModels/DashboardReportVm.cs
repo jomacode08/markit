@@ -4,7 +4,7 @@ using markit.Application.Features.Marks.Queries.ViewModels;
 namespace markit.Application.Features.Reports.Dashboard.Queries.ViewModels
 {
     public record DashboardReportVm(
-        int CreatorId,
+        string UserId,
         DateTime CreatedAt,
         List<MarkViewModel> RecentMarks,
         List<CollectionViewModel> StarredCollections,

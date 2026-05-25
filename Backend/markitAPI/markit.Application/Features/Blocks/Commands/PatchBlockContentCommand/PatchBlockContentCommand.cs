@@ -13,7 +13,7 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
     {
         public int Id { get; set; } = id;
         public string Content { get; set; } = dto.Content;
-        public int CreatorId { get; set; } = dto.CreatorId;
+        public string UserId { get; set; } = dto.UserId;
     }
 
     public class PatchBlockCommandHandler : IRequestHandler<PatchBlockContentCommand, BlockViewModel>
@@ -29,7 +29,7 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
 
         public async Task<BlockViewModel> Handle(PatchBlockContentCommand request, CancellationToken cancellationToken)
         {
-            Block block = await ValidateBlock(request.Id, request.CreatorId);
+            Block block = await ValidateBlock(request.Id, request.UserId);
 
             block.Content = request.Content;
             await _unitOfWork.BlockRepository.UpdateAsync(block);
@@ -37,13 +37,11 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
             return _mapper.Map<BlockViewModel>(block);
         }
 
-        private async Task<Block> ValidateBlock(int blockId, int creatorId)
+        private async Task<Block> ValidateBlock(int blockId, string userId)
         {
-            var block = await _unitOfWork.BlockRepository.GetByIdAsync(blockId)
+            Block block = await _unitOfWork.BlockRepository.GetByIdAsync(blockId, "Mark")
                 ?? throw new NotFoundException("Block", blockId);
-            var mark = await _unitOfWork.MarkRepository.GetByIdAsync(block.MarkId, "Collection")
-                ?? throw new NotFoundException("Mark", block.MarkId);
-            mark.ValidateCreator(creatorId);
+            block.Mark?.ValidateUser(userId);
             return block;
         }
     }

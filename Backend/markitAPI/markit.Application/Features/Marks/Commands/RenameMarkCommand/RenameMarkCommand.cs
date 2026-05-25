@@ -14,7 +14,7 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
         public int Id { get; set; } = id;
         public string Name { get; set; } = dto.Name;
         public string? Emoji { get; set; } = dto.Emoji;
-        public int CreatorId { get; set; } = dto.CreatorId;
+        public string UserId { get; set; } = dto.UserId;
     }
 
     public class RenameMarkCommandHandler : IRequestHandler<RenameMarkCommand, MarkViewModel>
@@ -33,8 +33,7 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
 
         public async Task<MarkViewModel> Handle(RenameMarkCommand request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistency(request.CreatorId);
-            var mark = await ValidateMarkExistency(request.Id, request.CreatorId);
+            var mark = await ValidateMark(request.Id, request.UserId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 mark.Name = request.Name;
@@ -46,16 +45,11 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
             return markViewModel;
         }
 
-        private async Task ValidateCreatorExistency(int creatorId) {
-            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-                ?? throw new NotFoundException("Creator", creatorId);
-        }
-
-        private async Task<Mark> ValidateMarkExistency(int markId, int creatorId)
+        private async Task<Mark> ValidateMark(int markId, string userId)
         {
             Mark? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
-            mark.ValidateCreator(creatorId);
+            mark.ValidateUser(userId);
             return mark;
         }
 

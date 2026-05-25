@@ -65,27 +65,27 @@ namespace markit.Application.Common.Helpers
                 ?? throw new InvalidOperationException();
         }
 
-        public static void ValidateCreator(this Collection collection, int creatorId)
+        public static void ValidateUser(this Collection collection, string userId)
         {
-            if (collection.CreatorId != creatorId)
+            if (collection.UserId != userId)
             {
                 throw new ForbiddenResourceException(
                     resource: "Collection",
                     resourceId: collection.Id,
-                    creatorId
+                    userId
                 );
             }
         }
 
-        public static void ValidateCreator(this Mark mark, int creatorId)
+        public static void ValidateUser(this Mark mark, string userId)
         {
             ArgumentNullException.ThrowIfNull(mark.Collection, nameof(mark.Collection));
-            if (mark.Collection.CreatorId != creatorId)
+            if (mark.Collection.UserId != userId)
             {
                 throw new ForbiddenResourceException(
                     resource: "Mark",
                     resourceId: mark.Id,
-                    creatorId
+                    userId
                 );
             }
         }

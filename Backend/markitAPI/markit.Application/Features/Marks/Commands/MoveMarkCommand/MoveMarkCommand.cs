@@ -6,11 +6,11 @@ using MediatR;
 
 namespace markit.Application.Features.Marks.Commands.MoveMarkCommand
 {
-    public class MoveMarkCommand(int markId, int collectionId, int creatorId) : IRequest<Unit>
+    public class MoveMarkCommand(int markId, int collectionId, string userId) : IRequest<Unit>
     {
         public int MarkId { get; init; } = markId;
         public int CollectionId { get; init; } = collectionId;
-        public int CreatorId { get; init; } = creatorId;
+        public string UserId { get; init; } = userId;
     }
 
     public class MoveMarkCommandHandler : IRequestHandler<MoveMarkCommand, Unit>
@@ -28,8 +28,8 @@ namespace markit.Application.Features.Marks.Commands.MoveMarkCommand
             Collection sourceCollection = await GetCollectionAsync(mark.CollectionId);
             Collection destinyCollection = await GetCollectionAsync(request.CollectionId);
             
-            if (sourceCollection.CreatorId != request.CreatorId) throw new ForbiddenResourceException("Marks", mark.Id, request.CreatorId);
-            if (destinyCollection.CreatorId != request.CreatorId) throw new ForbiddenResourceException("Collections", destinyCollection.Id, request.CreatorId);
+            if (sourceCollection.UserId != request.UserId) throw new ForbiddenResourceException("Marks", mark.Id, request.UserId);
+            if (destinyCollection.UserId != request.UserId) throw new ForbiddenResourceException("Collections", destinyCollection.Id, request.UserId);
             if (mark.CollectionId.Equals(request.CollectionId)) return Unit.Value;
 
             await MoveMarkAsync(mark, newCollectionId: destinyCollection.Id);

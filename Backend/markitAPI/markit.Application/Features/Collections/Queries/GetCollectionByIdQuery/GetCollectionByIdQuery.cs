@@ -9,10 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 {
-    public class GetCollectionByIdQuery(int id, int creatorId) : IRequest<CollectionViewModel>
+    public class GetCollectionByIdQuery(int id, string userId) : IRequest<CollectionViewModel>
     {
         public int CollectionId { get; set; } = id;
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
     }
 
     public class GetCollectionItemsQueryHandler : IRequestHandler<GetCollectionByIdQuery, CollectionViewModel>
@@ -34,24 +34,16 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionByIdQuery
 
         public async Task<CollectionViewModel> Handle(GetCollectionByIdQuery request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistence(request.CreatorId);
-            var collection = await ValidateCollection(request.CollectionId, request.CreatorId);
-
+            Collection collection = await ValidateCollection(request.CollectionId, request.UserId);
             return MapCollection(collection);
         }
 
-        private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
+        private async Task<Collection> ValidateCollection(int collectionId, string userId)
         {
             var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-            collection.ValidateCreator(creatorId);
+            collection.ValidateUser(userId);
             return collection;
-        }
-
-        private async Task ValidateCreatorExistence(int creatorId)
-        {
-            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-                ?? throw new NotFoundException("Creator", creatorId);
         }
 
         private CollectionViewModel MapCollection(Collection collection)

@@ -3,14 +3,13 @@ using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Domain.Entities;
 using MediatR;
-using System.Transactions;
 
 namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 {
-    public class SoftDeleteMarkCommand(int id, int creatorId) : IRequest<bool>
+    public class SoftDeleteMarkCommand(int id, string userId) : IRequest<bool>
     {
         public int Id { get; set; } = id;
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
     }
 
     public class SoftDeleteMarkCommandHandler : IRequestHandler<SoftDeleteMarkCommand, bool>
@@ -26,18 +25,18 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 
         public async Task<bool> Handle(SoftDeleteMarkCommand request, CancellationToken cancellationToken)
         {
-            Mark mark = await ValidateMarkExistence(request.Id, request.CreatorId);
+            Mark mark = await ValidateMarkExistence(request.Id, request.UserId);
             SoftDeleteMark(mark);
             await SoftDeleteBlocks(mark.Id);
             await _unitOfWork.Complete();
             return true;
         }
 
-        private async Task<Mark> ValidateMarkExistence(int markId, int creatorId)
+        private async Task<Mark> ValidateMarkExistence(int markId, string userId)
         {
             Mark mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
-            mark.ValidateCreator(creatorId);
+            mark.ValidateUser(userId);
             return mark;
         }
 

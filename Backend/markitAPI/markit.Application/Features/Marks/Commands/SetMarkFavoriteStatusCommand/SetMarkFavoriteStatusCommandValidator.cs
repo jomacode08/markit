@@ -6,7 +6,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
     {
         public SetMarkFavoriteStatusCommandValidator() { 
             RuleFor(x => x.Id).NotEmpty();
-            RuleFor(x => x.CreatorId).NotEmpty();
+            RuleFor(x => x.UserId).NotEmpty();
             RuleFor(x => x.IsFavorite).NotNull();
         }
     }

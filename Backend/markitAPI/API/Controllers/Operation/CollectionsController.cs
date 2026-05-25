@@ -34,7 +34,7 @@ namespace markit.API.Controllers.Operation
         {
             GetCollectionByIdQuery collectionQuery = new(
                 id,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
             CollectionViewModel collection = await _mediator.Send(collectionQuery);
             return Ok(collection);
@@ -44,7 +44,7 @@ namespace markit.API.Controllers.Operation
         [Route("main")]
         public async Task<ActionResult<CollectionViewModel>> GetMainCollectionByCurrentSession()
         {
-            GetMainCollectionByCreatorQuery collectionQuery = new(creatorId : _sessionService.GetCreatorId());
+            GetMainCollectionByUserQuery collectionQuery = new(userId : _sessionService.GetUserId());
             CollectionViewModel collection = await _mediator.Send(collectionQuery);
             return Ok(collection);
         }
@@ -53,7 +53,7 @@ namespace markit.API.Controllers.Operation
         [Route("tree")]
         public async Task<ActionResult<TreeNode>> GetTree()
         {
-            GetCollectionTreeQuery query = new(creatorId: _sessionService.GetCreatorId());
+            GetCollectionTreeQuery query = new(userId: _sessionService.GetUserId());
             TreeNode root = await _mediator.Send(query);
             return Ok(root);
         }
@@ -64,7 +64,7 @@ namespace markit.API.Controllers.Operation
         {
             GetCollectionItemsPagedQuery query = new(
                 dto,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
             CollectionItemPage page = await _mediator.Send(query);
             return Ok(page);
@@ -78,7 +78,7 @@ namespace markit.API.Controllers.Operation
             MoveCollectionCommand command = new(
                 collectionId: id,
                 parentId: dto.ParentId,
-                creatorId: _sessionService.GetCreatorId()    
+                userId: _sessionService.GetUserId()    
             );
             await _mediator.Send(command);
             return NoContent();
@@ -87,7 +87,7 @@ namespace markit.API.Controllers.Operation
         [HttpPost]
         public async Task<ActionResult<CollectionViewModel>> Create([FromBody] CreateCollectionCommand command)
         {
-            command.CreatorId = _sessionService.GetCreatorId();
+            command.UserId = _sessionService.GetUserId();
             CollectionViewModel collection = await _mediator.Send(command);
             return Ok(collection);
         }
@@ -95,7 +95,7 @@ namespace markit.API.Controllers.Operation
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<CollectionViewModel>> Rename([FromRoute]int id, [FromBody] UpdateCollectionDto dto)
         {
-            dto.CreatorId = _sessionService.GetCreatorId();
+            dto.UserId = _sessionService.GetUserId();
             UpdateCollectionCommand command = new(id, dto);
             CollectionViewModel updatedCollection = await _mediator.Send(command);
             return Ok(updatedCollection);
@@ -107,7 +107,7 @@ namespace markit.API.Controllers.Operation
         {
             SetCollectionFavoriteStatusCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId(),
+                userId: _sessionService.GetUserId(),
                 isFavorite: true
             );
             await _mediator.Send(command);
@@ -120,7 +120,7 @@ namespace markit.API.Controllers.Operation
         {
             SetCollectionFavoriteStatusCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId(),
+                userId: _sessionService.GetUserId(),
                 isFavorite: false
             );
             await _mediator.Send(command);
@@ -132,7 +132,7 @@ namespace markit.API.Controllers.Operation
         {
             SoftDeleteCollectionCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
             await _mediator.Send(command);
             return NoContent();

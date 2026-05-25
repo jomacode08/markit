@@ -6,10 +6,10 @@ using MediatR;
 
 namespace markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand
 {
-    public class SetCollectionFavoriteStatusCommand(int id, int creatorId, bool isFavorite) : IRequest<bool>
+    public class SetCollectionFavoriteStatusCommand(int id, string userId, bool isFavorite) : IRequest<bool>
     {
         public int Id { get; set; } = id;
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
         public bool IsFavorite { get; set; } = isFavorite;
     }
 
@@ -24,7 +24,7 @@ namespace markit.Application.Features.Collections.Commands.SetCollectionFavorite
 
         public async Task<bool> Handle(SetCollectionFavoriteStatusCommand request, CancellationToken cancellationToken)
         {
-            var collection = await ValidateCollection(request.Id, request.CreatorId);
+            var collection = await ValidateCollection(request.Id, request.UserId);
 
             collection.IsFavorite = request.IsFavorite;
             _unitOfWork.CollectionRepository.UpdateEntity(collection);
@@ -33,11 +33,11 @@ namespace markit.Application.Features.Collections.Commands.SetCollectionFavorite
             return collection.IsFavorite;
         }
 
-        private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
+        private async Task<Collection> ValidateCollection(int collectionId, string userId)
         {
-            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
+            Collection collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-            collection.ValidateCreator(creatorId);
+            collection.ValidateUser(userId);
             return collection;
         }
     }

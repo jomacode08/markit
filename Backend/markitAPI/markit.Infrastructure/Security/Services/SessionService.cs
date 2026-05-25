@@ -1,6 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication;
 using Microsoft.AspNetCore.Http;
-using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infrastructure.Security.Services
 {
@@ -31,17 +30,6 @@ namespace markit.Infrastructure.Security.Services
         {
             return _contextAccessor.HttpContext?.User.FindFirst(USER_ID_CLAIM_TYPE)?.Value
                 ?? throw new InvalidOperationException("The current session doesn't have the required nameidentifier claim.");
-        }
-
-        public int GetCreatorId()
-        {
-            string creatorIdClaim = _contextAccessor.HttpContext?.User.FindFirst(CustomClaimType.CreatorId)?.Value
-                ?? throw new InvalidOperationException("The current session doesn't have the required creatorId claim.");
-
-            if (!int.TryParse(creatorIdClaim, out int creatorId))
-                throw new FormatException($"The creatorId claim doesn't have the right format ");
-            
-            return creatorId;
         }
     }
 }

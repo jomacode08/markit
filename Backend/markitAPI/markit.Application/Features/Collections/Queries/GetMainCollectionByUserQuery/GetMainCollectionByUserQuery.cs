@@ -9,21 +9,21 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreator
 {
-    public class GetMainCollectionByCreatorQuery(int creatorId) : IRequest<CollectionViewModel>
+    public class GetMainCollectionByUserQuery(string userId) : IRequest<CollectionViewModel>
     {
-       public int CreatorId { get; set; } = creatorId;
+       public string UserId { get; set; } = userId;
     }
 
-    public class GetMainCollectionByCreatorQueryHandler : IRequestHandler<GetMainCollectionByCreatorQuery, CollectionViewModel>
+    public class GetMainCollectionByCreatorQueryHandler : IRequestHandler<GetMainCollectionByUserQuery, CollectionViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILogger<GetMainCollectionByCreatorQuery> _logger;
+        private readonly ILogger<GetMainCollectionByUserQuery> _logger;
 
         public GetMainCollectionByCreatorQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ILogger<GetMainCollectionByCreatorQuery> logger
+            ILogger<GetMainCollectionByUserQuery> logger
         )
         {
             _unitOfWork = unitOfWork;
@@ -31,24 +31,16 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
             _logger = logger;
         }
 
-        public async Task<CollectionViewModel> Handle(GetMainCollectionByCreatorQuery request, CancellationToken cancellationToken)
+        public async Task<CollectionViewModel> Handle(GetMainCollectionByUserQuery request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistence(request.CreatorId);
-
-            var mainCollection = await GetMainCollection(request.CreatorId);
+            Collection mainCollection = await GetMainCollection(request.UserId);
             return MapCollection(mainCollection);
         }
 
-        private async Task ValidateCreatorExistence(int creatorId)
+        private async Task<Collection> GetMainCollection(string userId)
         {
-            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-                ?? throw new NotFoundException("Creator", creatorId);
-        }
-
-        private async Task<Collection> GetMainCollection(int creatorId)
-        {
-            var result = await _unitOfWork.CollectionRepository.GetAsync(c => c.CreatorId == creatorId && c.IsMain)
-                ?? throw new CustomValidationException($"The main collection of the creator with ID: {creatorId} must be configured");
+            var result = await _unitOfWork.CollectionRepository.GetAsync(c => c.UserId == userId && c.IsMain)
+                ?? throw new CustomValidationException($"The main collection of the user with ID: {userId} must be configured");
 
             return result[0];
         }

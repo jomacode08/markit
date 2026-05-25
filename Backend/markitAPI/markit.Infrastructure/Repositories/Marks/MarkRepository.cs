@@ -33,7 +33,7 @@ namespace markit.Infrastructure.Repositories.Marks
 
         public Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
-            int creatorId,
+            string userId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,
@@ -44,7 +44,7 @@ namespace markit.Infrastructure.Repositories.Marks
 
             // Apply filters
             marksQuery = marksQuery.Include(m => m.Collection)
-                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId));
+                .Where(m => m.Collection != null && m.Collection.UserId.Equals(userId));
 
             if (collectionId.HasValue)
             {
@@ -84,21 +84,21 @@ namespace markit.Infrastructure.Repositories.Marks
                 .ToListAsync();
         }
 
-        public async Task<List<Mark>> GetMostRecentAsync(int creatorId, int limit)
+        public async Task<List<Mark>> GetMostRecentAsync(string userId, int limit)
         {
             return await context.Marks
                 .AsNoTracking()
                 .Include(m => m.Collection)
-                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId))
+                .Where(m => m.Collection != null && m.Collection.UserId.Equals(userId))
                 .OrderByDescending(m => m.CreatedDate)
                 .Take(limit)
                 .ToListAsync();
         }
 
-        public async Task<int> CountByCreatorIdAsync(int creatorId)
+        public async Task<int> CountByUserIdAsync(string userId)
         {
             return await context.Marks
-                .Where(m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId))
+                .Where(m => m.Collection != null && m.Collection.UserId.Equals(userId))
                 .CountAsync();
         }
 
@@ -116,7 +116,7 @@ namespace markit.Infrastructure.Repositories.Marks
             return mark;
         }
 
-        public async Task<IEnumerable<MarkSearchResult>> SearchAsync(string searchTerm, int creatorId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MarkSearchResult>> SearchAsync(string searchTerm, string userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(searchTerm)) return [];
 
@@ -126,7 +126,7 @@ namespace markit.Infrastructure.Repositories.Marks
             return await context.Marks
                 // Query processing
                 .Include(m => m.Collection)
-                .Where(m => m.Collection != null && m.Collection.CreatorId == creatorId)
+                .Where(m => m.Collection != null && m.Collection.UserId == userId)
                 .Where(m =>
                     EF.Property<NpgsqlTsVector>(m, SEARCH_VECTOR_SHADOW_PROPERTY_NAME)
                         .Matches(EF.Functions.WebSearchToTsQuery(LANGUAGE_CONFIGURATION, searchTerm))

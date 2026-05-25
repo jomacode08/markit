@@ -1,5 +1,4 @@
 ﻿using markit.API.Controllers.Common;
-using markit.Application.Exceptions;
 using markit.Application.Features.Creators.Commands.UpdateCreator;
 using markit.Application.Features.Creators.Queries;
 using markit.Application.Features.Creators.Queries.ViewModels;
@@ -35,7 +34,8 @@ namespace markit.API.Controllers.Operation
         [Route("me")]
         public async Task<ActionResult<CreatorViewModel>> GetByCurrentSession()
         {
-            GetCreatorByIdQuery query = new(id: _sessionService.GetCreatorId());
+            throw new NotImplementedException();
+            GetCreatorByIdQuery query = new(id: 0);
             CreatorViewModel creator = await _mediator.Send(query);
             return Ok(creator);
         }
@@ -44,25 +44,14 @@ namespace markit.API.Controllers.Operation
         [HttpPut("me")]
         public async Task<ActionResult<CreatorViewModel>> UpdateByCurrentSession([FromBody] UpdateCreatorDto dto)
         {
-            int creatorId = await GetValidatedCreatorIdAsync(_sessionService.GetUserId());
+            throw new NotImplementedException();
             UpdateCreatorCommand command = new(
-                id: creatorId,
+                id: 0,
                 userId: _sessionService.GetUserId(),
                 dto: dto
             );
             CreatorViewModel updatedCreator = await _mediator.Send(command);
             return Ok(updatedCreator);
-        }
-
-        private async Task<int> GetValidatedCreatorIdAsync(string userId)
-        {
-            AppUser? user = await _userManager.FindByIdAsync(userId)
-                ?? throw new NotFoundException("AppUSer", userId);
-
-            if (!user.CreatorId.HasValue)
-                throw new InvalidOperationException("The current user doesn't have a configured creator.");
-
-            return user.CreatorId.Value;
         }
     }
 }

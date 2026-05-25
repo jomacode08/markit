@@ -213,8 +213,6 @@ namespace markit.Infrastructure.Security.Services
                 new Claim(JwtRegisteredClaimNames.GivenName, user.GivenName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(CustomClaimType.ProfilePictureUrl, user.Picture ?? ""),
-                new Claim(CustomClaimType.CreatorId, user.CreatorId.ToString()!)
-
             }
             .Union(roleClaims);
 

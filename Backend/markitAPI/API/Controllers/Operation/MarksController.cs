@@ -33,7 +33,7 @@ namespace markit.API.Controllers.Operation
         {
             GetMarkByIdQuery query = new (
                 id,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
 
             return Ok(await _mediator.Send(query));
@@ -43,14 +43,14 @@ namespace markit.API.Controllers.Operation
         [Route("search")]
         public async Task<ActionResult<IReadOnlyList<MarkSearchResult>>> Search([FromQuery] string searchTerm)
         {
-            SearchMarksQuery query = new(searchTerm, _sessionService.GetCreatorId());
+            SearchMarksQuery query = new(searchTerm, _sessionService.GetUserId());
             return Ok(await _mediator.Send(query));
         }
 
         [HttpPost]
         public async Task<ActionResult<MarkViewModel>> Create([FromBody] CreateMarkCommand command)
         {
-            command.CreatorId = _sessionService.GetCreatorId();
+            command.UserId = _sessionService.GetUserId();
             MarkViewModel mark = await _mediator.Send(command);
             return Ok(mark);
         }
@@ -58,7 +58,7 @@ namespace markit.API.Controllers.Operation
         [HttpPut("{id:int}")]
         public async Task<ActionResult<MarkViewModel>> Update([FromRoute]int id, [FromBody] UpdateMarkDto dto)
         {
-            dto.CreatorId = _sessionService.GetCreatorId();
+            dto.UserId = _sessionService.GetUserId();
             UpdateMarkCommand command = new(id, dto);
             MarkViewModel updatedMark = await _mediator.Send(command);
             return Ok(updatedMark);
@@ -67,7 +67,7 @@ namespace markit.API.Controllers.Operation
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<MarkViewModel>> Rename([FromRoute]int id, [FromBody] RenameMarkDto dto)
         {
-            dto.CreatorId = _sessionService.GetCreatorId();
+            dto.UserId = _sessionService.GetUserId();
             RenameMarkCommand command = new(id, dto);
             MarkViewModel updatedMark = await _mediator.Send(command);
             return Ok(updatedMark);
@@ -79,7 +79,7 @@ namespace markit.API.Controllers.Operation
         {
             SetMarkFavoriteStatusCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId(),
+                userId: _sessionService.GetUserId(),
                 isFavorite: true
             );
             await _mediator.Send(command);
@@ -94,7 +94,7 @@ namespace markit.API.Controllers.Operation
             MoveMarkCommand command = new(
                 markId: id,
                 collectionId: dto.ParentId,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
 
             await _mediator.Send(command);
@@ -107,7 +107,7 @@ namespace markit.API.Controllers.Operation
         {
             SetMarkFavoriteStatusCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId(),
+                userId: _sessionService.GetUserId(),
                 isFavorite: false
             );
             await _mediator.Send(command);
@@ -120,7 +120,7 @@ namespace markit.API.Controllers.Operation
         {
             SoftDeleteMarkCommand command = new(
                 id,
-                creatorId: _sessionService.GetCreatorId()
+                userId: _sessionService.GetUserId()
             );
             await _mediator.Send(command);
             return NoContent();

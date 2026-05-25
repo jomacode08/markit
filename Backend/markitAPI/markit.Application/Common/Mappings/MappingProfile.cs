@@ -193,10 +193,10 @@ namespace markit.Application.Mappings
                     )
                 )
                 .ForMember(
-                    dest => dest.CreatorId,
+                    dest => dest.UserId,
                     opt => opt.MapFrom(src => src.Collection != null
-                        ? src.Collection.CreatorId
-                        : (int?)null
+                        ? src.Collection.UserId
+                        : null
                     )
                 )
                 .ForMember(

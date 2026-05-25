@@ -14,7 +14,7 @@ namespace markit.Infrastructure.Repositories.Marks
         {
         }
 
-        public async Task<IEnumerable<BlockSearchResult>> SearchAsync(string searchTerm, int creatorId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BlockSearchResult>> SearchAsync(string searchTerm, string userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(searchTerm)) return [];
 
@@ -27,7 +27,7 @@ namespace markit.Infrastructure.Repositories.Marks
                 // Query processing
                 .Include(b => b.Mark)
                 .ThenInclude(m => m!.Collection)
-                .Where(b => b.Mark!.Collection!.CreatorId == creatorId)
+                .Where(b => b.Mark!.Collection!.UserId == userId)
                 .Where(b =>
                     EF.Property<NpgsqlTsVector>(b, SEARCH_VECTOR_SHADOW_PROPERTY_NAME)
                         .Matches(EF.Functions.WebSearchToTsQuery(LANGUAGE_CONFIGURATION, searchTerm))

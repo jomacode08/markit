@@ -3,24 +3,26 @@ using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace markit.Application.Features.Collections.Commands.CreateCollectionCommand
 {
     public class CreateCollectionCommand : IRequest<CollectionViewModel>
     {
         public string Name { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public bool IsMain { get; set; }
-        public int CreatorId { get; set; }
         public string? Emoji { get; set; }
         public int? ParentId { get; set; }
 
-        public void Deconstruct( out string name,out int creatorId, out int? parentId )
+        public void Deconstruct( out string name,out string userId, out int? parentId )
         {
             name = Name;
             parentId = ParentId;
-            creatorId = CreatorId;
+            userId = UserId;
         }
     }
 
@@ -28,22 +30,25 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
         public CreateCollectionCommandHandler(
             IUnitOfWork unitOfWork,
-            IMapper mapper
+            IMapper mapper,
+            UserManager<AppUser> userManager
         )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<CollectionViewModel> Handle(CreateCollectionCommand request, CancellationToken cancellationToken)
         {
             // Validations
-            await ValidateCreatorExistency(request.CreatorId);
+            await ValidateUserExistence(request.UserId);
             await ValidateNameDuplicates(request);
-            if (request.IsMain) await ValidateMainCollectionDuplicate(request.CreatorId);
+            if (request.IsMain) await ValidateMainCollectionDuplicate(request.UserId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
@@ -56,18 +61,16 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
             return collectionViewModel;
         }
 
-        private async Task<Unit> ValidateCreatorExistency(int creatorId)
+        private async Task ValidateUserExistence(string userId)
         {
-            var creator = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-            ?? throw new NotFoundException("Creator", creatorId);
-
-            return Unit.Value;
+            _ = await _userManager.FindByIdAsync(userId)
+                ?? throw new NotFoundException("AppUser", userId);
         }
 
-        private async Task<Unit> ValidateMainCollectionDuplicate(int creatorId)
+        private async Task<Unit> ValidateMainCollectionDuplicate(string userId)
         {
             var mainCollection = await _unitOfWork.CollectionRepository
-                .GetAsync(c => c.CreatorId.Equals(creatorId) && c.IsMain.Equals(true));
+                .GetAsync(c => c.UserId.Equals(userId) && c.IsMain.Equals(true));
 
             if (mainCollection.Any()) throw new CustomValidationException("A main collection is already configured for the user");
 
@@ -76,13 +79,13 @@ namespace markit.Application.Features.Collections.Commands.CreateCollectionComma
 
         private async Task<Unit> ValidateNameDuplicates(CreateCollectionCommand request)
         {
-            (string name, int creatorId, int? parentId) = request;
+            (string name, string userId, int? parentId) = request;
 
             var duplicates = await _unitOfWork.CollectionRepository
                 .GetAsync(c =>
                     c.ParentId.Equals(parentId)
                     && c.Name.Equals(name)
-                    && c.CreatorId.Equals(creatorId)
+                    && c.UserId.Equals(userId)
                 );
 
             if (duplicates.Any()) throw new CustomValidationException(@$"There's already a collection with the name: { name }");

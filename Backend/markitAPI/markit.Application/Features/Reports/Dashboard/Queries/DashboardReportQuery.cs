@@ -4,36 +4,40 @@ using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Features.Reports.Dashboard.Queries.ViewModels;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace markit.Application.Features.Reports.Dashboard.Queries
 {
-    public class DashboardReportQuery(int creatorId) : IRequest<DashboardReportVm>
+    public class DashboardReportQuery(string userId) : IRequest<DashboardReportVm>
     {
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
     }
 
     public class DashboardReportQueryHandler : IRequestHandler<DashboardReportQuery, DashboardReportVm>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public DashboardReportQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DashboardReportQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<DashboardReportVm> Handle(DashboardReportQuery request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistencyAsync(request.CreatorId);
-            List<MarkViewModel> recentMarks = await GetRecentMarksAsync(request.CreatorId);
-            List<CollectionViewModel> starredCollections = await GetStarredCollectionsAsync(request.CreatorId);
-            var activityStats = await GetActivityStatsAsync(request.CreatorId);
+            await ValidateUserExistence(request.UserId);
+            List<MarkViewModel> recentMarks = await GetRecentMarksAsync(request.UserId);
+            List<CollectionViewModel> starredCollections = await GetStarredCollectionsAsync(request.UserId);
+            var activityStats = await GetActivityStatsAsync(request.UserId);
 
             return new DashboardReportVm(
-                CreatorId : request.CreatorId,
+                UserId : request.UserId,
                 CreatedAt : DateTime.Now,
                 recentMarks,
                 starredCollections,
@@ -41,37 +45,38 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             );
         }
 
-        private async Task ValidateCreatorExistencyAsync(int creatorId) {
-            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-            ?? throw new NotFoundException("Creator", creatorId);
+        private async Task ValidateUserExistence(string userId)
+        {
+            _ = await _userManager.FindByIdAsync(userId)
+                ?? throw new NotFoundException("AppUser", userId);
         }
 
-        private async Task<List<MarkViewModel>> GetRecentMarksAsync(int creatorId)
+        private async Task<List<MarkViewModel>> GetRecentMarksAsync(string userId)
         {
             const int LIMIT = 5;
-            List<Mark> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(creatorId, LIMIT);
+            List<Mark> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(userId, LIMIT);
             return _mapper.Map<List<MarkViewModel>>(marks);
         }
 
-        private async Task<List<CollectionViewModel>> GetStarredCollectionsAsync(int creatorId)
+        private async Task<List<CollectionViewModel>> GetStarredCollectionsAsync(string userId)
         {
             IReadOnlyList<Collection> collections = await _unitOfWork.CollectionRepository
                 .GetAsync(c => 
-                    c.CreatorId.Equals(creatorId) && c.IsFavorite,
+                    c.UserId.Equals(userId) && c.IsFavorite,
                     c => c.OrderByDescending(c => c.CreatedDate)
                 );
             return _mapper.Map<List<CollectionViewModel>>(collections);
         }
 
-        private async Task<ActivityStats> GetActivityStatsAsync(int creatorId)
+        private async Task<ActivityStats> GetActivityStatsAsync(string userId)
         {
             int DAYS_OF_THE_WEEK = Enum.GetValues(typeof(DayOfWeek)).Length;
             // Get global counts by creator
-            int marksCount = await _unitOfWork.MarkRepository.CountByCreatorIdAsync(creatorId);
-            int collectionsCount = await _unitOfWork.CollectionRepository.CountByCreatorIdAsync(creatorId);
+            int marksCount = await _unitOfWork.MarkRepository.CountByUserIdAsync(userId);
+            int collectionsCount = await _unitOfWork.CollectionRepository.CountByUserIdAsync(userId);
 
             // Get mark stats of the week
-            IReadOnlyList<Mark> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(creatorId);
+            IReadOnlyList<Mark> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(userId);
             Dictionary<DayOfWeek, int> dailyMarkActivity = new() {
                 { DayOfWeek.Sunday, 0 },
                 { DayOfWeek.Monday, 0 },
@@ -106,13 +111,13 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             );
         }
 
-        private async Task<IReadOnlyList<Mark>> GetMarksOfTheCurrentWeekAsync(int creatorId)
+        private async Task<IReadOnlyList<Mark>> GetMarksOfTheCurrentWeekAsync(string userId)
         {
             DateTime today = GetDateZeroTime(DateTime.UtcNow);
             DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);
             return await _unitOfWork.MarkRepository
             .GetAsync(
-                m => m.Collection != null && m.Collection.CreatorId.Equals(creatorId) && m.CreatedDate >= weekStart,
+                m => m.Collection != null && m.Collection.UserId.Equals(userId) && m.CreatedDate >= weekStart,
                 m => m.OrderByDescending(m => m.CreatedDate)
             );
         }

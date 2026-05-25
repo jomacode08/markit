@@ -3,6 +3,6 @@
     public class PatchBlockDto
     {
         public string Content { get; set; } = string.Empty;
-        public int CreatorId { get; set; }
+        public string UserId { get; set; } = string.Empty;
     }
 }

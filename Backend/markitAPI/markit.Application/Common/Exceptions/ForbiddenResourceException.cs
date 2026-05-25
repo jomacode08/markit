@@ -3,8 +3,8 @@
     public class ForbiddenResourceException(
         string resource,
         int resourceId,
-        int creatorId
+        string userId
     )
-        : ApplicationException($"Creator {creatorId} is forbidden from accessing resource: { resource } - { resourceId } .")
+        : ApplicationException($"User: {userId} is forbidden from accessing resource: { resource } - { resourceId } .")
     {}
 }

@@ -6,10 +6,10 @@ using MediatR;
 
 namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusCommand
 {
-    public class SetMarkFavoriteStatusCommand(int id, int creatorId, bool isFavorite) : IRequest<bool>
+    public class SetMarkFavoriteStatusCommand(int id, string userId, bool isFavorite) : IRequest<bool>
     {
         public int Id { get; set; } = id;
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
         public bool IsFavorite { get; set; } = isFavorite;
     }
 
@@ -24,7 +24,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
 
         public async Task<bool> Handle(SetMarkFavoriteStatusCommand request, CancellationToken cancellationToken)
         {
-            var mark = await ValidateMark(request.Id, request.CreatorId);
+            Mark mark = await ValidateMark(request.Id, request.UserId);
             
             mark.IsFavorite = request.IsFavorite;
             _unitOfWork.MarkRepository.UpdateEntity(mark);
@@ -33,11 +33,11 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
             return mark.IsFavorite;
         }
 
-        private async Task<Mark> ValidateMark(int markId, int creatorId)
+        private async Task<Mark> ValidateMark(int markId, string userId)
         {
-            var mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
+            Mark mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
-            mark.ValidateCreator(creatorId);
+            mark.ValidateUser(userId);
             return mark;
         }
     }

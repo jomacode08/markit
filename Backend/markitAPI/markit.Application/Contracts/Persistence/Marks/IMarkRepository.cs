@@ -7,18 +7,18 @@ namespace markit.Application.Contracts.Persistence.Marks
 {
     public interface IMarkRepository : IAsyncRepository<Mark>
     {
-        Task<int> CountByCreatorIdAsync(int creatorId);
+        Task<int> CountByUserIdAsync(string userId);
         Task<Mark?> GetWithOrderedBlocks(int id);
         Task<List<Mark>> GetAsyncCursorBasedPagination(
             int pageSize,
-            int creatorId,
+            string userId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,
             bool onlyFavorites = false
         );
-        Task<List<Mark>> GetMostRecentAsync(int creatorId, int limit);
-        Task<IEnumerable<MarkSearchResult>> SearchAsync(string query, int creatorId, CancellationToken cancellationToken);
+        Task<List<Mark>> GetMostRecentAsync(string userId, int limit);
+        Task<IEnumerable<MarkSearchResult>> SearchAsync(string query, string userId, CancellationToken cancellationToken);
         Task<Mark> UpdateSyncModelAsync(int markId, string documentId);
     }
 }

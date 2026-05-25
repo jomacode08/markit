@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using MediatR;
 using System.Globalization;
 
 namespace markit.Application.Common.Helpers.Services
@@ -26,7 +25,7 @@ namespace markit.Application.Common.Helpers.Services
                 var collections = await _unitOfWork.CollectionRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
-                        request.CreatorId,
+                        request.UserId,
                         cursor: cursorData,
                         request.SortOrder,
                         request.Filters.CollectionId,
@@ -46,7 +45,7 @@ namespace markit.Application.Common.Helpers.Services
                 var marks = await _unitOfWork.MarkRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
-                        request.CreatorId,
+                        request.UserId,
                         cursor: cursorData,
                         request.SortOrder,
                         request.Filters.CollectionId,

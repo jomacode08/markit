@@ -8,10 +8,10 @@ using MediatR;
 
 namespace markit.Application.Features.Marks.Queries
 {
-    public class GetMarkByIdQuery(int id, int creatorId) : IRequest<MarkViewModel>
+    public class GetMarkByIdQuery(int id, string userId) : IRequest<MarkViewModel>
     {
         public int Id { get; set; } = id;
-        public int CreatorId {  get; set; } = creatorId;
+        public string UserId {  get; set; } = userId;
     }
 
     public class GetMarkByIdQueryHandler : IRequestHandler<GetMarkByIdQuery, MarkViewModel>
@@ -27,9 +27,9 @@ namespace markit.Application.Features.Marks.Queries
 
         public async Task<MarkViewModel> Handle(GetMarkByIdQuery request, CancellationToken cancellationToken)
         {
-            Mark? mark = await _unitOfWork.MarkRepository.GetWithOrderedBlocks(request.Id)
+            Mark mark = await _unitOfWork.MarkRepository.GetWithOrderedBlocks(request.Id)
                 ?? throw new NotFoundException("Mark", request.Id);
-            mark.ValidateCreator(request.CreatorId);
+            mark.ValidateUser(request.UserId);
             return _mapper.Map<MarkViewModel>(mark);
         }
     }

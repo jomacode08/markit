@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace markit.Application.Features.Collections.Commands.MoveCollectionCommand
 {
-    public class MoveCollectionCommand(int collectionId, int parentId, int creatorId) : IRequest<Unit>
+    public class MoveCollectionCommand(int collectionId, int parentId, string userId) : IRequest<Unit>
     {
         public int CollectionId { get; init; } = collectionId;
         public int ParentId { get; init; } = parentId;
-        public int CreatorId { get; init; } = creatorId;
+        public string UserId { get; init; } = userId;
     }
 
     public record CollectionPath(string Ids, string Names);
@@ -36,8 +36,8 @@ namespace markit.Application.Features.Collections.Commands.MoveCollectionCommand
             Collection collection = await GetCollection(request.CollectionId);
             Collection parent = await GetCollection(request.ParentId);
 
-            if (collection.CreatorId != request.CreatorId) throw new ForbiddenResourceException("Collection", collection.Id, request.CreatorId);
-            if (parent.CreatorId != request.CreatorId) throw new ForbiddenResourceException("Collection", parent.Id, request.CreatorId);
+            if (collection.UserId != request.UserId) throw new ForbiddenResourceException("Collection", collection.Id, request.UserId);
+            if (parent.UserId != request.UserId) throw new ForbiddenResourceException("Collection", parent.Id, request.UserId);
             if (collection.IsMain) throw new CustomValidationException(MAIN_COLLECTION_ERROR_MESSAGE);
             if (collection.Path is null) throw HandleMissingPathError(collection.Id);
             if (parent.Path is null) throw HandleMissingPathError(parent.Id);

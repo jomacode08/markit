@@ -13,8 +13,8 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
     {
         public int Id { get; set; } = id;
         public string Name { get; set; } = dto.Name;
+        public string UserId { get; set; } = dto.UserId;
         public string? Emoji { get; set; } = dto.Emoji;
-        public int CreatorId { get; set; } = dto.CreatorId;
     }
 
     public class UpdateCollectionCommandHandler : IRequestHandler<UpdateCollectionCommand, CollectionViewModel>
@@ -33,7 +33,7 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
 
         public async Task<CollectionViewModel> Handle(UpdateCollectionCommand request, CancellationToken cancellationToken)
         {
-            Collection collection = await ValidateCollection(request.Id, request.CreatorId);
+            Collection collection = await ValidateCollection(request.Id, request.UserId);
             await ValidateNameDuplicates(request.Name, request.Id, collection.ParentId);
             int level = GetCollectionLevel(collection.PathNames);
             string newName = request.Name;
@@ -72,11 +72,11 @@ namespace markit.Application.Features.Collections.Commands.UpdateCollectionComma
             if (duplicates.Any()) throw new CustomValidationException(@$"There's already a collection with the name: {name}");
         }
 
-        private async Task<Collection> ValidateCollection(int collectionId, int creatorId)
+        private async Task<Collection> ValidateCollection(int collectionId, string userId)
         {
-            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
+            Collection collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-            collection.ValidateCreator(creatorId);
+            collection.ValidateUser(userId);
             return collection;
         }
 

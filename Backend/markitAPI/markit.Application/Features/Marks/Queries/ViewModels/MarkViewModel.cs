@@ -10,7 +10,7 @@ namespace markit.Application.Features.Marks.Queries.ViewModels
         public string Content { get; set; } = string.Empty;
         public int CollectionId { get; set; }
         public string CollectionName {  get; set; } = string.Empty;
-        public int? CreatorId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public string? Emoji { get; set; }
         public DateTime? CreatedDate { get; set; }
 

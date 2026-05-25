@@ -9,12 +9,12 @@ namespace markit.Application.Contracts.Persistence.Marks
         Task<List<Collection>> GetHierarchyRecursively(int rootCollectionId);
         Task<List<Collection>> GetAsyncCursorBasedPagination(
             int pageSize,
-            int creatorId,
+            string userId,
             CursorData? cursor,
             SortPaginationOrder sortOrder = SortPaginationOrder.Ascending,
             int? collectionId = null,
             bool onlyFavorites = false
         );
-        Task<int> CountByCreatorIdAsync(int creatorId);
+        Task<int> CountByUserIdAsync(string userId);
     }
 }

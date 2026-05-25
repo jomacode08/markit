@@ -50,7 +50,6 @@ namespace markit.Infrastructure.Security.Services
                 throw new CustomValidationException("The account is locked out, try again later.");
             if (!signInResult.Succeeded)
                 throw new CustomValidationException("Invalid email or password.");
-            ValidateCreatorExistence(user);
             await IssueTokenPairAsync(user, context);
             return user;
         }
@@ -66,12 +65,6 @@ namespace markit.Infrastructure.Security.Services
             context.Response.Cookies.Delete(Token.REFRESH_TOKEN_NAME);
 
             scope.Complete();
-        }
-
-        private static void ValidateCreatorExistence(AppUser user)
-        {
-            if (user.CreatorId == null)
-                throw new CustomValidationException("The user has not yet been fully configured");
         }
 
         private async Task IssueTokenPairAsync(AppUser user, HttpContext context)

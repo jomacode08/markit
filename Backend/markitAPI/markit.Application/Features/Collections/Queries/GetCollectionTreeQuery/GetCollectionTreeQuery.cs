@@ -8,9 +8,9 @@ using markit.Application.Exceptions;
 
 namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
 {
-    public class GetCollectionTreeQuery(int creatorId) : IRequest<TreeNode>
+    public class GetCollectionTreeQuery(string userId) : IRequest<TreeNode>
     {
-        public int CreatorId { get; init; } = creatorId;
+        public string UserId { get; init; } = userId;
     }
 
     public class GetCollectionTreeQueryHandler : IRequestHandler<GetCollectionTreeQuery, TreeNode>
@@ -34,12 +34,12 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
 
         public async Task<TreeNode> Handle(GetCollectionTreeQuery request, CancellationToken cancellationToken)
         {
-            int mainCollectionId = await GetMainCollectionIdAsync(request.CreatorId);
+            int mainCollectionId = await GetMainCollectionIdAsync(request.UserId);
             List<TreeNode> hierarchy = await GetTreeNodes(mainCollectionId);
-            return BuildTree(hierarchy, request.CreatorId);
+            return BuildTree(hierarchy, request.UserId);
         }
 
-        private TreeNode BuildTree(List<TreeNode> hierarchy, int creatorId)
+        private TreeNode BuildTree(List<TreeNode> hierarchy, string userId)
         {
             ILookup<string?, TreeNode> lookup = hierarchy.ToLookup(x => x.ParentKey);
 
@@ -52,7 +52,7 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
             
             if (root is null)
             {
-                _logger.LogError("{message}, CreatorId: {creatorId}", MAIN_COLLECTION_BAD_CONFIGURATION_LOG_MESSAGE, creatorId);
+                _logger.LogError("{message}, UserId: {userId}", MAIN_COLLECTION_BAD_CONFIGURATION_LOG_MESSAGE, userId);
                 throw new CustomValidationException(BAD_CONFIGURATION_ERROR_MESSAGE);
             }
 
@@ -74,9 +74,9 @@ namespace markit.Application.Features.Collections.Queries.GetCollectionTreeQuery
             ];
         }
 
-        private async Task<int> GetMainCollectionIdAsync(int creatorId)
+        private async Task<int> GetMainCollectionIdAsync(string userId)
         {
-            GetMainCollectionByCreatorQuery query = new(creatorId);
+            GetMainCollectionByUserQuery query = new(userId);
             return (await _mediator.Send(query)).Id;
         }
     }

@@ -16,7 +16,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
         public string InputName { get; set; } = dto.InputName;
         public string? Emoji { get; set; } = dto.Emoji;
         public List<BlockViewModel> Blocks { get; set; } = dto.Blocks;
-        public int CreatorId { get; set; } = dto.CreatorId;
+        public string UserId { get; set; } = dto.UserId;
     }
 
     public class UpdateMarkCommandHandler : IRequestHandler<UpdateMarkCommand, MarkViewModel>
@@ -35,9 +35,7 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
         public async Task<MarkViewModel> Handle(UpdateMarkCommand request, CancellationToken cancellationToken)
         {
-            await ValidateCreatorExistency(request.CreatorId);
-            Mark mark = await ValidateMarkExistency(request.Id, request.CreatorId);
-            bool nameChanged = request.InputName != mark.Name;
+            Mark mark = await ValidateMark(request.Id, request.UserId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
                 _mapper.Map(request, mark, typeof(UpdateMarkCommand), typeof(Mark));
@@ -48,17 +46,11 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
             return markVm;
         }
 
-        private async Task ValidateCreatorExistency(int creatorId)
-        {
-            _ = await _unitOfWork.CreatorRepository.GetByIdAsync(creatorId)
-                ?? throw new NotFoundException("Creator", creatorId);
-        }
-
-        private async Task<Mark> ValidateMarkExistency(int markId, int creatorId)
+        private async Task<Mark> ValidateMark(int markId, string userId)
         {
             Mark? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Blocks,Collection")
                 ?? throw new NotFoundException("Mark", markId);
-            mark.ValidateCreator(creatorId);
+            mark.ValidateUser(userId);
             return mark;
         }
 

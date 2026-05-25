@@ -3,14 +3,13 @@ using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Domain.Entities;
 using MediatR;
-using System.Transactions;
 
 namespace markit.Application.Features.Collections.Commands.DeleteCollectionCommand
 {
-    public class SoftDeleteCollectionCommand(int id, int creatorId) : IRequest<bool>
+    public class SoftDeleteCollectionCommand(int id, string userId) : IRequest<bool>
     {
         public int CollectionId { get; set; } = id;
-        public int CreatorId { get; set; } = creatorId;
+        public string UserId { get; set; } = userId;
     }
 
     public class DeleteCollectionCommandHandler : IRequestHandler<SoftDeleteCollectionCommand, bool>
@@ -26,18 +25,18 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
 
         public async Task<bool> Handle(SoftDeleteCollectionCommand request, CancellationToken cancellationToken)
         {
-            var collection = await ValidateCollectionExistency(request.CollectionId, request.CreatorId);
+            var collection = await ValidateCollection(request.CollectionId, request.UserId);
             List<Collection> hierarchy = await GetHierarchy(collectionId: request.CollectionId);
             await SoftDeleteOnCascade(hierarchy);
             await _unitOfWork.Complete();
             return true;
         }
 
-        private async Task<Collection> ValidateCollectionExistency(int collectionId, int creatorId)
+        private async Task<Collection> ValidateCollection(int collectionId, string userId)
         {
-            var collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
+            Collection collection = await _unitOfWork.CollectionRepository.GetByIdAsync(collectionId)
                 ?? throw new NotFoundException("Collection", collectionId);
-            collection.ValidateCreator(creatorId);
+            collection.ValidateUser(userId);
             return collection;
         }
 

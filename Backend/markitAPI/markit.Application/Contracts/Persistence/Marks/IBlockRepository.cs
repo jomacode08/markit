@@ -6,6 +6,6 @@ namespace markit.Application.Contracts.Persistence.Marks
 {
     public interface IBlockRepository : IAsyncRepository<Block>
     {
-        Task<IEnumerable<BlockSearchResult>> SearchAsync(string searchTerm, int creatorId, CancellationToken cancellationToken);
+        Task<IEnumerable<BlockSearchResult>> SearchAsync(string searchTerm, string userId, CancellationToken cancellationToken);
     }
 }
