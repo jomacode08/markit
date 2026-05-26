@@ -1,6 +1,6 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Features.Collections.Queries.GetMainCollectionByCreator;
+using markit.Application.Features.Collections.Queries.GetMainCollectionByUser;
 using markit.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;

@@ -24,21 +24,18 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         private ExternalUser GenerateForGoogle()
         {
             const string GIVENNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/givenname";
-            const string SURNAME_CLAIM_TYPE = $"{ IDENTITY_CLAIM_NAMESPACE }/surname";
             const string PICTURE_CLAIM_TYPE = "urn:google:picture";
 
             string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
             string? givenName = GetClaimValue(GIVENNAME_CLAIM_TYPE);
-            string? surName = GetClaimValue(SURNAME_CLAIM_TYPE);
             string? picture = GetClaimValue(PICTURE_CLAIM_TYPE);
 
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(givenName) || string.IsNullOrEmpty(surName)) {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(givenName)) {
                 throw new InvalidOperationException(CLAIMS_NOT_FOUNDED_ERROR_MESSAGE);
             }
 
             return new ExternalUser(
-                FirstName: givenName,
-                LastName: surName,
+                Name: givenName,
                 email,
                 picture
             );
@@ -48,8 +45,7 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
         {
             const string USER_NAME_CLAIM_TYPE = $"{IDENTITY_CLAIM_NAMESPACE}/name";
             const string NAME_CLAIM_TYPE = "urn:github:name";
-            const string DEFAULT_FIRST_NAME = "Markit";
-            const string DEFAULT_LAST_NAME = "Creator";
+            const string DEFAULT_NAME = "Markit Admin";
 
             string? email = GetClaimValue(EMAIL_CLAIM_TYPE);
             string? name = GetClaimValue(NAME_CLAIM_TYPE);
@@ -60,8 +56,7 @@ namespace markit.Infrastructure.Security.Services.ExternalLogin
             }
 
             return new ExternalUser(
-                FirstName: name ?? DEFAULT_FIRST_NAME,
-                LastName: DEFAULT_LAST_NAME,
+                Name: name ?? DEFAULT_NAME,
                 email
             );
         }

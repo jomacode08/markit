@@ -7,7 +7,7 @@ using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQuery;
 using markit.Application.Features.Collections.Queries.GetCollectionTreeQuery;
-using markit.Application.Features.Collections.Queries.GetMainCollectionByCreator;
+using markit.Application.Features.Collections.Queries.GetMainCollectionByUser;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Application.Helpers;
 using markit.Infrastructure.Security.Services;

@@ -7,7 +7,7 @@ using markit.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCreator
+namespace markit.Application.Features.Collections.Queries.GetMainCollectionByUser
 {
     public class GetMainCollectionByUserQuery(string userId) : IRequest<CollectionViewModel>
     {
