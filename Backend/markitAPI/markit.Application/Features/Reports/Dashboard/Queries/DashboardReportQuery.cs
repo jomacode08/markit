@@ -71,7 +71,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         private async Task<ActivityStats> GetActivityStatsAsync(string userId)
         {
             int DAYS_OF_THE_WEEK = Enum.GetValues(typeof(DayOfWeek)).Length;
-            // Get global counts by creator
+            // Get global counts by user
             int marksCount = await _unitOfWork.MarkRepository.CountByUserIdAsync(userId);
             int collectionsCount = await _unitOfWork.CollectionRepository.CountByUserIdAsync(userId);
 

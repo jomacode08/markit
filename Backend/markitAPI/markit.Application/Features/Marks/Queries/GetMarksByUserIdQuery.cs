@@ -29,7 +29,7 @@ namespace markit.Application.Features.Marks.Queries
         public async Task<List<MarkViewModel>> Handle(GetMarksByUserIdQuery request, CancellationToken cancellationToken)
         {
             await ValidateUserExistence(request.UserId);
-            // Get the marks by the creator
+            // Get the marks by the user
             var marks = await _unitOfWork.MarkRepository
                 .GetAsync(m => m.Collection != null && m.Collection.UserId.Equals(request.UserId));
 
