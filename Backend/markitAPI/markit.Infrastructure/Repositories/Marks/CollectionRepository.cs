@@ -22,7 +22,7 @@ namespace markit.Infrastructure.Repositories.Marks
 					WITH RECURSIVE collection_hierarchy AS (
 						SELECT 
 							c1.id, c1.name, c1.path, c1.path_names, c1.is_main,
-							c1.parent_id, c1.creator_id, c1.is_favorite, c1.document_id, c1.last_sync, c1.emoji,
+							c1.parent_id, c1.user_id, c1.is_favorite, c1.document_id, c1.last_sync, c1.emoji,
 							c1.created_date, c1.created_by, c1.updated_date, c1.updated_by, c1.enable
 						FROM collections AS c1
 						WHERE c1.id = {rootCollectionId} AND c1.enable = true
@@ -31,7 +31,7 @@ namespace markit.Infrastructure.Repositories.Marks
 
 						SELECT
 							c2.id, c2.name, c2.path, c2.path_names, c2.is_main,
-							c2.parent_id, c2.creator_id, c2.is_favorite, c2.document_id, c2.last_sync, c2.emoji,
+							c2.parent_id, c2.user_id, c2.is_favorite, c2.document_id, c2.last_sync, c2.emoji,
 							c2.created_date, c2.created_by, c2.updated_date, c2.updated_by, c2.enable
 						FROM collections AS c2
 						INNER JOIN collection_hierarchy ch ON c2.parent_id = ch.id
