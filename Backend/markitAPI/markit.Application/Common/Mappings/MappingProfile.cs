@@ -5,15 +5,11 @@ using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Features.Creators.Commands.CreateCreator;
-using markit.Application.Features.Creators.Commands.UpdateCreator;
-using markit.Application.Features.Creators.Queries.ViewModels;
 using markit.Application.Features.Marks.Commands.CreateMarkCommand;
 using markit.Application.Features.Marks.Commands.UpdateMarkCommand;
 using markit.Application.Features.Marks.Queries.ViewModels;
 using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
-using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
 using markit.Domain.Entities;
 using static markit.Application.Helpers.GeneralConstant;
@@ -85,22 +81,6 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.Marks != null 
                     ? $"{src.Marks.Count} marks" 
                     : GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW)
-                );
-            #endregion
-
-            #region Creators
-            CreateMap<CreateCreatorCommand, Creator>();
-
-            CreateMap<UpdateCreatorCommand, Creator>()
-                .ForMember(
-                    dest => dest.BirthDate, 
-                    opt  => opt.MapFrom(src => DateOnly.Parse(src.BirthDate))
-                );
-
-            CreateMap<Creator, CreatorViewModel>()
-                .ForMember(
-                    dest => dest.BirthDate,
-                    opt  => opt.MapFrom(src => src.BirthDate.ToString())
                 );
             #endregion
 

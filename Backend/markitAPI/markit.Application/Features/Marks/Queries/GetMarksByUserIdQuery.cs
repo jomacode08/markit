@@ -13,13 +13,13 @@ namespace markit.Application.Features.Marks.Queries
         public string UserId { get; set; } = string.Empty;
     }
 
-    public class GetMarksByCreatorIdHandler : IRequestHandler<GetMarksByUserIdQuery, List<MarkViewModel>>
+    public class GetMarksByUserIdHandler : IRequestHandler<GetMarksByUserIdQuery, List<MarkViewModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
 
-        public GetMarksByCreatorIdHandler(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
+        public GetMarksByUserIdHandler(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

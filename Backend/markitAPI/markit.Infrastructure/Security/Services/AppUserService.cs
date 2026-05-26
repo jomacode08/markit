@@ -22,14 +22,6 @@ namespace markit.Infrastructure.Security.Services
             _unitOfWork = unitOfWork;
         }
 
-        public AppUser GetByCreatorId(int creatorId)
-        {
-            return _userManager.Users
-                .Where(u => u.CreatorId.Equals(creatorId))
-                .FirstOrDefault()
-                ?? throw new NotFoundException("User with creatorId", creatorId);
-        }
-
         public async Task<AppUserPaginationDto> GetPagedAsync(int page, int pageSize)
         {
             List<AppUserSummary> data = await _userManager.Users

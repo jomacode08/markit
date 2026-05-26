@@ -14,13 +14,13 @@ namespace markit.Application.Features.Collections.Queries.GetMainCollectionByCre
        public string UserId { get; set; } = userId;
     }
 
-    public class GetMainCollectionByCreatorQueryHandler : IRequestHandler<GetMainCollectionByUserQuery, CollectionViewModel>
+    public class GetMainCollectionByUserQueryHandler : IRequestHandler<GetMainCollectionByUserQuery, CollectionViewModel>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<GetMainCollectionByUserQuery> _logger;
 
-        public GetMainCollectionByCreatorQueryHandler(
+        public GetMainCollectionByUserQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             ILogger<GetMainCollectionByUserQuery> logger

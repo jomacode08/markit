@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public bool IsMain { get; set; }
         public int? ParentId { get; set; }
-        public int CreatorId { get; set; }
         public string? Emoji { get; set; }
 
         public List<CollectionPath>? Path { get; set; }

@@ -5,7 +5,6 @@ namespace markit.Application.Contracts.Persistence.Common
 {
     public interface IUnitOfWork : IDisposable
     {
-        IAsyncRepository<Creator> CreatorRepository { get; }
         IBlockRepository BlockRepository { get; }
         ICollectionRepository CollectionRepository { get; }
         IMarkRepository MarkRepository { get; }

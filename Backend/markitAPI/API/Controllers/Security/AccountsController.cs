@@ -1,4 +1,5 @@
 ﻿﻿using markit.API.Controllers.Common;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.UpdateAccount;
@@ -14,16 +15,27 @@ using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Security
 {
-    [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
+    [Authorize]
     public class AccountsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ISessionService _sessionService;
 
-        public AccountsController(IMediator mediator)
+        public AccountsController(IMediator mediator, ISessionService sessionService)
         {
             _mediator = mediator;
+            _sessionService = sessionService;
         }
 
+        [HttpGet]
+        [Route("me")]
+        public async Task<ActionResult<AccountVm>> GetByCurrentSession()
+        {
+            GetAccountByUserIdQuery query = new(_sessionService.GetUserId());
+            return Ok(await _mediator.Send(query));
+        }
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
         [HttpGet]
         [Route("all")]
         public async Task<ActionResult<AppUserPaginationDto>> GetAllPaged(int page, int limit)
@@ -35,6 +47,7 @@ namespace markit.API.Controllers.Security
             return Ok(await _mediator.Send(query));
         }
 
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
         [HttpGet]
         [Route("{userId}")]
         public async Task<ActionResult<AccountVm>> GetByUserId([FromRoute] string userId)
@@ -42,7 +55,8 @@ namespace markit.API.Controllers.Security
             GetAccountByUserIdQuery query = new(userId);
             return Ok(await _mediator.Send(query));
         }
-        
+
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
         [HttpPost]
         public async Task<ActionResult<AccountVm>> Create([FromBody] CreateAccountCommandDto dto)
         {
@@ -60,6 +74,7 @@ namespace markit.API.Controllers.Security
             return Ok(result);
         }
 
+        [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
         [HttpPut]
         [Route("{userId}")]
         public async Task<ActionResult<AccountVm>> Update([FromRoute] string userId, [FromBody] UpdateAccountCommandDto dto)
