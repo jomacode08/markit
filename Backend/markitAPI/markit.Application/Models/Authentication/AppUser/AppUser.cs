@@ -7,7 +7,6 @@ namespace markit.Application.Models.Authentication.AppUser
 {
     public class AppUser : IdentityUser
     {
-        public int? CreatorId { get; set; }
         public string GivenName { get; set; } = string.Empty;
         public string? Picture { get; set; }
 
