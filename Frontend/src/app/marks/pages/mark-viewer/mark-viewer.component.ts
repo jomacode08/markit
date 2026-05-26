@@ -35,19 +35,19 @@ import { SharedData } from './../../components/block-menu/block-menu.component';
 
 @Component({
     imports: [
-        BlockComponent,
-        BlockNavigatorComponent,
-        ButtonModule,
-        CommonModule,
-        EmojiPickerComponent,
-        FloatingActionButtonComponent,
-        FloatingMenuComponent,
-        MarkAutosaveIndicatorComponent,
-        MarkBreadcrumbComponent,
-        ProgressSpinnerModule,
-        ReactiveFormsModule,
-        SkeletonModule,
-        TooltipModule,
+      BlockComponent,
+      BlockNavigatorComponent,
+      ButtonModule,
+      CommonModule,
+      EmojiPickerComponent,
+      FloatingActionButtonComponent,
+      FloatingMenuComponent,
+      MarkAutosaveIndicatorComponent,
+      MarkBreadcrumbComponent,
+      ProgressSpinnerModule,
+      ReactiveFormsModule,
+      SkeletonModule,
+      TooltipModule,
     ],
     providers: [DialogService],
     templateUrl: './mark-viewer.component.html',
@@ -70,7 +70,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     // Non-editable properties
     name: [''],
     collectionId: [0],
-    creatorId: [0],
+    userId: [''],
     collectionName: [''],
     requiresSync: [false]
   });

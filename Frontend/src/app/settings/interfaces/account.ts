@@ -1,11 +1,10 @@
 export interface Account {
-    userId:    string;
-    creatorId: number;
-    firstName: string;
-    lastName:  string;
-    userName:  string;
-    roles:     string[];
-    enabled : boolean;
+    userId: string;
+    name: string;
+    userName: string;
+    roles: string[];
+    enabled: boolean;
+    picture?: string;
 }
 
 export interface PasswordRequest {

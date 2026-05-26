@@ -37,9 +37,7 @@ interface RoleOption {
 export class AccountFormComponent extends ValidatorErrorField implements OnInit {
   public form : FormGroup<{
     userId : FormControl<string>,
-    creatorId : FormControl<number>,
-    firstName : FormControl<string>,
-    lastName : FormControl<string>,
+    name : FormControl<string>,
     userName : FormControl<string>,
     roles : FormControl<string[]>,
     password : FormControl<string>,
@@ -65,23 +63,21 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
   ) {
     super();
     this.form = this.fb.nonNullable.group({
-      userId : [''],
-      creatorId : [0],
-      firstName : ['', [Validators.required, Validators.maxLength(100)]],
-      lastName : ['', [Validators.required, Validators.maxLength(100)]],
-      userName : ['', [
+      userId: [''],
+      name: ['', [Validators.required, Validators.maxLength(256)]],
+      userName: ['', [
         Validators.required,
         Validators.pattern(this.validatorService.emailPattern),
         Validators.maxLength(256)
       ]],
       roles: [([] as string[]), [this.atLeastOneRoleValidator()]],
-      password : ['', [
+      password: ['', [
         this.requiredAtCreation(),
         Validators.minLength(8),
         Validators.pattern(this.validatorService.passwordPattern),
       ]],
       confirmPassword: [''],
-      enabled : [true],
+      enabled: [true]
     },
     {
       validators:

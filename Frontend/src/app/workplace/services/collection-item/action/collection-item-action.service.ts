@@ -30,7 +30,7 @@ export class CollectionItemActionService {
       name,
       collectionId,
       emoji,
-      creatorId : 0,
+      userId : '',
       blocks: [
         {
           id : 0,

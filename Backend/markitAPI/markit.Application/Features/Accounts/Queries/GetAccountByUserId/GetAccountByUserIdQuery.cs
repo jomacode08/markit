@@ -31,10 +31,11 @@ namespace markit.Application.Features.Accounts.Queries.GetAccountByUserId
             return new AccountVm()
             {
                 UserId = user.Id,
-                Name = user.UserName,
                 UserName = user.UserName,
+                Name = user.GivenName,
                 Enabled = user.Enabled,
                 Roles = await GetUserRoles(user),
+                Picture = user.Picture
             };
         }
 

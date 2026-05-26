@@ -2,7 +2,7 @@ import { Mark } from "../../marks/interfaces/mark";
 import { Collection } from "../../workplace/interfaces/collection";
 
 export interface DashboardReport {
-    creatorId:          number;
+    userId:             string;
     createdAt:          Date;
     recentMarks:        Mark[];
     starredCollections: Collection[];

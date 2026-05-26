@@ -39,7 +39,7 @@ describe('HomeComponent', () => {
     let mockRouter : jasmine.SpyObj<Router>;
 
     const baseDashboardReport : DashboardReport = {
-        creatorId : 1,
+        userId : '',
         createdAt : new Date(),
         recentMarks : [],
         starredCollections: [],
@@ -71,7 +71,8 @@ describe('HomeComponent', () => {
         mockCollectionService.getMainByCurrentSession.and.returnValue(of({
             id : 1,
             name: 'main-collection',
-            creatorId : 1
+            isMain: true,
+            userId: '1'
         } as Collection));
 
         await TestBed.configureTestingModule({
@@ -130,14 +131,14 @@ describe('HomeComponent', () => {
                 id: 1,
                 name: 'Mark I',
                 collectionId: 1,
-                creatorId: 1,
+                userId: '1',
                 blocks: [],
             },
             {
                 id: 2,
                 name: 'Mark II',
                 collectionId: 1,
-                creatorId: 1,
+                userId: '1',
                 blocks: [],
             },
         ];

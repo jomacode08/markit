@@ -4,7 +4,7 @@ export interface Collection {
     id: number;
     name: string;
     isMain : boolean;
-    creatorId ?: number;
+    userId ?: string;
     parentId  ?: number;
     emoji ?: string;
     collectionItems ?: CollectionItem[];

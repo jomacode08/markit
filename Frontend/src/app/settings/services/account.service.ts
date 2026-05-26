@@ -10,6 +10,9 @@ export class AccountService {
     
     constructor(private http: HttpClient) { }
 
+    public getByCurrentSession(): Observable<Account> {
+        return this.http.get<Account>(`${ this.BASE_URL }/me`);
+    }
     public getByUserId( userId: string ): Observable<Account> {
         return this.http.get<Account>(`${ this.BASE_URL }/${userId}`);
     }

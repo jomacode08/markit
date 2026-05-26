@@ -1,62 +1,26 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <!-- modal-body section -->
   <div class="modal-body">
-    <!-- First Name Field -->
-    <div class="form-field">
-      <label for="firstName">First Name</label>
-      <input
-        id="firstName"
-        pInputText
-        formControlName="firstName"
-        maxlength="100"
-        autocomplete="off"
-        [class.invalid]="isInvalidField('firstName')"
-      />
-      @if (isInvalidField('firstName')) {
-        <shared-error-field [validationField]="getValidationField('firstName', 'masc', 'first name')" />
-      }
-    </div>
-
-    <!-- Last Name Field -->
-    <div class="form-field">
-      <label for="lastName">Last Name</label>
-      <input
-        id="lastName"
-        pInputText
-        formControlName="lastName"
-        maxlength="100"
-        autocomplete="off"
-        [class.invalid]="isInvalidField('lastName')"
-      />
-      @if (isInvalidField('lastName')) {
-        <shared-error-field [validationField]="getValidationField('lastName', 'masc', 'last name')" />
-      }
-    </div>
-    
     <div class="fields-container">
-      <!-- Roles MultiSelect -->
+      <!-- Name Field -->
       <div class="form-field">
-        <label for="roles">Roles</label>
-        <p-multiSelect
-          id="roles"
-          formControlName="roles"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Select roles"
-          appendTo="body"
-          class="w-full"
-          size="small"
-          [options]="roleOptions"
-          [class.invalid]="isInvalidField('roles')"
+        <label for="firstName">Name</label>
+        <input
+          id="name"
+          pInputText
+          formControlName="name"
+          maxlength="256"
+          autocomplete="off"
+          [class.invalid]="isInvalidField('name')"
         />
-        @if (isInvalidField('roles')) {
-          <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+        @if (isInvalidField('name')) {
+          <shared-error-field [validationField]="getValidationField('name', 'masc', 'name')" />
         }
       </div>
 
-      <!-- User Name (Email) Field -->
+      <!-- User Name Field -->
       <div class="form-field">
-        <label for="userName">User Name (Email)</label>
+        <label for="userName">Email</label>
         <input
           id="userName"
           pInputText
@@ -80,7 +44,7 @@
             inputId="password"
             formControlName="password"
             autocomplete="off"
-            styleClass="w-full"
+            class="w-full"
             inputStyleClass="w-full"
             [toggleMask]="true"
             [class.invalid]="isInvalidField('password')"
@@ -117,6 +81,26 @@
           }
         </div>
       }
+
+      <!-- Roles MultiSelect -->
+      <div class="form-field">
+        <label for="roles">Roles</label>
+        <p-multiSelect
+          id="roles"
+          formControlName="roles"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select roles"
+          appendTo="body"
+          class="w-full"
+          size="small"
+          [options]="roleOptions"
+          [class.invalid]="isInvalidField('roles')"
+        />
+        @if (isInvalidField('roles')) {
+          <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+        }
+      </div>
       
       <div class="form-field">
         <label for="enabled">Enabled</label>

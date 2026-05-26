@@ -1,12 +1,12 @@
-@if (creator$ | async; as creator) {
+@if (account$ | async; as account) {
     <div class="container">
         <!-- User Presentation -->
         <div class="grid my-5">
             <!-- Picture -->
             <div class="col-12 md:col-5 flex justify-content-center">
                 <div class="avatar">
-                    @if (creator.picture) {
-                        <img class="border-circle" [src]="convertToLargerImageUrl(creator.picture)" alt="user picture" referrerpolicy="no-referrer">
+                    @if (account.picture) {
+                        <img class="border-circle" [src]="convertToLargerImageUrl(account.picture)" alt="user picture" referrerpolicy="no-referrer">
                     }
                 </div>
             </div>
@@ -14,114 +14,10 @@
             <div class="col-12 md:col-7 md:border-left-1 welcome-box">
                 <p class="text-3xl font-light">
                     <span>👋 Hello, </span>
-                    <span class="font-semibold md:mr-3">{{ creator.firstName }}</span>
+                    <span class="font-semibold md:mr-3">{{ account.name }}</span>
                 </p>
             </div>
         </div>
-    
-        <p-divider align="left" type="solid">
-            <span class="text-xl font-playfair">General information</span>
-        </p-divider>
-    
-        <!-- Form -->
-        <form
-            [formGroup]="form"
-            (submit)="onSubmitForm()"
-            autocomplete="off"
-        >
-            <!-- First Name -->
-            <div class="field">
-                <label for="firstName">First Name</label>
-                <input 
-                    id="firstName"
-                    pInputText
-                    formControlName="firstName"
-                    type="text"
-                    placeholder="First Name"
-                    class="square w-full"
-                    autocomplete="off"
-                />
-                <shared-error-field
-                    *ngIf="isInvalidField('firstName')"
-                    [validationField]="getValidationField('firstName', 'masc', 'first name')">
-                </shared-error-field>              
-            </div>
-            <!-- Last Name -->
-            <div class="field">
-                <label for="lastName">Last Name</label>
-                <input 
-                    id="lastName"
-                    pInputText
-                    formControlName="lastName"
-                    type="text"
-                    placeholder="Last Name"
-                    class="square w-full"
-                    autocomplete="off"
-                />
-                <shared-error-field
-                    *ngIf="isInvalidField('lastName')"
-                    [validationField]="getValidationField('lastName', 'masc', 'last name')">
-                </shared-error-field>              
-            </div>
-            <!-- Birth Date -->
-            <div class="field">
-                <label for="birthDate">Birth Date</label>
-                <p-datepicker
-                    class="w-full"
-                    formControlName="birthDate"
-                    inputId="birthDate"
-                    dateFormat="dd/mm/yy"
-                    dataType="string"
-                    [maxDate]="maxBirthDate"
-                    [minDate]="minBirthDate"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                />
-                <shared-error-field
-                *ngIf="isInvalidField('birthDate')"
-                [validationField]="getValidationField('birthDate', 'masc', 'birth date')"
-                ></shared-error-field>
-            </div>
-            <!-- Gender -->
-            <div class="field mb-5">
-                <label>Gender</label>
-                <div class="flex gap-5">
-                    <div>
-                        <p-radioButton
-                            [value]="Gender.Female"
-                            inputId="female"
-                            formControlName="gender">
-                        </p-radioButton>
-                        <label for="female" class="ml-2">Female</label>
-                    </div>
-                    <div>
-                        <p-radioButton
-                            [value]="Gender.Male"
-                            inputId="male"
-                            formControlName="gender">
-                        </p-radioButton>
-                        <label for="male" class="ml-2">Male</label>
-                    </div>
-                </div>
-                <shared-error-field
-                    *ngIf="isInvalidField('gender')"
-                    [validationField]="getValidationField('gender', 'masc')"
-                ></shared-error-field>                
-            </div>
-            <!-- Submit Button -->
-             <div class="flex justify-content-end">
-                 <div class="w-full md:w-12rem">
-                    <p-button
-                        type="submit"
-                        size="small"
-                        severity="primary"
-                        label="Update profile"
-                        icon="fa fa-pencil"
-                        [disabled]="submit()"
-                    />
-                 </div>
-             </div>
-        </form>
 
         <p-divider align="left" type="solid">
             <span class="text-xl font-playfair">Sign in methods</span>

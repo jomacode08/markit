@@ -1,5 +1,4 @@
 ﻿﻿using markit.API.Controllers.Common;
-using markit.Application.Contracts.Authentication;
 using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.UpdateAccount;
@@ -8,6 +7,7 @@ using markit.Application.Features.Accounts.Queries.GetAccountByUserId;
 using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
+using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +19,9 @@ namespace markit.API.Controllers.Security
     public class AccountsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ISessionService _sessionService;
+        private readonly SessionService _sessionService;
 
-        public AccountsController(IMediator mediator, ISessionService sessionService)
+        public AccountsController(IMediator mediator, SessionService sessionService)
         {
             _mediator = mediator;
             _sessionService = sessionService;

@@ -51,7 +51,7 @@ describe('MarkViewerComponent', () => {
         id: 123,
         name : 'Test mark',
         inputName: 'Test mark',
-        creatorId: 1,
+        userId: '1',
         collectionId: 1,
         emoji: '📃',
         collectionName: 'Collection test',

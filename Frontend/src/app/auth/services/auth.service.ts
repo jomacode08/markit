@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { AuthRequest } from '../interfaces/auth-request';
 import { AuthStatus } from '../interfaces/auth-status.enum';
 import { AuthenticatedUser } from '../interfaces/auth-user';
-import { ISAUTHENTICATED_STORAGE_KEY, MARKS_STORAGE_KEY, THEME } from '../../shared/utils/constant';
+import { ISAUTHENTICATED_STORAGE_KEY, MARKS_STORAGE_KEY } from '../../shared/utils/constant';
 import { SignInMethods } from '../interfaces/signin-methods';
 import { AuthRole } from '../interfaces/auth-role.enum';
 import { CustomMessageService } from '../../shared/services/custom-message.service';

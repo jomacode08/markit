@@ -1,6 +1,5 @@
 export interface AccountSummary {
     id : string,
-    creatorId : number,
     userName: string,
     accessType : AccessType,
     createdDate : Date,
