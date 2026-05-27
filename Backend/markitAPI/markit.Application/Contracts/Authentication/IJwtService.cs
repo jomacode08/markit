@@ -9,7 +9,7 @@ namespace markit.Application.Contracts.Authentication
         Task<TokenModel> GenerateTokenPairAsync(AppUser user);
         Task<TokenModel> RefreshAsync(TokenModel tokens);
         Task RevokeAsync(AppUser user);
-        Task IssueDemoTokenAsync(AppUser user, HttpContext context);
+        Task IssueAccessTokenAsync(AppUser user, HttpContext context, DateTime expiresAt);
         void SetTokenPairInCookies(TokenModel tokenModel, HttpContext context);
     }
 }

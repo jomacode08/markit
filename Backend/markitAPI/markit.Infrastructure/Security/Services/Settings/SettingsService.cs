@@ -37,8 +37,7 @@ namespace markit.Infrastructure.Security.Services.Settings
                 .AsNoTracking()
                 .Where(s =>
                     s.Id.Equals(SystemConfigKeys.IS_DEMO_ENABLED_KEY)
-                    || s.Id.Equals(SystemConfigKeys.DEMO_USER_ID_KEY)
-                    || s.Id.Equals(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY)
+                    || s.Id.Equals(SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES)
                 ).ToListAsync();
 
             _cache.Set(

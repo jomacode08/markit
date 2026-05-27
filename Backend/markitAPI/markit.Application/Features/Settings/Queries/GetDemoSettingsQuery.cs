@@ -21,13 +21,11 @@ namespace markit.Application.Features.Settings.Queries
         {
             IReadOnlyList<SystemConfig> settings = await _settingsService.GetForDemoAsync();
             string? isEnabledValue = GetSettingValue(SystemConfigKeys.IS_DEMO_ENABLED_KEY, settings);
-            string? userIdValue = GetSettingValue(SystemConfigKeys.DEMO_USER_ID_KEY, settings);
-            string? tokenDurationInMinutesValue = GetSettingValue(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY, settings);
-            
+            string? sessionDurationInMinutesValue = GetSettingValue(SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES, settings);
+
             return ConstructDemoSettings(
                 isEnabledValue,
-                userIdValue,
-                tokenDurationInMinutesValue
+                sessionDurationInMinutesValue
             );
         }
 
@@ -38,8 +36,7 @@ namespace markit.Application.Features.Settings.Queries
 
         private static DemoSettings ConstructDemoSettings(
             string? isEnabledValue,
-            string? userIdValue,
-            string? tokenDurationInMinutesValue
+            string? sessionDurationInMinutesValue
         ) {
             DemoSettings demoSettings = new();
 
@@ -48,12 +45,11 @@ namespace markit.Application.Features.Settings.Queries
                 demoSettings.IsEnabled = isEnabled;
             }
 
-            if (int.TryParse(tokenDurationInMinutesValue, out int tokenDurationInMinutes))
+            if (int.TryParse(sessionDurationInMinutesValue, out int sessionDurationInMinutes))
             {
-                demoSettings.TokenDurationInMinutes = tokenDurationInMinutes;
+                demoSettings.SessionDurationInMinutes = sessionDurationInMinutes;
             }
 
-            demoSettings.UserId = userIdValue;
             return demoSettings;
         }
     }

@@ -31,9 +31,9 @@ namespace markit.API.Controllers.Security
         [AllowAnonymous]
         [HttpPost]
         [EnableRateLimiting(RateLimiterPolicies.DEMO_LOGIN_QUOTA)]
-        public async Task<ActionResult<AuthenticatedUser>> CreateSession([FromQuery][Required] string hostName)
+        public async Task<ActionResult<AuthenticatedUser>> CreateSession([FromQuery][Required] string guestName)
         {
-            AppUser demoUser = await _demoService.CreateSessionAsync(hostName, HttpContext);
+            AppUser demoUser = await _demoService.CreateSessionAsync(guestName, HttpContext);
             IReadOnlyList<string> roles = GetUserRolesFromClaims();
             if (demoUser.Email is null) return BadRequest("Demo user email is required.");
 

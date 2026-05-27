@@ -65,8 +65,7 @@
         public static class SystemConfigKeys
         {
             public const string IS_DEMO_ENABLED_KEY = "Demo:IsEnabled";
-            public const string DEMO_USER_ID_KEY = "Demo:UserId";
-            public const string DEMO_TOKEN_DURATION_IN_MINUTES_KEY = "Demo:TokenDurationInMinutes";
+            public const string DEMO_SESSION_DURATION_IN_MINUTES = "Demo:SessionDurationInMinutes";
             public const string AUTH_IS_GOOGLE_ENABLED_KEY = "Auth:IsGoogleEnabled";
             public const string AUTH_IS_GITHUB_ENABLED_KEY = "Auth:IsGitHubEnabled";
         }

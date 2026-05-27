@@ -1,11 +1,8 @@
 ﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Settings;
-using markit.Application.Exceptions;
 using markit.Application.Features.Settings.Queries.ViewModels;
-using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Settings;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -14,31 +11,25 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
     public class UpdateDemoSettingsCommand : IRequest<DemoSettings>
     {
         public bool IsEnabled { get; set; }
-        public string UserId { get; set; } = string.Empty;
-        public int TokenDurationInMinutes { get; set; }
+        public int SessionDurationInMinutes { get; set; }
     }
 
     public class UpdateDemoSettingsCommandHandler : IRequestHandler<UpdateDemoSettingsCommand, DemoSettings>
     {
         private readonly ISettingsService _settingsService;
-        private readonly UserManager<AppUser> _userManager;
 
-        public UpdateDemoSettingsCommandHandler(ISettingsService settingsService, UserManager<AppUser> userManager)
+        public UpdateDemoSettingsCommandHandler(ISettingsService settingsService)
         {
             _settingsService = settingsService;
-            _userManager = userManager;
         }
 
         public async Task<DemoSettings> Handle(UpdateDemoSettingsCommand request, CancellationToken cancellationToken)
         {
-            await ValidateDemoUser(request.UserId);
-
             IReadOnlyList<SystemConfig> existentConfigs = await _settingsService.GetForDemoAsync();
             Dictionary<string, string> requestedConfigValues = new()
             {
                 { SystemConfigKeys.IS_DEMO_ENABLED_KEY, request.IsEnabled.ToString() },
-                { SystemConfigKeys.DEMO_USER_ID_KEY, request.UserId },
-                { SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY, request.TokenDurationInMinutes.ToString() },
+                { SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES, request.SessionDurationInMinutes.ToString() },
             };
 
             await SyncSystemConfigs(existentConfigs, requestedConfigValues);
@@ -46,8 +37,7 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
             return new DemoSettings
             {
                 IsEnabled = request.IsEnabled,
-                UserId = request.UserId,
-                TokenDurationInMinutes = request.TokenDurationInMinutes
+                SessionDurationInMinutes = request.SessionDurationInMinutes
             };
         }
 
@@ -112,18 +102,6 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
                 Value = value,
                 Description = Utilities.GetSystemConfigDescription(key)
             };
-        }
-
-        private async Task ValidateDemoUser(string userId)
-        {
-            AppUser user = await _userManager.FindByIdAsync(userId)
-                ?? throw new NotFoundException("Users", userId);
-            IList<string> roles = await _userManager.GetRolesAsync(user);
-
-            if (!roles.Contains(Role.DEMO_NAME) || roles.Count != 1 || !user.Enabled)
-            {
-                throw new CustomValidationException("The provided demo user is not available or is invalid.");
-            }
         }
     }
 }

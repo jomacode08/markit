@@ -1,6 +1,5 @@
 ﻿﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Authentication;
-using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
@@ -19,16 +18,13 @@ namespace markit.Infrastructure.Security.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly ISettingsService _settingsService;
         private readonly JwtSettings _jwtSettings;
         private readonly UserManager<AppUser> _userManager;
 
         public JwtService(
-            ISettingsService settingsService,
             IOptions<JwtSettings> jwtSettings,
             UserManager<AppUser> userManager)
         {
-            _settingsService = settingsService;
             _jwtSettings = jwtSettings.Value;
             _userManager = userManager;
         }
@@ -124,16 +120,8 @@ namespace markit.Infrastructure.Security.Services
             );
         }
 
-        public async Task IssueDemoTokenAsync(AppUser user, HttpContext context)
+        public async Task IssueAccessTokenAsync(AppUser user, HttpContext context, DateTime expiresAt)
         {
-            bool isDemo = await _userManager.IsInRoleAsync(user, Role.DEMO_NAME);
-            if (!isDemo || !user.Enabled) throw new CustomValidationException("The user does not have sufficient permissions to continue.");
-            string? demoTokenDurationInMinutesValue = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_TOKEN_DURATION_IN_MINUTES_KEY);
-
-            if (!int.TryParse(demoTokenDurationInMinutesValue, out int demoTokenDurationInMinutes))
-                throw new CustomValidationException("Demo mode is not available due to a configuration error.");
-
-            DateTime expiresAt = DateTime.UtcNow.AddMinutes(demoTokenDurationInMinutes);
             string token = await GenerateAccessTokenAsync(user, expiresAt);
             SetHttpOnlyCookie(
                 context,

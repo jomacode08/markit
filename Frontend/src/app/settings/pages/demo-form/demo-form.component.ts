@@ -35,8 +35,7 @@ export class DemoFormComponent extends ValidatorErrorField implements OnInit {
   private readonly CONFIRMATION_MESSAGE : string = "The demo settings were updated successfully.";
   public form : FormGroup<{
     isEnabled : FormControl<boolean>,
-    userId : FormControl<string>,
-    tokenDurationInMinutes : FormControl<number>,
+    sessionDurationInMinutes : FormControl<number>,
   }>;
   protected isSubmitting = signal<boolean>(false);
 
@@ -49,8 +48,7 @@ export class DemoFormComponent extends ValidatorErrorField implements OnInit {
     super();
     this.form = fb.nonNullable.group({
       isEnabled : [false],
-      userId : ['', Validators.required],
-      tokenDurationInMinutes : [25, [Validators.required, Validators.min(0)]]
+      sessionDurationInMinutes : [0, [Validators.required, Validators.min(0)]]
     });
   }
 

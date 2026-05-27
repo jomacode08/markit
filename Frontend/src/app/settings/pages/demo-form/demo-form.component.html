@@ -3,7 +3,7 @@
     <div class="form-field">
         <div>
             <label for="isEnabled">Enabled</label>
-            <p class="form-description">Turn this on to enable the demo features of the app. It will allow users to authenticate using the configured demo user in a period of time.</p>
+            <p class="form-description">Turn this on to enable the demo features of the app. It will allow users to authenticate using a temporary host account.</p>
         </div>
         <div>
             <p-toggleSwitch
@@ -12,42 +12,22 @@
             />
         </div>
     </div>
-    <!-- User Id -->
+    <!-- Session duration -->
     <div class="form-field">
         <div>
-            <label for="userId">User ID</label>
-            <p class="form-description">The ID of the user designated for demo purposes.</p>
-        </div>
-        <div>
-            <input
-                id="userId"
-                pInputText
-                formControlName="userId"
-                maxlength="100"
-                autocomplete="off"
-                [class.invalid]="isInvalidField('userId')"
-            />
-            @if (isInvalidField('userId')) {
-                <shared-error-field [validationField]="getValidationField('userId', 'masc', 'user ID')" />
-            }
-        </div>
-    </div>
-    <!-- Token duration -->
-    <div class="form-field">
-        <div>
-            <label for="tokenDurationInMinutes">Token duration</label>
-            <p class="form-description">The validity period (in minutes) for the demo access token.</p>
+            <label for="tokenDurationInMinutes">Session duration</label>
+            <p class="form-description">The validity period (in minutes) for the demo session.</p>
         </div>
         <div>
             <p-inputNumber
                 inputStyleClass="w-full"
-                inputId="tokenDurationInMinutes"
-                formControlName="tokenDurationInMinutes"
+                inputId="sessionDurationInMinutes"
+                formControlName="sessionDurationInMinutes"
                 autocomplete="off"
-                [class.invalid]="isInvalidField('tokenDurationInMinutes')"
+                [class.invalid]="isInvalidField('sessionDurationInMinutes')"
             />
-            @if (isInvalidField('tokenDurationInMinutes')) {
-                <shared-error-field [validationField]="getValidationField('tokenDurationInMinutes', 'masc', 'token duration')" />
+            @if (isInvalidField('sessionDurationInMinutes')) {
+                <shared-error-field [validationField]="getValidationField('sessionDurationInMinutes', 'masc', 'session duration')" />
             }
         </div>
     </div>

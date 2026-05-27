@@ -6,10 +6,9 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
     {
         public UpdateDemoSettingsCommandValidator() {
             RuleFor(c => c.IsEnabled).NotNull().WithMessage("The isEnabled field is required.");
-            RuleFor(c => c.UserId).NotEmpty().WithMessage("The userId field is required.");
-            RuleFor(c => c.TokenDurationInMinutes)
-                .NotEmpty().WithMessage("The tokenDurationInMinutes field is required.")
-                .GreaterThan(0).WithMessage("The tokenDurationInMinutes must be greater than zero.");
+            RuleFor(c => c.SessionDurationInMinutes)
+                .NotEmpty().WithMessage("The sessionDurationInMinutes field is required.")
+                .GreaterThan(0).WithMessage("The sessionDurationInMinutes must be greater than zero.");
         }
     }
 }

@@ -23,7 +23,6 @@ namespace markit.Infrastructure.Security.Services.Demo
         private readonly IJwtService _jwtService;
         private readonly ISettingsService _settingsService;
         private readonly IMediator _mediator;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
         private const string CONFIGURATION_ERROR_MESSAGE = "Demo mode is not available due to a configuration error.";
@@ -37,7 +36,6 @@ namespace markit.Infrastructure.Security.Services.Demo
             ILogger<DemoService> logger,
             IJwtService jwtService,
             ISettingsService settingsService,
-            SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             IMediator mediator
         )
@@ -45,21 +43,20 @@ namespace markit.Infrastructure.Security.Services.Demo
             _logger = logger;
             _jwtService = jwtService;
             _settingsService = settingsService;
-            _signInManager = signInManager;
             _userManager = userManager;
             _mediator = mediator;
         }
 
-        public async Task<AppUser> CreateSessionAsync(string hostName, HttpContext context)
+        public async Task<AppUser> CreateSessionAsync(string guestName, HttpContext context)
         {
-            if (string.IsNullOrWhiteSpace(hostName))
-                throw new CustomValidationException("Host name is required.");
+            if (string.IsNullOrWhiteSpace(guestName))
+                throw new CustomValidationException("Guest name is required.");
 
             CreateLogEntry(DEMO_SESSION_ATTEMPT_MESSAGE);
             if (!await IsDemoEnabledAsync()) throw new CustomValidationException(DEMO_MODE_DISABLED_ERROR_MESSAGE);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-            AccountVm account = await CreateHostAccountAsync(hostName);
+            AccountVm account = await CreateGuestAccountAsync(guestName);
             AppUser user = await _userManager.FindByIdAsync(account.UserId)
                 ?? throw new NotFoundException("AppUsers", account.UserId);
             await EnsureDemoUserIsValidAsync(user);
@@ -81,14 +78,25 @@ namespace markit.Infrastructure.Security.Services.Demo
             );
         }
 
+        private async Task<DateTime> GetSessionExpirationDateAsync()
+        {
+            string? demoTokenDurationInMinutesValue = await _settingsService
+                .GetValueAsync(SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES);
+
+            if (!int.TryParse(demoTokenDurationInMinutesValue, out int demoTokenDurationInMinutes))
+                throw new CustomValidationException(CONFIGURATION_ERROR_MESSAGE);
+
+            return DateTime.UtcNow.AddMinutes(demoTokenDurationInMinutes);
+        }
+
         private async Task AuthenticateDemoUserAsync(AppUser user, HttpContext context)
         {
-            await _jwtService.IssueDemoTokenAsync(user, context);
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            DateTime expiresAt = await GetSessionExpirationDateAsync();
+            await _jwtService.IssueAccessTokenAsync(user, context, expiresAt);
             CreateLogEntry(SUCCESSFUL_DEMO_SESSION_MESSAGE);
         }
 
-        private async Task<AccountVm> CreateHostAccountAsync(string name)
+        private async Task<AccountVm> CreateGuestAccountAsync(string name)
         {
             CreateAccountCommand command = new()
             {
