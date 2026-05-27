@@ -6,7 +6,7 @@ namespace markit.Application.Contracts.Authentication.Demo
 {
     public interface IDemoService
     {
-        Task<AppUser> LoginAsync(HttpContext context);
+        Task<AppUser> CreateSessionAsync(string hostName, HttpContext context);
         Task<DemoStatus> GetStatusAsync();
     }
 }

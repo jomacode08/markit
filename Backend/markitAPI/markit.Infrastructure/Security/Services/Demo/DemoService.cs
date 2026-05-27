@@ -1,12 +1,18 @@
-﻿﻿using markit.Application.Contracts.Authentication;
+﻿﻿using markit.Application.Common.Helpers;
+using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
+using markit.Application.Features.Account.Commands.CreateAccount;
+using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Demo;
+using markit.Application.Models.Authentication.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Infrastructure.Security.Services.Demo
@@ -16,23 +22,24 @@ namespace markit.Infrastructure.Security.Services.Demo
         private readonly ILogger<DemoService> _logger;
         private readonly IJwtService _jwtService;
         private readonly ISettingsService _settingsService;
+        private readonly IMediator _mediator;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
         private const string CONFIGURATION_ERROR_MESSAGE = "Demo mode is not available due to a configuration error.";
         private const string DEMO_MODE_DISABLED_ERROR_MESSAGE = "Demo mode is currently disabled.";
-        private const string DEMO_USER_NOT_CONFIGURED_ERROR_MESSAGE = "The demo user has not been configured in the application.";
 
-        private const string DEMO_LOGIN_ATTEMPT_MESSAGE = "Demo login attempt.";
-        private const string SUCCESSFUL_DEMO_LOGIN_MESSAGE = "Successful demo login.";
+        private const string DEMO_SESSION_ATTEMPT_MESSAGE = "Demo session attempt.";
+        private const string SUCCESSFUL_DEMO_SESSION_MESSAGE = "Successful demo session created.";
         private const string DEMO_MODE_DISABLED_MESSAGE = "Demo mode was disabled due to user demo availability or a role configuration error.";
 
         public DemoService(
             ILogger<DemoService> logger,
             IJwtService jwtService,
-            ISettingsService settingsService, 
+            ISettingsService settingsService,
             SignInManager<AppUser> signInManager,
-            UserManager<AppUser> userManager
+            UserManager<AppUser> userManager,
+            IMediator mediator
         )
         {
             _logger = logger;
@@ -40,17 +47,26 @@ namespace markit.Infrastructure.Security.Services.Demo
             _settingsService = settingsService;
             _signInManager = signInManager;
             _userManager = userManager;
+            _mediator = mediator;
         }
 
-        public async Task<AppUser> LoginAsync(HttpContext context)
+        public async Task<AppUser> CreateSessionAsync(string hostName, HttpContext context)
         {
-            CreateInformationLogEntry(DEMO_LOGIN_ATTEMPT_MESSAGE);
+            if (string.IsNullOrWhiteSpace(hostName))
+                throw new CustomValidationException("Host name is required.");
+
+            CreateLogEntry(DEMO_SESSION_ATTEMPT_MESSAGE);
             if (!await IsDemoEnabledAsync()) throw new CustomValidationException(DEMO_MODE_DISABLED_ERROR_MESSAGE);
-            
-            AppUser demoUser = await GetUserDemoAsync();
-            await EnsureDemoUserIsValidAsync(demoUser);
-            await AuthenticateDemoUserAsync(demoUser, context);
-            return demoUser;
+
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            AccountVm account = await CreateHostAccountAsync(hostName);
+            AppUser user = await _userManager.FindByIdAsync(account.UserId)
+                ?? throw new NotFoundException("AppUsers", account.UserId);
+            await EnsureDemoUserIsValidAsync(user);
+            await AuthenticateDemoUserAsync(user, context);
+            scope.Complete();
+
+            return user;
         }
 
         public async Task<DemoStatus> GetStatusAsync()
@@ -69,7 +85,21 @@ namespace markit.Infrastructure.Security.Services.Demo
         {
             await _jwtService.IssueDemoTokenAsync(user, context);
             await _signInManager.SignInAsync(user, isPersistent: false);
-            CreateInformationLogEntry(SUCCESSFUL_DEMO_LOGIN_MESSAGE);
+            CreateLogEntry(SUCCESSFUL_DEMO_SESSION_MESSAGE);
+        }
+
+        private async Task<AccountVm> CreateHostAccountAsync(string name)
+        {
+            CreateAccountCommand command = new()
+            {
+                Name = name,
+                UserName = EmailGenerator.GenerateDummyEmail(usernameLength: 10),
+                AccessType = AccessType.External,
+                Roles = [Role.DEMO_NAME],
+                Enabled = true
+            };
+
+            return await _mediator.Send(command);
         }
 
         private async Task EnsureDemoUserIsValidAsync(AppUser user)
@@ -89,23 +119,15 @@ namespace markit.Infrastructure.Security.Services.Demo
             return isDemoEnabled;
         }
 
-        private async Task<AppUser> GetUserDemoAsync()
-        {
-            string demoUserId = await _settingsService.GetValueAsync(SystemConfigKeys.DEMO_USER_ID_KEY)
-                ?? throw new CustomValidationException(DEMO_USER_NOT_CONFIGURED_ERROR_MESSAGE);
-            return await _userManager.FindByIdAsync(demoUserId)
-                ?? throw new NotFoundException("Users", demoUserId);
-        }
-
         private async Task DisableDemoModeAsync()
         {
             await _settingsService.UpdateAsync(SystemConfigKeys.IS_DEMO_ENABLED_KEY, "false");
-            CreateInformationLogEntry(DEMO_MODE_DISABLED_MESSAGE);
+            CreateLogEntry(DEMO_MODE_DISABLED_MESSAGE, LogLevel.Warning);
         }
 
-        private void CreateInformationLogEntry(string message)
+        private void CreateLogEntry(string message, LogLevel level = LogLevel.Information)
         {
-            _logger.LogInformation("{LogMessage}", message);
+            _logger.Log(level, "{LogMessage}", message);
         }
     }
 }

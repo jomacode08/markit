@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -30,9 +31,9 @@ namespace markit.API.Controllers.Security
         [AllowAnonymous]
         [HttpPost]
         [EnableRateLimiting(RateLimiterPolicies.DEMO_LOGIN_QUOTA)]
-        public async Task<ActionResult<AuthenticatedUser>> Login()
+        public async Task<ActionResult<AuthenticatedUser>> CreateSession([FromQuery][Required] string hostName)
         {
-            AppUser demoUser = await _demoService.LoginAsync(HttpContext);
+            AppUser demoUser = await _demoService.CreateSessionAsync(hostName, HttpContext);
             IReadOnlyList<string> roles = GetUserRolesFromClaims();
             if (demoUser.Email is null) return BadRequest("Demo user email is required.");
 
