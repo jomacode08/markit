@@ -48,7 +48,7 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
   public roleOptions : RoleOption[] = [
     { label: 'Admin', value: AuthRole.ADMIN },
     { label: 'General', value: AuthRole.GENERAL },
-    { label: 'Demo', value: AuthRole.DEMO },
+    { label: 'Guest', value: AuthRole.GUEST },
   ];
   
   public submit = signal<boolean>(false);

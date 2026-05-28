@@ -65,7 +65,7 @@ describe('HasRoleGuard', () => {
         userId: '1',
         givenName: 'Test User',
         email: 'test@example.com',
-        roles: [AuthRole.ADMIN, AuthRole.GENERAL, AuthRole.DEMO]
+        roles: [AuthRole.ADMIN, AuthRole.GENERAL, AuthRole.GUEST]
       };
       currentUserSignal.set(mockUser);
 
@@ -125,7 +125,7 @@ describe('HasRoleGuard', () => {
         userId: '1',
         givenName: 'Test User',
         email: 'test@example.com',
-        roles: [AuthRole.DEMO]
+        roles: [AuthRole.GUEST]
       };
       currentUserSignal.set(mockUser);
 
@@ -215,11 +215,11 @@ describe('HasRoleGuard', () => {
         userId: '1',
         givenName: 'Test User',
         email: 'test@example.com',
-        roles: [AuthRole.ADMIN, AuthRole.GENERAL, AuthRole.DEMO]
+        roles: [AuthRole.ADMIN, AuthRole.GENERAL, AuthRole.GUEST]
       };
       currentUserSignal.set(mockUser);
 
-      const guard = hasRoleMatchGuard([AuthRole.GENERAL, AuthRole.DEMO]);
+      const guard = hasRoleMatchGuard([AuthRole.GENERAL, AuthRole.GUEST]);
 
       // Act
       const result = TestBed.runInInjectionContext(() => guard({} as any, []));
@@ -235,7 +235,7 @@ describe('HasRoleGuard', () => {
         userId: '1',
         givenName: 'Test User',
         email: 'test@example.com',
-        roles: [AuthRole.DEMO]
+        roles: [AuthRole.GUEST]
       };
       currentUserSignal.set(mockUser);
 
@@ -279,7 +279,7 @@ describe('HasRoleGuard', () => {
       };
       currentUserSignal.set(mockUser);
 
-      const guard = hasRoleMatchGuard([AuthRole.ADMIN, AuthRole.DEMO]);
+      const guard = hasRoleMatchGuard([AuthRole.ADMIN, AuthRole.GUEST]);
 
       // Act
       const result = TestBed.runInInjectionContext(() => guard({} as any, []));
@@ -309,7 +309,7 @@ describe('HasRoleGuard', () => {
         userId: '1',
         givenName: 'Test User',
         email: 'test@example.com',
-        roles: [AuthRole.DEMO]
+        roles: [AuthRole.GUEST]
       };
       currentUserSignal.set(mockUser);
 

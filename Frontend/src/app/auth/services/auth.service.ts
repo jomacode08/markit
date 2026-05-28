@@ -112,5 +112,5 @@ export class AuthService {
     localStorage.setItem(ISAUTHENTICATED_STORAGE_KEY, isAuthenticated ? 'true' : 'false');
   }
 
-  private isUserDemo = () => this._currentUser()?.roles.includes(AuthRole.DEMO) ?? false;
+  private isUserDemo = () => this._currentUser()?.roles.includes(AuthRole.GUEST) ?? false;
 }
