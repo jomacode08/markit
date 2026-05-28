@@ -75,7 +75,7 @@ namespace markit.Infrastructure.Security.Services
 
         private async Task<bool> IsDemoUser(AppUser user)
         {
-            return await _userManager.IsInRoleAsync(user, Role.DEMO_NAME);
+            return await _userManager.IsInRoleAsync(user, Role.GUEST_NAME);
         }
     }
 }

@@ -48,17 +48,17 @@
         {
             public const string ADMIN_NAME = "Admin";
             public const string GENERAL_NAME = "General";
-            public const string DEMO_NAME = "Demo";
+            public const string GUEST_NAME = "Guest";
 
             public static readonly string ADMIN_UUID = "5335f3ce-37dd-11ee-be56-0242ac120002";
             public static readonly string GENERAL_UUID = "6ff7edb4-37dd-11ee-be56-0242ac120002";
-            public static readonly string DEMO_UUID = "3c2cba5a-562c-4098-9598-864e96f15397";
+            public static readonly string GUEST_UUID = "3c2cba5a-562c-4098-9598-864e96f15397";
 
             public static readonly IReadOnlyList<string> All = new List<string>()
             {
                 ADMIN_NAME,
                 GENERAL_NAME,
-                DEMO_NAME
+                GUEST_NAME
             }.AsReadOnly();
         }
 

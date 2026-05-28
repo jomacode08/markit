@@ -24,9 +24,9 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 .WithMessage((c, r) => $"The role {r} is not permitted");
 
             RuleFor(c => c.Roles)
-                .Must(c => c.Length == 1 && c[0] == Role.DEMO_NAME)
+                .Must(c => c.Length == 1 && c[0] == Role.GUEST_NAME)
                 .When(c => c.ExpiresAt.HasValue)
-                .WithMessage("Accounts with expiration date must to have only the 'Demo' role");
+                .WithMessage("Accounts with expiration date must to have only the 'Guest' role");
         }
     }
 }

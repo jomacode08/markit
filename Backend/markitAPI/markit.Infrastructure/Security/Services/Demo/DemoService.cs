@@ -61,7 +61,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             AccountVm account = await CreateGuestAccountAsync(guestName);
             AppUser user = await _userManager.FindByIdAsync(account.UserId)
                 ?? throw new NotFoundException("AppUsers", account.UserId);
-            await EnsureDemoUserIsValidAsync(user);
+            await EnsureGuestUserIsValidAsync(user);
             await AuthenticateDemoUserAsync(user, context);
             scope.Complete();
 
@@ -107,7 +107,7 @@ namespace markit.Infrastructure.Security.Services.Demo
                 Name = name,
                 UserName = EmailGenerator.GenerateDummyEmail(usernameLength: 10),
                 AccessType = AccessType.External,
-                Roles = [Role.DEMO_NAME],
+                Roles = [Role.GUEST_NAME],
                 Enabled = true,
                 ExpiresAt = sessionExpiresAt.AddMinutes(ACCOUNT_EXPIRATION_GRACE_PERIOD_IN_MINUTES)
             };
@@ -115,10 +115,10 @@ namespace markit.Infrastructure.Security.Services.Demo
             return await _mediator.Send(command);
         }
 
-        private async Task EnsureDemoUserIsValidAsync(AppUser user)
+        private async Task EnsureGuestUserIsValidAsync(AppUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            if (!roles.Contains(Role.DEMO_NAME) || roles.Count != 1 || !user.Enabled)
+            if (!roles.Contains(Role.GUEST_NAME) || roles.Count != 1 || !user.Enabled)
             {
                 await DisableDemoModeAsync();
                 throw new CustomValidationException(CONFIGURATION_ERROR_MESSAGE);

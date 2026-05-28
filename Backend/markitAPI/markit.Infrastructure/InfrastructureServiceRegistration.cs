@@ -199,7 +199,7 @@ namespace markit.Infrastructure
                     policy.RequireRole([Role.ADMIN_NAME, Role.GENERAL_NAME]);
                 })
                 .AddPolicy(AuthorizationPolicies.DEMO_ONLY, policy =>
-                    policy.RequireRole([Role.DEMO_NAME])
+                    policy.RequireRole([Role.GUEST_NAME])
                 );
             return services;
         }

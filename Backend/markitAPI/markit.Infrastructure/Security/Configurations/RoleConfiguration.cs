@@ -16,12 +16,12 @@ namespace markit.Infrastructure.Security.Configurations
         {
             IdentityRole admin = ConstructIdentityRole(id: Role.ADMIN_UUID, name: Role.ADMIN_NAME);
             IdentityRole general = ConstructIdentityRole(id: Role.GENERAL_UUID, name: Role.GENERAL_NAME);
-            IdentityRole demo = ConstructIdentityRole(id: Role.DEMO_UUID, name: Role.DEMO_NAME);
+            IdentityRole guest = ConstructIdentityRole(id: Role.GUEST_UUID, name: Role.GUEST_NAME);
 
             builder.HasData(
                 admin,
                 general,
-                demo
+                guest
             );
         }
 
