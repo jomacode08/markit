@@ -1,0 +1,49 @@
+<form
+    [formGroup]="form"
+    (submit)="onSubmit()"
+    autocomplete="off"
+>
+    <div class="modal-body">
+        <div class="flex">
+                <div class="field w-full">
+                    <!-- GuestName -->
+                    <input 
+                        id="guestName"
+                        pInputText
+                        formControlName="guestName"
+                        type="text"
+                        placeholder="Guest Name"
+                        class="rounded w-full"
+                        autocomplete="off"
+                    >
+                    @if ( isInvalidField('guestName') ){
+                        <shared-error-field
+                            [validationField]="getValidationField('guestName', 'masc', 'guest name')">
+                        </shared-error-field>
+                    }
+                </div>
+        </div>
+    </div>
+    <div class="modal-footer w-full flex justify-content-end gap-2">
+        <!-- Cancel button -->
+        <p-button
+            id="cancelBtn"
+            type="button"
+            severity="secondary"
+            label="Cancel"
+            size="small"
+            aria-label="cancel"
+            (onClick)="onCancel()"
+        />
+        <!-- Confirm button -->
+        <p-button
+            id="confirmBtn"
+            type="submit"
+            severity="primary"
+            size="small"
+            label="Confirm"
+            aria-label="Confirm"
+            [disabled]="submit()"
+        />
+    </div>
+</form>

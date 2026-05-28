@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
@@ -19,6 +20,7 @@ import { PopupService } from '../../../shared/services/popup.service';
 import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
+import { DemoDialog } from '../../components/demo-dialog/demo-dialog.component';
 
 @Component({
     selector: 'app-login',
@@ -35,7 +37,7 @@ import { ValidatorService } from '../../../shared/services/validator.service';
     styleUrl: './login.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent extends ValidatorErrorField implements OnInit {  
+export class LoginComponent extends ValidatorErrorField implements OnInit, OnDestroy {  
   protected submit = signal<boolean>(false);
   protected authOptions = signal<AuthOptions>({
     isDemoModeAvailable : false,
@@ -51,23 +53,38 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
     password : FormControl<string>
   }>;
 
+  private dialogRef?: DynamicDialogRef<DemoDialog> | null;
+  private readonly DIALOG_CONFIG: DynamicDialogConfig = {
+    header: 'Sign in as a guest',
+    width: '35rem',
+    modal: true,
+    closable: true,
+    dismissableMask : true,
+    styleClass : 'custom-dialog'
+  }; 
+
   public get authRequest(): AuthRequest {
     return this.form.value as AuthRequest;
   }
 
   constructor(
-    private authService : AuthService,
-    private externalLoginService : ExternalLoginService,
-    private fb : FormBuilder,
-    private popupService : PopupService,
-    private router : Router,
-    private validator : ValidatorService,
+    private authService: AuthService,
+    private dialogService: DialogService,
+    private externalLoginService: ExternalLoginService,
+    private fb: FormBuilder,
+    private popupService: PopupService,
+    private router: Router,
+    private validator: ValidatorService,
   ) {
     super()
     this.form = this.fb.nonNullable.group({
       email    : ['', [Validators.required, Validators.maxLength(320), Validators.pattern(this.validator.emailPattern)]],
       password : ['', Validators.required]
     });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.dialogRef) this.dialogRef.destroy();
   }
 
   public ngOnInit(): void {
@@ -93,12 +110,10 @@ export class LoginComponent extends ValidatorErrorField implements OnInit {
   }
 
   public onTryDemo(): void {
-    this.setSubmit(true);
-    this.authService.demo()
-    .subscribe({
-        next : () => this.navigateToDashboard(),
-        error : () => this.setSubmit(false)
-    });
+    this.dialogRef = this.dialogService.open(
+      DemoDialog,
+      this.DIALOG_CONFIG
+    );
   }
 
   //* Methods

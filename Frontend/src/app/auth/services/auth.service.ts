@@ -40,8 +40,10 @@ export class AuthService {
     );
   }
 
-  public demo(): Observable<AuthenticatedUser> {
-    return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/demo`, {})
+  public demo(guestName: string): Observable<AuthenticatedUser> {
+    return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/demo`, {},{
+      params: { guestName }
+    })
     .pipe(
       tap((authUser) => this.setAuthentication(authUser))
     );
