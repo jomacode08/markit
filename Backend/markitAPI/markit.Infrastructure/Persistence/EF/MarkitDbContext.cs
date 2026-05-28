@@ -39,10 +39,11 @@ namespace markit.Infrastructure.Persistence.EF
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new RoleConfiguration());
+            builder.ApplyConfiguration(new AppUserConfiguration());
+            builder.ApplyConfiguration(new BlockConfiguration());
             builder.ApplyConfiguration(new CollectionConfiguration());
             builder.ApplyConfiguration(new MarkConfiguration());
-            builder.ApplyConfiguration(new BlockConfiguration());
+            builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new SystemConfigConfiguration());
 
             ChangeNameSchemas(builder);
