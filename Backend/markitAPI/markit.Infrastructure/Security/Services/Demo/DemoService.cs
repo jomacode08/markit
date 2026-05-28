@@ -25,6 +25,8 @@ namespace markit.Infrastructure.Security.Services.Demo
         private readonly IMediator _mediator;
         private readonly UserManager<AppUser> _userManager;
 
+        private const int ACCOUNT_EXPIRATION_GRACE_PERIOD_IN_MINUTES = 5;
+
         private const string CONFIGURATION_ERROR_MESSAGE = "Demo mode is not available due to a configuration error.";
         private const string DEMO_MODE_DISABLED_ERROR_MESSAGE = "Demo mode is currently disabled.";
 
@@ -47,7 +49,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             _mediator = mediator;
         }
 
-        public async Task<AppUser> CreateSessionAsync(string guestName, HttpContext context)
+        public async Task<AccountVm> CreateSessionAsync(string guestName, HttpContext context)
         {
             if (string.IsNullOrWhiteSpace(guestName))
                 throw new CustomValidationException("Guest name is required.");
@@ -63,7 +65,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             await AuthenticateDemoUserAsync(user, context);
             scope.Complete();
 
-            return user;
+            return account;
         }
 
         public async Task<DemoStatus> GetStatusAsync()
@@ -78,6 +80,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             );
         }
 
+        #region Helpers
         private async Task<DateTime> GetSessionExpirationDateAsync()
         {
             string? demoTokenDurationInMinutesValue = await _settingsService
@@ -98,13 +101,15 @@ namespace markit.Infrastructure.Security.Services.Demo
 
         private async Task<AccountVm> CreateGuestAccountAsync(string name)
         {
+            DateTime sessionExpiresAt = await GetSessionExpirationDateAsync();
             CreateAccountCommand command = new()
             {
                 Name = name,
                 UserName = EmailGenerator.GenerateDummyEmail(usernameLength: 10),
                 AccessType = AccessType.External,
                 Roles = [Role.DEMO_NAME],
-                Enabled = true
+                Enabled = true,
+                ExpiresAt = sessionExpiresAt.AddMinutes(ACCOUNT_EXPIRATION_GRACE_PERIOD_IN_MINUTES)
             };
 
             return await _mediator.Send(command);
@@ -137,5 +142,6 @@ namespace markit.Infrastructure.Security.Services.Demo
         {
             _logger.Log(level, "{LogMessage}", message);
         }
+        #endregion
     }
 }

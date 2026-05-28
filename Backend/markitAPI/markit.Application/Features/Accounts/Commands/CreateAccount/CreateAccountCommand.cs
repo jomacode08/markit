@@ -15,6 +15,7 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
         public string? Password { get; set; }
         public string? Picture { get; set; }
         public bool Enabled { get; set; }
+        public DateTime? ExpiresAt { get; set; }
     }
 
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, AccountVm>
@@ -50,7 +51,8 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
                 roles: request.Roles,
                 password: request.Password,
                 picture: request.Picture,
-                enabled: request.Enabled
+                enabled: request.Enabled,
+                expiresAt: request.ExpiresAt
             );
         }
     }

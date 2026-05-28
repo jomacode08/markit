@@ -1,4 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication.Demo;
+using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Features.Settings.Commands.UpdateDemoSettings;
 using markit.Application.Features.Settings.Queries;
 using markit.Application.Features.Settings.Queries.ViewModels;
@@ -33,16 +34,14 @@ namespace markit.API.Controllers.Security
         [EnableRateLimiting(RateLimiterPolicies.DEMO_LOGIN_QUOTA)]
         public async Task<ActionResult<AuthenticatedUser>> CreateSession([FromQuery][Required] string guestName)
         {
-            AppUser demoUser = await _demoService.CreateSessionAsync(guestName, HttpContext);
-            IReadOnlyList<string> roles = GetUserRolesFromClaims();
-            if (demoUser.Email is null) return BadRequest("Demo user email is required.");
+            AccountVm account = await _demoService.CreateSessionAsync(guestName, HttpContext);
 
             return Ok(new AuthenticatedUser(
-                demoUser.Id,
-                demoUser.GivenName,
-                demoUser.Email,
-                roles,
-                demoUser.Picture
+                UserId: account.UserId,
+                GivenName: account.Name,
+                Email: account.UserName,
+                Roles: account.Roles,
+                Picture: account.Picture
             ));
         }
 
@@ -68,14 +67,6 @@ namespace markit.API.Controllers.Security
         public async Task<ActionResult<DemoSettings>> UpdateSettings([FromBody] UpdateDemoSettingsCommand command)
         {
             return Ok(await _mediator.Send(command));
-        }
-
-        private IReadOnlyList<string> GetUserRolesFromClaims()
-        {
-            return [.. User.Claims
-                .Where(c => c.Type.Equals(ClaimTypes.Role))
-                .Select(c => c.Value)
-            ];
         }
     }
 }

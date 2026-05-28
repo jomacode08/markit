@@ -21,7 +21,12 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
 
             RuleForEach(c => c.Roles)
                 .Must(r => Role.All.Contains(r))
-                .WithMessage((c, r) => $"The role {r} is not permitted.");
+                .WithMessage((c, r) => $"The role {r} is not permitted");
+
+            RuleFor(c => c.Roles)
+                .Must(c => c.Length == 1 && c[0] == Role.DEMO_NAME)
+                .When(c => c.ExpiresAt.HasValue)
+                .WithMessage("Accounts with expiration date must to have only the 'Demo' role");
         }
     }
 }

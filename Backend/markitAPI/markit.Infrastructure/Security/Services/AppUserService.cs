@@ -1,5 +1,6 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
+using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
@@ -56,39 +57,44 @@ namespace markit.Infrastructure.Security.Services
             if (request.AccessType == AccessType.Internal && request.Password == null) 
                 throw new CustomValidationException("The user must have a password.");
 
-            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                // User creation
+                Collection mainCollection = ConstructMainCollection();
+                AppUser identityUser = ConstructAppUser(request, mainCollection);
+                IdentityResult registrationResult = identityUser.AccessType == AccessType.External
+                    ? await _userManager.CreateAsync(identityUser)
+                    : await _userManager.CreateAsync(identityUser, request.Password!);
+                HandleIdentityResult(registrationResult);
+                // Assign user to roles
+                IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
+                HandleIdentityResult(rolesResult);
+                // Update main collection path
+                await UpdateMainCollectionPathAsync(mainCollection);
 
-            // User creation
-            Collection mainCollection = ConstructMainCollection();
-            AppUser identityUser = ConstructAppUser(request, mainCollection);
-            IdentityResult registrationResult = identityUser.AccessType == AccessType.External
-                ? await _userManager.CreateAsync(identityUser)
-                : await _userManager.CreateAsync(identityUser, request.Password!);
-            HandleIdentityResult(registrationResult);
-            // Assign user to roles
-            IdentityResult rolesResult = await _userManager.AddToRolesAsync(identityUser, request.Roles);
-            HandleIdentityResult(rolesResult);
-            // Update main collection path
-            await UpdateMainCollectionPathAsync(mainCollection);
-
-            scope.Complete();
-            return identityUser;
+                scope.Complete();
+                return identityUser;
+            }
         }
 
         public async Task<AppUser> UpdateAsync(UpdateAppUserRequest request)
         {
             AppUser user = await _userManager.FindByIdAsync(request.Id)
                 ?? throw new NotFoundException("Users", request.Id);
-            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
+            {
                 user.GivenName = request.Name;
                 user.Email = request.Email;
                 user.UserName = request.Email;
                 user.Enabled = request.Enabled;
+
                 IdentityResult result = await _userManager.UpdateAsync(user);
                 HandleIdentityResult(result);
                 await UpdateRoles(request.Roles, user);
-            scope.Complete();
-            return user;
+
+                scope.Complete();
+                return user;
+            }
         }
 
         public async Task RenameAsync(RenameAppUserRequest request)
@@ -118,7 +124,8 @@ namespace markit.Infrastructure.Security.Services
                 CreatedDate = DateTime.UtcNow,
                 EmailConfirmed = request.AccessType == AccessType.External,
                 Enabled = request.Enabled,
-                Collections = [mainCollection]
+                Collections = [mainCollection],
+                ExpiresAt = request.ExpiresAt,
             };
         }
 
