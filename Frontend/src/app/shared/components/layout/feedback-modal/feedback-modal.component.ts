@@ -8,5 +8,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedbackModalComponent {
-  protected readonly AUTHOR_WEBSITE: string = 'https://www.jomacode.com';
+  protected readonly AUTHOR_WEBSITE: string = 'www.jomacode.com';
 }
