@@ -38,6 +38,7 @@ namespace markit.Infrastructure.Security.Services.Settings
                 .Where(s =>
                     s.Id.Equals(SystemConfigKeys.IS_DEMO_ENABLED_KEY)
                     || s.Id.Equals(SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES)
+                    || s.Id.Equals(SystemConfigKeys.DEMO_USER_TEMPLATE_ID)
                 ).ToListAsync();
 
             _cache.Set(
@@ -84,7 +85,7 @@ namespace markit.Infrastructure.Security.Services.Settings
             await _context.SaveChangesAsync();
             foreach (string prefix in configs.Select(c => GetKeyPrefix(c.Id)).Distinct())
             {
-                InvalidateGroupCache(GetKeyPrefix(prefix));
+                InvalidateGroupCache(prefix);
             }
         }
 
@@ -116,7 +117,7 @@ namespace markit.Infrastructure.Security.Services.Settings
 
             foreach (string prefix in configs.Select(c => GetKeyPrefix(c.Id)).Distinct())
             {
-                InvalidateGroupCache(GetKeyPrefix(prefix));
+                InvalidateGroupCache(prefix);
             }
         }
 

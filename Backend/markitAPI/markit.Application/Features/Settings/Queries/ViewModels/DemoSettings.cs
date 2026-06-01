@@ -3,6 +3,7 @@
     public class DemoSettings
     {
         public bool IsEnabled { get; set; } = false;
-        public int? SessionDurationInMinutes { get; set; }
+        public int SessionDurationInMinutes { get; set; } = 0;
+        public string UserTemplateId { get; set; } = string.Empty;
     }
 }

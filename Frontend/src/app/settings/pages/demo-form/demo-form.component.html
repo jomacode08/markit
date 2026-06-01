@@ -1,11 +1,11 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <!-- Is Enabled -->
-    <div class="form-field">
+    <div class="form-field flex-column sm:flex-row sm:justify-content-between sm:align-items-center">
         <div>
             <label for="isEnabled">Enabled</label>
             <p class="form-description">Turn this on to enable the demo features of the app. It will allow users to authenticate using a temporary guest account.</p>
         </div>
-        <div>
+        <div class="control-container">
             <p-toggleSwitch
                 name="isEnabled"
                 formControlName="isEnabled"
@@ -13,12 +13,12 @@
         </div>
     </div>
     <!-- Session duration -->
-    <div class="form-field">
+    <div class="form-field flex-column sm:flex-row sm:justify-content-between sm:align-items-center">
         <div>
-            <label for="tokenDurationInMinutes">Session duration</label>
+            <label for="sessionDurationInMinutes">Session duration</label>
             <p class="form-description">The validity period (in minutes) for the demo session.</p>
         </div>
-        <div>
+        <div class="control-container">
             <p-inputNumber
                 inputStyleClass="w-full"
                 inputId="sessionDurationInMinutes"
@@ -28,6 +28,26 @@
             />
             @if (isInvalidField('sessionDurationInMinutes')) {
                 <shared-error-field [validationField]="getValidationField('sessionDurationInMinutes', 'masc', 'session duration')" />
+            }
+        </div>
+    </div>
+    <!-- User template ID -->
+    <div class="form-field flex-column sm:flex-row sm:justify-content-between sm:align-items-center">
+        <div>
+            <label for="userTemplateId">User template ID</label>
+            <p class="form-description">Specify a guest user ID to use as a template for demo sessions. Leave empty to create demo sessions without pre-configured user data.</p>
+        </div>
+        <div class="control-container">
+            <input
+                id="userTemplateId"
+                pInputText
+                formControlName="userTemplateId"
+                maxlength="100"
+                autocomplete="off"
+                [class.invalid]="isInvalidField('userTemplateId')"
+            />
+            @if (isInvalidField('userTemplateId')) {
+                <shared-error-field [validationField]="getValidationField('userTemplateId', 'masc', 'user template ID')" />
             }
         </div>
     </div>

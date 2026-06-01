@@ -1,8 +1,11 @@
-﻿using markit.Application.Common.Helpers;
+﻿﻿using markit.Application.Common.Helpers;
 using markit.Application.Contracts.Settings;
+using markit.Application.Exceptions;
 using markit.Application.Features.Settings.Queries.ViewModels;
+using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Settings;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 using static markit.Application.Helpers.GeneralConstant;
 
@@ -12,15 +15,18 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
     {
         public bool IsEnabled { get; set; }
         public int SessionDurationInMinutes { get; set; }
+        public string UserTemplateId { get; set; } = string.Empty;
     }
 
     public class UpdateDemoSettingsCommandHandler : IRequestHandler<UpdateDemoSettingsCommand, DemoSettings>
     {
         private readonly ISettingsService _settingsService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UpdateDemoSettingsCommandHandler(ISettingsService settingsService)
+        public UpdateDemoSettingsCommandHandler(ISettingsService settingsService, UserManager<AppUser> userManager)
         {
             _settingsService = settingsService;
+            _userManager = userManager;
         }
 
         public async Task<DemoSettings> Handle(UpdateDemoSettingsCommand request, CancellationToken cancellationToken)
@@ -30,15 +36,34 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
             {
                 { SystemConfigKeys.IS_DEMO_ENABLED_KEY, request.IsEnabled.ToString() },
                 { SystemConfigKeys.DEMO_SESSION_DURATION_IN_MINUTES, request.SessionDurationInMinutes.ToString() },
+                { SystemConfigKeys.DEMO_USER_TEMPLATE_ID, request.UserTemplateId }
             };
+
+            if (!string.IsNullOrWhiteSpace(request.UserTemplateId))
+            {
+                await ValidateUserTemplate(userId: request.UserTemplateId);
+            }
 
             await SyncSystemConfigs(existentConfigs, requestedConfigValues);
 
             return new DemoSettings
             {
                 IsEnabled = request.IsEnabled,
-                SessionDurationInMinutes = request.SessionDurationInMinutes
-            };
+                SessionDurationInMinutes = request.SessionDurationInMinutes,
+                UserTemplateId = request.UserTemplateId
+            };        
+        }
+
+        private async Task ValidateUserTemplate(string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId)
+                ?? throw new NotFoundException("Users", userId);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+
+            if (!roles.Contains(Role.GUEST_NAME) || roles.Count != 1 || !user.Enabled)
+            {
+                throw new CustomValidationException("The provided user is not available or is invalid.");
+            }
         }
 
         private async Task SyncSystemConfigs(

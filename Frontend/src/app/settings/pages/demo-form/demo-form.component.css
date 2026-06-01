@@ -1,8 +1,5 @@
 .form-field {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   padding: .75rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--p-content-border-color);
@@ -12,5 +9,10 @@
 .form-description {
   font-size: .85rem;
   color: var(--p-text-hover-color);
-  margin: .5rem 0 0 0;
+  margin: .5rem 0;
+}
+
+.control-container {
+  min-width: 13rem;
+  text-align: end;
 }

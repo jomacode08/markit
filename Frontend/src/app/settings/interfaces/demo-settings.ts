@@ -6,4 +6,6 @@ export interface DemoSettings {
    isEnabled: boolean;
    /** Session duration in minutes. Must be a positive integer. */
    sessionDurationInMinutes: number; 
+   /** User ID to use as a template for creating demo session directories. */
+   userTemplateId: string;
 }

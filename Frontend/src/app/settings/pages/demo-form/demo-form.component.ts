@@ -32,10 +32,13 @@ import { ROUTES } from '../../../shared/utils/constant';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoFormComponent extends ValidatorErrorField implements OnInit {
-  private readonly CONFIRMATION_MESSAGE : string = "The demo settings were updated successfully.";
-  public form : FormGroup<{
-    isEnabled : FormControl<boolean>,
-    sessionDurationInMinutes : FormControl<number>,
+  private readonly CONFIRMATION_MESSAGE: string = "The demo settings were updated successfully.";
+  private readonly UUID_OR_EMPTY_REGEX: string = "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$";
+
+  public form: FormGroup<{
+    isEnabled: FormControl<boolean>,
+    sessionDurationInMinutes: FormControl<number>,
+    userTemplateId: FormControl<string>,
   }>;
   protected isSubmitting = signal<boolean>(false);
 
@@ -43,12 +46,13 @@ export class DemoFormComponent extends ValidatorErrorField implements OnInit {
     private fb: FormBuilder,
     private demoService: DemoService,
     private messageService: CustomMessageService,
-    private router : Router
+    private router: Router
   ) {
     super();
     this.form = fb.nonNullable.group({
-      isEnabled : [false],
-      sessionDurationInMinutes : [0, [Validators.required, Validators.min(0)]]
+      isEnabled: [false],
+      sessionDurationInMinutes: [0, [Validators.required, Validators.min(0)]],
+      userTemplateId: ['', [Validators.pattern(this.UUID_OR_EMPTY_REGEX)]]
     });
   }
 
