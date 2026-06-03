@@ -92,7 +92,9 @@ namespace markit.Infrastructure.Security.Services.Demo
                 Id = idMap[tc.Id],
                 Name = tc.Name,
                 IsMain = false,
-                ParentId = tc.ParentId.HasValue ? idMap[tc.ParentId.Value] : guestMainCollectionId,
+                ParentId = tc.ParentId.HasValue && idMap.TryGetValue(tc.ParentId.Value, out int mappedParentId) 
+                    ? mappedParentId 
+                    : guestMainCollectionId,
                 UserId = guestUserId,
                 Path = RemapPathIds(tc.Path, idMap),
                 PathNames = tc.PathNames,
