@@ -24,12 +24,14 @@ namespace markit.Infrastructure.Security.Services.Demo
         private readonly ISettingsService _settingsService;
         private readonly IMediator _mediator;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IOnboardingSeedService _onboardingSeedService;
 
         private const int ACCOUNT_EXPIRATION_GRACE_PERIOD_IN_MINUTES = 5;
 
         private const string CONFIGURATION_ERROR_MESSAGE = "Demo mode is not available due to a configuration error.";
         private const string DEMO_MODE_DISABLED_ERROR_MESSAGE = "Demo mode is currently disabled.";
 
+        private const string GUEST_NAME_REQUIRED_MESSAGE = "Guest name is required";
         private const string DEMO_SESSION_ATTEMPT_MESSAGE = "Demo session attempt.";
         private const string SUCCESSFUL_DEMO_SESSION_MESSAGE = "Successful demo session created.";
         private const string DEMO_MODE_DISABLED_MESSAGE = "Demo mode was disabled due to user demo availability or a role configuration error.";
@@ -39,7 +41,8 @@ namespace markit.Infrastructure.Security.Services.Demo
             IJwtService jwtService,
             ISettingsService settingsService,
             UserManager<AppUser> userManager,
-            IMediator mediator
+            IMediator mediator,
+            IOnboardingSeedService onboardingSeedService
         )
         {
             _logger = logger;
@@ -47,25 +50,29 @@ namespace markit.Infrastructure.Security.Services.Demo
             _settingsService = settingsService;
             _userManager = userManager;
             _mediator = mediator;
+            _onboardingSeedService = onboardingSeedService;
         }
 
         public async Task<AccountVm> CreateSessionAsync(string guestName, HttpContext context)
         {
             if (string.IsNullOrWhiteSpace(guestName))
-                throw new CustomValidationException("Guest name is required.");
+                throw new CustomValidationException(GUEST_NAME_REQUIRED_MESSAGE);
 
             CreateLogEntry(DEMO_SESSION_ATTEMPT_MESSAGE);
             if (!await IsDemoEnabledAsync()) throw new CustomValidationException(DEMO_MODE_DISABLED_ERROR_MESSAGE);
 
-            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-            AccountVm account = await CreateGuestAccountAsync(guestName);
-            AppUser user = await _userManager.FindByIdAsync(account.UserId)
-                ?? throw new NotFoundException("AppUsers", account.UserId);
-            await EnsureGuestUserIsValidAsync(user);
-            await AuthenticateDemoUserAsync(user, context);
-            scope.Complete();
+            using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                AccountVm account = await CreateGuestAccountAsync(guestName);
+                AppUser user = await _userManager.FindByIdAsync(account.UserId)
+                    ?? throw new NotFoundException("AppUsers", account.UserId);
 
-            return account;
+                await EnsureGuestUserIsValidAsync(user);
+                await _onboardingSeedService.SeedAsync(user.Id);
+                await AuthenticateDemoUserAsync(user, context);
+                scope.Complete();
+                return account;
+            }
         }
 
         public async Task<DemoStatus> GetStatusAsync()

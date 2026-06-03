@@ -104,6 +104,7 @@ namespace markit.Infrastructure
             // Inject authentication services
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IDemoService, DemoService>();
+            services.AddScoped<IOnboardingSeedService, OnboardingSeedService>();
             services.AddScoped<IGoogleApiService, GoogleApiService>();
             services.AddScoped<IGitHubApiService, GitHubApiService>();
             services.AddScoped<IJwtService, JwtService>();
