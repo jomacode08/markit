@@ -16,6 +16,9 @@ namespace markit.Application.Features.Account.Commands.CreateAccount
             RuleFor(c => c.UserName).Matches(@"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")
                 .WithMessage("The user name format is incorrect");
 
+            RuleFor(c => c.Name).Matches(@"^[a-zA-Z0-9]+$")
+                .WithMessage("The name format must be alphanumeric");
+
             RuleFor(c => c.Name).MaximumLength(256).WithMessage("The maximum length of the name field is 256");
             RuleFor(c => c.UserName).MaximumLength(256).WithMessage("The maximum length of the user name field is 256");
 
