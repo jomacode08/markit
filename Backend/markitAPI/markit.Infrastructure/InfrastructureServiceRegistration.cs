@@ -47,6 +47,7 @@ namespace markit.Infrastructure
                 .AddDataBasePersistence(configuration)
                 .AddAuthentication(configuration)
                 .AddAuthorization(configuration)
+                .RegisterDemoServices()
                 .AddRateLimiter(configuration);
             return services;
         }
@@ -103,8 +104,6 @@ namespace markit.Infrastructure
 
             // Inject authentication services
             services.AddScoped<IAppUserService, AppUserService>();
-            services.AddScoped<IDemoService, DemoService>();
-            services.AddScoped<IOnboardingSeedService, OnboardingSeedService>();
             services.AddScoped<IGoogleApiService, GoogleApiService>();
             services.AddScoped<IGitHubApiService, GitHubApiService>();
             services.AddScoped<IJwtService, JwtService>();
@@ -266,6 +265,18 @@ namespace markit.Infrastructure
                     )
                 );
             });
+            return services;
+        }
+
+        private static IServiceCollection RegisterDemoServices(this IServiceCollection services)
+        {
+            services.AddSingleton<DemoCleanUpWorker>();
+            services.AddSingleton<IDemoCleanUpWorker>(provider => 
+                provider.GetRequiredService<DemoCleanUpWorker>());
+            services.AddHostedService(provider =>
+                provider.GetRequiredService<DemoCleanUpWorker>());
+            services.AddScoped<IDemoService, DemoService>();
+            services.AddScoped<IOnboardingSeedService, OnboardingSeedService>();
             return services;
         }
 

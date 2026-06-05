@@ -1,6 +1,5 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;

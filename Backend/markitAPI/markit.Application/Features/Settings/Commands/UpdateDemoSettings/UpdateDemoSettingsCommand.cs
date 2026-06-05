@@ -1,4 +1,5 @@
 ﻿﻿using markit.Application.Common.Helpers;
+using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Settings;
 using markit.Application.Exceptions;
 using markit.Application.Features.Settings.Queries.ViewModels;
@@ -21,17 +22,22 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
     public class UpdateDemoSettingsCommandHandler : IRequestHandler<UpdateDemoSettingsCommand, DemoSettings>
     {
         private readonly ISettingsService _settingsService;
+        private readonly IDemoCleanUpWorker _demoCleanUpWorker;
         private readonly UserManager<AppUser> _userManager;
 
-        public UpdateDemoSettingsCommandHandler(ISettingsService settingsService, UserManager<AppUser> userManager)
+        public UpdateDemoSettingsCommandHandler(
+            ISettingsService settingsService,
+            UserManager<AppUser> userManager, IDemoCleanUpWorker demoCleanUpWorker)
         {
             _settingsService = settingsService;
             _userManager = userManager;
+            _demoCleanUpWorker = demoCleanUpWorker;
         }
 
         public async Task<DemoSettings> Handle(UpdateDemoSettingsCommand request, CancellationToken cancellationToken)
         {
             IReadOnlyList<SystemConfig> existentConfigs = await _settingsService.GetForDemoAsync();
+            bool isEnabledSettingHasChanged = HasIsEnabledSettingChanged(existentConfigs, newValue: request.IsEnabled.ToString());
             Dictionary<string, string> requestedConfigValues = new()
             {
                 { SystemConfigKeys.IS_DEMO_ENABLED_KEY, request.IsEnabled.ToString() },
@@ -45,6 +51,8 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
             }
 
             await SyncSystemConfigs(existentConfigs, requestedConfigValues);
+
+            if (isEnabledSettingHasChanged) _demoCleanUpWorker.Trigger();
 
             return new DemoSettings
             {
@@ -127,6 +135,13 @@ namespace markit.Application.Features.Settings.Commands.UpdateDemoSettings
                 Value = value,
                 Description = Utilities.GetSystemConfigDescription(key)
             };
+        }
+
+        private static bool HasIsEnabledSettingChanged(IReadOnlyList<SystemConfig> existentConfigs, string newValue)
+        {
+            SystemConfig? isEnabled = existentConfigs.FirstOrDefault(c => c.Id == SystemConfigKeys.IS_DEMO_ENABLED_KEY);
+            if (isEnabled == null) return newValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+            return isEnabled.Value != newValue;
         }
     }
 }
