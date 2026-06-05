@@ -325,6 +325,7 @@
     --outline-color: var(--p-overlay-modal-border-color);
     --outline-size: 2px;
     --background: transparent;
+    --button-hover-background: var(--p-content-elevation-card);
   }
   .emoji {
     display: inline-block;

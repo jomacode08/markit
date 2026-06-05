@@ -10,7 +10,7 @@ button span {
     transition: 0.3s ease;
 }
 button span:hover {
-    color: rgb(255, 255, 255, 0.8);
+    opacity: 0.8;
 }
 
 button.sm > span {
