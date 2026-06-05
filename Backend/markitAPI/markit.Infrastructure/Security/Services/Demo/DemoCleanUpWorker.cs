@@ -1,7 +1,6 @@
 ﻿using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Settings;
 using markit.Application.Helpers;
-using markit.Application.Models.Authentication.AppUser;
 using markit.Infrastructure.Persistence.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,20 +74,11 @@ namespace markit.Infrastructure.Security.Services.Demo
                 {
                     MarkitDbContext context = scope.ServiceProvider.GetRequiredService<MarkitDbContext>();
                     DateTime now = DateTime.UtcNow;
-
-                    List<string> guestIds = await context.UserRoles
-                        .AsNoTracking()
-                        .Where(ur => ur.RoleId == GeneralConstant.Role.GUEST_UUID)
-                        .Select(ur => ur.UserId)
-                        .ToListAsync(cancellationToken);
-
-                    List<AppUser> expiredGuests = await context.Users.AsNoTracking()
-                        .Where(u => guestIds.Contains(u.Id) && u.ExpiresAt <= now)
-                        .ToListAsync(cancellationToken);
-
-                    context.Users.RemoveRange(expiredGuests);
-                    await context.SaveChangesAsync(cancellationToken);                    
-                    _logger.LogInformation("Successfully deleted {count} expired guest users.", expiredGuests.Count);
+                    int deletedCount = await context.Users
+                                .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == GeneralConstant.Role.GUEST_UUID)
+                                            && u.ExpiresAt <= now)
+                                .ExecuteDeleteAsync(cancellationToken);
+                    _logger.LogInformation("Successfully deleted {count} expired guest users.", deletedCount);
                 }
             }
             catch (Exception ex)
