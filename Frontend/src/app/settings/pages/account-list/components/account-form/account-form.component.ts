@@ -56,10 +56,10 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
 
   constructor(
     private accountService: AccountService,
-    private validatorService: ValidatorService,
-    private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
-    private fb : FormBuilder
+    private fb: FormBuilder,
+    private ref: DynamicDialogRef,
+    private validatorService: ValidatorService,
   ) {
     super();
     this.form = this.fb.nonNullable.group({

@@ -8,13 +8,34 @@ label {
 }
 
 .avatar {
-  width: 200px;
-  height: 200px;
-}
-
-.welcome-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-color: var(--p-overlay-modal-border-color);
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+}
+
+.user-box {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: .875rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 6px;
+}
+
+.edit-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  span {
+    transition: 0.3s color ease-in;
+  }
+}
+.edit-button:hover {
+  span {
+    color: var(--p-text-hover-color);
+  }
 }

@@ -1,41 +1,97 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Component, signal, ChangeDetectionStrategy, computed } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize, Observable, tap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { InputText } from 'primeng/inputtext';
 
-import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
-import { AccountService } from '../../../settings/services/account.service';
 import { Account } from '../../../settings/interfaces/account';
+import { AccountService } from '../../../settings/services/account.service';
+import { SigninMethodsComponent } from './components/signin-methods/signin-methods.component';
+import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
+import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 
 @Component({
-    selector: 'app-profile',
-    imports: [
+  selector: 'app-profile',
+  imports: [
     ButtonModule,
     CommonModule,
     DividerModule,
-    SigninMethodsComponent
-],
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    ErrorFieldComponent,
+    InputText,
+    ReactiveFormsModule,
+    SigninMethodsComponent,
+  ],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent {
-  protected account = signal<Account | undefined>(undefined);
+export class ProfileComponent extends ValidatorErrorField {
   protected account$: Observable<Account>;
+  protected account = signal<Account | undefined>(undefined);
+  protected submit = signal<boolean>(false);
+  protected isEditEnabled = signal<boolean>(false);
+  protected roles = computed<string | undefined>(
+    () => this.account()?.roles.join(',')
+  );
+
+  public form: FormGroup<{
+    name: FormControl<string>,
+  }>;
 
   constructor(
-    private accountService: AccountService
+    private accountService: AccountService,
+    private fb: FormBuilder,
+    private messageService: CustomMessageService,
   ) {
+    super();
+    this.form = fb.nonNullable.group({
+      name: ['', [Validators.required, Validators.pattern(/^[\p{L}\p{N}]+([\s\-'][\p{L}\p{N}]+)*$/u)]]
+    });
     this.account$ = this.accountService
-    .getByCurrentSession()
-    .pipe(
-      tap((account) => this.account.set(account))
-    );
+      .getByCurrentSession()
+      .pipe(
+        tap((account) => this.account.set(account)),
+        tap((account) => this.form.reset(account))
+      );
   }
 
-  public convertToLargerImageUrl(url: string): string | null {
-    return url.replace("s96-c", "s300-c");
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.submit.set(true);
+    this.editAccount();
+  }
+
+  onEditBtnClick() {
+    this.isEditEnabled.set(true);
+  }
+
+  onCancelEditBtnClick() {
+    this.form.reset(this.account());
+    this.isEditEnabled.set(false);
+  }
+
+  private editAccount(): void {
+    const account = this.account();
+    if (!account || !this.form.value.name) return;
+
+    // account.name = this.form.value.name;
+    const updatedAccount = { ...account, name: this.form.value.name };
+    this.accountService.update(updatedAccount)
+    .pipe(finalize(() => this.submit.set(false)))
+    .subscribe({
+      next: (account) => {
+        this.account.set(account);
+        this.isEditEnabled.set(false);
+        this.messageService.showGeneralSuccess("The account was updated successfully.")
+      },
+      error: (error) => console.error('Error updating account:', error)
+    });
   }
 }
