@@ -72,7 +72,7 @@
     background-color: var(--p-text-muted-color) !important;
   }
   .markit-dark .noty-svg {
-    background-color: var(--p-surface-800) !important;
+    color: var(--p-surface-800) !important;
   }
 
   /** Sidebar */

@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
+import { PixelNotepadComponent } from '../../../shared/components/ui/pixel-notepad/pixel-notepad.component';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -18,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CommonModule,
     ErrorFieldComponent,
     InputTextModule,
+    PixelNotepadComponent,
     ReactiveFormsModule
   ],
   templateUrl: './demo-dialog.component.html',
