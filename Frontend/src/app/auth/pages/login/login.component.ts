@@ -59,8 +59,8 @@ export class LoginComponent extends ValidatorErrorField implements OnInit, OnDes
     width: '35rem',
     modal: true,
     closable: true,
-    dismissableMask : true,
-    styleClass : 'custom-dialog'
+    dismissableMask: true,
+    styleClass: 'custom-dialog'
   }; 
 
   public get authRequest(): AuthRequest {

@@ -68,6 +68,12 @@
     background: -webkit-linear-gradient(to right, #a855f7, #4f46e5);
     background: linear-gradient(to right, #a855f7, #4f46e5);
   }
+  .markit-dark .noty-container {
+    background-color: var(--p-text-muted-color) !important;
+  }
+  .markit-dark .noty-svg {
+    background-color: var(--p-surface-800) !important;
+  }
 
   /** Sidebar */
   .p-drawer.main-sidebar {
@@ -159,13 +165,13 @@
   /** Dialogs */
   .p-dialog {
     .p-dialog-header {
-      background-color: var(--p-overlay-modal-header-background);
       border-top-left-radius:  6px;
       border-top-right-radius: 6px;
+      background-color: var(--p-content-elevation-card);
       .p-dialog-title {
-        font-size: 1.25rem;
-        font-weight: 600;
         color: var(--p-text-color);
+        font-weight: 500;
+        font-size: 1rem;
       }
       .p-dialog-close-button {
         color: var(--p-text-muted-color);

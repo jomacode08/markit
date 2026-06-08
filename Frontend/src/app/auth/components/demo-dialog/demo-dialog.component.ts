@@ -40,7 +40,7 @@ export class DemoDialog extends ValidatorErrorField {
   ) {
     super();
     this.form = fb.nonNullable.group({
-      guestName : ['', Validators.required]
+      guestName : ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/)]]
     });
   }
 

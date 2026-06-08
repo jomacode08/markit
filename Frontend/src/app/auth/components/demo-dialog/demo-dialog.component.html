@@ -4,25 +4,34 @@
     autocomplete="off"
 >
     <div class="modal-body">
-        <div class="flex">
-                <div class="field w-full">
-                    <!-- GuestName -->
-                    <input 
-                        id="guestName"
-                        pInputText
-                        formControlName="guestName"
-                        type="text"
-                        placeholder="Guest Name"
-                        class="rounded w-full"
-                        autocomplete="off"
-                    >
-                    @if ( isInvalidField('guestName') ){
-                        <shared-error-field
-                            [validationField]="getValidationField('guestName', 'masc', 'guest name')">
-                        </shared-error-field>
-                    }
-                </div>
+        <div class="flex gap-2">
+            <!-- Noty illustration -->
+            <div class="noty-container">
+                <span
+                    class="noty-svg"
+                    role="img"
+                    aria-label="Notepad illustration"
+                ></span>
+            </div>
+            <div class="flex flex-column w-full justify-content-around">
+                <p class="text-sm m-0 font-semibold">A temporary profile name.</p>
+                <!-- GuestName -->
+                <input 
+                    id="guestName"
+                    pInputText
+                    formControlName="guestName"
+                    type="text"
+                    placeholder="Guest Name"
+                    class="rounded w-full"
+                    autocomplete="off"
+                >
+            </div>
         </div>
+        @if ( isInvalidField('guestName') ){
+            <shared-error-field
+                [validationField]="getValidationField('guestName', 'masc', 'guest name')">
+            </shared-error-field>
+        }
     </div>
     <div class="modal-footer w-full flex justify-content-end gap-2">
         <!-- Cancel button -->
