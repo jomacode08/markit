@@ -9,6 +9,7 @@ export class ValidatorService {
     public passwordPattern : string = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
     public gistUrlPattern : string = '^https:\/\/gist\.github\.com\/[a-zA-Z0-9-]+\/[a-fA-F0-9]+$';
     //#endregion
+    public internationalNameRegex : RegExp = /^[\p{L}\p{N}]+([\s\-'][\p{L}\p{N}]+)*$/u;
 
     /**
      * Permite validar que dos campos sean iguales.

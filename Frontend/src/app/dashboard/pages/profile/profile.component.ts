@@ -13,6 +13,7 @@ import { SigninMethodsComponent } from './components/signin-methods/signin-metho
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
+import { ValidatorService } from '../../../shared/services/validator.service';
 
 @Component({
   selector: 'app-profile',
@@ -46,10 +47,15 @@ export class ProfileComponent extends ValidatorErrorField {
     private accountService: AccountService,
     private fb: FormBuilder,
     private messageService: CustomMessageService,
+    private validatorService: ValidatorService,
   ) {
     super();
     this.form = fb.nonNullable.group({
-      name: ['', [Validators.required, Validators.pattern(/^[\p{L}\p{N}]+([\s\-'][\p{L}\p{N}]+)*$/u)]]
+      name: ['', [
+        Validators.required,
+        Validators.maxLength(50),
+        Validators.pattern(validatorService.internationalNameRegex)]
+      ]
     });
     this.account$ = this.accountService
       .getByCurrentSession()

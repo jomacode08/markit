@@ -2,16 +2,17 @@ import { ChangeDetectionStrategy, Component, DestroyRef, signal } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ButtonModule } from 'primeng/button';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { AuthService } from '../../services/auth.service';
 import { ErrorFieldComponent } from '../../../shared/components/layout/error-field/error-field.component';
 import { PixelNotepadComponent } from '../../../shared/components/ui/pixel-notepad/pixel-notepad.component';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ValidatorService } from '../../../shared/services/validator.service';
 
 @Component({
   imports: [
@@ -38,11 +39,16 @@ export class DemoDialog extends ValidatorErrorField {
     private fb: FormBuilder,
     private router: Router,
     private ref : DynamicDialogRef,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private validatorService: ValidatorService,
   ) {
     super();
     this.form = fb.nonNullable.group({
-      guestName : ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/)]]
+      guestName : ['', [
+        Validators.required,
+        Validators.maxLength(50),
+        Validators.pattern(validatorService.internationalNameRegex)]
+      ]
     });
   }
 

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using markit.Application.Common.Helpers;
 using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Application.Features.Accounts.Commands.UpdateAccount
@@ -11,11 +12,14 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
             RuleFor(c => c.UserName).NotEmpty().WithMessage("The userName is required");
             RuleFor(c => c.Enabled).NotNull().WithMessage("The enabled field is required");
             RuleFor(c => c.Roles).NotEmpty().WithMessage("The account must have at least one role");
-
-            RuleFor(c => c.UserName).Matches(@"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")
+            
+            RuleFor(c => c.UserName).Matches(ValidationRegexes.EmailRegex)
                 .WithMessage("The user name format is incorrect");
 
-            RuleFor(c => c.Name).MaximumLength(256).WithMessage("The maximum length of the name field is 256");
+            RuleFor(c => c.Name).Matches(ValidationRegexes.InternationalNameRegex)
+                .WithMessage("The name format is invalid");
+
+            RuleFor(c => c.Name).MaximumLength(50).WithMessage("The maximum length of the name field is 50");
             RuleFor(c => c.UserName).MaximumLength(256).WithMessage("The maximum length of the userName field is 256");
 
             RuleForEach(c => c.Roles)
