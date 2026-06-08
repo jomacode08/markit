@@ -30,3 +30,7 @@ article {
     background-color: var(--p-content-elevation-section);
   }
 }
+
+.markit-logo {
+  height: 65px;
+}
