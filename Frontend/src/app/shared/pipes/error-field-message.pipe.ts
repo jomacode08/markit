@@ -12,18 +12,18 @@ export class ErrorFieldMessagePipe implements PipeTransform {
 
         let name : string    = field.normalizedName ?? field.name;
         // Obtener Keys contenidas en ValidationError
-        const errors = Object.keys(field.validationError);
+        const errors = Object.keys(field.validationErrors);
 
         // Retornar el mensaje de error del primer error encontrado.
         switch (errors[0]) {
             case 'required':
                 return `The ${ name } is required`;
             case 'minlength':
-                return `A minimum of ${ field.validationError!['minlength'].requiredLength } characters is required`
+                return `The ${ name } field must be at least ${ field.validationErrors!['minlength'].requiredLength } characters`
             case 'maxlength':
-                return `A maximum of ${ field.validationError!['maxlength'].requiredLength } characters is required`
+                return `The ${ name } field cannot exceed ${ field.validationErrors!['maxlength'].requiredLength } characters`
             case 'pattern' :
-                return `The ${ name } has an invalid format`;
+                return `The ${ name } field has an invalid format`;
             case 'notEqual' :
                 return `The value of ${ name.toLowerCase() } is incorrect`;
             case 'notGroupValidCheckbox' :

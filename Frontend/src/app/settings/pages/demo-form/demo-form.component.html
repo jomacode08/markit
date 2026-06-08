@@ -27,7 +27,7 @@
                 [class.invalid]="isInvalidField('sessionDurationInMinutes')"
             />
             @if (isInvalidField('sessionDurationInMinutes')) {
-                <shared-error-field [validationField]="getValidationField('sessionDurationInMinutes', 'masc', 'session duration')" />
+                <shared-error-field [validationField]="getValidationField('sessionDurationInMinutes', 'session duration')" />
             }
         </div>
     </div>
@@ -47,7 +47,7 @@
                 [class.invalid]="isInvalidField('userTemplateId')"
             />
             @if (isInvalidField('userTemplateId')) {
-                <shared-error-field [validationField]="getValidationField('userTemplateId', 'masc', 'user template ID')" />
+                <shared-error-field [validationField]="getValidationField('userTemplateId', 'user template ID')" />
             }
         </div>
     </div>

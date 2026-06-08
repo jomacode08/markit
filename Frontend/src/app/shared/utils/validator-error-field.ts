@@ -1,5 +1,4 @@
 import { FormGroup } from "@angular/forms";
-import { GramaticalGender } from "../interfaces/form/gramatical-gender.type";
 import { ValidationField } from "../interfaces/form/validation-field.interface";
 
 export abstract class ValidatorErrorField {
@@ -17,7 +16,7 @@ export abstract class ValidatorErrorField {
     /** 
      * Método que permite mapear el objeto @see ValidationField que es utilizado en el componente @see ErrorFieldComponent
     **/
-    public getValidationField( fieldName: string, gender : GramaticalGender, normalizedName ?: string ): ValidationField | null {
+    public getValidationField( fieldName: string, normalizedName ?: string ): ValidationField | null {
         // Validación de existencia del formControl y que cuente con errores para continuar
         const formControl = this.form.controls[fieldName];
         if (!formControl || !formControl.errors) return null;
@@ -32,9 +31,7 @@ export abstract class ValidatorErrorField {
         return {
             name : fieldName,
             normalizedName : normalizedName,
-            gender : gender,
-            validationError : validationErrors
+            validationErrors : validationErrors
         };
-
     }
 }

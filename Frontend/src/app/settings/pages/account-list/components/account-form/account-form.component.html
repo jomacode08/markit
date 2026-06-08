@@ -14,7 +14,7 @@
           [class.invalid]="isInvalidField('name')"
         />
         @if (isInvalidField('name')) {
-          <shared-error-field [validationField]="getValidationField('name', 'masc', 'name')" />
+          <shared-error-field [validationField]="getValidationField('name')" />
         }
       </div>
 
@@ -32,7 +32,7 @@
           [class.invalid]="isInvalidField('userName')"
         />
         @if (isInvalidField('userName')) {
-          <shared-error-field [validationField]="getValidationField('userName', 'masc', 'user name')" />
+          <shared-error-field [validationField]="getValidationField('userName', 'user name')" />
         }
       </div>
 
@@ -59,7 +59,7 @@
             </ng-template>
           </p-password>
           @if (isInvalidField('password')) {
-            <shared-error-field [validationField]="getValidationField('password', 'masc', 'password')" />
+            <shared-error-field [validationField]="getValidationField('password')" />
           }
         </div>
   
@@ -77,7 +77,7 @@
             [class.invalid]="isInvalidField('confirmPassword')"
           ></p-password>
           @if (isInvalidField('confirmPassword')) {
-            <shared-error-field [validationField]="getValidationField('confirmPassword', 'masc', 'password confirmation')" />
+            <shared-error-field [validationField]="getValidationField('confirmPassword', 'password confirmation')" />
           }
         </div>
       }
@@ -98,7 +98,7 @@
           [class.invalid]="isInvalidField('roles')"
         />
         @if (isInvalidField('roles')) {
-          <shared-error-field [validationField]="getValidationField('roles', 'masc', 'roles')" />
+          <shared-error-field [validationField]="getValidationField('roles')" />
         }
       </div>
       
