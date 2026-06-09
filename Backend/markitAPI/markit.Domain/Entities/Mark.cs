@@ -8,8 +8,6 @@ namespace markit.Domain.Entities
         [Required, MaxLength(255)] public string Name { get; set; } = string.Empty;
         [Required] public int CollectionId { get; set; }
         public bool IsFavorite { get; set; }
-        public string? DocumentId { get; set; }
-        public DateTime? LastSync { get; set; }
         public string? Emoji { get; set; }
         public bool? NameLess { get; set; }
 

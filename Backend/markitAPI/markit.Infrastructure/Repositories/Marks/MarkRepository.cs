@@ -102,20 +102,6 @@ namespace markit.Infrastructure.Repositories.Marks
                 .CountAsync();
         }
 
-        public async Task<Mark> UpdateSyncModelAsync(int markId, string documentId)
-        {
-            var mark = await context.Marks
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(m => m.Id.Equals(markId))
-                ?? throw new NotFoundException("Mark", markId);
-
-            mark.DocumentId = documentId;
-            mark.LastSync = DateTime.UtcNow;
-
-            await UpdateAsync(mark);
-            return mark;
-        }
-
         public async Task<IEnumerable<MarkSearchResult>> SearchAsync(string searchTerm, string userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(searchTerm)) return [];

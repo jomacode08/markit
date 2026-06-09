@@ -116,8 +116,6 @@ namespace markit.Infrastructure.Security.Services.Demo
                 IsFavorite = tm.IsFavorite,
                 Emoji = tm.Emoji,
                 NameLess = tm.NameLess,
-                DocumentId = null,
-                LastSync = null,
                 Enable = true,
                 CreatedDate = now,
                 CreatedBy = CREATED_BY_SYSTEM,

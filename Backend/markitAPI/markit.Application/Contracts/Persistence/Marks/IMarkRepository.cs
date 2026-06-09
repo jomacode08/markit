@@ -19,6 +19,5 @@ namespace markit.Application.Contracts.Persistence.Marks
         );
         Task<List<Mark>> GetMostRecentAsync(string userId, int limit);
         Task<IEnumerable<MarkSearchResult>> SearchAsync(string query, string userId, CancellationToken cancellationToken);
-        Task<Mark> UpdateSyncModelAsync(int markId, string documentId);
     }
 }
