@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -9,34 +10,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace markit.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPostgresCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "security");
-
-            migrationBuilder.CreateTable(
-                name: "creators",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    gender = table.Column<int>(type: "integer", nullable: true),
-                    birth_date = table.Column<DateOnly>(type: "date", nullable: true),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    enable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_creators", x => x.id);
-                });
 
             migrationBuilder.CreateTable(
                 name: "roles",
@@ -73,12 +53,12 @@ namespace markit.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "text", nullable: false),
-                    creator_id = table.Column<int>(type: "integer", nullable: true),
                     given_name = table.Column<string>(type: "text", nullable: false),
-                    picture = table.Column<string>(type: "text", nullable: true),
                     access_type = table.Column<int>(type: "integer", nullable: false),
                     enabled = table.Column<bool>(type: "boolean", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    picture = table.Column<string>(type: "text", nullable: true),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -97,44 +77,6 @@ namespace markit.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_users", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "collections",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    path = table.Column<string>(type: "text", nullable: true),
-                    is_main = table.Column<bool>(type: "boolean", nullable: false),
-                    parent_id = table.Column<int>(type: "integer", nullable: true),
-                    creator_id = table.Column<int>(type: "integer", nullable: false),
-                    path_names = table.Column<string>(type: "text", nullable: false),
-                    is_favorite = table.Column<bool>(type: "boolean", nullable: false),
-                    document_id = table.Column<string>(type: "text", nullable: true),
-                    last_sync = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    emoji = table.Column<string>(type: "text", nullable: true),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    enable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_collections", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_collections_collections_parent_id",
-                        column: x => x.parent_id,
-                        principalTable: "collections",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "fk_collections_creators_creator_id",
-                        column: x => x.creator_id,
-                        principalTable: "creators",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,6 +100,43 @@ namespace markit.Infrastructure.Migrations
                         principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "collections",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    is_main = table.Column<bool>(type: "boolean", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    path_names = table.Column<string>(type: "text", nullable: false),
+                    is_favorite = table.Column<bool>(type: "boolean", nullable: false),
+                    parent_id = table.Column<int>(type: "integer", nullable: true),
+                    path = table.Column<string>(type: "text", nullable: true),
+                    emoji = table.Column<string>(type: "text", nullable: true),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    created_by = table.Column<string>(type: "text", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by = table.Column<string>(type: "text", nullable: true),
+                    enable = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_collections", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_collections_asp_net_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "security",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_collections_collections_parent_id",
+                        column: x => x.parent_id,
+                        principalTable: "collections",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -255,7 +234,7 @@ namespace markit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "marks",
+                name: "notebooks",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -263,10 +242,11 @@ namespace markit.Infrastructure.Migrations
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     collection_id = table.Column<int>(type: "integer", nullable: false),
                     is_favorite = table.Column<bool>(type: "boolean", nullable: false),
-                    document_id = table.Column<string>(type: "text", nullable: true),
-                    last_sync = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     emoji = table.Column<string>(type: "text", nullable: true),
                     name_less = table.Column<bool>(type: "boolean", nullable: true),
+                    search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: true)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "name" }),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -275,9 +255,9 @@ namespace markit.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_marks", x => x.id);
+                    table.PrimaryKey("pk_notebooks", x => x.id);
                     table.ForeignKey(
-                        name: "fk_marks_collections_collection_id",
+                        name: "fk_notebooks_collections_collection_id",
                         column: x => x.collection_id,
                         principalTable: "collections",
                         principalColumn: "id",
@@ -294,6 +274,10 @@ namespace markit.Infrastructure.Migrations
                     content = table.Column<string>(type: "text", nullable: true),
                     order = table.Column<int>(type: "integer", nullable: false),
                     mark_id = table.Column<int>(type: "integer", nullable: false),
+                    notebook_id = table.Column<int>(type: "integer", nullable: true),
+                    search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: true)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "title", "content" }),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -304,39 +288,10 @@ namespace markit.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_blocks", x => x.id);
                     table.ForeignKey(
-                        name: "fk_blocks_marks_mark_id",
-                        column: x => x.mark_id,
-                        principalTable: "marks",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "links",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    url = table.Column<string>(type: "text", nullable: false),
-                    link_type = table.Column<int>(type: "integer", nullable: false),
-                    mark_id = table.Column<int>(type: "integer", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    created_by = table.Column<string>(type: "text", nullable: true),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    updated_by = table.Column<string>(type: "text", nullable: true),
-                    enable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_links", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_links_marks_mark_id",
-                        column: x => x.mark_id,
-                        principalTable: "marks",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "fk_blocks_notebooks_notebook_id",
+                        column: x => x.notebook_id,
+                        principalTable: "notebooks",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.InsertData(
@@ -345,7 +300,7 @@ namespace markit.Infrastructure.Migrations
                 columns: new[] { "id", "concurrency_stamp", "name", "normalized_name" },
                 values: new object[,]
                 {
-                    { "3c2cba5a-562c-4098-9598-864e96f15397", null, "Demo", "DEMO" },
+                    { "3c2cba5a-562c-4098-9598-864e96f15397", null, "Guest", "GUEST" },
                     { "5335f3ce-37dd-11ee-be56-0242ac120002", null, "Admin", "ADMIN" },
                     { "6ff7edb4-37dd-11ee-be56-0242ac120002", null, "General", "GENERAL" }
                 });
@@ -354,17 +309,23 @@ namespace markit.Infrastructure.Migrations
                 schema: "security",
                 table: "system_configs",
                 columns: new[] { "id", "description", "value" },
-                values: new object[] { "Demo:IsEnabled", "Configuration that toggles the demo features of the app.", "false" });
+                values: new object[,]
+                {
+                    { "Auth:IsGitHubEnabled", "Configuration that enables or disables GitHub authentication for the app.", "false" },
+                    { "Auth:IsGoogleEnabled", "Configuration that enables or disables Google authentication for the app.", "false" },
+                    { "Demo:IsEnabled", "Configuration that toggles the demo features of the app.", "false" }
+                });
 
             migrationBuilder.CreateIndex(
-                name: "ix_blocks_mark_id",
+                name: "ix_blocks_notebook_id",
                 table: "blocks",
-                column: "mark_id");
+                column: "notebook_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_collections_creator_id",
-                table: "collections",
-                column: "creator_id");
+                name: "ix_blocks_search_vector",
+                table: "blocks",
+                column: "search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "ix_collections_parent_id",
@@ -372,14 +333,20 @@ namespace markit.Infrastructure.Migrations
                 column: "parent_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_links_mark_id",
-                table: "links",
-                column: "mark_id");
+                name: "ix_collections_user_id",
+                table: "collections",
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_marks_collection_id",
-                table: "marks",
+                name: "ix_notebooks_collection_id",
+                table: "notebooks",
                 column: "collection_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_notebooks_search_vector",
+                table: "notebooks",
+                column: "search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "ix_role_claims_role_id",
@@ -419,6 +386,13 @@ namespace markit.Infrastructure.Migrations
                 column: "normalized_email");
 
             migrationBuilder.CreateIndex(
+                name: "ix_users_expires_at",
+                schema: "security",
+                table: "users",
+                column: "expires_at",
+                filter: "expires_at IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "security",
                 table: "users",
@@ -431,9 +405,6 @@ namespace markit.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "blocks");
-
-            migrationBuilder.DropTable(
-                name: "links");
 
             migrationBuilder.DropTable(
                 name: "role_claims",
@@ -460,21 +431,18 @@ namespace markit.Infrastructure.Migrations
                 schema: "security");
 
             migrationBuilder.DropTable(
-                name: "marks");
+                name: "notebooks");
 
             migrationBuilder.DropTable(
                 name: "roles",
                 schema: "security");
 
             migrationBuilder.DropTable(
-                name: "users",
-                schema: "security");
-
-            migrationBuilder.DropTable(
                 name: "collections");
 
             migrationBuilder.DropTable(
-                name: "creators");
+                name: "users",
+                schema: "security");
         }
     }
 }

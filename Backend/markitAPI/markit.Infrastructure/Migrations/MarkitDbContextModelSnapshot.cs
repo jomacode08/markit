@@ -386,6 +386,10 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("mark_id");
 
+                    b.Property<int?>("NotebookId")
+                        .HasColumnType("integer")
+                        .HasColumnName("notebook_id");
+
                     b.Property<int>("Order")
                         .HasColumnType("integer")
                         .HasColumnName("order");
@@ -414,8 +418,8 @@ namespace markit.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_blocks");
 
-                    b.HasIndex("MarkId")
-                        .HasDatabaseName("ix_blocks_mark_id");
+                    b.HasIndex("NotebookId")
+                        .HasDatabaseName("ix_blocks_notebook_id");
 
                     b.HasIndex("SearchVector")
                         .HasDatabaseName("ix_blocks_search_vector");
@@ -503,7 +507,7 @@ namespace markit.Infrastructure.Migrations
                     b.ToTable("collections", (string)null);
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -563,17 +567,17 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_marks");
+                        .HasName("pk_notebooks");
 
                     b.HasIndex("CollectionId")
-                        .HasDatabaseName("ix_marks_collection_id");
+                        .HasDatabaseName("ix_notebooks_collection_id");
 
                     b.HasIndex("SearchVector")
-                        .HasDatabaseName("ix_marks_search_vector");
+                        .HasDatabaseName("ix_notebooks_search_vector");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("marks", (string)null);
+                    b.ToTable("notebooks", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -635,14 +639,12 @@ namespace markit.Infrastructure.Migrations
 
             modelBuilder.Entity("markit.Domain.Entities.Block", b =>
                 {
-                    b.HasOne("markit.Domain.Entities.Mark", "Mark")
+                    b.HasOne("markit.Domain.Entities.Notebook", "Notebook")
                         .WithMany("Blocks")
-                        .HasForeignKey("MarkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_blocks_marks_mark_id");
+                        .HasForeignKey("NotebookId")
+                        .HasConstraintName("fk_blocks_notebooks_notebook_id");
 
-                    b.Navigation("Mark");
+                    b.Navigation("Notebook");
                 });
 
             modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
@@ -663,14 +665,14 @@ namespace markit.Infrastructure.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.HasOne("markit.Domain.Entities.Collection", "Collection")
-                        .WithMany("Marks")
+                        .WithMany("Notebooks")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_marks_collections_collection_id");
+                        .HasConstraintName("fk_notebooks_collections_collection_id");
 
                     b.Navigation("Collection");
                 });
@@ -682,12 +684,12 @@ namespace markit.Infrastructure.Migrations
 
             modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
                 {
-                    b.Navigation("Marks");
+                    b.Navigation("Notebooks");
 
                     b.Navigation("SubCollections");
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.Navigation("Blocks");
                 });

@@ -13,15 +13,15 @@ using markit.Infrastructure.Persistence.EF;
 namespace markit.Infrastructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    [Migration("20260424002209_AddSearchVectorToMarksAndBlocks")]
-    partial class AddSearchVectorToMarksAndBlocks
+    [Migration("20260610001245_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -72,8 +72,8 @@ namespace markit.Infrastructure.Migrations
                         new
                         {
                             Id = "3c2cba5a-562c-4098-9598-864e96f15397",
-                            Name = "Demo",
-                            NormalizedName = "DEMO"
+                            Name = "Guest",
+                            NormalizedName = "GUEST"
                         });
                 });
 
@@ -233,10 +233,6 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
-                    b.Property<int?>("CreatorId")
-                        .HasColumnType("integer")
-                        .HasColumnName("creator_id");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
@@ -249,6 +245,10 @@ namespace markit.Infrastructure.Migrations
                     b.Property<bool>("Enabled")
                         .HasColumnType("boolean")
                         .HasColumnName("enabled");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
 
                     b.Property<string>("GivenName")
                         .IsRequired()
@@ -305,6 +305,10 @@ namespace markit.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("ix_users_expires_at")
+                        .HasFilter("expires_at IS NOT NULL");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -341,6 +345,18 @@ namespace markit.Infrastructure.Migrations
                             Id = "Demo:IsEnabled",
                             Description = "Configuration that toggles the demo features of the app.",
                             Value = "false"
+                        },
+                        new
+                        {
+                            Id = "Auth:IsGoogleEnabled",
+                            Description = "Configuration that enables or disables Google authentication for the app.",
+                            Value = "false"
+                        },
+                        new
+                        {
+                            Id = "Auth:IsGitHubEnabled",
+                            Description = "Configuration that enables or disables GitHub authentication for the app.",
+                            Value = "false"
                         });
                 });
 
@@ -373,6 +389,10 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("mark_id");
 
+                    b.Property<int?>("NotebookId")
+                        .HasColumnType("integer")
+                        .HasColumnName("notebook_id");
+
                     b.Property<int>("Order")
                         .HasColumnType("integer")
                         .HasColumnName("order");
@@ -401,8 +421,8 @@ namespace markit.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_blocks");
 
-                    b.HasIndex("MarkId")
-                        .HasDatabaseName("ix_blocks_mark_id");
+                    b.HasIndex("NotebookId")
+                        .HasDatabaseName("ix_blocks_notebook_id");
 
                     b.HasIndex("SearchVector")
                         .HasDatabaseName("ix_blocks_search_vector");
@@ -429,14 +449,6 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("integer")
-                        .HasColumnName("creator_id");
-
-                    b.Property<string>("DocumentId")
-                        .HasColumnType("text")
-                        .HasColumnName("document_id");
-
                     b.Property<string>("Emoji")
                         .IsUnicode(true)
                         .HasColumnType("text")
@@ -453,10 +465,6 @@ namespace markit.Infrastructure.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("boolean")
                         .HasColumnName("is_main");
-
-                    b.Property<DateTime?>("LastSync")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_sync");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -485,137 +493,24 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_date");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id")
                         .HasName("pk_collections");
-
-                    b.HasIndex("CreatorId")
-                        .HasDatabaseName("ix_collections_creator_id");
 
                     b.HasIndex("ParentId")
                         .HasDatabaseName("ix_collections_parent_id");
 
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_collections_user_id");
+
                     b.ToTable("collections", (string)null);
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Creator", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly?>("BirthDate")
-                        .HasColumnType("date")
-                        .HasColumnName("birth_date");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("boolean")
-                        .HasColumnName("enable");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("first_name");
-
-                    b.Property<int?>("Gender")
-                        .HasColumnType("integer")
-                        .HasColumnName("gender");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("last_name");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_creators");
-
-                    b.ToTable("creators", (string)null);
-                });
-
-            modelBuilder.Entity("markit.Domain.Entities.Link", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("boolean")
-                        .HasColumnName("enable");
-
-                    b.Property<int>("LinkType")
-                        .HasColumnType("integer")
-                        .HasColumnName("link_type");
-
-                    b.Property<int>("MarkId")
-                        .HasColumnType("integer")
-                        .HasColumnName("mark_id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("updated_by");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_date");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("url");
-
-                    b.HasKey("Id")
-                        .HasName("pk_links");
-
-                    b.HasIndex("MarkId")
-                        .HasDatabaseName("ix_links_mark_id");
-
-                    b.ToTable("links", (string)null);
-                });
-
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -636,10 +531,6 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
-                    b.Property<string>("DocumentId")
-                        .HasColumnType("text")
-                        .HasColumnName("document_id");
-
                     b.Property<string>("Emoji")
                         .IsUnicode(true)
                         .HasColumnType("text")
@@ -652,10 +543,6 @@ namespace markit.Infrastructure.Migrations
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("boolean")
                         .HasColumnName("is_favorite");
-
-                    b.Property<DateTime?>("LastSync")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_sync");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -683,17 +570,17 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_marks");
+                        .HasName("pk_notebooks");
 
                     b.HasIndex("CollectionId")
-                        .HasDatabaseName("ix_marks_collection_id");
+                        .HasDatabaseName("ix_notebooks_collection_id");
 
                     b.HasIndex("SearchVector")
-                        .HasDatabaseName("ix_marks_search_vector");
+                        .HasDatabaseName("ix_notebooks_search_vector");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("marks", (string)null);
+                    b.ToTable("notebooks", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -755,77 +642,59 @@ namespace markit.Infrastructure.Migrations
 
             modelBuilder.Entity("markit.Domain.Entities.Block", b =>
                 {
-                    b.HasOne("markit.Domain.Entities.Mark", "Mark")
+                    b.HasOne("markit.Domain.Entities.Notebook", "Notebook")
                         .WithMany("Blocks")
-                        .HasForeignKey("MarkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_blocks_marks_mark_id");
+                        .HasForeignKey("NotebookId")
+                        .HasConstraintName("fk_blocks_notebooks_notebook_id");
 
-                    b.Navigation("Mark");
+                    b.Navigation("Notebook");
                 });
 
             modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
                 {
-                    b.HasOne("markit.Domain.Entities.Creator", "Creator")
-                        .WithMany("Collections")
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_collections_creators_creator_id");
-
                     b.HasOne("markit.Domain.Entities.Collection", "Parent")
                         .WithMany("SubCollections")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_collections_collections_parent_id");
 
-                    b.Navigation("Creator");
+                    b.HasOne("markit.Application.Models.Authentication.AppUser.AppUser", null)
+                        .WithMany("Collections")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_collections_asp_net_users_user_id");
 
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Link", b =>
-                {
-                    b.HasOne("markit.Domain.Entities.Mark", "Mark")
-                        .WithMany("Links")
-                        .HasForeignKey("MarkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_links_marks_mark_id");
-
-                    b.Navigation("Mark");
-                });
-
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.HasOne("markit.Domain.Entities.Collection", "Collection")
-                        .WithMany("Marks")
+                        .WithMany("Notebooks")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_marks_collections_collection_id");
+                        .HasConstraintName("fk_notebooks_collections_collection_id");
 
                     b.Navigation("Collection");
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
-                {
-                    b.Navigation("Marks");
-
-                    b.Navigation("SubCollections");
-                });
-
-            modelBuilder.Entity("markit.Domain.Entities.Creator", b =>
+            modelBuilder.Entity("markit.Application.Models.Authentication.AppUser.AppUser", b =>
                 {
                     b.Navigation("Collections");
                 });
 
-            modelBuilder.Entity("markit.Domain.Entities.Mark", b =>
+            modelBuilder.Entity("markit.Domain.Entities.Collection", b =>
+                {
+                    b.Navigation("Notebooks");
+
+                    b.Navigation("SubCollections");
+                });
+
+            modelBuilder.Entity("markit.Domain.Entities.Notebook", b =>
                 {
                     b.Navigation("Blocks");
-
-                    b.Navigation("Links");
                 });
 #pragma warning restore 612, 618
         }
