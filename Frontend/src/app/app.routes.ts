@@ -25,14 +25,14 @@ export const routes: Routes = [
             import('./dashboard/dashboard.routes').then(r => r.DASHBOARD_ROUTES)
     },
     {
-        path: 'marks',
-        data: { breadcrumb : 'Marks' },
+        path: 'notebooks',
+        data: { breadcrumb : 'Notebooks' },
         canActivate: [IsAuthenticatedActivateGuard],
         canMatch: [IsAuthenticatedActivateGuard],
         loadComponent: () => 
             import('../app/dashboard/layouts/app-layout.component').then(c => c.AppLayoutComponent),
         loadChildren: () =>
-            import('./marks/mark.routes').then(r => r.MARK_ROUTES)
+            import('./notebooks/notebook.routes').then(r => r.NOTEBOOK_ROUTES)
     },
     {
         path: 'settings',

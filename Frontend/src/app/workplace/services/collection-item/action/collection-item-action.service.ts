@@ -5,13 +5,13 @@ import { map, Observable } from 'rxjs';
 import { CollectionItem, CollectionItemType } from '../../../interfaces/collection-item';
 import { environment } from '../../../../../environments/environment';
 import { Collection } from '../../../interfaces/collection';
-import { Mark } from '../../../../marks/interfaces/mark';
+import { Notebook } from '../../../../notebooks/interfaces/notebook';
 import { DEFAULT_BLOCK_NAME } from '../../../../shared/utils/constant';
 
 @Injectable({providedIn: 'root'})
 export class CollectionItemActionService {
   private readonly BASE_URL = (type: CollectionItemType) => {  
-    return `${ environment.baseApiUrl }/${ type === CollectionItemType.Collection ? 'collections' : 'marks' }`;
+    return `${ environment.baseApiUrl }/${ type === CollectionItemType.Collection ? 'collections' : 'notebooks' }`;
   };
 
   private readonly CREATE_INITIAL_COLLECTION = (name: string, collectionId: number, emoji ?: string) => {
@@ -24,7 +24,7 @@ export class CollectionItemActionService {
     } as Collection;
   };
 
-  private readonly CREATE_INITIAL_MARK = (name: string, collectionId: number, emoji ?: string) => {
+  private readonly CREATE_INITIAL_NOTEBOOK = (name: string, collectionId: number, emoji ?: string) => {
     return {
       id : 0,
       name,
@@ -38,7 +38,7 @@ export class CollectionItemActionService {
           content: ''
         }
       ],
-    } as Mark;
+    } as Notebook;
   };
 
   constructor(private http: HttpClient) {}
@@ -49,19 +49,19 @@ export class CollectionItemActionService {
     return this.http.post<Collection>(`${ this.BASE_URL(type) }`, collection);
   }
 
-  public createEmptyMark(item : CollectionItem): Observable<Mark> {
+  public createEmptyNotebook(item : CollectionItem): Observable<Notebook> {
     const { name, collectionId, type, emoji } = item;
-    const mark : Mark = this.CREATE_INITIAL_MARK(name, collectionId, emoji);
-    return this.http.post<Mark>(`${ this.BASE_URL(type) }`, mark);
+    const notebook : Notebook = this.CREATE_INITIAL_NOTEBOOK(name, collectionId, emoji);
+    return this.http.post<Notebook>(`${ this.BASE_URL(type) }`, notebook);
   }
 
-  public rename( item: CollectionItem ): Observable<Collection | Mark> {
+  public rename( item: CollectionItem ): Observable<Collection | Notebook> {
     const bodyRequest = {
       name: item.name,
       emoji : item.emoji
     };
 
-    return this.http.patch<Collection | Mark>(`${ this.BASE_URL(item.type) }/${ item.typeId }`, bodyRequest);
+    return this.http.patch<Collection | Notebook>(`${ this.BASE_URL(item.type) }/${ item.typeId }`, bodyRequest);
   }
 
   public updateFavoriteStatus(item : CollectionItem): Observable<boolean> {

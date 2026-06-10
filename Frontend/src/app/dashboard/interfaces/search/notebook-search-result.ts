@@ -1,17 +1,17 @@
 /**
- * Represents a search result for a Mark
+ * Represents a search result for a Notebook
  */
-export interface MarkSearchResult {
-    /** Unique identifier for the mark */
+export interface NotebookSearchResult {
+    /** Unique identifier for the notebook */
     id: number;
-    /** Display name of the mark */
+    /** Display name of the notebook */
     name: string;
-    /** Blocks within this mark that match the search query */
+    /** Blocks within this notebook that match the search query */
     blocks: BlockSearchResult[];
 }
 
 /**
- * Represents a block within a mark that matches the search query
+ * Represents a block within a notebook that matches the search query
  */
 export interface BlockSearchResult {
     /** Unique identifier for the block */

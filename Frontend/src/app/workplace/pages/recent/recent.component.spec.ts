@@ -55,7 +55,7 @@ describe('RecentComponent', () => {
 
     it('should reset and set filters on initialization', () => {
         expect(mockCollectionItemPaginationService.resetAndLoad).toHaveBeenCalledWith({
-            type: CollectionItemTypeFilter.Mark,
+            type: CollectionItemTypeFilter.Notebook,
             collectionId: undefined,
             onlyFavorites: false, 
         });
@@ -89,7 +89,7 @@ describe('RecentComponent', () => {
 
     it('Should reset and load a new page, resetAndFilterItems( filter: CollectionItemTypeFilter )', () => {
         // GIVEN - Set test conditions
-        const filter = CollectionItemTypeFilter.Mark;
+        const filter = CollectionItemTypeFilter.Notebook;
         // WHEN - Perform operation
         component.resetAndFilterItems(filter);
         // THEN - Assert expected behaviour.

@@ -4,11 +4,11 @@ button {
   padding: 0;
 }
 
-.mark-form {
+.notebook-form {
   max-width: inherit;
 }
 
-#markMenuBar {
+#notebookMenuBar {
   position: fixed;
   display: flex;
   align-items: center;
@@ -19,11 +19,11 @@ button {
   padding: .375rem 1rem;
 }
 
-#markHeader {
+#notebookHeader {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  input#markName {
+  input#notebookName {
     width: 100%;
     border: none;
     font-size: 1.75rem;
@@ -34,7 +34,7 @@ button {
     outline: none;
   }
 
-  input#markName::placeholder {
+  input#notebookName::placeholder {
     color: rgb(255, 255, 255, 0.6) !important;
   }
 }
@@ -44,7 +44,7 @@ button {
   align-items: center;
 }
 
-#markBlock *, .flex-container {
+#notebookBlock *, .flex-container {
   display: flex;
   flex-direction: column;
   flex: 1;

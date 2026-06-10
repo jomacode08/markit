@@ -1,13 +1,11 @@
 import { Block } from "./block";
-import { Link } from "./link";
 
-export interface Mark {
+export interface Notebook {
     id: number;
     name: string;
     userId: string;
     collectionId: number;
     createdDate?: Date;
-    links?: Link[];
     blocks: Block[];
     emoji?: string;
     inputName?: string;

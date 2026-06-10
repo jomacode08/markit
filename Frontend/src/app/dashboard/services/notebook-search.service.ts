@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { MarkSearchResult } from '../interfaces/search/mark-search-result';
+import { NotebookSearchResult } from '../interfaces/search/notebook-search-result';
 
 export enum SearchState {
   idle,
@@ -13,27 +13,27 @@ export enum SearchState {
 };
 
 @Injectable({providedIn: 'root'})
-export class MarkSearchService {
-    private readonly baseUrl: string = `${ environment.baseApiUrl }/marks/search`;
-    private _results = signal<MarkSearchResult[]>([]);
+export class NotebookSearchService {
+    private readonly baseUrl: string = `${ environment.baseApiUrl }/notebooks/search`;
+    private _results = signal<NotebookSearchResult[]>([]);
     private _searchTerm = signal<string>("");
     private _searchState = signal<SearchState>(SearchState.idle);
     
     //! To the external world
-    public results = computed<MarkSearchResult[]>(() => this._results());
+    public results = computed<NotebookSearchResult[]>(() => this._results());
     public searchTerm = computed<string>(() => this._searchTerm());
     public searchState = computed<SearchState>(() => this._searchState());
 
     constructor(private http: HttpClient) { }
     
-    public search(searchTerm: string): Observable<MarkSearchResult[] | null> {
+    public search(searchTerm: string): Observable<NotebookSearchResult[] | null> {
         if (!this.isQueryValid(searchTerm)) {
             this.resetState();
             return of(null);
         }
         this._searchTerm.set(searchTerm);
         this._searchState.set(SearchState.searching);
-        return this.http.get<MarkSearchResult[]>(`${ this.baseUrl }`, {
+        return this.http.get<NotebookSearchResult[]>(`${ this.baseUrl }`, {
             params : {searchTerm}
         }).pipe(
             catchError((error) => {
@@ -41,9 +41,9 @@ export class MarkSearchService {
                 this._searchState.set(SearchState.error);
                 return of(null);
             }),
-            tap((marks) => {
-                if (marks) {
-                    this._results.set(marks);
+            tap((notebooks) => {
+                if (notebooks) {
+                    this._results.set(notebooks);
                     this._searchState.set(SearchState.finished);
                 }
             })

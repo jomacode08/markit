@@ -278,7 +278,7 @@ describe('CollectionExplorerComponent', () => {
         // GIVEN - Set test conditions
         const collectionId = 1;
         component['collectionId'] = collectionId;
-        const filter = CollectionItemTypeFilter.Mark;
+        const filter = CollectionItemTypeFilter.Notebook;
         // WHEN - Perform operation
         component.applyCollectionItemFilter(filter);
         // THEN - Assert expected behaviour.

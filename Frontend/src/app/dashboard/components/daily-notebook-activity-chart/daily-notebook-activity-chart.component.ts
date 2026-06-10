@@ -4,8 +4,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { DayOfWeek, WeeklyMarkActivity } from '../../interfaces/dashboard-report';
-import { MarkActivityPipe } from './mark-activity.pipe';
+import { DayOfWeek, WeeklyNotebookActivity } from '../../interfaces/dashboard-report';
+import { NotebookActivityPipe } from './notebook-activity.pipe';
 
 interface WeekDayBar {
   label : string,
@@ -15,12 +15,12 @@ interface WeekDayBar {
 }
 
 @Component({
-    selector: 'dashboard-daily-mark-activity-chart',
+    selector: 'dashboard-daily-notebook-activity-chart',
     imports: [
         CommonModule,
         ButtonModule,
         TooltipModule,
-        MarkActivityPipe,
+        NotebookActivityPipe,
     ],
     template: `
   <div class="flex gap-4 justify-content-center align-items-end">
@@ -32,7 +32,7 @@ interface WeekDayBar {
           type="button" 
           class="bar"
           tooltipPosition="left"
-          [pTooltip]="bar.value | markActivity" 
+          [pTooltip]="bar.value | notebookActivity" 
           [style.height.px]="bar.height > 1 ? bar.height : 1"
           [style.opacity]="bar.opacity"
         ></button>
@@ -68,9 +68,9 @@ interface WeekDayBar {
   `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DailyMarkActivityChartComponent {
+export class DailyNotebookActivityChartComponent {
   private readonly MAX_HEIGHT_BAR_IN_PIXELS : number = 65;
-  public activity = input.required<WeeklyMarkActivity>();
+  public activity = input.required<WeeklyNotebookActivity>();
 
   get weekDaysArray(): DayOfWeek[] {
     return Object.values(DayOfWeek);

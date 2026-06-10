@@ -34,7 +34,7 @@ type UriValidationContext = {
 }
 
 @Component({
-    selector: 'marks-block',
+    selector: 'notebooks-block',
     imports: [
       CommonModule,
       FormsModule,

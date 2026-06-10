@@ -75,9 +75,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       command: () => this.addItem(CollectionItemType.Collection)
     },
     {
-      label: 'Add mark',
+      label: 'Add notebook',
       icon: this.ICONS.NOTE,
-      command: () => this.addItem(CollectionItemType.Mark)
+      command: () => this.addItem(CollectionItemType.Notebook)
     },
   ];
   

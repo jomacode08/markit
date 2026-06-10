@@ -12,7 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Block } from './../../interfaces/block';
+import { Block } from '../../interfaces/block';
 import { BlockComponent } from '../../components/block/block.component';
 import { BlockMenuComponent, OnCloseResponse } from '../../components/block-menu/block-menu.component';
 import { BlockNavigatorComponent } from '../../components/block-navigator/block-navigator.component';
@@ -25,13 +25,13 @@ import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker
 import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
-import { Mark } from '../../interfaces/mark';
-import { MARK_VIEWER_CONSTANTS } from './constants/mark-viewer-constants';
-import { MarkAutosaveIndicatorComponent, SaveState } from '../../components/mark-autosave-indicator/mark-autosave-indicator.component';
-import { MarkBreadcrumbComponent } from '../../components/mark-breadcrumb/mark-breadcrumb.component';
-import { MarkService } from '../../services/mark.service';
+import { Notebook } from '../../interfaces/notebook';
+import { NOTEBOOK_VIEWER_CONSTANTS } from './constants/notebook-viewer-constants';
+import { NotebookAutosaveIndicatorComponent, SaveState } from '../../components/notebook-autosave-indicator/notebook-autosave-indicator.component';
+import { NotebookBreadcrumbComponent } from '../../components/notebook-breadcrumb/notebook-breadcrumb.component';
+import { NotebookService } from '../../services/notebook.service';
 import { ROUTES } from '../../../shared/utils/constant';
-import { SharedData } from './../../components/block-menu/block-menu.component';
+import { SharedData } from '../../components/block-menu/block-menu.component';
 
 @Component({
     imports: [
@@ -42,19 +42,19 @@ import { SharedData } from './../../components/block-menu/block-menu.component';
       EmojiPickerComponent,
       FloatingActionButtonComponent,
       FloatingMenuComponent,
-      MarkAutosaveIndicatorComponent,
-      MarkBreadcrumbComponent,
+      NotebookAutosaveIndicatorComponent,
+      NotebookBreadcrumbComponent,
       ProgressSpinnerModule,
       ReactiveFormsModule,
       SkeletonModule,
       TooltipModule,
     ],
     providers: [DialogService],
-    templateUrl: './mark-viewer.component.html',
-    styleUrl: './mark-viewer.component.css',
+    templateUrl: './notebook-viewer.component.html',
+    styleUrl: './notebook-viewer.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   //* Configuration
   @ViewChild('floatingMenu') private floatingMenu !: FloatingMenuComponent;
   private blockMenuDialogRef ?: DynamicDialogRef<BlockMenuComponent> | null;
@@ -62,9 +62,9 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   private fb = inject(FormBuilder);
 
   //* Form
-  public markForm = this.fb.nonNullable.group({
+  public notebookForm = this.fb.nonNullable.group({
     id: [0],
-    inputName: ['My new mark 🎉', [Validators.required, Validators.maxLength(255)]],
+    inputName: ['My new notebook 🎉', [Validators.required, Validators.maxLength(255)]],
     emoji: [undefined as string | undefined],
     blocks : this.fb.array<FormGroup>([]),
     // Non-editable properties
@@ -78,9 +78,9 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public saveState  = signal<SaveState>(SaveState.idle);
 
   //* State management
-  protected mark$ : Observable<Mark | null>;
-  private markNameInputDebouncer = new Subject<string>();
-  public currentMark = signal<Mark>(this.markForm.getRawValue() as Mark);
+  protected notebook$ : Observable<Notebook | null>;
+  private notebookNameInputDebouncer = new Subject<string>();
+  public currentNotebook = signal<Notebook>(this.notebookForm.getRawValue() as Notebook);
   public currentBlock = signal<Block|undefined>(undefined);
   public currentBlockIndex = signal<number>(0);
 
@@ -88,11 +88,11 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   public floatingMenuOptions = signal<FloatingMenuOption[]>([]);
 
   //* Getters
-  get markNamePlaceHolder(): string {
-    return MARK_VIEWER_CONSTANTS.MARK_NAME_PLACEHOLDER;
+  get notebookNamePlaceHolder(): string {
+    return NOTEBOOK_VIEWER_CONSTANTS.NOTEBOOK_NAME_PLACEHOLDER;
   }
   get notFoundPlaceHolder(): string {
-    return MARK_VIEWER_CONSTANTS.NOT_FOUND_PLACEHOLDER;
+    return NOTEBOOK_VIEWER_CONSTANTS.NOT_FOUND_PLACEHOLDER;
   }
 
   //* Lyfecycle
@@ -101,22 +101,22 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     private blockService: BlockService,
     private currentRouteService: CurrentRouteService,
     private dialogService: DialogService,
-    private markService: MarkService,
+    private notebookService: NotebookService,
     private messageService: CustomMessageService,
     private router: Router,
     private toastService: MessageService,
   ) {
-    this.mark$ = this.activatedRoute.params
+    this.notebook$ = this.activatedRoute.params
     .pipe(
-      // Get the markId param and fetch mark data
+      // Get the notebookId param and fetch notebook data
       switchMap((params) => {
-        const markId = this.getValidMarkId(params.id);
-        return this.fetchMark(markId);
+        const notebookId = this.getValidNotebookId(params.id);
+        return this.fetchNotebook(notebookId);
       }),
-      // Initialize form and check mark sync.
-      tap(mark => {
-        this.initializeForm(mark);
-        if (mark.requiresSync) this.updateMarkWithRetry();
+      // Initialize form and check notebook sync.
+      tap(notebook => {
+        this.initializeForm(notebook);
+        if (notebook.requiresSync) this.updateNotebookWithRetry();
       }),
       catchError(error => {
         this.redirectOnError();
@@ -129,7 +129,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     this.floatingMenuOptions.set(createTextFormattingOptions(this.editor));
     this.subscribeToFormChanges();
     this.subscribeToEmojiChanges();
-    this.subscribeToDebouncedMarkNameInput();
+    this.subscribeToDebouncedNotebookNameInput();
   }
 
   public ngOnDestroy(): void {
@@ -161,20 +161,20 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   public onCancel(): void {
-    this.redirectToUrl(this.currentRouteService.previousSuccessfulUrl() ?? ROUTES.MY_MARKS);
+    this.redirectToUrl(this.currentRouteService.previousSuccessfulUrl() ?? ROUTES.LIBRARY);
   }
 
   public onTextFormattingButtonClick(): void {
     this.changeFloatingMenuState();
   }
 
-  public retryMarkSave(): void {
-    this.updateMarkWithRetry();
+  public retryNotebookSave(): void {
+    this.updateNotebookWithRetry();
   }
 
-  public onMarkNameInputChanged(event: Event) {
+  public onNotebookNameInputChanged(event: Event) {
     let name = (event.target as HTMLInputElement).value;
-    this.markNameInputDebouncer.next(name);
+    this.notebookNameInputDebouncer.next(name);
   }
 
   public openBlockMenuDialog( blocks : Block[] ) {
@@ -205,15 +205,15 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     if (response == null) return;
     // A new block was selected
     if (response.selectedBlockId != null) {
-      const currentMark = this.currentMark();
-      const selectedBlockIndex = currentMark.blocks.findIndex(b => b.id === response.selectedBlockId);
+      const currentNotebook = this.currentNotebook();
+      const selectedBlockIndex = currentNotebook.blocks.findIndex(b => b.id === response.selectedBlockId);
       this.modifyActiveBlock(selectedBlockIndex);
       return;
     }
     // Apply block changes
     if (response.blocks) {
       await this.setBlocks(response.blocks);
-      this.updateMarkWithRetry();
+      this.updateNotebookWithRetry();
       this.modifyActiveBlock(this.currentBlockIndex());
     }
   }
@@ -229,29 +229,29 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   //* Form
   public getCurrentBlockFormGroup() {
-    const blocks = this.markForm.get('blocks') as FormArray;
+    const blocks = this.notebookForm.get('blocks') as FormArray;
     return blocks.at(this.currentBlockIndex()) as FormGroup;
   }
-  private initializeForm(mark: Mark): void {
-    this.markForm.reset(mark, {emitEvent: false});
-    this.setBlocks(mark.blocks);
+  private initializeForm(notebook: Notebook): void {
+    this.notebookForm.reset(notebook, {emitEvent: false});
+    this.setBlocks(notebook.blocks);
     this.modifyActiveBlock(0);
   }
 
   private subscribeToFormChanges(): Subscription {
-    return this.markForm.valueChanges
+    return this.notebookForm.valueChanges
     .pipe(takeUntil(this.destroy$))
     .subscribe(changes => {
-      this.currentMark.update(current => changes as Mark);
+      this.currentNotebook.update(current => changes as Notebook);
     });
   }
   
   private subscribeToEmojiChanges(): Subscription {
-    return this.markForm.controls.emoji.valueChanges
+    return this.notebookForm.controls.emoji.valueChanges
     .pipe(takeUntil(this.destroy$))
     .subscribe(emoji => {
-      if (this.currentMark().emoji != emoji) {
-        this.updateMarkWithRetry();
+      if (this.currentNotebook().emoji != emoji) {
+        this.updateNotebookWithRetry();
       }
     });
   }
@@ -260,57 +260,57 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
     this.redirectToUrl(ROUTES.ERROR);
   }
 
-  //* Marks
-  private fetchMark(markId : number): Observable<Mark> {
-    const localMark = this.markService.getMarkFromLocalStorage(markId);
-    if (localMark) return of(localMark);
-    return this.getMarkById(markId);
+  //* Notebooks
+  private fetchNotebook(notebookId : number): Observable<Notebook> {
+    const localNotebook = this.notebookService.getNotebookFromLocalStorage(notebookId);
+    if (localNotebook) return of(localNotebook);
+    return this.getNotebookById(notebookId);
   }
 
-  private getMarkById( id: number ): Observable<Mark> {
-    return this.markService.getById(id);
+  private getNotebookById( id: number ): Observable<Notebook> {
+    return this.notebookService.getById(id);
   }
 
-  private updateMarkSyncStatus(state: boolean): void {
-    this.markForm.value.requiresSync = state;
+  private updateNotebookSyncStatus(state: boolean): void {
+    this.notebookForm.value.requiresSync = state;
   }
 
-  private resetMarkSync(markId: number): void {
-    this.updateMarkSyncStatus(false);
-    this.markService.dropMarkFromLocalStorage(markId);
+  private resetNotebookSync(notebookId: number): void {
+    this.updateNotebookSyncStatus(false);
+    this.notebookService.dropNotebookFromLocalStorage(notebookId);
   }
 
-  private updateMarkWithRetry(): void {
+  private updateNotebookWithRetry(): void {
     this.setSaveState(SaveState.saving);
-    const currentMark = this.markForm.getRawValue() as Mark;
-    this.markService.update(currentMark)
+    const currentNotebook = this.notebookForm.getRawValue() as Notebook;
+    this.notebookService.update(currentNotebook)
     .pipe(
       // Error retry with exponential backoff
       retry(this.getErrorRetryConfig()),
       delay(500),
     )
     .subscribe({
-      next:  (mark)  => {
-        this.markForm.reset(mark);
+      next:  (notebook)  => {
+        this.notebookForm.reset(notebook);
         this.setSaveState(SaveState.saved);
-        if (currentMark.requiresSync)
-          this.resetMarkSync(currentMark.id);
+        if (currentNotebook.requiresSync)
+          this.resetNotebookSync(currentNotebook.id);
       },
       // After maximum retries, set error state and buffer unsaved data.
       error: ()  => this.saveChangesLocally()
     });
   }
 
-  private subscribeToDebouncedMarkNameInput(): Subscription {
+  private subscribeToDebouncedNotebookNameInput(): Subscription {
     const DEBOUNCE_TIME_IN_MILLI_SECONDS = 1000;
-    return this.markNameInputDebouncer
+    return this.notebookNameInputDebouncer
     .pipe(
       takeUntil(this.destroy$),
       debounceTime(DEBOUNCE_TIME_IN_MILLI_SECONDS)
     )
     .subscribe((name) => {
-      this.markForm.value.name = name;
-      this.updateMarkWithRetry();
+      this.notebookForm.value.name = name;
+      this.updateNotebookWithRetry();
     });
   }
 
@@ -325,8 +325,8 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
       })
     );
 
-    this.markForm.controls.blocks.clear();
-    blockControls.forEach(c => this.markForm.controls.blocks.push(c));
+    this.notebookForm.controls.blocks.clear();
+    blockControls.forEach(c => this.notebookForm.controls.blocks.push(c));
   }
 
   private updateBlockContentWithRetry( id:number, content: string ): void {
@@ -348,17 +348,17 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   private redirectToUrl = (url: string) => this.router.navigate([url]);
   
   public modifyActiveBlock(newIndex: number) {
-    const currentMark = this.currentMark();
-    if (newIndex < 0 || newIndex >= currentMark.blocks.length) return;
+    const currentNotebook = this.currentNotebook();
+    if (newIndex < 0 || newIndex >= currentNotebook.blocks.length) return;
     this.currentBlockIndex.update(c => newIndex);
-    this.currentBlock.update(c => currentMark.blocks[newIndex]);
+    this.currentBlock.update(c => currentNotebook.blocks[newIndex]);
   }
 
-  private getValidMarkId(markIdParam: string): number {
-    if (markIdParam == null || isNaN(Number(markIdParam))) {
-      throw new Error("The markId is invalid");
+  private getValidNotebookId(notebookIdParam: string): number {
+    if (notebookIdParam == null || isNaN(Number(notebookIdParam))) {
+      throw new Error("The notebookId is invalid");
     }
-    return Number(markIdParam);
+    return Number(notebookIdParam);
   }
 
   private changeFloatingMenuState(): void {
@@ -366,7 +366,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
   }
 
   private getErrorRetryConfig(): RetryConfig {
-    const { maxEntries, delayInMs } = MARK_VIEWER_CONSTANTS.ERROR_RETRY_SETTINGS;
+    const { maxEntries, delayInMs } = NOTEBOOK_VIEWER_CONSTANTS.ERROR_RETRY_SETTINGS;
     return {
       count: maxEntries,
       delay : (error, retryCount) => {
@@ -380,7 +380,7 @@ export class MarkViewerComponent implements OnInit, OnDestroy, CanComponentDeact
 
   private saveChangesLocally(): void {
     this.setSaveState(SaveState.error);
-    this.updateMarkSyncStatus(true);
-    this.markService.setMarkInLocalStorage(this.currentMark());
+    this.updateNotebookSyncStatus(true);
+    this.notebookService.setNotebookInLocalStorage(this.currentNotebook());
   }
 }

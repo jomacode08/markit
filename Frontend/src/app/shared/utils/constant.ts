@@ -1,17 +1,17 @@
-export const MARKS_STORAGE_KEY : string = 'local-marks';
+export const NOTEBOOKS_STORAGE_KEY : string = 'local-notebooks';
 export const ISAUTHENTICATED_STORAGE_KEY : string = 'is-authenticated'
-export const DEFAULT_MARK_NAME : string = 'My new mark 🎉'; 
+export const DEFAULT_NOTEBOOK_NAME : string = 'Untitled'; 
 export const DEFAULT_BLOCK_NAME : string = 'Main block';
-export const MAIN_COLLECTION_PARAM : string = 'my-marks';
+export const MAIN_COLLECTION_PARAM : string = 'Library';
 
 export const ROUTES = {
     // Auth
     REDIRECT_GOOGLE: 'redirect-google',
-    // Marks
-    MARKS_SEE: (id: number) => `/marks/see/${ id }`,
+    // Notebooks
+    NOTEBOOKS_SEE: (id: number) => `/notebooks/see/${ id }`,
     // Workplace
     COLLECTION_SEE: (id: number) => `/workplace/explore/${ id }`,
-    MY_MARKS: `/workplace/explore/${ MAIN_COLLECTION_PARAM }`,
+    LIBRARY: `/workplace/explore/${ MAIN_COLLECTION_PARAM }`,
     STARRED: '/workplace/starred',
     RECENT: '/workplace/recent',
     // Settings

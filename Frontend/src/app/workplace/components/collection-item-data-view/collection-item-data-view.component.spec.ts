@@ -93,14 +93,14 @@ describe('CollectionItemDataViewComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.COLLECTION_SEE( mockitem.typeId )]);
     });
 
-    it('should navigate to mark viewer, onItemSelected(item: CollectionItem)', () => {
+    it('should navigate to notebook viewer, onItemSelected(item: CollectionItem)', () => {
         // Given
         const item = structuredClone(mockitem);
-        item.type = CollectionItemType.Mark;
+        item.type = CollectionItemType.Notebook;
         // WHEN
         component.onItemSelected(item);
         // THEN
-        expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.MARKS_SEE( item.typeId )]);
+        expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.NOTEBOOKS_SEE( item.typeId )]);
     });
 
     it('should set favorite status with success, onFavoriteClicked(item: CollectionItem, index: number)', () => {

@@ -35,7 +35,7 @@ export class RecentComponent implements OnInit, OnDestroy {
         .subscribe((areItemsloading) => this.loading.set(areItemsloading));
       this.itemsFilterSubscription = this.collectionItemPaginationService.type$
         .subscribe((filter) => this.currentFilter.set(filter));
-      this.resetAndFilterItems( CollectionItemTypeFilter.Mark );
+      this.resetAndFilterItems( CollectionItemTypeFilter.Notebook );
     }
   
     ngOnDestroy(): void {

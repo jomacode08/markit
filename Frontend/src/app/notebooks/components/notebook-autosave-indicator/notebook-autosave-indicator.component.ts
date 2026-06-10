@@ -9,15 +9,15 @@ export enum SaveState {
 }
 
 @Component({
-    selector: 'mark-autosave-indicator',
+    selector: 'notebook-autosave-indicator',
     imports: [
         CommonModule
     ],
-    templateUrl: './mark-autosave-indicator.component.html',
-    styleUrl: './mark-autosave-indicator.component.css',
+    templateUrl: './notebook-autosave-indicator.component.html',
+    styleUrl: './notebook-autosave-indicator.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkAutosaveIndicatorComponent {
+export class NotebookAutosaveIndicatorComponent {
   public saveState = input.required<SaveState>();
   @Output() public retrySave = new EventEmitter<void>();
   get saveStateType(): typeof SaveState {

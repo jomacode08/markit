@@ -5,37 +5,37 @@
 </div>
 <!-- Dashboard -->
 <ng-container *ngIf="report$ | async as report">
-    <!-- Recent marks -->
+    <!-- Recent notebook -->
     <div class="dashed-container">
         <div class="title">
-            <h2>Recent marks</h2>
+            <h2>Recent</h2>
             <button type="button" class="view-all" (click)="onViewAllRecentBtnClick()">
                 View all
                 <span class="fa-solid fa-angle-right"></span>
             </button>
         </div>
     </div>
-    <section class="dashed-container recent-marks">
-        <div *ngIf="report.recentMarks.length > 0; else noRecentMarksTemplate" class="marks-list">
-            @for (mark of report.recentMarks; track $index) {
-                <div class="mark-item">
-                    <button type="button" class="recent-mark" (click)="onRecentMarkBtnClick(mark.id)">
-                        <div class="mark-description">
+    <section class="dashed-container recent-notebooks">
+        <div *ngIf="report.recentNotebooks.length > 0; else noRecentNotebooksTemplate" class="notebooks-list">
+            @for (notebook of report.recentNotebooks; track $index) {
+                <div class="notebook-item">
+                    <button type="button" class="recent-notebook" (click)="onRecentNotebookBtnClick(notebook.id)">
+                        <div class="notebook-description">
                             <div class="icon">
-                                @if (mark.emoji) {
-                                    <span class="emoji">{{ mark.emoji }}</span>
+                                @if (notebook.emoji) {
+                                    <span class="emoji">{{ notebook.emoji }}</span>
                                 }
                                 @else {
                                     <i class="fa-regular fa-note-sticky"></i>
                                 }
                             </div>
                             <div class="naming">
-                                <div class="font-medium text-base text-left">{{ mark.name }}</div>
-                                <div class="small-text">{{ mark.collectionName }}</div>
+                                <div class="font-medium text-base text-left">{{ notebook.name }}</div>
+                                <div class="small-text">{{ notebook.collectionName }}</div>
                             </div>
                         </div>
                         <div class="small-text">
-                            {{ mark.createdDate != null ? (mark.createdDate.toString() | timeAgo) : 'Date not available'}}
+                            {{ notebook.createdDate != null ? (notebook.createdDate.toString() | timeAgo) : 'Date not available'}}
                         </div>
                     </button>
                 </div>
@@ -45,7 +45,7 @@
     <!-- Quick access -->
     <div class="dashed-container">
         <div class="title">
-            <h2>Quick access</h2>
+            <h2>Pinned</h2>
             <button type="button" class="view-all" (click)="onViewAllStarredBtnClick()">
                 View all
                 <span class="fa-solid fa-angle-right"></span>
@@ -96,36 +96,36 @@
         <div class="grid stats-list">
             <div class="col-6 border-dashed-r border-dashed-b">
                 <div class="stat-container highlight-primary">
-                    <div class="text-sm  mb-2">Total marks</div>
-                    <div id="marksCount" class="text-3xl font-bold">{{ report.stats.marksCount }}</div>
+                    <div class="text-sm  mb-2">Notebooks</div>
+                    <div id="notebooksCount" class="text-3xl font-bold">{{ report.stats.notebooksCount }}</div>
                 </div>
             </div>
             <div class="col-6 border-dashed-b">
                 <div class="stat-container">
-                    <div class="text-sm  mb-2">Total collections</div>
+                    <div class="text-sm  mb-2">Collections</div>
                     <div id="collectionsCount" class="text-3xl font-bold">{{ report.stats.collectionsCount }}</div>
                 </div>
             </div>
             <div class="col-6 border-dashed-r">
                 <div class="stat-container">
-                    <div class="text-sm  mb-2">New this week</div>
+                    <div class="text-sm  mb-2">This week</div>
                     <div class="text-3xl font-bold">
-                        <span id="weekMarksCount">{{ report.stats.weekMarksCount }}</span>
+                        <span id="weekNotebooksCount">{{ report.stats.weekNotebooksCount }}</span>
                         <span *ngIf="true" class="fa-solid fa-fire text-red text-2xl ml-2"></span>
                     </div>
                 </div>
             </div>
             <div class="col-6">
-                <div class="stat-container" [ngClass]="{'highlight-success': report.stats.todayMarksCount > 0}">
+                <div class="stat-container" [ngClass]="{'highlight-success': report.stats.todayNotebooksCount > 0}">
                     <div class="mb-2">
                         <span class="text-sm  mr-2">New today</span>
                     </div>
                     <div
                         class="text-3xl font-bold"
-                        [ngClass]="{ 'text-green' : report.stats.todayMarksCount > 0}"
+                        [ngClass]="{ 'text-green' : report.stats.todayNotebooksCount > 0}"
                     >
-                        <span>{{ report.stats.todayMarksCount > 0 ? '+ ' : '' }}</span>
-                        <span id="todayMarksCount">{{ report.stats.todayMarksCount }}</span>
+                        <span>{{ report.stats.todayNotebooksCount > 0 ? '+ ' : '' }}</span>
+                        <span id="todayNotebooksCount">{{ report.stats.todayNotebooksCount }}</span>
                     </div>
                 </div>
             </div>
@@ -133,9 +133,9 @@
     </section>
     <!-- Activity -->
     <section class="dashed-container weekly-activity">
-        <dashboard-daily-mark-activity-chart
+        <dashboard-daily-notebook-activity-chart
             class="p-2"
-            [activity]="report.stats.weeklyMarkActivity"
+            [activity]="report.stats.weeklyNotebookActivity"
         />
     </section>
 </ng-container>
@@ -146,14 +146,14 @@
     </div>
 </div>
 
-<ng-template #noRecentMarksTemplate>
+<ng-template #noRecentNotebooksTemplate>
     <div class="p-3">
-        <div id="noRecentMarks" class="flex flex-column align-items-center p-3">
+        <div id="noRecentNotebooks" class="flex flex-column align-items-center p-3">
             <div class="flex align-items-center gap-1">
                 <span class="fa-regular fa-file-lines p-3 text-xl"></span>
-                <h2 class="m-0 text-lg font-medium">No recent marks</h2>
+                <h2 class="m-0 text-lg font-medium">No recent notebooks</h2>
             </div>
-            <p class="m-0 max-w-20rem text-center text-sm font-light">You haven't created any marks yet. Start creating your first mark.</p>
+            <p class="m-0 max-w-20rem text-center text-sm font-light">You haven't created any notebooks yet. Start creating your first notebook.</p>
         </div>
     </div>
 </ng-template>
@@ -164,7 +164,7 @@
                 <span class="fa-regular fa-folder p-3 text-xl"></span>
                 <h2 class="m-0 text-lg font-medium">No starred collections</h2>
             </div>
-            <p class="m-0 max-w-20rem text-center text-sm font-light">Add collections to favorites for quick access to your most important marks.</p>
+            <p class="m-0 max-w-20rem text-center text-sm font-light">Add collections to favorites for quick access to your most important notebooks.</p>
         </div>
     </div>
 </ng-template>

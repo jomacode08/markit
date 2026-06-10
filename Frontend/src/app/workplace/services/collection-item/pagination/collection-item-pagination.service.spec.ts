@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { CollectionItemPage, CollectionItemPaginationService, CollectionItemTypeFilter } from './collection-item-pagination.service';
 import { CollectionItemType } from '../../../interfaces/collection-item';
@@ -11,7 +11,7 @@ describe('CollectionItemService', () => {
   let httpMock: HttpTestingController;
 
   const getItemsPagedUrl = `${environment.baseApiUrl}/collections/search`;
-  const mockCursor = '2025-05-30T14:08:08.1966667|Mark|2';
+  const mockCursor = '2025-05-30T14:08:08.1966667|Notebook|2';
   const mockPage: CollectionItemPage = {
     items: [
         { 
@@ -25,10 +25,10 @@ describe('CollectionItemService', () => {
           { 
             id: '2',
             name: 'Item 2',
-            type: CollectionItemType.Mark,
+            type: CollectionItemType.Notebook,
             typeId: 1,
             collectionId: 1,
-            preview: 'Im a new mark!',
+            preview: 'Im a new notebook!',
             isFavorite: false,
         },
     ],
@@ -81,7 +81,7 @@ describe('CollectionItemService', () => {
             { 
                 id: '3',
                 name: 'Item 3',
-                type: CollectionItemType.Mark,
+                type: CollectionItemType.Notebook,
                 typeId: 3,
                 collectionId: 1,
                 isFavorite: false,
@@ -136,12 +136,12 @@ describe('CollectionItemService', () => {
     spyOn(service, 'loadNewPage');
     // WHEN
     service.resetAndLoad({
-      type: CollectionItemTypeFilter.Mark,
+      type: CollectionItemTypeFilter.Notebook,
       collectionId : 2,
       onlyFavorites : false
     });
     // THEN
-    expect(service['typeSubject'].value).toBe(CollectionItemTypeFilter.Mark);
+    expect(service['typeSubject'].value).toBe(CollectionItemTypeFilter.Notebook);
     expect(service['isResetEnabled']).toBeTrue();
     expect(service['hasNextPage']).toBeTrue();
     expect(service['cursor']).toBeUndefined();

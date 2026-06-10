@@ -30,9 +30,9 @@ export class MainBarComponent {
       route: ROUTES.HOME_URL,
     },
     {
-      label: 'My marks',
-      icon: 'fa-regular fa-hard-drive',
-      route: ROUTES.MY_MARKS,
+      label: 'Library',
+      icon: 'library-outlined',
+      route: ROUTES.LIBRARY,
     },
     {
       label: 'Starred',

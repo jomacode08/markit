@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Block } from '../interfaces/block';
-import { environment } from './../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class BlockService {

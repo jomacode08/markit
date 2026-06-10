@@ -10,10 +10,10 @@ import { BlockService } from "../../services/block.service";
 import { CurrentRouteService } from "../../../shared/services/current-route.service";
 import { CustomMessageService } from "../../../shared/services/custom-message.service";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Mark } from "../../interfaces/mark";
-import { MarkService } from "../../services/mark.service";
-import { MarkViewerComponent } from "./mark-viewer.component";
-import { SaveState } from "../../components/mark-autosave-indicator/mark-autosave-indicator.component";
+import { Notebook } from "../../interfaces/notebook";
+import { NotebookService } from "../../services/notebook.service";
+import { NotebookViewerComponent } from "./notebook-viewer.component";
+import { SaveState } from "../../components/notebook-autosave-indicator/notebook-autosave-indicator.component";
 import { By } from "@angular/platform-browser";
 import { Component, input, signal } from "@angular/core";
 import { FloatingMenuOption } from "../../../shared/components/layout/floating-menu/floating-menu-option";
@@ -32,9 +32,9 @@ class MockFloatingMenuComponent {
     }
 };
 
-describe('MarkViewerComponent', () => {
-    let component : MarkViewerComponent;
-    let fixture : ComponentFixture<MarkViewerComponent>;
+describe('NotebookViewerComponent', () => {
+    let component : NotebookViewerComponent;
+    let fixture : ComponentFixture<NotebookViewerComponent>;
 
     let mockBlockService : jasmine.SpyObj<BlockService>;
     let mockCurrentRouteService : jasmine.SpyObj<CurrentRouteService>;
@@ -42,15 +42,15 @@ describe('MarkViewerComponent', () => {
     let mockDialogRef: jasmine.SpyObj<DynamicDialogRef>;
     let mockDialogService : jasmine.SpyObj<DialogService>;
     let mockEditor: Editor;
-    let mockMarkService : jasmine.SpyObj<MarkService>;
+    let mockNotebookService : jasmine.SpyObj<NotebookService>;
     let mockMessageService : jasmine.SpyObj<MessageService>;
     let mockRouter : jasmine.SpyObj<Router>;
     let params: BehaviorSubject<{ id: string }>;
     
-    let mockMark : Mark = {
+    let mockNotebook : Notebook = {
         id: 123,
-        name : 'Test mark',
-        inputName: 'Test mark',
+        name : 'Test notebook',
+        inputName: 'Test notebook',
         userId: '1',
         collectionId: 1,
         emoji: '📃',
@@ -84,27 +84,27 @@ describe('MarkViewerComponent', () => {
         mockCustomMessageService = jasmine.createSpyObj('CustomMessageService', ['showConfirmationDialog']);
         mockDialogRef = jasmine.createSpyObj('DynamicDialogRef', ['onClose']);
         mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
-        mockMarkService = jasmine.createSpyObj('MarkService', ['getMarkFromLocalStorage', 'getById', 'dropMarkFromLocalStorage', 'update', 'setMarkInLocalStorage']);
+        mockNotebookService = jasmine.createSpyObj('NotebookService', ['getNotebookFromLocalStorage', 'getById', 'dropNotebookFromLocalStorage', 'update', 'setNotebookInLocalStorage']);
         mockMessageService = jasmine.createSpyObj('MessageService', ['clear']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
         mockEditor = {} as Editor;
 
         // Set initial flow mock values
-        params = new BehaviorSubject({ id: mockMark.id.toString() });
-        mockMarkService.getMarkFromLocalStorage.and.returnValue(null);
-        mockMarkService.getById.and.returnValue(of(mockMark));
+        params = new BehaviorSubject({ id: mockNotebook.id.toString() });
+        mockNotebookService.getNotebookFromLocalStorage.and.returnValue(null);
+        mockNotebookService.getById.and.returnValue(of(mockNotebook));
         mockDialogService.open.and.returnValue(mockDialogRef);
         mockDialogRef.onClose = of(null);
-        mockMarkService.update.and.returnValue(of(mockMark));
+        mockNotebookService.update.and.returnValue(of(mockNotebook));
 
         await TestBed.configureTestingModule({
-            imports: [MarkViewerComponent],
+            imports: [NotebookViewerComponent],
             providers: [
                 FormBuilder,
                 { provide: BlockService, useValue: mockBlockService },
                 { provide: CurrentRouteService, useValue: mockCurrentRouteService },
                 { provide: DialogService, useValue: mockDialogService },
-                { provide: MarkService, useValue: mockMarkService },
+                { provide: NotebookService, useValue: mockNotebookService },
                 { provide: CustomMessageService, useValue: mockCustomMessageService },
                 { provide: Router, useValue: mockRouter },
                 { provide: MessageService, useValue: mockMessageService },
@@ -116,7 +116,7 @@ describe('MarkViewerComponent', () => {
                 },
             ]
         })
-        .overrideComponent(MarkViewerComponent, {
+        .overrideComponent(NotebookViewerComponent, {
             remove: { imports: [
                 FloatingMenuComponent
             ]},
@@ -126,7 +126,7 @@ describe('MarkViewerComponent', () => {
         })
         .compileComponents();
 
-        fixture = TestBed.createComponent(MarkViewerComponent);
+        fixture = TestBed.createComponent(NotebookViewerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -136,21 +136,21 @@ describe('MarkViewerComponent', () => {
     });
 
     describe('Initialization', () => {
-        it('should fetch mark data', fakeAsync(() => {
-            expect(mockMarkService.getById).toHaveBeenCalledOnceWith(123);
-            expect(component.currentMark()).toEqual(mockMark);
+        it('should fetch notebook data', fakeAsync(() => {
+            expect(mockNotebookService.getById).toHaveBeenCalledOnceWith(123);
+            expect(component.currentNotebook()).toEqual(mockNotebook);
         }));
 
-        it('should initialize form with mark data', fakeAsync(() => {
-            const formValue = component.markForm.getRawValue();
-            expect(formValue.id).toBe(mockMark.id);
-            expect(formValue.inputName).toBe(mockMark.name);
-            expect(formValue.emoji).toBe(mockMark.emoji);
+        it('should initialize form with notebook data', fakeAsync(() => {
+            const formValue = component.notebookForm.getRawValue();
+            expect(formValue.id).toBe(mockNotebook.id);
+            expect(formValue.inputName).toBe(mockNotebook.name);
+            expect(formValue.emoji).toBe(mockNotebook.emoji);
         }));
 
-        it('should handle mark fetch error by redirecting', fakeAsync(() => {
-            mockMarkService.getById.and.returnValue(throwError(() => new Error('Failed to fetch')));
-            fixture = TestBed.createComponent(MarkViewerComponent);
+        it('should handle notebook fetch error by redirecting', fakeAsync(() => {
+            mockNotebookService.getById.and.returnValue(throwError(() => new Error('Failed to fetch')));
+            fixture = TestBed.createComponent(NotebookViewerComponent);
             component = fixture.componentInstance;
             fixture.detectChanges();
             tick();
@@ -167,7 +167,7 @@ describe('MarkViewerComponent', () => {
     describe('Block management', () => {
         it('should update block content with retry on success', fakeAsync(() => {
             const newContent = 'New content';
-            const blockId = mockMark.blocks[0].id;
+            const blockId = mockNotebook.blocks[0].id;
             mockBlockService.updateContent.and.returnValue(of({ id: blockId, title: 'Test', content: newContent, createdDate: new Date() }));
             
             component.onEditorValueChanged(newContent);
@@ -186,79 +186,79 @@ describe('MarkViewerComponent', () => {
             tick(1000); // Wait for retries.
 
             expect(component.saveState()).toBe(SaveState.error);
-            expect(mockMarkService.setMarkInLocalStorage).toHaveBeenCalled();
+            expect(mockNotebookService.setNotebookInLocalStorage).toHaveBeenCalled();
         }));
     });
 
-    describe('Mark updates', () => {
-        it('should update mark with retry on success', fakeAsync(() => {
-            const updatedMark = { ...mockMark, name: 'Updated name' };
-            mockMarkService.update.and.returnValue(of(updatedMark));
+    describe('Notebook updates', () => {
+        it('should update notebook with retry on success', fakeAsync(() => {
+            const updatedNotebook = { ...mockNotebook, name: 'Updated name' };
+            mockNotebookService.update.and.returnValue(of(updatedNotebook));
             
-            component.onMarkNameInputChanged({ target: { value: 'Updated name' } } as any);
+            component.onNotebookNameInputChanged({ target: { value: 'Updated name' } } as any);
             tick(1000); // Wait for debounce.
             tick(500);  // Wait for delay after update.
 
-            expect(mockMarkService.update).toHaveBeenCalled();
+            expect(mockNotebookService.update).toHaveBeenCalled();
             expect(component.saveState()).toBe(SaveState.saved);
         }));
 
-        it('should handle mark update failure', fakeAsync(() => {
+        it('should handle notebook update failure', fakeAsync(() => {
             spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
-            mockMarkService.update.and.returnValue(throwError(() => new Error('Update failed')));
+            mockNotebookService.update.and.returnValue(throwError(() => new Error('Update failed')));
 
-            component['updateMarkWithRetry']();
+            component['updateNotebookWithRetry']();
             tick(1000); // Wait for retries.
 
             expect(component.saveState()).toBe(SaveState.error);
-            expect(mockMarkService.setMarkInLocalStorage).toHaveBeenCalled();
+            expect(mockNotebookService.setNotebookInLocalStorage).toHaveBeenCalled();
         }));
     });
 
     describe('Emoji changes', () => {
-        it('should trigger updateMarkWithRetry when emoji changes', fakeAsync(() => {
-            spyOn<any>(component, 'updateMarkWithRetry');
-            mockMarkService.update.and.returnValue(of(mockMark));
+        it('should trigger updateNotebookWithRetry when emoji changes', fakeAsync(() => {
+            spyOn<any>(component, 'updateNotebookWithRetry');
+            mockNotebookService.update.and.returnValue(of(mockNotebook));
             const newEmoji = '🎨';
 
-            component.markForm.patchValue({ emoji: newEmoji });
+            component.notebookForm.patchValue({ emoji: newEmoji });
             tick();
 
-            expect(component['updateMarkWithRetry']).toHaveBeenCalled();
+            expect(component['updateNotebookWithRetry']).toHaveBeenCalled();
         }));
 
-        it('should not trigger updateMarkWithRetry when emoji value does not change', fakeAsync(() => {
-            spyOn<any>(component, 'updateMarkWithRetry');
-            const currentEmoji = mockMark.emoji;
+        it('should not trigger updateNotebookWithRetry when emoji value does not change', fakeAsync(() => {
+            spyOn<any>(component, 'updateNotebookWithRetry');
+            const currentEmoji = mockNotebook.emoji;
 
-            component.markForm.patchValue({ emoji: currentEmoji });
+            component.notebookForm.patchValue({ emoji: currentEmoji });
             tick();
 
-            expect(component['updateMarkWithRetry']).not.toHaveBeenCalled();
+            expect(component['updateNotebookWithRetry']).not.toHaveBeenCalled();
         }));
 
         it('should handle emoji update with retry on success', fakeAsync(() => {
             const newEmoji = '🎨';
-            const updatedMark = { ...mockMark, emoji: newEmoji };
-            mockMarkService.update.and.returnValue(of(updatedMark));
+            const updatedNotebook = { ...mockNotebook, emoji: newEmoji };
+            mockNotebookService.update.and.returnValue(of(updatedNotebook));
 
-            component.markForm.patchValue({ emoji: newEmoji });
+            component.notebookForm.patchValue({ emoji: newEmoji });
             tick(500);
 
-            expect(mockMarkService.update).toHaveBeenCalled();
+            expect(mockNotebookService.update).toHaveBeenCalled();
             expect(component.saveState()).toBe(SaveState.saved);
         }));
 
         it('should save changes locally on emoji update failure', fakeAsync(() => {
             spyOn<any>(component, 'getErrorRetryConfig').and.returnValue(mockErrorRetryConfig);
-            mockMarkService.update.and.returnValue(throwError(() => new Error('Update failed')));
+            mockNotebookService.update.and.returnValue(throwError(() => new Error('Update failed')));
             const newEmoji = '🎨';
 
-            component.markForm.patchValue({ emoji: newEmoji });
+            component.notebookForm.patchValue({ emoji: newEmoji });
             tick(1000);
 
             expect(component.saveState()).toBe(SaveState.error);
-            expect(mockMarkService.setMarkInLocalStorage).toHaveBeenCalled();
+            expect(mockNotebookService.setNotebookInLocalStorage).toHaveBeenCalled();
         }));
     });
 

@@ -6,19 +6,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { Collection } from "../../../workplace/interfaces/collection";
 import { CollectionService } from "../../../workplace/services/collection.service";
-import { DailyMarkActivityChartComponent } from "../../components/daily-mark-activity-chart/daily-mark-activity-chart.component";
-import { DashboardReport, Stats, WeeklyMarkActivity } from "../../interfaces/dashboard-report";
+import { DailyNotebookActivityChartComponent } from "../../components/daily-notebook-activity-chart/daily-notebook-activity-chart.component";
+import { DashboardReport, Stats, WeeklyNotebookActivity } from "../../interfaces/dashboard-report";
 import { DashboardService } from "../../services/dashboard.service";
 import { HomeComponent } from "./home.component";
 import { ROUTES } from "../../../shared/utils/constant";
 
 @Component({
-    selector: 'dashboard-daily-mark-activity-chart',
+    selector: 'dashboard-daily-notebook-activity-chart',
     standalone: true,
     template: ''
 })
-class MockDailyMarkActivityChartComponent {
-    public activity = input.required<WeeklyMarkActivity>();
+class MockDailyNotebookActivityChartComponent {
+    public activity = input.required<WeeklyNotebookActivity>();
 }
 
 @Pipe({
@@ -41,14 +41,14 @@ describe('HomeComponent', () => {
     const baseDashboardReport : DashboardReport = {
         userId : '',
         createdAt : new Date(),
-        recentMarks : [],
+        recentNotebooks : [],
         starredCollections: [],
         stats : {
-            marksCount : 0,
+            notebooksCount : 0,
             collectionsCount: 1,
-            todayMarksCount: 0,
-            weekMarksCount: 0,
-            weeklyMarkActivity: {
+            todayNotebooksCount: 0,
+            weekNotebooksCount: 0,
+            weeklyNotebookActivity: {
                 highestTotal: 0,
                 dailyActivity: {
                     "sunday" : 0,
@@ -59,7 +59,7 @@ describe('HomeComponent', () => {
                     "friday" : 0,
                     "saturday" : 0
                 }
-            } as WeeklyMarkActivity
+            } as WeeklyNotebookActivity
         } as Stats
     };
 
@@ -85,10 +85,10 @@ describe('HomeComponent', () => {
         })
         .overrideComponent(HomeComponent, {
             remove: { imports: [
-                DailyMarkActivityChartComponent,
+                DailyNotebookActivityChartComponent,
             ]},
             add: {imports: [
-                MockDailyMarkActivityChartComponent,
+                MockDailyNotebookActivityChartComponent,
             ]}
         }).compileComponents();
 
@@ -101,10 +101,10 @@ describe('HomeComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('Should navigate to mark viewer, onRecentMarkBtnClick()', () => {
-        const MARK_ID = 1;
-        component.onRecentMarkBtnClick(MARK_ID);
-        expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.MARKS_SEE(MARK_ID)]);
+    it('Should navigate to notebook viewer, onRecentNotebookBtnClick()', () => {
+        const NOTEBOOK_ID = 1;
+        component.onRecentNotebookBtnClick(NOTEBOOK_ID);
+        expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.NOTEBOOKS_SEE(NOTEBOOK_ID)]);
     });
 
     it('Should navigate to collection explorer, onStarredCollectionBtnClick()', () => {
@@ -123,55 +123,55 @@ describe('HomeComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledOnceWith([ROUTES.STARRED]);
     });
 
-    it('should display .marks-list div only when report.recentMarks.length > 0', async () => {
-        //  GIVEN: Set up the report$ observable with recentMarks
-        let reportWithMarks = baseDashboardReport;
-        reportWithMarks.recentMarks = [
+    it('should display .notebook-list div only when report.recentNotebooks.length > 0', async () => {
+        //  GIVEN: Set up the report$ observable with recentNotebooks
+        let reportWithNotebooks = baseDashboardReport;
+        reportWithNotebooks.recentNotebooks = [
             {
                 id: 1,
-                name: 'Mark I',
+                name: 'Notebook I',
                 collectionId: 1,
                 userId: '1',
                 blocks: [],
             },
             {
                 id: 2,
-                name: 'Mark II',
+                name: 'Notebook II',
                 collectionId: 1,
                 userId: '1',
                 blocks: [],
             },
         ];
-        mockDashboardService.getReportByCurrentSession.and.returnValue(of(reportWithMarks));
+        mockDashboardService.getReportByCurrentSession.and.returnValue(of(reportWithNotebooks));
         //WHEN: Initialize the component
         fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         await fixture.whenStable();
         //THEN: Assert expected behaviour
-        const marksListDiv = fixture.debugElement.query(By.css('.marks-list'));
-        const noResultsTemplate = fixture.debugElement.query(By.css('#noRecentMarks'));
-        const recentMarkButton = fixture.debugElement.queryAll(By.css('.recent-mark'));
+        const notebooksListDiv = fixture.debugElement.query(By.css('.notebooks-list'));
+        const noResultsTemplate = fixture.debugElement.query(By.css('#noRecentNotebooks'));
+        const recentNotebookButton = fixture.debugElement.queryAll(By.css('.recent-notebook'));
         
-        expect(marksListDiv).not.toBeNull();
-        expect(recentMarkButton.length).toBe(2);
+        expect(notebooksListDiv).not.toBeNull();
+        expect(recentNotebookButton.length).toBe(2);
         expect(noResultsTemplate).toBeNull();
     });
 
-    it('should not display .marks-list div only when report.recentMarks.length is empty', async () => {
-        //GIVEN: Set up the report$ observable with empty recentMarks
-        const reportWithoutMarks = baseDashboardReport;
-        reportWithoutMarks.recentMarks = [];
-        mockDashboardService.getReportByCurrentSession.and.returnValue(of(reportWithoutMarks));
+    it('should not display .notebooks-list div only when report.recentNotebooks.length is empty', async () => {
+        //GIVEN: Set up the report$ observable with empty recentNotebooks
+        const reportWithoutNotebooks = baseDashboardReport;
+        reportWithoutNotebooks.recentNotebooks = [];
+        mockDashboardService.getReportByCurrentSession.and.returnValue(of(reportWithoutNotebooks));
         //WHEN: Initialize the component
         fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         await fixture.whenStable();
         //THEN: Assert expected behaviour
-        const marksListDiv = fixture.debugElement.query(By.css('.marks-list'));
-        const noResultsTemplate = fixture.debugElement.query(By.css('#noRecentMarks'));
-        expect(marksListDiv).toBeNull();
+        const notebooksListDiv = fixture.debugElement.query(By.css('.notebook-list'));
+        const noResultsTemplate = fixture.debugElement.query(By.css('#noRecentNotebooks'));
+        expect(notebooksListDiv).toBeNull();
         expect(noResultsTemplate).not.toBeNull();
     });
 
@@ -230,11 +230,11 @@ describe('HomeComponent', () => {
         //  GIVEN: Set up the report$ observable with starredCollections
         let reportWithStatistics = baseDashboardReport;
         reportWithStatistics.stats = {
-            marksCount : 10,
+            notebooksCount : 10,
             collectionsCount: 5,
-            weekMarksCount : 3,
-            todayMarksCount : 2,
-            weeklyMarkActivity : baseDashboardReport.stats.weeklyMarkActivity
+            weekNotebooksCount : 3,
+            todayNotebooksCount : 2,
+            weeklyNotebookActivity : baseDashboardReport.stats.weeklyNotebookActivity
         };
         mockDashboardService.getReportByCurrentSession.and.returnValue(of(reportWithStatistics));
         //WHEN: Initialize the component
@@ -243,17 +243,17 @@ describe('HomeComponent', () => {
         fixture.detectChanges();
         await fixture.whenStable();
         //THEN: Assert expected results
-        const marksCountDiv = fixture.debugElement.query(By.css('#marksCount'));
+        const notebooksCountDiv = fixture.debugElement.query(By.css('#notebooksCount'));
         const collectionsCountDiv = fixture.debugElement.query(By.css('#collectionsCount'));
-        const weekMarksCountDiv = fixture.debugElement.query(By.css('#weekMarksCount'));
-        const todayMarksCountDiv = fixture.debugElement.query(By.css('#todayMarksCount'));
-        expect(marksCountDiv).not.toBeNull();
+        const weekNotebooksCountDiv = fixture.debugElement.query(By.css('#weekNotebooksCount'));
+        const todayNotebooksCountDiv = fixture.debugElement.query(By.css('#todayNotebooksCount'));
+        expect(notebooksCountDiv).not.toBeNull();
         expect(collectionsCountDiv).not.toBeNull();
-        expect(weekMarksCountDiv).not.toBeNull();
-        expect(todayMarksCountDiv).not.toBeNull();
-        expect(marksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.marksCount.toString());
+        expect(weekNotebooksCountDiv).not.toBeNull();
+        expect(todayNotebooksCountDiv).not.toBeNull();
+        expect(notebooksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.notebooksCount.toString());
         expect(collectionsCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.collectionsCount.toString());
-        expect(weekMarksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.weekMarksCount.toString());
-        expect(todayMarksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.todayMarksCount.toString());
+        expect(weekNotebooksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.weekNotebooksCount.toString());
+        expect(todayNotebooksCountDiv.nativeElement.textContent).toBe(reportWithStatistics.stats.todayNotebooksCount.toString());
     })
 });

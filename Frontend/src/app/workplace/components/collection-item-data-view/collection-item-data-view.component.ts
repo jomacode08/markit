@@ -120,7 +120,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     if (item.type == CollectionItemType.Collection)
       this.router.navigate([ROUTES.COLLECTION_SEE( id )]);
     else
-      this.router.navigate([ROUTES.MARKS_SEE( id )]);
+      this.router.navigate([ROUTES.NOTEBOOKS_SEE( id )]);
   }
 
   public onFavoriteClicked(item: CollectionItem, index: number): void {

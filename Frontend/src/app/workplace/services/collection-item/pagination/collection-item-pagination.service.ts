@@ -27,7 +27,7 @@ export interface CollectionItemFilters {
 export enum CollectionItemTypeFilter {
   All = 'All',
   Collection = 'Collection',
-  Mark = 'Mark'
+  Notebook = 'Notebook'
 }
 
 export enum SortPaginationOrder {

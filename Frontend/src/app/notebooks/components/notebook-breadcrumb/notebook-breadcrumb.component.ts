@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { ROUTES } from '../../../shared/utils/constant';
 @Component({
-    selector: 'mark-breadcrumb',
+    selector: 'notebook-breadcrumb',
     imports: [],
     template: `
     <button
@@ -15,15 +15,15 @@ import { ROUTES } from '../../../shared/utils/constant';
         {{ collectionName() }}
     </button>
     <span class="separator">/</span>
-    <span class="item">{{ emoji() }}{{ markName() }}</span>  
+    <span class="item">{{ emoji() }}{{ notebookName() }}</span>  
   `,
-    styleUrl: './mark-breadcrumb.component.css',
+    styleUrl: './notebook-breadcrumb.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkBreadcrumbComponent {
+export class NotebookBreadcrumbComponent {
   private router = inject(Router);
   
-  public markName = input.required<string>();
+  public notebookName = input.required<string>();
   public collectionName = input.required<string>();
   public collectionId = input.required<number>();
   public emoji = input<string>();

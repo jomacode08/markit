@@ -89,7 +89,7 @@ describe('StarredComponent', () => {
 
     it('Should reset and load a new page, resetAndFilterItems( filter: CollectionItemTypeFilter )', () => {
         // GIVEN - Set test conditions
-        const filter = CollectionItemTypeFilter.Mark;
+        const filter = CollectionItemTypeFilter.Notebook;
         // WHEN - Perform operation
         component.resetAndFilterItems(filter);
         // THEN - Assert expected behaviour.

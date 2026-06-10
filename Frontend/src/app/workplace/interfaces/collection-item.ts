@@ -15,7 +15,7 @@ export interface CollectionItem {
 
 export enum CollectionItemType {
     Collection = 'collection',
-    Mark = 'mark'
+    Notebook = 'notebook'
 }
 
 export enum CollectionItemAction {

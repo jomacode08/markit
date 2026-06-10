@@ -88,7 +88,7 @@ a {
             }
         }
     }
-    #markMenuBar {
+    #notebookMenuBar {
         top: 0;
         right: 0;
         gap: 1rem;
@@ -105,7 +105,7 @@ a {
     #form-container {
         height: 100vh;
     }
-    #markMenuBar {
+    #notebookMenuBar {
         width: 100vw;
         bottom: 0;
         left: 0;

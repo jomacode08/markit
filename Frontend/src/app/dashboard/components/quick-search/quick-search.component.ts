@@ -8,8 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { EmptyStateIconComponent } from "../../../shared/components/ui/empty-state-icon-component/empty-state-icon.component";
-import { MarkSearchResult } from '../../interfaces/search/mark-search-result';
-import { MarkSearchService, SearchState } from '../../services/mark-search.service';
+import { NotebookSearchResult } from '../../interfaces/search/notebook-search-result';
+import { NotebookSearchService, SearchState } from '../../services/notebook-search.service';
 import { ROUTES } from '../../../shared/utils/constant';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -32,7 +32,7 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
   public query : string = "";
   public queryDebouncer = new Subject<string>();
   public searchInputPlaceholder : string = "Search items...";
-  public searchResults : Signal<MarkSearchResult[]>;
+  public searchResults : Signal<NotebookSearchResult[]>;
   public searchState : Signal<SearchState>;
 
   get searchStateEnum(): typeof SearchState {
@@ -40,20 +40,20 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private markSearchService: MarkSearchService,
+    private notebookSearchService: NotebookSearchService,
     private router: Router,
     private destroyRef: DestroyRef,
   ){
-    this.searchResults = computed(() => markSearchService.results());
-    this.searchState = computed(() => markSearchService.searchState());
-    this.query = markSearchService.searchTerm();
+    this.searchResults = computed(() => notebookSearchService.results());
+    this.searchState = computed(() => notebookSearchService.searchState());
+    this.query = notebookSearchService.searchTerm();
   }
 
   public ngOnInit(): void {
     this.queryDebouncer.pipe(
       debounceTime(500),
       switchMap((query) => {
-        return this.markSearchService.search(query);
+        return this.notebookSearchService.search(query);
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe();
@@ -65,8 +65,8 @@ export class QuickSearchComponent implements OnInit, OnDestroy {
 
   public onSearchBoxChanged = (query: string) => this.queryDebouncer.next(query);
   
-  public navigateToMarkViewer(markId: number) {
-    this.router.navigateByUrl(ROUTES.MARKS_SEE(markId));
+  public navigateToNotebookViewer(notebookId: number) {
+    this.router.navigateByUrl(ROUTES.NOTEBOOKS_SEE(notebookId));
     this.navigateToTarget.emit();
   }
 }

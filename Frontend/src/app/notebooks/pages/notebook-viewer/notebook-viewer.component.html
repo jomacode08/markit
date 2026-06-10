@@ -1,21 +1,21 @@
-@defer(when mark$ | async) {
+@defer(when notebook$ | async) {
     <section class="container flex h-full">
-        <!-- Mark menu bar -->
-        <nav id="markMenuBar">
+        <!-- Notebook menu bar -->
+        <nav id="notebookMenuBar">
             <div class="flex gap-2">
                 <!-- Breadcrumb -->
                 <div class="max-w-16rem sm:max-w-25rem md:max-w-30rem lg:max-w-max">
-                    <mark-breadcrumb
-                        [markName]="currentMark().name"
-                        [collectionName]="currentMark().collectionName ?? notFoundPlaceHolder"
-                        [collectionId]="currentMark().collectionId"
-                        [emoji]="currentMark().emoji"
+                    <notebook-breadcrumb
+                        [notebookName]="currentNotebook().name"
+                        [collectionName]="currentNotebook().collectionName ?? notFoundPlaceHolder"
+                        [collectionId]="currentNotebook().collectionId"
+                        [emoji]="currentNotebook().emoji"
                     />
                 </div>
                 <!-- Auto save indicator -->
-                <mark-autosave-indicator
+                <notebook-autosave-indicator
                     [saveState]="saveState()"
-                    (retrySave)="retryMarkSave()"
+                    (retrySave)="retryNotebookSave()"
                 />
             </div>
             <div class="flex gap-3">
@@ -26,7 +26,7 @@
                 <!-- Navigators -->
                  <block-navigator
                     [blockIndex]="currentBlockIndex()"
-                    [blocks]="currentMark().blocks"
+                    [blocks]="currentNotebook().blocks"
                     (positionChanged)="modifyActiveBlock($event)"
                  />
                 <!-- New block button -->
@@ -35,7 +35,7 @@
                     type="button"
                     aria-label="Block menu"
                     pTooltip="Block menu"
-                    (click)="openBlockMenuDialog(currentMark().blocks)"
+                    (click)="openBlockMenuDialog(currentNotebook().blocks)"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.25rem" height="1.25rem" viewBox="0 0 24 24"><g fill="none" stroke="var(--p-text-muted-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                         <path d="M21 7.353v9.294a.6.6 0 0 1-.309.525l-8.4 4.666a.6.6 0 0 1-.582 0l-8.4-4.666A.6.6 0 0 1 3 16.647V7.353a.6.6 0 0 1 .309-.524l8.4-4.667a.6.6 0 0 1 .582 0l8.4 4.667a.6.6 0 0 1 .309.524"/>
@@ -46,32 +46,32 @@
         </nav>
         <!-- Form -->
         <form
-            [formGroup]="markForm"
+            [formGroup]="notebookForm"
             autocomplete="off"
-            class="mark-form flex-container"
+            class="notebook-form flex-container"
         >
             <!-- Header -->
-            <div id="markHeader" class="mb-3 md:mt-4">
+            <div id="notebookHeader" class="mb-3 md:mt-4">
                 <app-emoji-picker
                     formControlName="emoji"
                     defaultIconClass="fa-regular fa-note-sticky"
                 />
                 <input 
-                    id="markName"
+                    id="notebookName"
                     type="text" 
                     formControlName="inputName"
-                    [placeholder]="markNamePlaceHolder"
-                    (input)="onMarkNameInputChanged($event)"
+                    [placeholder]="notebookNamePlaceHolder"
+                    (input)="onNotebookNameInputChanged($event)"
                 >
             </div>
             <!-- Current block -->
             <ng-container formArrayName="blocks">
                 <div
-                    id="markBlock"
+                    id="notebookBlock"
                     class="flex-container"
                     [formGroup]="getCurrentBlockFormGroup()"
                 >
-                    <marks-block
+                    <notebooks-block
                         formControlName="content"
                         (editorSelected)="onEditorSelected($event)"
                         (debouncedChange)="onEditorValueChanged($event)"

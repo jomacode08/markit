@@ -4,7 +4,7 @@
   min-height: 100dvh;
 }
 
-#noRecentMarks,
+#noRecentNotebooks,
 #noStarredCollections {
   background-repeat: repeat, repeat;
   background-image: linear-gradient(
@@ -56,7 +56,7 @@ button.view-all:hover {
   color: var(--p-text-color);
 }
 
-button.recent-mark {
+button.recent-notebook {
   width: 100%;
   display: flex;
   cursor: pointer;
@@ -66,11 +66,11 @@ button.recent-mark {
   transition: all 0.3s ease;
 }
 
-button.recent-mark:hover {
+button.recent-notebook:hover {
   background-color: var(--p-content-elevation-section);
 }
 
-button.recent-mark>.mark-description {
+button.recent-notebook>.notebook-description {
   display: flex;
   align-items: center;
 }
@@ -88,15 +88,15 @@ button.recent-mark>.mark-description {
   margin: 0;
 }
 
-.mark-item {
+.notebook-item {
   width: 100%;
   padding: 3px;
 }
-.mark-item:not(:first-child) {
+.notebook-item:not(:first-child) {
   border-top: 1px dashed var(--p-content-border-color);
 }
 
-.mark-description>.icon {
+.notebook-description>.icon {
   padding: .5rem .75rem;
   border-radius: .5rem;
   margin-right: .75rem;

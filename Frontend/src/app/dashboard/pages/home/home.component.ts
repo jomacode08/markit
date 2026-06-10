@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { DailyMarkActivityChartComponent } from '../../components/daily-mark-activity-chart/daily-mark-activity-chart.component';
+import { DailyNotebookActivityChartComponent } from '../../components/daily-notebook-activity-chart/daily-notebook-activity-chart.component';
 import { DashboardReport } from '../../interfaces/dashboard-report';
 import { DashboardService } from '../../services/dashboard.service';
 import { ROUTES } from './../../../shared/utils/constant';
@@ -15,7 +15,7 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
     selector: 'app-home',
     imports: [
       CommonModule,
-      DailyMarkActivityChartComponent,
+      DailyNotebookActivityChartComponent,
       RouterModule,
       TimeAgoPipe
     ],
@@ -34,7 +34,7 @@ export class HomeComponent {
     this.report$ = this.dashboardService.getReportByCurrentSession();
   }
 
-  public onRecentMarkBtnClick = (markId: number) => this.router.navigate([ROUTES.MARKS_SEE(markId)]);
+  public onRecentNotebookBtnClick = (notebookId: number) => this.router.navigate([ROUTES.NOTEBOOKS_SEE(notebookId)]);
   public onStarredCollectionBtnClick = (collectionId: number) => this.router.navigate([ROUTES.COLLECTION_SEE(collectionId)]);
   public onViewAllRecentBtnClick = () => this.router.navigate([ROUTES.RECENT]);
   public onViewAllStarredBtnClick = () => this.router.navigate([ROUTES.STARRED]);

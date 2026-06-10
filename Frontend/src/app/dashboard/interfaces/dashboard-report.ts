@@ -1,23 +1,23 @@
-import { Mark } from "../../marks/interfaces/mark";
+import { Notebook } from "../../notebooks/interfaces/notebook";
 import { Collection } from "../../workplace/interfaces/collection";
 
 export interface DashboardReport {
-    userId:             string;
-    createdAt:          Date;
-    recentMarks:        Mark[];
+    userId: string;
+    createdAt: Date;
+    recentNotebooks: Notebook[];
     starredCollections: Collection[];
-    stats:              Stats;
+    stats: Stats;
 }
 
 export interface Stats {
-    marksCount:         number;
-    collectionsCount:   number;
-    todayMarksCount: number;
-    weekMarksCount:     number;
-    weeklyMarkActivity: WeeklyMarkActivity;
+    notebooksCount: number;
+    collectionsCount: number;
+    todayNotebooksCount: number;
+    weekNotebooksCount: number;
+    weeklyNotebookActivity: WeeklyNotebookActivity;
 }
 
-export interface WeeklyMarkActivity {
+export interface WeeklyNotebookActivity {
     highestTotal:  number;
     dailyActivity: Record<DayOfWeek, number>;
 }

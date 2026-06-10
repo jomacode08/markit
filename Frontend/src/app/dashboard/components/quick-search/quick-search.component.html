@@ -13,23 +13,23 @@
     </div>
 </div>
 
-<!-- Mark results -->
+<!-- Notebook results -->
 <div class="results">
     @if (searchState() === searchStateEnum.finished && searchResults().length > 0) {
         <div class="results-list fadein animation-duration-200">
             <div class="item-result-counter">
                 Results ({{ searchResults().length }})
             </div>
-            @for (mark of searchResults(); track mark.id) {
+            @for (notebook of searchResults(); track notebook.id) {
                 <button
-                    [id]="'itemResult-' + mark.id"
+                    [id]="'itemResult-' + notebook.id"
                     class="item-result"
-                    [attr.aria-label]="'Navigate to ' + mark.name"
-                    (click)="navigateToMarkViewer(mark.id)"
+                    [attr.aria-label]="'Navigate to ' + notebook.name"
+                    (click)="navigateToNotebookViewer(notebook.id)"
                 >
-                    <div class="name">{{ mark.name }}</div>
+                    <div class="name">{{ notebook.name }}</div>
                     <div class="item-matches">
-                        @for (block of mark.blocks; track block.id) {
+                        @for (block of notebook.blocks; track block.id) {
                             <div class="match">
                                 <div class="snippet" [innerHTML]="block.snippet"></div>
                             </div>

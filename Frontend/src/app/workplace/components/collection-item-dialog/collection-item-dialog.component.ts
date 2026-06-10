@@ -86,7 +86,7 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
     if (collectionItem.type === CollectionItemType.Collection)
       this.addCollection(collectionItem);
     else  
-      this.addMark(collectionItem);
+      this.addNotebook(collectionItem);
   }
 
   private renameItem( collectionItem: CollectionItem ): void {
@@ -113,10 +113,10 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
     });
   }
 
-  private addMark( collectionItem: CollectionItem ): void {
-    this.collectionItemActionService.createEmptyMark(collectionItem).subscribe({
-      next: (mark) => {
-        this.ref.close(mark.id);
+  private addNotebook( collectionItem: CollectionItem ): void {
+    this.collectionItemActionService.createEmptyNotebook(collectionItem).subscribe({
+      next: (notebook) => {
+        this.ref.close(notebook.id);
       },
       error: (error) => {
         this.setSubmit(false);
