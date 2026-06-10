@@ -54,7 +54,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         private async Task<List<MarkViewModel>> GetRecentMarksAsync(string userId)
         {
             const int LIMIT = 5;
-            List<Mark> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(userId, LIMIT);
+            List<Notebook> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(userId, LIMIT);
             return _mapper.Map<List<MarkViewModel>>(marks);
         }
 
@@ -76,7 +76,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             int collectionsCount = await _unitOfWork.CollectionRepository.CountByUserIdAsync(userId);
 
             // Get mark stats of the week
-            IReadOnlyList<Mark> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(userId);
+            IReadOnlyList<Notebook> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(userId);
             Dictionary<DayOfWeek, int> dailyMarkActivity = new() {
                 { DayOfWeek.Sunday, 0 },
                 { DayOfWeek.Monday, 0 },
@@ -111,7 +111,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             );
         }
 
-        private async Task<IReadOnlyList<Mark>> GetMarksOfTheCurrentWeekAsync(string userId)
+        private async Task<IReadOnlyList<Notebook>> GetMarksOfTheCurrentWeekAsync(string userId)
         {
             DateTime today = GetDateZeroTime(DateTime.UtcNow);
             DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace markit.Domain.Entities
 {
-    public class Mark : BaseModel
+    public class Notebook : BaseModel
     {
         [Required, MaxLength(255)] public string Name { get; set; } = string.Empty;
         [Required] public int CollectionId { get; set; }

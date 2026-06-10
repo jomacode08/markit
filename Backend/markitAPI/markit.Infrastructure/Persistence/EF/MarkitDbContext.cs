@@ -1,5 +1,4 @@
-﻿using markit.Application.Models.Authentication;
-using markit.Application.Models.Authentication.AppUser;
+﻿using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Settings;
 using markit.Domain.Common;
 using markit.Domain.Entities;
@@ -9,31 +8,27 @@ using markit.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace markit.Infrastructure.Persistence.EF
 {
     public class MarkitDbContext : IdentityDbContext<AppUser>
     {
-        private readonly UserDefaultSettings _userDefaultSettings;
         private readonly SessionService _sessionService;
 
         public MarkitDbContext
         (
             DbContextOptions<MarkitDbContext> options,
-            SessionService sessionService,
-            IOptions<UserDefaultSettings> userDefaultSettings
+            SessionService sessionService
         ) : base(options)
         {
             _sessionService = sessionService;
-            _userDefaultSettings = userDefaultSettings.Value;
         }
 
         public DbSet<AppUser> User { get; set; }
         public DbSet<SystemConfig> SystemConfigs { get; set; }
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Block> Blocks { get; set; }
-        public DbSet<Mark> Marks { get; set; }
+        public DbSet<Notebook> Notebooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -97,7 +92,7 @@ namespace markit.Infrastructure.Persistence.EF
         }
 
         private static void AddQueryFilters(ModelBuilder builder) {
-            builder.Entity<Mark>().HasQueryFilter(m => m.Enable);
+            builder.Entity<Notebook>().HasQueryFilter(m => m.Enable);
             builder.Entity<Block>().HasQueryFilter(m => m.Enable);
             builder.Entity<Collection>().HasQueryFilter(m => m.Enable);
         }

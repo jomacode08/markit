@@ -5,9 +5,9 @@ using NpgsqlTypes;
 
 namespace markit.Infrastructure.Persistence.EF.Configurations
 {
-    public class MarkConfiguration : IEntityTypeConfiguration<Mark>
+    public class MarkConfiguration : IEntityTypeConfiguration<Notebook>
     {
-        public void Configure(EntityTypeBuilder<Mark> builder)
+        public void Configure(EntityTypeBuilder<Notebook> builder)
         {
             builder.Property(c => c.Emoji)
                 .IsUnicode();

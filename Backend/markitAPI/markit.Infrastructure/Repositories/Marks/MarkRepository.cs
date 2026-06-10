@@ -10,14 +10,14 @@ using System.Linq.Expressions;
 
 namespace markit.Infrastructure.Repositories.Marks
 {
-    public class MarkRepository : BaseRepository<Mark>, IMarkRepository
+    public class MarkRepository : BaseRepository<Notebook>, IMarkRepository
     {
         public MarkRepository(MarkitDbContext markitDbContext) : base(markitDbContext)
         { }
 
-        public async Task<Mark?> GetWithOrderedBlocks(int id)
+        public async Task<Notebook?> GetWithOrderedBlocks(int id)
         {
-            var mark = await context.Marks
+            var mark = await context.Notebooks
                 .Include(m => m.Blocks)
                 .Include(m => m.Collection)
                 .Where(m => m.Id.Equals(id))
@@ -31,7 +31,7 @@ namespace markit.Infrastructure.Repositories.Marks
             return mark;
         }
 
-        public Task<List<Mark>> GetAsyncCursorBasedPagination(
+        public Task<List<Notebook>> GetAsyncCursorBasedPagination(
             int pageSize,
             string userId,
             CursorData? cursor,
@@ -40,7 +40,7 @@ namespace markit.Infrastructure.Repositories.Marks
             bool onlyFavorites = false
         )
         {
-            IQueryable<Mark> marksQuery = context.Marks.AsNoTracking();
+            IQueryable<Notebook> marksQuery = context.Notebooks.AsNoTracking();
 
             // Apply filters
             marksQuery = marksQuery.Include(m => m.Collection)
@@ -84,9 +84,9 @@ namespace markit.Infrastructure.Repositories.Marks
                 .ToListAsync();
         }
 
-        public async Task<List<Mark>> GetMostRecentAsync(string userId, int limit)
+        public async Task<List<Notebook>> GetMostRecentAsync(string userId, int limit)
         {
-            return await context.Marks
+            return await context.Notebooks
                 .AsNoTracking()
                 .Include(m => m.Collection)
                 .Where(m => m.Collection != null && m.Collection.UserId.Equals(userId))
@@ -97,7 +97,7 @@ namespace markit.Infrastructure.Repositories.Marks
 
         public async Task<int> CountByUserIdAsync(string userId)
         {
-            return await context.Marks
+            return await context.Notebooks
                 .Where(m => m.Collection != null && m.Collection.UserId.Equals(userId))
                 .CountAsync();
         }
@@ -109,7 +109,7 @@ namespace markit.Infrastructure.Repositories.Marks
             const string LANGUAGE_CONFIGURATION = "English";
             const string SEARCH_VECTOR_SHADOW_PROPERTY_NAME = "SearchVector";
 
-            return await context.Marks
+            return await context.Notebooks
                 // Query processing
                 .Include(m => m.Collection)
                 .Where(m => m.Collection != null && m.Collection.UserId == userId)
@@ -132,7 +132,7 @@ namespace markit.Infrastructure.Repositories.Marks
                 .ToListAsync(cancellationToken);
         }
 
-        private static Expression<Func<Mark, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)
+        private static Expression<Func<Notebook, bool>> GetCursorBasedPaginationFilterExpression(SortPaginationOrder sortOrder, CursorData cursor)
         {
             if (sortOrder.Equals(SortPaginationOrder.Ascending))
             {

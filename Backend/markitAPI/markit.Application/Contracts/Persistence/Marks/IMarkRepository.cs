@@ -5,11 +5,11 @@ using markit.Domain.Entities;
 
 namespace markit.Application.Contracts.Persistence.Marks
 {
-    public interface IMarkRepository : IAsyncRepository<Mark>
+    public interface IMarkRepository : IAsyncRepository<Notebook>
     {
         Task<int> CountByUserIdAsync(string userId);
-        Task<Mark?> GetWithOrderedBlocks(int id);
-        Task<List<Mark>> GetAsyncCursorBasedPagination(
+        Task<Notebook?> GetWithOrderedBlocks(int id);
+        Task<List<Notebook>> GetAsyncCursorBasedPagination(
             int pageSize,
             string userId,
             CursorData? cursor,
@@ -17,7 +17,7 @@ namespace markit.Application.Contracts.Persistence.Marks
             int? collectionId = null,
             bool onlyFavorites = false
         );
-        Task<List<Mark>> GetMostRecentAsync(string userId, int limit);
+        Task<List<Notebook>> GetMostRecentAsync(string userId, int limit);
         Task<IEnumerable<MarkSearchResult>> SearchAsync(string query, string userId, CancellationToken cancellationToken);
     }
 }

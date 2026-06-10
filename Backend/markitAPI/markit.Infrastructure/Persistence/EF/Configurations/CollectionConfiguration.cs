@@ -15,7 +15,7 @@ namespace markit.Infrastructure.Persistence.EF.Configurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .HasMany(c => c.Marks)
+                .HasMany(c => c.Notebooks)
                 .WithOne(m => m.Collection)
                 .IsRequired()
                 .HasForeignKey(m => m.CollectionId);

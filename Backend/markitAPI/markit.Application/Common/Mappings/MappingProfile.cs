@@ -78,8 +78,8 @@ namespace markit.Application.Mappings
                 )
                 .ForMember(
                     dest => dest.Preview,
-                    opt => opt.MapFrom(src => src.Marks != null 
-                    ? $"{src.Marks.Count} marks" 
+                    opt => opt.MapFrom(src => src.Notebooks != null 
+                    ? $"{src.Notebooks.Count} marks" 
                     : GeneralConstant.Marks.COLLECTION_DEFAULT_PREVIEW)
                 );
             #endregion
@@ -90,7 +90,7 @@ namespace markit.Application.Mappings
             #endregion
 
             #region Marks
-            CreateMap<CreateMarkCommand, Mark>()
+            CreateMap<CreateMarkCommand, Notebook>()
                 .ForMember(dest => dest.Blocks, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
                 {
@@ -107,7 +107,7 @@ namespace markit.Application.Mappings
                     }
                 });
 
-            CreateMap<UpdateMarkCommand, Mark>()
+            CreateMap<UpdateMarkCommand, Notebook>()
                 .ForMember(
                     dest => dest.NameLess,
                     opt  => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.InputName))
@@ -163,7 +163,7 @@ namespace markit.Application.Mappings
                     }
                 });
 
-            CreateMap<Mark, MarkViewModel>()
+            CreateMap<Notebook, MarkViewModel>()
                 .ForMember(
                     dest => dest.Blocks,
                     opt => opt.MapFrom(
@@ -191,7 +191,7 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.NameLess.Equals(true) ? "" : src.Name)
                 );
 
-            CreateMap<Mark, CollectionItem>()
+            CreateMap<Notebook, CollectionItem>()
                 .ForMember(
                     dest => dest.Id,
                     opt => opt.MapFrom(src => Guid.NewGuid().ToString())

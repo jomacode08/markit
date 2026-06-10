@@ -16,6 +16,6 @@ namespace markit.Domain.Entities
 
         public virtual Collection? Parent { get; set; }
         public virtual ICollection<Collection>? SubCollections { get; set; }
-        public virtual ICollection<Mark>? Marks { get; set; }
+        public virtual ICollection<Notebook>? Notebooks { get; set; }
     }
 }

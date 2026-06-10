@@ -24,7 +24,7 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
 
         public async Task<bool> Handle(SetMarkFavoriteStatusCommand request, CancellationToken cancellationToken)
         {
-            Mark mark = await ValidateMark(request.Id, request.UserId);
+            Notebook mark = await ValidateMark(request.Id, request.UserId);
             
             mark.IsFavorite = request.IsFavorite;
             _unitOfWork.MarkRepository.UpdateEntity(mark);
@@ -33,9 +33,9 @@ namespace markit.Application.Features.Marks.Commands.SetMarkFavoriteStatusComman
             return mark.IsFavorite;
         }
 
-        private async Task<Mark> ValidateMark(int markId, string userId)
+        private async Task<Notebook> ValidateMark(int markId, string userId)
         {
-            Mark mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
+            Notebook mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateUser(userId);
             return mark;

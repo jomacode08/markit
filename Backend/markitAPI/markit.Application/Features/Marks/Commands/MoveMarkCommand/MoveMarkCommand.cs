@@ -24,7 +24,7 @@ namespace markit.Application.Features.Marks.Commands.MoveMarkCommand
 
         public async Task<Unit> Handle(MoveMarkCommand request, CancellationToken cancellationToken)
         {
-            Mark mark = await GetMarkAsync(request.MarkId);
+            Notebook mark = await GetMarkAsync(request.MarkId);
             Collection sourceCollection = await GetCollectionAsync(mark.CollectionId);
             Collection destinyCollection = await GetCollectionAsync(request.CollectionId);
             
@@ -36,7 +36,7 @@ namespace markit.Application.Features.Marks.Commands.MoveMarkCommand
             return Unit.Value;
         }
 
-        private async Task MoveMarkAsync(Mark mark, int newCollectionId)
+        private async Task MoveMarkAsync(Notebook mark, int newCollectionId)
         {
             mark.CollectionId = newCollectionId;
             await _unitOfWork.MarkRepository.UpdateAsync(mark);
@@ -48,7 +48,7 @@ namespace markit.Application.Features.Marks.Commands.MoveMarkCommand
                 ?? throw new NotFoundException("Collections", collectionId);
         }
 
-        private async Task<Mark> GetMarkAsync(int markId)
+        private async Task<Notebook> GetMarkAsync(int markId)
         {
             return await _unitOfWork.MarkRepository.GetByIdAsync(markId)
                 ?? throw new NotFoundException("Marks", markId);

@@ -13,7 +13,7 @@ namespace markit.Application.Common.Helpers
         [GeneratedRegex(@"^\s*(.+)", RegexOptions.None)]
         private static partial Regex FirstLineRegex();
 
-        public static string ConstructPreview(this Mark mark)
+        public static string ConstructPreview(this Notebook mark)
         {
             Block? firstBlock = mark.Blocks?.FirstOrDefault();
             string markdown = firstBlock?.Content ?? "";
@@ -77,7 +77,7 @@ namespace markit.Application.Common.Helpers
             }
         }
 
-        public static void ValidateUser(this Mark mark, string userId)
+        public static void ValidateUser(this Notebook mark, string userId)
         {
             ArgumentNullException.ThrowIfNull(mark.Collection, nameof(mark.Collection));
             if (mark.Collection.UserId != userId)

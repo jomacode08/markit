@@ -25,9 +25,9 @@ namespace markit.Infrastructure.Repositories.Marks
             
             List<BlockSearchResult> results = await context.Blocks
                 // Query processing
-                .Include(b => b.Mark)
+                .Include(b => b.Notebook)
                 .ThenInclude(m => m!.Collection)
-                .Where(b => b.Mark!.Collection!.UserId == userId)
+                .Where(b => b.Notebook!.Collection!.UserId == userId)
                 .Where(b =>
                     EF.Property<NpgsqlTsVector>(b, SEARCH_VECTOR_SHADOW_PROPERTY_NAME)
                         .Matches(EF.Functions.WebSearchToTsQuery(LANGUAGE_CONFIGURATION, searchTerm))
@@ -49,7 +49,7 @@ namespace markit.Infrastructure.Repositories.Marks
                             .GetResultHeadline(LANGUAGE_CONFIGURATION, b.Content, HEADLINE_OPTIONS)
                         : NO_CONTENT_RESULT,
                     MarkId = b.MarkId,
-                    MarkName = b.Mark!.Name
+                    MarkName = b.Notebook!.Name
                 })
                 .ToListAsync(cancellationToken);
 

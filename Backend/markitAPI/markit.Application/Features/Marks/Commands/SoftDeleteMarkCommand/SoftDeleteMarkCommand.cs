@@ -25,22 +25,22 @@ namespace markit.Application.Features.Marks.Commands.DeleteMarkCommand
 
         public async Task<bool> Handle(SoftDeleteMarkCommand request, CancellationToken cancellationToken)
         {
-            Mark mark = await ValidateMarkExistence(request.Id, request.UserId);
+            Notebook mark = await ValidateMarkExistence(request.Id, request.UserId);
             SoftDeleteMark(mark);
             await SoftDeleteBlocks(mark.Id);
             await _unitOfWork.Complete();
             return true;
         }
 
-        private async Task<Mark> ValidateMarkExistence(int markId, string userId)
+        private async Task<Notebook> ValidateMarkExistence(int markId, string userId)
         {
-            Mark mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
+            Notebook mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateUser(userId);
             return mark;
         }
 
-        private void SoftDeleteMark(Mark mark)
+        private void SoftDeleteMark(Notebook mark)
         {
             _unitOfWork.MarkRepository.SoftDeleteEntity(mark);
         }

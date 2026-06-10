@@ -50,7 +50,7 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
             await ValidateCollection(request.CollectionId, request.UserId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                Mark mark = _mapper.Map<Mark>(request);
+                Notebook mark = _mapper.Map<Notebook>(request);
                 await AddMarkAsync(mark);
                 var markViewModel = _mapper.Map<MarkViewModel>(mark);
             scope.Complete();
@@ -82,6 +82,6 @@ namespace markit.Application.Features.Marks.Commands.CreateMarkCommand
                 ?? throw new CustomValidationException($"The main collection of the user with id:{userId} is not configured.");
         }
 
-        private async Task AddMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.AddAsync(mark);
+        private async Task AddMarkAsync(Notebook mark) => await _unitOfWork.MarkRepository.AddAsync(mark);
     }
 }

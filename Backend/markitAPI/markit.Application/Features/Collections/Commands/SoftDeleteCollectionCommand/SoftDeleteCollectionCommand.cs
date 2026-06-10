@@ -45,7 +45,7 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
             return await _unitOfWork.CollectionRepository.GetHierarchyRecursively(collectionId);
         }
 
-        private async Task<List<Mark>> GetMarks(int[] ids)
+        private async Task<List<Notebook>> GetMarks(int[] ids)
         {
             return [.. await _unitOfWork.MarkRepository.GetAsync(m => ids.Contains(m.CollectionId))];
         }

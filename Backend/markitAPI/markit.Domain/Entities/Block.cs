@@ -13,6 +13,6 @@ namespace markit.Domain.Entities
         [Required]
         public int MarkId { get; set; }
 
-        public virtual Mark? Mark { get; set; }
+        public virtual Notebook? Notebook { get; set; }
     }
 }

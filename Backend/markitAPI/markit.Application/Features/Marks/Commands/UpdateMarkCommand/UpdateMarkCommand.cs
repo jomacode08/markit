@@ -35,10 +35,10 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
 
         public async Task<MarkViewModel> Handle(UpdateMarkCommand request, CancellationToken cancellationToken)
         {
-            Mark mark = await ValidateMark(request.Id, request.UserId);
+            Notebook mark = await ValidateMark(request.Id, request.UserId);
 
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
-                _mapper.Map(request, mark, typeof(UpdateMarkCommand), typeof(Mark));
+                _mapper.Map(request, mark, typeof(UpdateMarkCommand), typeof(Notebook));
                 await UpdateMarkAsync(mark);
                 var markVm = _mapper.Map<MarkViewModel>(mark);
             scope.Complete();
@@ -46,14 +46,14 @@ namespace markit.Application.Features.Marks.Commands.UpdateMarkCommand
             return markVm;
         }
 
-        private async Task<Mark> ValidateMark(int markId, string userId)
+        private async Task<Notebook> ValidateMark(int markId, string userId)
         {
-            Mark? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Blocks,Collection")
+            Notebook? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Blocks,Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateUser(userId);
             return mark;
         }
 
-        private async Task UpdateMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
+        private async Task UpdateMarkAsync(Notebook mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
     }
 }

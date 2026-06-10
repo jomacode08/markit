@@ -66,7 +66,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             // Phase 1: Load template collections and their marks + blocks
             List<Collection> templateDirectory = await GetTemplateDirectoryAsync(templateUserId);
             List<Collection> templateCollections = [.. templateDirectory.Where(c => !c.IsMain)];
-            List<Mark> templateMarks = [.. templateCollections.SelectMany(c => c.Marks ?? [])];
+            List<Notebook> templateMarks = [.. templateCollections.SelectMany(c => c.Notebooks ?? [])];
             int? templateMainCollectionId = templateDirectory.FirstOrDefault(c => c.IsMain)?.Id;
 
             if (templateMainCollectionId is null || templateCollections.Count == 0)
@@ -109,7 +109,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             await BulkInsertCollectionsAsync(newCollections);
 
             // Phase 4: Build and insert marks + blocks via EF (auto-generated IDs)
-            List<Mark> newMarks = [.. templateMarks.Select(tm => new Mark
+            List<Notebook> newMarks = [.. templateMarks.Select(tm => new Notebook
             {
                 CollectionId = idMap[tm.CollectionId],
                 Name = tm.Name,
@@ -205,9 +205,9 @@ namespace markit.Infrastructure.Security.Services.Demo
             await _context.Database.ExecuteSqlRawAsync(sb.ToString(), dbParams.Cast<object>().ToArray());
         }
 
-        private async Task BulkInsertMarksAsync(List<Mark> marks)
+        private async Task BulkInsertMarksAsync(List<Notebook> marks)
         {
-            _context.Marks.AddRange(marks);
+            _context.Notebooks.AddRange(marks);
             await _context.SaveChangesAsync();
         }
 
@@ -229,7 +229,7 @@ namespace markit.Infrastructure.Security.Services.Demo
         private async Task<List<Collection>> GetTemplateDirectoryAsync(string templateUserId)
         {
             return await _context.Collections
-                .Include(c => c.Marks!.Where(m => m.Enable))
+                .Include(c => c.Notebooks!.Where(m => m.Enable))
                     .ThenInclude(m => m.Blocks!.Where(b => b.Enable))
                 .Where(c => c.UserId == templateUserId && c.Enable)
                 .AsSingleQuery()

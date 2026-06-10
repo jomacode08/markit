@@ -73,7 +73,7 @@ namespace markit.Infrastructure.Repositories.Marks
 			}
 
 			// Includes
-			collectionsQuery = collectionsQuery.Include(c => c.Marks);
+			collectionsQuery = collectionsQuery.Include(c => c.Notebooks);
 
 			// Sorting
 			if (sortOrder.Equals(SortPaginationOrder.Ascending))

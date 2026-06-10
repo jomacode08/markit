@@ -45,14 +45,14 @@ namespace markit.Application.Features.Marks.Commands.RenameMarkCommand
             return markViewModel;
         }
 
-        private async Task<Mark> ValidateMark(int markId, string userId)
+        private async Task<Notebook> ValidateMark(int markId, string userId)
         {
-            Mark? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
+            Notebook? mark = await _unitOfWork.MarkRepository.GetByIdAsync(markId, "Collection")
                 ?? throw new NotFoundException("Mark", markId);
             mark.ValidateUser(userId);
             return mark;
         }
 
-        private async Task UpdateMarkAsync(Mark mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
+        private async Task UpdateMarkAsync(Notebook mark) => await _unitOfWork.MarkRepository.UpdateAsync(mark);
     }
 }
