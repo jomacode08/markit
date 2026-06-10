@@ -27,7 +27,7 @@ namespace markit.Infrastructure.Security.Services.Demo
     ///     in memory before any insert is issued.
     ///   </item>
     ///   <item>All collections are inserted in a single parameterized raw SQL statement.</item>
-    ///   <item>Marks and Blocks are inserted via EF <c>AddRange</c> + <c>SaveChangesAsync</c>.</item>
+    ///   <item>Notebooks and Blocks are inserted via EF <c>AddRange</c> + <c>SaveChangesAsync</c>.</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -41,7 +41,7 @@ namespace markit.Infrastructure.Security.Services.Demo
         private const string CREATED_BY_SYSTEM = "System";
         private const string NO_TEMPLATE_CONFIGURED_MESSAGE = "OnboardingSeedService: No template user configured. Skipping seed.";
         private const string TEMPLATE_NOT_FOUND_MESSAGE = "OnboardingSeedService: Template user '{TemplateUserId}' has no directory. Skipping seed.";
-        private const string SEED_COMPLETE_MESSAGE = "OnboardingSeedService: Seeded {CollectionCount} collections, {MarkCount} marks for guest '{GuestUserId}'.";
+        private const string SEED_COMPLETE_MESSAGE = "OnboardingSeedService: Seeded {CollectionCount} collections, {MarkCount} notebooks for guest '{GuestUserId}'.";
 
         public OnboardingSeedService(
             MarkitDbContext context,
@@ -63,10 +63,10 @@ namespace markit.Infrastructure.Security.Services.Demo
                 return;
             }
 
-            // Phase 1: Load template collections and their marks + blocks
+            // Phase 1: Load template collections and their notebooks + blocks
             List<Collection> templateDirectory = await GetTemplateDirectoryAsync(templateUserId);
             List<Collection> templateCollections = [.. templateDirectory.Where(c => !c.IsMain)];
-            List<Notebook> templateMarks = [.. templateCollections.SelectMany(c => c.Notebooks ?? [])];
+            List<Notebook> templateNotebooks = [.. templateCollections.SelectMany(c => c.Notebooks ?? [])];
             int? templateMainCollectionId = templateDirectory.FirstOrDefault(c => c.IsMain)?.Id;
 
             if (templateMainCollectionId is null || templateCollections.Count == 0)
@@ -108,8 +108,8 @@ namespace markit.Infrastructure.Security.Services.Demo
             // Bulk insert collections via raw SQL (explicit IDs require bypassing EF identity)
             await BulkInsertCollectionsAsync(newCollections);
 
-            // Phase 4: Build and insert marks + blocks via EF (auto-generated IDs)
-            List<Notebook> newMarks = [.. templateMarks.Select(tm => new Notebook
+            // Phase 4: Build and insert notebooks + blocks via EF (auto-generated IDs)
+            List<Notebook> newNotebooks = [.. templateNotebooks.Select(tm => new Notebook
             {
                 CollectionId = idMap[tm.CollectionId],
                 Name = tm.Name,
@@ -132,8 +132,8 @@ namespace markit.Infrastructure.Security.Services.Demo
                     }).ToList()
             })];
 
-            await BulkInsertMarksAsync(newMarks);
-            _logger.LogInformation(SEED_COMPLETE_MESSAGE, newCollections.Count, newMarks.Count, guestUserId);
+            await BulkInsertNotebooksAsync(newNotebooks);
+            _logger.LogInformation(SEED_COMPLETE_MESSAGE, newCollections.Count, newNotebooks.Count, guestUserId);
         }
 
         #region Helpers
@@ -205,9 +205,9 @@ namespace markit.Infrastructure.Security.Services.Demo
             await _context.Database.ExecuteSqlRawAsync(sb.ToString(), dbParams.Cast<object>().ToArray());
         }
 
-        private async Task BulkInsertMarksAsync(List<Notebook> marks)
+        private async Task BulkInsertNotebooksAsync(List<Notebook> notebooks)
         {
-            _context.Notebooks.AddRange(marks);
+            _context.Notebooks.AddRange(notebooks);
             await _context.SaveChangesAsync();
         }
 

@@ -1,7 +1,6 @@
 ﻿using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Contracts.Persistence.Marks;
+using markit.Application.Contracts.Persistence.Notebooks;
 using markit.Infrastructure.Persistence.EF;
-using markit.Infrastructure.Repositories.Marks;
 
 namespace markit.Infrastructure.Repositories.Common
 {
@@ -11,7 +10,7 @@ namespace markit.Infrastructure.Repositories.Common
         #region Custom repositories
         public IBlockRepository BlockRepository {  get; private set; }
         public ICollectionRepository CollectionRepository { get; private set; }
-        public IMarkRepository MarkRepository { get; private set; }
+        public INoteBookRepository NotebookRepository { get; private set; }
         #endregion
 
         public UnitOfWork(MarkitDbContext context)
@@ -19,7 +18,7 @@ namespace markit.Infrastructure.Repositories.Common
             _context = context;
             BlockRepository = new BlockRepository(context);
             CollectionRepository = new CollectionRepository(context);
-            MarkRepository = new MarkRepository(context);
+            NotebookRepository = new NotebookRepository(context);
         }
 
         public async Task<int> Complete()

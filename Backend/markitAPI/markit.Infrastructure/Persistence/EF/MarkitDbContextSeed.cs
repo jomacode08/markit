@@ -59,8 +59,8 @@ namespace markit.Infrastructure.Persistence.EF
 
         private static Collection ConstructMainCollection() => new()
         {
-            Name = Marks.MAIN_COLLECTION_NAME,
-            PathNames = $"/{Marks.MAIN_COLLECTION_NAME}",
+            Name = Notebooks.MAIN_COLLECTION_NAME,
+            PathNames = $"/{Notebooks.MAIN_COLLECTION_NAME}",
             IsMain = true
         };
 

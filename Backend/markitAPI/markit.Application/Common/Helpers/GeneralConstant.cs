@@ -32,11 +32,11 @@
             public static readonly string ProfilePictureUrl = "prof_pic_url";
         }
 
-        public static class Marks
+        public static class Notebooks
         {
-            public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 marks";
-            public static readonly string MARK_PLACEHOLDER = "New mark";
-            public static readonly string MAIN_COLLECTION_NAME = "My marks";
+            public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 notebooks";
+            public static readonly string NOTEBOOK_PLACEHOLDER = "Untitled";
+            public static readonly string MAIN_COLLECTION_NAME = "Library";
         }
 
         public static class RateLimiterPolicies

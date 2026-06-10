@@ -1,5 +1,5 @@
-﻿using markit.Application.Contracts.Persistence.Marks;
-using markit.Domain.Entities;
+﻿
+using markit.Application.Contracts.Persistence.Notebooks;
 
 namespace markit.Application.Contracts.Persistence.Common
 {
@@ -7,7 +7,7 @@ namespace markit.Application.Contracts.Persistence.Common
     {
         IBlockRepository BlockRepository { get; }
         ICollectionRepository CollectionRepository { get; }
-        IMarkRepository MarkRepository { get; }
+        INoteBookRepository NotebookRepository { get; }
         Task<int> Complete();
     }
 }

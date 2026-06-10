@@ -1,7 +1,7 @@
 namespace markit.Application.Contracts.Authentication.Demo
 {
     /// <summary>
-    /// Copies the template user's full collection directory (Collections, Marks and Blocks)
+    /// Copies the template user's full collection directory (Collections, Notebooks and Blocks)
     /// into a newly created guest user's workspace during demo session onboarding.
     /// </summary>
     /// <remarks>
@@ -13,7 +13,7 @@ namespace markit.Application.Contracts.Authentication.Demo
     {
         /// <summary>
         /// Seeds the guest user's workspace by cloning the template directory tree.
-        /// All seeded Collections, Marks and Blocks cascade-delete when the guest
+        /// All seeded Collections, Notebooks and Blocks cascade-delete when the guest
         /// <see cref="markit.Application.Models.Authentication.AppUser.AppUser"/> is removed.
         /// </summary>
         /// <param name="guestUserId">The identity of the newly created guest account.</param>

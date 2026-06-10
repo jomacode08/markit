@@ -13,18 +13,18 @@ namespace markit.Application.Common.Helpers
         [GeneratedRegex(@"^\s*(.+)", RegexOptions.None)]
         private static partial Regex FirstLineRegex();
 
-        public static string ConstructPreview(this Notebook mark)
+        public static string ConstructPreview(this Notebook notebook)
         {
-            Block? firstBlock = mark.Blocks?.FirstOrDefault();
+            Block? firstBlock = notebook.Blocks?.FirstOrDefault();
             string markdown = firstBlock?.Content ?? "";
             int previewMaxLength = 40;
 
-            if (string.IsNullOrEmpty(markdown)) return Marks.MARK_PLACEHOLDER;
+            if (string.IsNullOrEmpty(markdown)) return Notebooks.NOTEBOOK_PLACEHOLDER;
             Match match = FirstLineRegex().Match(markdown);
-            if (!match.Success || string.IsNullOrEmpty(match.Groups[1].Value)) return Marks.MARK_PLACEHOLDER;
+            if (!match.Success || string.IsNullOrEmpty(match.Groups[1].Value)) return Notebooks.NOTEBOOK_PLACEHOLDER;
 
             string preview = Markdown.ToPlainText(match.Groups[1].Value);
-            if (string.IsNullOrEmpty(preview)) return Marks.MARK_PLACEHOLDER;
+            if (string.IsNullOrEmpty(preview)) return Notebooks.NOTEBOOK_PLACEHOLDER;
             return preview.Length > previewMaxLength
                 ? $"{preview[..previewMaxLength]}..."
                 : preview;
@@ -77,14 +77,14 @@ namespace markit.Application.Common.Helpers
             }
         }
 
-        public static void ValidateUser(this Notebook mark, string userId)
+        public static void ValidateUser(this Notebook notebook, string userId)
         {
-            ArgumentNullException.ThrowIfNull(mark.Collection, nameof(mark.Collection));
-            if (mark.Collection.UserId != userId)
+            ArgumentNullException.ThrowIfNull(notebook.Collection, nameof(notebook.Collection));
+            if (notebook.Collection.UserId != userId)
             {
                 throw new ForbiddenResourceException(
-                    resource: "Mark",
-                    resourceId: mark.Id,
+                    resource: "Notebook",
+                    resourceId: notebook.Id,
                     userId
                 );
             }

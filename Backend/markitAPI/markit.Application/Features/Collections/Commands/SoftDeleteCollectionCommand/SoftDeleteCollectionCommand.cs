@@ -45,27 +45,27 @@ namespace markit.Application.Features.Collections.Commands.DeleteCollectionComma
             return await _unitOfWork.CollectionRepository.GetHierarchyRecursively(collectionId);
         }
 
-        private async Task<List<Notebook>> GetMarks(int[] ids)
+        private async Task<List<Notebook>> GetNotebooks(int[] ids)
         {
-            return [.. await _unitOfWork.MarkRepository.GetAsync(m => ids.Contains(m.CollectionId))];
+            return [.. await _unitOfWork.NotebookRepository.GetAsync(m => ids.Contains(m.CollectionId))];
         }
 
         private async Task<Unit> SoftDeleteOnCascade(List<Collection> collections)
         {
             int[] collectionIds = [.. collections.Select(c => c.Id)];
-            var marks = await GetMarks(collectionIds);
+            var notebooks = await GetNotebooks(collectionIds);
 
             foreach (Collection collection in collections)
             {
                 if (collection.IsMain) throw new CustomValidationException($@"The main collection '{ collection.Name }' can't be deleted.");
 
-                // Get marks related to current collection
-                var collectionMarks = marks.Where(m => m.CollectionId.Equals(collection.Id));
+                // Get notebooks related to current collection
+                var collectionNotebooks = notebooks.Where(m => m.CollectionId.Equals(collection.Id));
 
-                // Soft delete to related marks
-                if (collectionMarks.Any())
+                // Soft delete to related notebooks
+                if (collectionNotebooks.Any())
                 {
-                    _unitOfWork.MarkRepository.SoftDeleteRangeEntity([.. collectionMarks]);
+                    _unitOfWork.NotebookRepository.SoftDeleteRangeEntity([.. collectionNotebooks]);
                 }
 
                 // Soft delete to collection

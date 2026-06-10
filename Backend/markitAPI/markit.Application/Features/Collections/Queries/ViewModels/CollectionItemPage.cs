@@ -23,7 +23,7 @@
     {
         All,
         Collection,
-        Mark
+        Notebook
     }
 
     public enum SortPaginationOrder

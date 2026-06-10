@@ -37,12 +37,12 @@ namespace markit.Application.Common.Helpers.Services
             }
 
             if (IsSearchValidForItemType(
-                itemType: CollectionItemType.Mark,
+                itemType: CollectionItemType.Notebook,
                 filter: request.Filters.Type,
                 cursor: cursorData
             ))
             {
-                var marks = await _unitOfWork.MarkRepository
+                var notebooks = await _unitOfWork.NotebookRepository
                     .GetAsyncCursorBasedPagination(
                         request.PageSize,
                         request.UserId,
@@ -52,7 +52,7 @@ namespace markit.Application.Common.Helpers.Services
                         request.Filters.OnlyFavorites
                     );
 
-                items.AddRange(_mapper.Map<List<CollectionItem>>(marks));
+                items.AddRange(_mapper.Map<List<CollectionItem>>(notebooks));
             }
 
             bool hasNextPage = items.Count > request.PageSize;
@@ -74,7 +74,7 @@ namespace markit.Application.Common.Helpers.Services
             CollectionItemTypeFilter expectedFilter = itemType switch
             {
                 CollectionItemType.Collection => CollectionItemTypeFilter.Collection,
-                CollectionItemType.Mark => CollectionItemTypeFilter.Mark,
+                CollectionItemType.Notebook => CollectionItemTypeFilter.Notebook,
                 _ => throw new NotImplementedException(),
             };
 

@@ -2,7 +2,7 @@
 using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Features.Marks.Queries.ViewModels;
+using markit.Application.Features.Notebooks.Queries.ViewModels;
 using markit.Application.Features.Reports.Dashboard.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Domain.Entities;
@@ -32,14 +32,14 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
         public async Task<DashboardReportVm> Handle(DashboardReportQuery request, CancellationToken cancellationToken)
         {
             await ValidateUserExistence(request.UserId);
-            List<MarkViewModel> recentMarks = await GetRecentMarksAsync(request.UserId);
+            List<NotebookViewModel> recentNotebooks = await GetRecentNotebooksAsync(request.UserId);
             List<CollectionViewModel> starredCollections = await GetStarredCollectionsAsync(request.UserId);
             var activityStats = await GetActivityStatsAsync(request.UserId);
 
             return new DashboardReportVm(
                 UserId : request.UserId,
                 CreatedAt : DateTime.Now,
-                recentMarks,
+                recentNotebooks,
                 starredCollections,
                 activityStats
             );
@@ -51,11 +51,11 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
                 ?? throw new NotFoundException("AppUser", userId);
         }
 
-        private async Task<List<MarkViewModel>> GetRecentMarksAsync(string userId)
+        private async Task<List<NotebookViewModel>> GetRecentNotebooksAsync(string userId)
         {
             const int LIMIT = 5;
-            List<Notebook> marks = await _unitOfWork.MarkRepository.GetMostRecentAsync(userId, LIMIT);
-            return _mapper.Map<List<MarkViewModel>>(marks);
+            List<Notebook> notebooks = await _unitOfWork.NotebookRepository.GetMostRecentAsync(userId, LIMIT);
+            return _mapper.Map<List<NotebookViewModel>>(notebooks);
         }
 
         private async Task<List<CollectionViewModel>> GetStarredCollectionsAsync(string userId)
@@ -70,14 +70,14 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
 
         private async Task<ActivityStats> GetActivityStatsAsync(string userId)
         {
-            int DAYS_OF_THE_WEEK = Enum.GetValues(typeof(DayOfWeek)).Length;
+            int DAYS_OF_THE_WEEK = Enum.GetValues<DayOfWeek>().Length;
             // Get global counts by user
-            int marksCount = await _unitOfWork.MarkRepository.CountByUserIdAsync(userId);
+            int notebooksCount = await _unitOfWork.NotebookRepository.CountByUserIdAsync(userId);
             int collectionsCount = await _unitOfWork.CollectionRepository.CountByUserIdAsync(userId);
 
-            // Get mark stats of the week
-            IReadOnlyList<Notebook> marksOfTheWeek = await GetMarksOfTheCurrentWeekAsync(userId);
-            Dictionary<DayOfWeek, int> dailyMarkActivity = new() {
+            // Get notebook stats of the week
+            IReadOnlyList<Notebook> notebooksOfTheWeek = await GetNotebooksOfTheCurrentWeekAsync(userId);
+            Dictionary<DayOfWeek, int> dailyNotebookActivity = new() {
                 { DayOfWeek.Sunday, 0 },
                 { DayOfWeek.Monday, 0 },
                 { DayOfWeek.Tuesday, 0 },
@@ -87,35 +87,35 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
                 { DayOfWeek.Saturday, 0 }
             };
 
-            var marksByDay = marksOfTheWeek
+            var notebooksByDay = notebooksOfTheWeek
                     .Where(m => m.CreatedDate != null)
                     .GroupBy(m => ((DateTime)m.CreatedDate!).DayOfWeek)
                     .ToDictionary(g => g.Key, g => g.Count());
 
-            // Update dailyMarkActivity with actual counts
-            foreach (var kvp in marksByDay)
+            // Update dailyNotebookActivity with actual counts
+            foreach (var kvp in notebooksByDay)
             {
-                dailyMarkActivity[kvp.Key] = kvp.Value;
+                dailyNotebookActivity[kvp.Key] = kvp.Value;
             }
 
             return new ActivityStats(
-                marksCount,
+                notebooksCount,
                 collectionsCount,
-                TodayMarksCount : dailyMarkActivity[DateTime.Now.DayOfWeek], 
-                WeekMarksCount  : dailyMarkActivity.Sum(md => md.Value),
-                new WeeklyMarkActivity
+                TodayNotebooksCount : dailyNotebookActivity[DateTime.Now.DayOfWeek], 
+                WeekNotebooksCount  : dailyNotebookActivity.Sum(md => md.Value),
+                new WeeklyNotebookActivity
                 (
-                    HighestTotal: dailyMarkActivity.Max(md => md.Value),
-                    dailyMarkActivity
+                    HighestTotal: dailyNotebookActivity.Max(md => md.Value),
+                    dailyNotebookActivity
                 )
             );
         }
 
-        private async Task<IReadOnlyList<Notebook>> GetMarksOfTheCurrentWeekAsync(string userId)
+        private async Task<IReadOnlyList<Notebook>> GetNotebooksOfTheCurrentWeekAsync(string userId)
         {
             DateTime today = GetDateZeroTime(DateTime.UtcNow);
             DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);
-            return await _unitOfWork.MarkRepository
+            return await _unitOfWork.NotebookRepository
             .GetAsync(
                 m => m.Collection != null && m.Collection.UserId.Equals(userId) && m.CreatedDate >= weekStart,
                 m => m.OrderByDescending(m => m.CreatedDate)

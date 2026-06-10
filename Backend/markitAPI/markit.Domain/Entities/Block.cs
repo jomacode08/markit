@@ -11,7 +11,7 @@ namespace markit.Domain.Entities
         [Required]
         public int Order { get; set; }
         [Required]
-        public int MarkId { get; set; }
+        public int NotebookId { get; set; }
 
         public virtual Notebook? Notebook { get; set; }
     }

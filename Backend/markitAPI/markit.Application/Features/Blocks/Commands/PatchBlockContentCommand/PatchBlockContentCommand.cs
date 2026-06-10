@@ -39,7 +39,7 @@ namespace markit.Application.Features.Blocks.Commands.PatchBlockCommand
 
         private async Task<Block> ValidateBlock(int blockId, string userId)
         {
-            Block block = await _unitOfWork.BlockRepository.GetByIdAsync(blockId, "Mark.Collection")
+            Block block = await _unitOfWork.BlockRepository.GetByIdAsync(blockId, "Notebook.Collection")
                 ?? throw new NotFoundException("Block", blockId);
             block.Notebook?.ValidateUser(userId);
             return block;

@@ -17,6 +17,6 @@
     public enum CollectionItemType
     {
         Collection,
-        Mark
+        Notebook
     }
 }

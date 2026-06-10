@@ -13,9 +13,9 @@ A nice place to capture your ideas, plan, document or just clarify your mind and
 
 ## 🌟Highlights
 
-- **Marks are just like notes but better**: Marks are the core of the application: enriched, modular documents that replace flat notes. They support a full spectrum of content all organized within a semantic Block hierarchy.
-- **Go beyond flat text with Blocks**: modular content sections that give every mark a clear hierarchy, just like if you were working on your own notebook!.
-- **A simple and familiar directory**: Organize a workspace with a tree-based directory, allowing to nest marks and collections to any depth.
+- **Notebooks are just like notes but better**: Notebooks are the core of the application: enriched, modular documents that replace flat notes. They support a full spectrum of content all organized within a semantic Block hierarchy.
+- **Go beyond flat text with Blocks**: modular content sections that give every notebook a clear hierarchy, just like if you were working on your own notebook!.
+- **A simple and familiar directory**: Organize a workspace with a tree-based directory, allowing to nest notebooks and collections to any depth.
 -  **Attach GitHub Gists easily**: Instantly embed and navigate GitHub Gists by pasting a URL, giving code snippets clear semantic context.
 
 ## ℹ️ Overview
