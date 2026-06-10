@@ -13,7 +13,7 @@ using markit.Infrastructure.Persistence.EF;
 namespace markit.Infrastructure.Migrations
 {
     [DbContext(typeof(MarkitDbContext))]
-    [Migration("20260610001245_InitialCreate")]
+    [Migration("20260610184508_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -385,11 +385,7 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("enable");
 
-                    b.Property<int>("MarkId")
-                        .HasColumnType("integer")
-                        .HasColumnName("mark_id");
-
-                    b.Property<int?>("NotebookId")
+                    b.Property<int>("NotebookId")
                         .HasColumnType("integer")
                         .HasColumnName("notebook_id");
 
@@ -645,6 +641,8 @@ namespace markit.Infrastructure.Migrations
                     b.HasOne("markit.Domain.Entities.Notebook", "Notebook")
                         .WithMany("Blocks")
                         .HasForeignKey("NotebookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_blocks_notebooks_notebook_id");
 
                     b.Navigation("Notebook");

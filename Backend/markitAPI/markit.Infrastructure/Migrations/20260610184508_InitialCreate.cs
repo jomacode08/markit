@@ -273,8 +273,7 @@ namespace markit.Infrastructure.Migrations
                     title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     content = table.Column<string>(type: "text", nullable: true),
                     order = table.Column<int>(type: "integer", nullable: false),
-                    mark_id = table.Column<int>(type: "integer", nullable: false),
-                    notebook_id = table.Column<int>(type: "integer", nullable: true),
+                    notebook_id = table.Column<int>(type: "integer", nullable: false),
                     search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: true)
                         .Annotation("Npgsql:TsVectorConfig", "english")
                         .Annotation("Npgsql:TsVectorProperties", new[] { "title", "content" }),
@@ -291,7 +290,8 @@ namespace markit.Infrastructure.Migrations
                         name: "fk_blocks_notebooks_notebook_id",
                         column: x => x.notebook_id,
                         principalTable: "notebooks",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(

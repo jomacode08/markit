@@ -382,11 +382,7 @@ namespace markit.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("enable");
 
-                    b.Property<int>("MarkId")
-                        .HasColumnType("integer")
-                        .HasColumnName("mark_id");
-
-                    b.Property<int?>("NotebookId")
+                    b.Property<int>("NotebookId")
                         .HasColumnType("integer")
                         .HasColumnName("notebook_id");
 
@@ -642,6 +638,8 @@ namespace markit.Infrastructure.Migrations
                     b.HasOne("markit.Domain.Entities.Notebook", "Notebook")
                         .WithMany("Blocks")
                         .HasForeignKey("NotebookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_blocks_notebooks_notebook_id");
 
                     b.Navigation("Notebook");
