@@ -9,7 +9,7 @@ import { CollectionItemType } from '../interfaces/collection-item';
 export class CollectionItemIconPipe implements PipeTransform {
     transform( type: CollectionItemType ): string {
         return type === CollectionItemType.Collection 
-        ? 'fa-regular fa-folder' 
-        : 'fa-regular fa-note-sticky';
+        ? 'fa-regular fa-folder secondary-400' 
+        : 'notebook-outlined primary-400';
     }
 }

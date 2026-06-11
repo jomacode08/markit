@@ -13,6 +13,7 @@ button#closeBtn {
   z-index: -1;
 }
 button.item {
+  display: flex;
   padding: 0;
   font-size: 1.5em;
 }
@@ -28,6 +29,7 @@ button.item:disabled {
 }
 span.icon {
   color: var(--p-text-muted-color);
+  font-size: 1.5rem;
   transition: 0.5s;
 }
 span.label {
