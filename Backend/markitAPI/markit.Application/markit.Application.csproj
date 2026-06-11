@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--
+      Suppress AutoMapper DoS advisory (GHSA-rvv3-g6hj-g44x: uncontrolled recursion).
+      Mitigation is in place: all mappings use BaseProfile.CreateBoundedMap which enforces
+      MaxDepth, preventing unbounded recursion at runtime. Upgrade to a patched version
+      is blocked by the AutoMapper paid-license constraint.
+    -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />

@@ -1,5 +1,5 @@
-﻿﻿using AutoMapper;
-using markit.Application.Common.Helpers;
+﻿using markit.Application.Common.Helpers;
+using markit.Application.Common.Mappings;
 using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Blocks.Queries.ViewModels;
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
@@ -16,12 +16,12 @@ using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.Application.Mappings
 {
-    public class MappingProfile : Profile
+    public class MappingProfile : BaseProfile
     {
         public MappingProfile()
         {
             #region Accounts
-            CreateMap<ExternalUser, CreateAccountCommand>()
+            CreateBoundedMap<ExternalUser, CreateAccountCommand>()
                 .ForMember(
                     dest => dest.AccessType,
                     opt => opt.MapFrom(src => AccessType.External)
@@ -41,13 +41,13 @@ namespace markit.Application.Mappings
             #endregion
 
             #region Collections
-            CreateMap<CreateCollectionCommand, Collection>();
-            CreateMap<UpdateCollectionCommand, Collection>();
-            CreateMap<Collection, CollectionViewModel>()
+            CreateBoundedMap<CreateCollectionCommand, Collection>();
+            CreateBoundedMap<UpdateCollectionCommand, Collection>();
+            CreateBoundedMap<Collection, CollectionViewModel>()
                 .ForMember(dest => dest.Path, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionItems, opt => opt.Ignore());
 
-            CreateMap<Collection, CollectionItem>()
+            CreateBoundedMap<Collection, CollectionItem>()
                 .ForMember(
                     dest => dest.Id,
                     opt => opt.MapFrom(src => Guid.NewGuid().ToString())
@@ -85,12 +85,12 @@ namespace markit.Application.Mappings
             #endregion
 
             #region Blocks
-            CreateMap<BlockViewModel, Block>();
-            CreateMap<Block, BlockViewModel>();
+            CreateBoundedMap<BlockViewModel, Block>();
+            CreateBoundedMap<Block, BlockViewModel>();
             #endregion
 
             #region Notebooks
-            CreateMap<CreateNotebookCommand, Notebook>()
+            CreateBoundedMap<CreateNotebookCommand, Notebook>()
                 .ForMember(dest => dest.Blocks, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
                 {
@@ -107,7 +107,7 @@ namespace markit.Application.Mappings
                     }
                 });
 
-            CreateMap<UpdateNotebookCommand, Notebook>()
+            CreateBoundedMap<UpdateNotebookCommand, Notebook>()
                 .ForMember(
                     dest => dest.NameLess,
                     opt  => opt.MapFrom(src => string.IsNullOrWhiteSpace(src.InputName))
@@ -163,7 +163,7 @@ namespace markit.Application.Mappings
                     }
                 });
 
-            CreateMap<Notebook, NotebookViewModel>()
+            CreateBoundedMap<Notebook, NotebookViewModel>()
                 .ForMember(
                     dest => dest.Blocks,
                     opt => opt.MapFrom(
@@ -191,7 +191,7 @@ namespace markit.Application.Mappings
                     opt => opt.MapFrom(src => src.NameLess.Equals(true) ? "" : src.Name)
                 );
 
-            CreateMap<Notebook, CollectionItem>()
+            CreateBoundedMap<Notebook, CollectionItem>()
                 .ForMember(
                     dest => dest.Id,
                     opt => opt.MapFrom(src => Guid.NewGuid().ToString())
