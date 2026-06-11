@@ -28,6 +28,11 @@ namespace markit.Infrastructure.Persistence.EF.Configurations
 
             builder.Property(c => c.Emoji)
                 .IsUnicode();
+
+            builder.ToTable(t => t.HasCheckConstraint(
+                "ck_collections_no_self_reference",
+                "parent_id <> id")
+            );
         }
     }
 }

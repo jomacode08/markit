@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using markit.Application.Contracts.Persistence.Notebooks;
+using markit.Application.Exceptions;
 using markit.Application.Features.Collections.Queries.ViewModels;
 using markit.Domain.Entities;
 using markit.Infrastructure.Persistence.EF;
@@ -9,9 +10,11 @@ namespace markit.Infrastructure.Repositories
 {
     public class CollectionRepository : BaseRepository<Collection>, ICollectionRepository
     {
+        private const int MaxDepth = 25;
+        private const int MaxHierarchyNodes = 500;
+
         public CollectionRepository(MarkitDbContext markitDbContext) : base(markitDbContext)
-        {
-        }
+        {}
 
         public async Task<List<Collection>> GetHierarchyRecursively(int rootCollectionId)
         {
@@ -19,10 +22,11 @@ namespace markit.Infrastructure.Repositories
 				.Collections
 				.FromSql($@"
 					WITH RECURSIVE collection_hierarchy AS (
-						SELECT 
+						SELECT
 							c1.id, c1.name, c1.path, c1.path_names, c1.is_main,
 							c1.parent_id, c1.user_id, c1.is_favorite, c1.emoji,
-							c1.created_date, c1.created_by, c1.updated_date, c1.updated_by, c1.enable
+							c1.created_date, c1.created_by, c1.updated_date, c1.updated_by, c1.enable,
+							0 AS depth
 						FROM collections AS c1
 						WHERE c1.id = {rootCollectionId} AND c1.enable = true
 
@@ -31,15 +35,28 @@ namespace markit.Infrastructure.Repositories
 						SELECT
 							c2.id, c2.name, c2.path, c2.path_names, c2.is_main,
 							c2.parent_id, c2.user_id, c2.is_favorite, c2.emoji,
-							c2.created_date, c2.created_by, c2.updated_date, c2.updated_by, c2.enable
+							c2.created_date, c2.created_by, c2.updated_date, c2.updated_by, c2.enable,
+							ch.depth + 1
 						FROM collections AS c2
 						INNER JOIN collection_hierarchy ch ON c2.parent_id = ch.id
-						WHERE c2.enable = true
+						WHERE c2.enable = true AND ch.depth < {MaxDepth}
 					)
-					SELECT * FROM collection_hierarchy;
+					CYCLE id SET is_cycle USING cycle_path
+					SELECT
+						id, name, path, path_names, is_main,
+						parent_id, user_id, is_favorite, emoji,
+						created_date, created_by, updated_date, updated_by, enable
+					FROM collection_hierarchy
+					WHERE NOT is_cycle;
                 ").IgnoreQueryFilters();
 
-            return await collections.ToListAsync();
+            List<Collection> result = await collections.ToListAsync();
+
+            if (result.Count > MaxHierarchyNodes)
+                throw new CustomValidationException(
+                    $"The collection hierarchy exceeds the maximum allowed size of {MaxHierarchyNodes} nodes.");
+
+            return result;
         }
 
 		public Task<List<Collection>> GetAsyncCursorBasedPagination(
