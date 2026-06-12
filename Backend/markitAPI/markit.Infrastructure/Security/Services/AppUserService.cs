@@ -96,13 +96,16 @@ namespace markit.Infrastructure.Security.Services
             }
         }
 
-        public async Task RenameAsync(RenameAppUserRequest request)
+        public async Task<AppUser> RenameAsync(RenameAppUserRequest request)
         {
             AppUser user = await _userManager.FindByIdAsync(request.Id)
                 ?? throw new NotFoundException("Users", request.Id);
             user.GivenName = request.NewName;
+            user.UserName = request.NewUserName;
+            user.Email = request.NewUserName;
             IdentityResult result = await _userManager.UpdateAsync(user);
             HandleIdentityResult(result);
+            return user;
         }
 
         #region Helpers

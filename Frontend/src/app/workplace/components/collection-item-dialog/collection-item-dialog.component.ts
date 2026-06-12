@@ -59,8 +59,8 @@ export class CollectionItemDialogComponent extends ValidatorErrorField implement
     this.setFormValues(this.config.data.collectionItem);
     this.action.set(this.config.data.action);
     this.defaultPickerIconClass = this.currentCollectionItem.type === CollectionItemType.Collection 
-      ? 'fa-regular fa-folder'
-      : 'notebook-outlined';
+      ? 'fa-regular fa-folder secondary-400'
+      : 'notebook-outlined primary-400';
   }
 
   public onCancel = () => this.ref.close();

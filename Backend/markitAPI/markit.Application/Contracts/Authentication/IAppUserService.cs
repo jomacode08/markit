@@ -7,6 +7,6 @@ namespace markit.Application.Contracts.Authentication
         Task<AppUserPaginationDto> GetPagedAsync(int page, int pageSize);
         Task<AppUser> CreateAsync(CreateAppUserRequest request);
         Task<AppUser> UpdateAsync(UpdateAppUserRequest request);
-        Task RenameAsync(RenameAppUserRequest request);
+        Task<AppUser> RenameAsync(RenameAppUserRequest request);
     }
 }

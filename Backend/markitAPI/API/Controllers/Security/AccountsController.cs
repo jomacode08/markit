@@ -1,6 +1,7 @@
 ﻿﻿using markit.API.Controllers.Common;
 using markit.Application.Features.Account.Commands.CreateAccount;
 using markit.Application.Features.Accounts.Commands.CreateAccount;
+using markit.Application.Features.Accounts.Commands.RenameAccount;
 using markit.Application.Features.Accounts.Commands.UpdateAccount;
 using markit.Application.Features.Accounts.Queries;
 using markit.Application.Features.Accounts.Queries.GetAccountByUserId;
@@ -34,6 +35,14 @@ namespace markit.API.Controllers.Security
             GetAccountByUserIdQuery query = new(_sessionService.GetUserId());
             return Ok(await _mediator.Send(query));
         }
+
+        [HttpPut]
+        [Route("me/profile")]
+        public async Task<ActionResult<AccountVm>> UpdateProfile([FromBody] RenameAccountDto dto)
+        {
+            RenameAccountCommand command = new(userId: _sessionService.GetUserId(), dto);
+            return Ok(await _mediator.Send(command));
+        } 
 
         [Authorize(Policy = AuthorizationPolicies.ADMIN_ONLY)]
         [HttpGet]

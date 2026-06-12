@@ -1,9 +1,7 @@
 ﻿using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Persistence.Common;
-using markit.Application.Exceptions;
 using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
-using markit.Domain.Entities;
 using MediatR;
 
 namespace markit.Application.Features.Accounts.Commands.UpdateAccount
