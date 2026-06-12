@@ -8,5 +8,6 @@ namespace markit.Application.Contracts.Authentication
         Task<AppUser> CreateAsync(CreateAppUserRequest request);
         Task<AppUser> UpdateAsync(UpdateAppUserRequest request);
         Task<AppUser> RenameAsync(RenameAppUserRequest request);
+        Task ChangePasswordAsync(string userId, string currentPassword, string newPassword);
     }
 }

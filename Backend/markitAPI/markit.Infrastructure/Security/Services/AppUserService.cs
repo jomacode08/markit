@@ -78,8 +78,7 @@ namespace markit.Infrastructure.Security.Services
 
         public async Task<AppUser> UpdateAsync(UpdateAppUserRequest request)
         {
-            AppUser user = await _userManager.FindByIdAsync(request.Id)
-                ?? throw new NotFoundException("Users", request.Id);
+            AppUser user = await GetAppUser(request.Id);
             using (TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled))
             {
                 user.GivenName = request.Name;
@@ -98,14 +97,24 @@ namespace markit.Infrastructure.Security.Services
 
         public async Task<AppUser> RenameAsync(RenameAppUserRequest request)
         {
-            AppUser user = await _userManager.FindByIdAsync(request.Id)
-                ?? throw new NotFoundException("Users", request.Id);
+            AppUser user = await GetAppUser(request.Id);
             user.GivenName = request.NewName;
             user.UserName = request.NewUserName;
             user.Email = request.NewUserName;
             IdentityResult result = await _userManager.UpdateAsync(user);
             HandleIdentityResult(result);
             return user;
+        }
+
+        public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            if (string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
+            if (string.IsNullOrEmpty(currentPassword)) throw new ArgumentNullException(nameof(currentPassword));
+            if (string.IsNullOrEmpty(newPassword)) throw new ArgumentNullException(nameof(newPassword));
+
+            AppUser user = await GetAppUser(userId);
+            IdentityResult result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            HandleIdentityResult(result);
         }
 
         #region Helpers
@@ -137,6 +146,12 @@ namespace markit.Infrastructure.Security.Services
             PathNames = $"/{Notebooks.MAIN_COLLECTION_NAME}",
             IsMain = true
         };
+
+        private async Task<AppUser> GetAppUser(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId)
+                ?? throw new NotFoundException("Users", userId);
+        }
 
         private static void HandleIdentityResult(IdentityResult result)
         {

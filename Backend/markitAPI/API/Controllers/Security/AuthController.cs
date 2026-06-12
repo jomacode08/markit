@@ -1,9 +1,8 @@
-﻿﻿﻿using markit.API.Controllers.Common;
+﻿﻿using markit.API.Controllers.Common;
 using markit.Application.Contracts.Authentication;
 using markit.Application.Contracts.Authentication.Demo;
 using markit.Application.Contracts.Authentication.ExternalLogin;
 using markit.Application.Exceptions;
-using markit.Application.Helpers;
 using markit.Application.Models.Authentication;
 using markit.Application.Models.Authentication.AppUser;
 using markit.Application.Models.Authentication.Enums;
@@ -12,12 +11,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static markit.Application.Helpers.GeneralConstant;
 
 namespace markit.API.Controllers.Seguridad
 {
     [Authorize]
     public class AuthController : ApiControllerBase
     {
+        private readonly IAppUserService _appUserService;
         private readonly ILoginService _loginService;
         private readonly IExternalLoginService _externalLoginService;
         private readonly IDemoService _demoService;
@@ -25,12 +26,14 @@ namespace markit.API.Controllers.Seguridad
         private readonly SessionService _sessionService;
 
         public AuthController(
+            IAppUserService appUserService,
             ILoginService loginService,
             IExternalLoginService externalLoginService,
             IDemoService demoService,
             UserManager<AppUser> userManager,
             SessionService sessionService)
         {
+            _appUserService = appUserService;
             _loginService = loginService;
             _externalLoginService = externalLoginService;
             _demoService = demoService;
@@ -78,7 +81,7 @@ namespace markit.API.Controllers.Seguridad
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string? givenName = User.FindFirstValue(ClaimTypes.GivenName);
             string? email = User.FindFirstValue(ClaimTypes.Email);
-            string? picture = User.FindFirstValue(GeneralConstant.CustomClaimType.ProfilePictureUrl);
+            string? picture = User.FindFirstValue(CustomClaimType.ProfilePictureUrl);
             IReadOnlyList<string> roles = GetUserRoles();
 
             if (userId == null || givenName == null || email == null)
@@ -91,6 +94,23 @@ namespace markit.API.Controllers.Seguridad
                 roles,
                 picture
             ));
+        }
+
+        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
+        [HttpPut]
+        [Route("me/password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.CurrentPassword) || string.IsNullOrEmpty(request.NewPassword))
+                return BadRequest();
+            
+            await _appUserService.ChangePasswordAsync(
+                userId: _sessionService.GetUserId(),
+                currentPassword: request.CurrentPassword,
+                newPassword: request.NewPassword
+            );
+
+            return NoContent();
         }
 
         [HttpPost]
