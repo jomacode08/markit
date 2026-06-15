@@ -90,6 +90,11 @@ namespace markit.Infrastructure.Security.Services
                 HandleIdentityResult(result);
                 await UpdateRoles(request.Roles, user);
 
+                if (!string.IsNullOrEmpty(request.Password))
+                {
+                    await ReplacePasswordAsync(user, request.Password);
+                }
+
                 scope.Complete();
                 return user;
             }
@@ -121,6 +126,14 @@ namespace markit.Infrastructure.Security.Services
         private static bool AreRolesValid(string[] userRoles)
         {
             return userRoles.All(r => Role.All.Contains(r));
+        }
+
+        private async Task ReplacePasswordAsync(AppUser user, string password)
+        {
+            IdentityResult  removeResult = await _userManager.RemovePasswordAsync(user);
+            HandleIdentityResult(removeResult);
+            IdentityResult addResult =  await _userManager.AddPasswordAsync(user, password);
+            HandleIdentityResult(addResult);
         }
 
         private static AppUser ConstructAppUser(CreateAppUserRequest request, Collection mainCollection)

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorService {
@@ -15,9 +15,9 @@ export class ValidatorService {
      * Permite validar que dos campos sean iguales.
      * @param field1 primer campo a comparar.
      * @param field2 segundo campo a comparar.
-     * @returns devuelve y asigna al segundo campo un ValidationErrors con key 'notEqual' si la validación no se cumple. 
+     * @returns devuelve ValidatorFn y asigna al segundo campo un ValidationErrors con key 'notEqual' si la validación no se cumple.
      */
-    public isTwoFieldsEquals( field1:string, field2:string ) : ValidationErrors | null {
+    public validateFieldsEquality( field1:string, field2:string ): ValidatorFn {
         return ( form : AbstractControl<any, any> ) => {
             
             // Obtener valores de los dos campos a comparar

@@ -5,7 +5,8 @@
         string name,
         string email,
         string[] roles,
-        bool enabled
+        bool enabled,
+        string? password = null
     )
     {
         private string _Email => email;
@@ -13,6 +14,7 @@
         public string Name => name;
         public string[] Roles => roles;
         public bool Enabled => enabled;
+        public string? Password => password;
         public string Email
         {
             get

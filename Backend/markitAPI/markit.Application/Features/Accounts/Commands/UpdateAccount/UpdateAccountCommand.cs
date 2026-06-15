@@ -1,5 +1,4 @@
 ﻿using markit.Application.Contracts.Authentication;
-using markit.Application.Contracts.Persistence.Common;
 using markit.Application.Features.Accounts.Queries.ViewModels;
 using markit.Application.Models.Authentication.AppUser;
 using MediatR;
@@ -13,17 +12,16 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
         public string UserName { get; set; } = dto.UserName;
         public string[] Roles { get; set; } = dto.Roles;
         public bool Enabled { get; set; } = dto.Enabled;
+        public string? Password { get; set; } = dto.Password;
 
     }
 
     public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, AccountVm>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IAppUserService _appUserService;
 
-        public UpdateAccountCommandHandler(IUnitOfWork unitOfWork, IAppUserService appUserService)
+        public UpdateAccountCommandHandler(IAppUserService appUserService)
         {
-            _unitOfWork = unitOfWork;
             _appUserService = appUserService;
         }
 
@@ -34,7 +32,8 @@ namespace markit.Application.Features.Accounts.Commands.UpdateAccount
                 name: request.Name,
                 email: request.UserName,
                 roles: request.Roles,
-                enabled : request.Enabled
+                enabled : request.Enabled,
+                password: request.Password
             ));
 
             return new AccountVm()

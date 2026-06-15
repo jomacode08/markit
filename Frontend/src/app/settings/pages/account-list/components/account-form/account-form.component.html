@@ -36,33 +36,33 @@
         }
       </div>
 
-      @if (!isUpdateMode) {
-        <!-- Password -->
-        <div class="form-field">
-          <label for="password">Password</label>
-          <p-password
-            inputId="password"
-            formControlName="password"
-            autocomplete="off"
-            class="w-full"
-            inputStyleClass="w-full"
-            [toggleMask]="true"
-            [class.invalid]="isInvalidField('password')"
-          >
-            <ng-template #footer>
-              <ul class="font-light">
-                <li>At least one <b>uppercase</b></li>
-                <li>At least one <b>lowercase</b></li>
-                <li>At least one <b>numeric</b></li>
-                <li>Minimum <b>8 characters</b></li>
-              </ul>
-            </ng-template>
-          </p-password>
-          @if (isInvalidField('password')) {
-            <shared-error-field [validationField]="getValidationField('password')" />
-          }
-        </div>
-  
+      <!-- Password -->
+      <div class="form-field">
+        <label for="password">Password</label>
+        <p-password
+          inputId="password"
+          formControlName="password"
+          autocomplete="off"
+          class="w-full"
+          inputStyleClass="w-full"
+          [toggleMask]="true"
+          [class.invalid]="isInvalidField('password')"
+        >
+          <ng-template #footer>
+            <ul class="font-light">
+              <li>At least one <b>uppercase</b></li>
+              <li>At least one <b>lowercase</b></li>
+              <li>At least one <b>numeric</b></li>
+              <li>Minimum <b>8 characters</b></li>
+            </ul>
+          </ng-template>
+        </p-password>
+        @if (isInvalidField('password')) {
+          <shared-error-field [validationField]="getValidationField('password')" />
+        }
+      </div>
+
+      @if (!isUpdateMode()) {
         <!-- Confirm Password -->
         <div class="form-field">
           <label for="confirmPassword">Confirm Password</label>
@@ -70,7 +70,7 @@
             inputId="confirmPassword"
             formControlName="confirmPassword"
             autocomplete="off"
-            styleClass="w-full"
+            class="w-full"
             inputStyleClass="w-full"
             [toggleMask]="true"
             [feedback]="false"

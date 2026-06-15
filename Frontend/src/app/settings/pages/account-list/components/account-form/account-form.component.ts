@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn, FormBuilder, AbstractControlOptions } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -32,7 +32,8 @@ interface RoleOption {
       ToggleSwitchModule,
     ],
     templateUrl: './account-form.component.html',
-    styleUrl: './account-form.component.css'
+    styleUrl: './account-form.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountFormComponent extends ValidatorErrorField implements OnInit {
   public form : FormGroup<{
@@ -45,14 +46,14 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
     enabled : FormControl<boolean>
   }>;
 
-  public roleOptions : RoleOption[] = [
+  protected roleOptions : RoleOption[] = [
     { label: 'Admin', value: AuthRole.ADMIN },
     { label: 'General', value: AuthRole.GENERAL },
     { label: 'Guest', value: AuthRole.GUEST },
   ];
   
-  public submit = signal<boolean>(false);
-  public isUpdateMode: boolean = false;
+  protected submit = signal<boolean>(false);
+  protected isUpdateMode = signal<boolean>(false);
 
   constructor(
     private accountService: AccountService,
@@ -80,17 +81,14 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
       enabled: [true]
     },
     {
-      validators:
-      [
-        this.validatorService.isTwoFieldsEquals('password','confirmPassword'),
-      ]
+      validators:[this.validatePasswordConfirmationForCreation()]
     } as AbstractControlOptions);
   }
 
   ngOnInit(): void {
     const accountData = this.config.data as Account | undefined;
     if (accountData?.userId) {
-      this.isUpdateMode = true;
+      this.isUpdateMode.set(true);
       this.form.reset(accountData);
     }
   }
@@ -103,7 +101,7 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
 
     this.submit.set(true);
     const accountData : Account = this.form.getRawValue();
-    const operation = this.isUpdateMode
+    const operation = this.isUpdateMode()
       ? this.accountService.update(accountData)
       : this.accountService.create(
         accountData,
@@ -134,10 +132,18 @@ export class AccountFormComponent extends ValidatorErrorField implements OnInit 
 
   private requiredAtCreation(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (this.isUpdateMode) return null;
+      if (this.isUpdateMode()) return null;
       const value = control.value;
       return value && value.length > 0 ? null : { required: true };
     }
+  }
+
+  private validatePasswordConfirmationForCreation(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (this.isUpdateMode()) return null;
+      const validator = this.validatorService.validateFieldsEquality('password', 'confirmPassword');
+      return validator(control);
+    };
   }
 
   private constructPasswordRequest(password: string): PasswordRequest {
