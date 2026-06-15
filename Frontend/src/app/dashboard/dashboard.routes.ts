@@ -16,13 +16,5 @@ export const DASHBOARD_ROUTES: Routes = [
         loadComponent: () =>
             import('./pages/profile/profile.component')
             .then(c => c.ProfileComponent)
-    },
-    {
-        path: 'group',
-        title: 'My groups',
-        data: { breadcrumb : 'Groups' },
-        loadComponent: () =>
-            import('./pages/group/group.component')
-            .then(c => c.GroupComponent)
-    },
+    }
 ]
