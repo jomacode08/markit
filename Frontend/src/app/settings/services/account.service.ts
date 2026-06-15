@@ -11,15 +11,21 @@ export class AccountService {
     constructor(private http: HttpClient) { }
 
     public getByCurrentSession(): Observable<Account> {
-        return this.http.get<Account>(`${ this.BASE_URL }/me`);
+        return this.http.get<Account>(`${this.BASE_URL}/me`);
     }
-    public getByUserId( userId: string ): Observable<Account> {
-        return this.http.get<Account>(`${ this.BASE_URL }/${userId}`);
+    public getByUserId(userId: string): Observable<Account> {
+        return this.http.get<Account>(`${this.BASE_URL}/${userId}`);
     }
-    public create( account: Account, password: PasswordRequest ): Observable<Account> {
-        return this.http.post<Account>(`${ this.BASE_URL }`, { account, password });
+    public create(account: Account, password: PasswordRequest): Observable<Account> {
+        return this.http.post<Account>(`${this.BASE_URL}`, { account, password });
     }
-    public update( account: Account ): Observable<Account> {
-        return this.http.put<Account>(`${ this.BASE_URL }/${account.userId}`, account);
+    public update(account: Account): Observable<Account> {
+        return this.http.put<Account>(`${this.BASE_URL}/${account.userId}`, account);
+    }
+    public updateMyProfile(name: string, userName: string): Observable<Account> {
+        return this.http.put<Account>(`${this.BASE_URL}/me/profile`, {
+            name,
+            userName
+        });
     }
 }

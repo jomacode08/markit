@@ -41,6 +41,7 @@ export class ProfileComponent extends ValidatorErrorField {
 
   public form: FormGroup<{
     name: FormControl<string>,
+    userName: FormControl<string>,
   }>;
 
   constructor(
@@ -55,7 +56,12 @@ export class ProfileComponent extends ValidatorErrorField {
         Validators.required,
         Validators.maxLength(50),
         Validators.pattern(validatorService.internationalNameRegex)]
-      ]
+      ],
+      userName: ['', [
+        Validators.required,
+        Validators.maxLength(256),
+        Validators.pattern(validatorService.emailPattern)]
+      ],
     });
     this.account$ = this.accountService
       .getByCurrentSession()
@@ -84,12 +90,8 @@ export class ProfileComponent extends ValidatorErrorField {
   }
 
   private editAccount(): void {
-    const account = this.account();
-    if (!account || !this.form.value.name) return;
-
-    // account.name = this.form.value.name;
-    const updatedAccount = { ...account, name: this.form.value.name };
-    this.accountService.update(updatedAccount)
+    const formValue = this.form.getRawValue();
+    this.accountService.updateMyProfile(formValue.name, formValue.userName)
     .pipe(finalize(() => this.submit.set(false)))
     .subscribe({
       next: (account) => {

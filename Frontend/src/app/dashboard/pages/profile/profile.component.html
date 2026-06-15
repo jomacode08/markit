@@ -1,11 +1,11 @@
-@if (account$ | async; as account) {
+@if (account$ | async;) {
     <div class="container">
         <!-- User Presentation -->
         <div class="user-box">
             <!-- User Picture -->
             <div class="avatar" [ngClass]="{'hidden' : isEditEnabled()}">
-                @if (account.picture) {
-                    <img class="border-circle" [src]="account.picture" alt="user picture" referrerpolicy="no-referrer">
+                @if (account()?.picture) {
+                    <img class="border-circle" [src]="account()?.picture" alt="user picture" referrerpolicy="no-referrer">
                 }
             </div>
 
@@ -14,55 +14,72 @@
                     [formGroup]="form"
                     (submit)="onSubmit()"
                     autocomplete="off"
+                    class="w-full"
                 >
-                    <div class="flex gap-2 flex-wrap">
-                        <div>
-                            <!-- Name -->
-                            <input 
-                                id="name"
-                                pInputText
-                                formControlName="name"
-                                type="text"
-                                placeholder="Name"
-                                class="rounded w-full sm:w-20rem"
-                                autocomplete="off"
-                            />
-                            <!-- Name error message -->
-                            <div class="w-15rem">
-                                @if ( isInvalidField('name') ){
-                                    <shared-error-field
-                                        [validationField]="getValidationField('name')">
-                                    </shared-error-field>
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            <!-- Save button -->
-                            <p-button
-                                id="saveBtn"
-                                type="submit"
-                                size="small"
-                                aria-label="Save"
-                                icon="fa fa-check"
-                                severity="success"
-                                [rounded]="true"
-                                [text]="true"
-                                [disabled]="submit()"
-                            />
-                            <!-- Cancel button -->
-                            <p-button
-                                id="cancelBtn"
-                                type="button"
-                                size="small"
-                                aria-label="Cancel"
-                                icon="fa-solid fa-xmark"
-                                severity="danger"
-                                [rounded]="true"
-                                [text]="true"
-                                [disabled]="submit()"
-                                (onClick)="onCancelEditBtnClick()"
-                            />
-                        </div>
+                    <!-- Name -->
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <input 
+                            id="name"
+                            pInputText
+                            formControlName="name"
+                            type="text"
+                            placeholder="Name"
+                            class="rounded w-full sm:w-20rem"
+                            autocomplete="off"
+                        />
+                        <!-- Error message -->
+                        @if ( isInvalidField('name') ){
+                            <shared-error-field
+                                [validationField]="getValidationField('name')">
+                            </shared-error-field>
+                        }
+                    </div>
+                    <!-- Username -->
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input 
+                            id="username"
+                            pInputText
+                            formControlName="userName"
+                            type="text"
+                            placeholder="example@email.com"
+                            class="rounded w-full sm:w-20rem"
+                            autocomplete="off"
+                        />
+                        <!-- Error message -->
+                        @if ( isInvalidField('userName') ){
+                            <shared-error-field
+                                [validationField]="getValidationField('userName', 'username')">
+                            </shared-error-field>
+                        }
+                    </div>
+                    <div class="w-full sm:w-20rem">
+                        <!-- Save button -->
+                        <p-button
+                            id="saveBtn"
+                            type="submit"
+                            size="small"
+                            aria-label="Save"
+                            icon="fa fa-check"
+                            severity="success"
+                            [rounded]="true"
+                            [text]="true"
+                            [disabled]="submit()"
+                        />
+                        <!-- Cancel button -->
+                        <p-button
+                            id="cancelBtn"
+                            type="button"
+                            size="small"
+                            aria-label="Cancel"
+                            icon="fa-solid fa-xmark"
+                            severity="danger"
+                            [rounded]="true"
+                            [text]="true"
+                            [disabled]="submit()"
+                            (onClick)="onCancelEditBtnClick()"
+                        />
                     </div>
                 </form>
             }
@@ -71,7 +88,7 @@
                     <div class="flex align-items-center gap-2">
                         <!-- Name label -->
                         <h2 class="text-xl font-semibold m-0">
-                            {{ account.name }}
+                            {{ account()?.name }}
                         </h2>
                         <!-- Edit button -->
                         <button
@@ -94,6 +111,6 @@
         </p-divider>
         
         <!-- Signin methods -->
-        <profile-signin-methods/>
+        <profile-signin-methods [username]="account()?.userName ?? ''"/>
     </div>
 }

@@ -16,6 +16,12 @@ label {
   height: 56px;
 }
 
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: .875rem;
+}
+
 .user-box {
   display: flex;
   gap: 1rem;

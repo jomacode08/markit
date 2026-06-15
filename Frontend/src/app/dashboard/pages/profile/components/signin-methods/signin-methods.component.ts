@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
@@ -28,12 +28,13 @@ import { RedirectResponse } from '../../../../../auth/interfaces/redirect';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SigninMethodsComponent {
+  public username = input.required<string>();
+
   private readonly LOGIN_LINKED_SUCCESS_MESSAGE = "The account was successfully linked.";
   private readonly LOGIN_REMOVED_SUCCESS_MESSAGE = "The account was successfully removed.";
 
   private refreshTrigger$ = new Subject<void>();
   public signInMethods$ : Observable<SignInMethods>;
-  public currentEmail : string | undefined;
   public isSubmit = signal<boolean>(false);
   protected authAvailability = signal<AuthOptions>({
     isDemoModeAvailable : false,
@@ -50,8 +51,7 @@ export class SigninMethodsComponent {
     this.checkAuthAvailability();
     this.signInMethods$ = this.refreshTrigger$.pipe(
       startWith(null),
-      switchMap(() => authService.getSignInMethods()),
-      tap(() => this.currentEmail = this.authService.currentUser()?.email)
+      switchMap(() => authService.getSignInMethods())
     );
   }
 
