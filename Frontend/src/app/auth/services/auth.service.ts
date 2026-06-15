@@ -33,6 +33,13 @@ export class AuthService {
   ) 
   {}
 
+  public changeMyPassword(currentPassword:string, newPassword:string): Observable<void> {
+    return this.http.put<void>(`${ this.baseUrl }/me/password`, {
+      currentPassword,
+      newPassword
+    });
+  }
+
   public login(authRequest: AuthRequest): Observable<AuthenticatedUser> {
     return this.http.post<AuthenticatedUser>(`${ this.baseUrl }/login`, authRequest)
     .pipe(

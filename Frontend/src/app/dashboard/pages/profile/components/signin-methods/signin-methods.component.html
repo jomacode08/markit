@@ -26,8 +26,9 @@
                     type="button"
                     size="small"
                     severity="info"
-                    [label]="signInMethods.hasPassword ? 'Change':'Configure'"
-                    [disabled]="true"
+                    [label]="'Change'"
+                    [disabled]="!signInMethods.hasPassword"
+                    (onClick)="onChangePasswordBtnClick()"
                 />
             </footer>
         </article>
