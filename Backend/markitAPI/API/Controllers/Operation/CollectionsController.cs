@@ -2,6 +2,7 @@
 using markit.Application.Features.Collections.Commands.CreateCollectionCommand;
 using markit.Application.Features.Collections.Commands.DeleteCollectionCommand;
 using markit.Application.Features.Collections.Commands.MoveCollectionCommand;
+using markit.Application.Features.Collections.Commands.SetCollectionDescriptionCommand;
 using markit.Application.Features.Collections.Commands.SetCollectionFavoriteStatusCommand;
 using markit.Application.Features.Collections.Commands.UpdateCollectionCommand;
 using markit.Application.Features.Collections.Queries.GetCollectionByIdQuery;
@@ -122,6 +123,19 @@ namespace markit.API.Controllers.Operation
                 id,
                 userId: _sessionService.GetUserId(),
                 isFavorite: false
+            );
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpPut]
+        [Route("{id:int}/description")]
+        public async Task<IActionResult> SetDescription([FromRoute] int id, [FromBody] string description)
+        {
+            SetCollectionDescriptionCommand command = new(
+                id,
+                description,
+                userId: _sessionService.GetUserId()
             );
             await _mediator.Send(command);
             return NoContent();
