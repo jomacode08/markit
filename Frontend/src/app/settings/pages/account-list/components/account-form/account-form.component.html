@@ -36,6 +36,26 @@
         }
       </div>
 
+      <!-- Roles MultiSelect -->
+      <div class="form-field">
+        <label for="roles">Roles</label>
+        <p-multiSelect
+          id="roles"
+          formControlName="roles"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select roles"
+          appendTo="body"
+          class="w-full"
+          size="small"
+          [options]="roleOptions"
+          [class.invalid]="isInvalidField('roles')"
+        />
+        @if (isInvalidField('roles')) {
+          <shared-error-field [validationField]="getValidationField('roles')" />
+        }
+      </div>
+
       <!-- Password -->
       <div class="form-field">
         <label for="password">Password</label>
@@ -81,26 +101,6 @@
           }
         </div>
       }
-
-      <!-- Roles MultiSelect -->
-      <div class="form-field">
-        <label for="roles">Roles</label>
-        <p-multiSelect
-          id="roles"
-          formControlName="roles"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Select roles"
-          appendTo="body"
-          class="w-full"
-          size="small"
-          [options]="roleOptions"
-          [class.invalid]="isInvalidField('roles')"
-        />
-        @if (isInvalidField('roles')) {
-          <shared-error-field [validationField]="getValidationField('roles')" />
-        }
-      </div>
       
       <div class="form-field">
         <label for="enabled">Enabled</label>
