@@ -33,7 +33,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     # Build .Net API
     - name: Create AppSettings.json file 
@@ -43,7 +43,7 @@ runs:
         envsubst < appsettings-template.json > appsettings.json
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '9.0'
 
@@ -67,14 +67,14 @@ runs:
         baseApiUrl: ${{ inputs.api_url }}
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         version: 10
     
-    - name: Use Node.js 22
-      uses: actions/setup-node@v5
+    - name: Use Node.js 24
+      uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: 24
         cache: 'pnpm'
         cache-dependency-path: './Frontend/pnpm-lock.yaml'
 
