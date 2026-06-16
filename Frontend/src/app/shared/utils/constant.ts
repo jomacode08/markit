@@ -2,7 +2,7 @@ export const NOTEBOOKS_STORAGE_KEY : string = 'local-notebooks';
 export const ISAUTHENTICATED_STORAGE_KEY : string = 'is-authenticated'
 export const DEFAULT_NOTEBOOK_NAME : string = 'Untitled'; 
 export const DEFAULT_BLOCK_NAME : string = 'Main block';
-export const MAIN_COLLECTION_PARAM : string = 'Library';
+export const MAIN_COLLECTION_PARAM : string = 'library';
 
 export const ROUTES = {
     // Auth
