@@ -13,6 +13,7 @@ namespace markit.Domain.Entities
         public int? ParentId { get; set; }
         public string? Path { get; set; } = string.Empty;
         public string? Emoji { get; set; }
+        [MaxLength(1500)] public string? Description {  get; set; }
 
         public virtual Collection? Parent { get; set; }
         public virtual ICollection<Collection>? SubCollections { get; set; }
