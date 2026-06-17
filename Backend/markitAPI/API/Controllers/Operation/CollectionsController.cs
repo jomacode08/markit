@@ -10,7 +10,6 @@ using markit.Application.Features.Collections.Queries.GetCollectionItemsPagedQue
 using markit.Application.Features.Collections.Queries.GetCollectionTreeQuery;
 using markit.Application.Features.Collections.Queries.GetMainCollectionByUser;
 using markit.Application.Features.Collections.Queries.ViewModels;
-using markit.Application.Helpers;
 using markit.Infrastructure.Security.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -71,7 +70,6 @@ namespace markit.API.Controllers.Operation
             return Ok(page);
         }
 
-        [Authorize(GeneralConstant.AuthorizationPolicies.CAN_ESCALATE)]
         [HttpPost]
         [Route("{id:int}/move")]
         public async Task<IActionResult> Move([FromRoute] int id, [FromBody] MoveCollectionCommandDto dto)
