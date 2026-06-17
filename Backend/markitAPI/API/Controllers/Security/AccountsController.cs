@@ -36,6 +36,7 @@ namespace markit.API.Controllers.Security
             return Ok(await _mediator.Send(query));
         }
 
+        [Authorize(Policy = AuthorizationPolicies.CAN_ESCALATE)]
         [HttpPut]
         [Route("me/profile")]
         public async Task<ActionResult<AccountVm>> UpdateProfile([FromBody] RenameAccountDto dto)
