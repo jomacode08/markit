@@ -35,7 +35,7 @@
         public static class Notebooks
         {
             public static readonly string COLLECTION_DEFAULT_PREVIEW = "0 notebooks";
-            public static readonly string NOTEBOOK_PLACEHOLDER = "Untitled";
+            public static readonly string NOTEBOOK_PLACEHOLDER = "Empty";
             public static readonly string MAIN_COLLECTION_NAME = "Library";
         }
 
