@@ -130,11 +130,11 @@ namespace markit.API.Controllers.Operation
 
         [HttpPut]
         [Route("{id:int}/description")]
-        public async Task<IActionResult> SetDescription([FromRoute] int id, [FromBody] string description)
+        public async Task<IActionResult> SetDescription([FromRoute] int id, [FromBody] SetCollectionDescriptionDto dto)
         {
             SetCollectionDescriptionCommand command = new(
                 id,
-                description,
+                dto.Description,
                 userId: _sessionService.GetUserId()
             );
             await _mediator.Send(command);

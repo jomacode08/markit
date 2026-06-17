@@ -2,6 +2,13 @@
     <!-- Breadcrumb -->
     <collection-explorer-breadcrumb class="mb-4" [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
 
+    <!-- Description -->
+    <collection-description
+        class="mb-4"
+        [collectionId]="collection.id"
+        [description]="collection.description"
+    />
+
     <!-- Data  -->
     <ng-container *ngIf="items$ | async as items">
         <collection-item-data-view

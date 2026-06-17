@@ -23,4 +23,10 @@ export class CollectionService {
     public getTree(): Observable<CollectionNode> {
         return this.http.get<CollectionNode>(`${ this.baseUrl }/tree`);
     }
+
+    public setDescription(id: number, description: string): Observable<void> {
+        return this.http.put<void>(`${ this.baseUrl }/${ id }/description`, {
+            description
+        });
+    }
 }

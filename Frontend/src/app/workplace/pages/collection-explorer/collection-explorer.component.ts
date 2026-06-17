@@ -18,10 +18,12 @@ import { FloatingActionButtonComponent } from '../../../shared/components/ui/but
 import { CollectionItemDataViewComponent } from '../../components/collection-item-data-view/collection-item-data-view.component';
 import { CollectionItemPaginationService, CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
 import { CollectionItemDialogComponent } from '../../components/collection-item-dialog/collection-item-dialog.component';
+import { CollectionDescriptionComponent } from '../../components/collection-description/collection-description.component';
 
 @Component({
     imports: [
       ButtonModule,
+      CollectionDescriptionComponent,
       CollectionExplorerBreadcrumbComponent,
       CollectionItemDataViewComponent,
       CommonModule,

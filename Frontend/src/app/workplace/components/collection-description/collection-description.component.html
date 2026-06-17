@@ -1,0 +1,49 @@
+<div class="description-wrapper">
+    <textarea
+        class="description-textarea"
+        rows="4"
+        placeholder="Add a description…"
+        [ngModel]="localDescription()()"
+        (ngModelChange)="localDescription().set($event)"
+        [disabled]="state() === 'loading'"
+        aria-label="Collection description"
+    ></textarea>
+
+    <!-- Submit button — positioned inside the wrapper, bottom-right -->
+    <button
+        type="button"
+        class="submit-btn"
+        [class.is-loading]="state() === 'loading'"
+        [class.is-success]="state() === 'success'"
+        [class.is-error]="state() === 'error'"
+        [disabled]="state() === 'loading' || state() === 'success' || (!isDirty() && state() !== 'error')"
+        (click)="onSubmit()"
+        aria-label="Save description"
+    >
+        @switch (state()) {
+            @case ('loading') {
+                <p-progressSpinner
+                    [style]="{ width: '0.9rem', height: '0.9rem' }"
+                    strokeWidth="5"
+                />
+            }
+            @case ('success') {
+                <i class="fa fa-check"></i>
+            }
+            @case ('error') {
+                <i class="fa fa-rotate-right"></i>
+            }
+            @default {
+                <i class="fa-regular fa-floppy-disk"></i>
+            }
+        }
+    </button>
+</div>
+
+<!-- Error feedback -->
+@if (state() === 'error') {
+    <p class="description-error">
+        <i class="fa fa-triangle-exclamation"></i>
+        Failed to save description. Click the retry button to try again.
+    </p>
+}

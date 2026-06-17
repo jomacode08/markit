@@ -1,0 +1,113 @@
+:host {
+    display: block;
+}
+
+.description-wrapper {
+    position: relative;
+    border: none;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.description-textarea {
+    display: block;
+    width: 100%;
+    min-height: 7rem;
+    padding: 0.5rem 0.875rem;
+    border: none;
+    outline: none;
+    resize: none;
+    background-color: transparent;
+    color: var(--p-text-hover-color);
+    font-size: 16px;
+    line-height: 1.75rem;
+
+    /* Notebook ruled lines */
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(1.75rem - 1px),
+        var(--p-content-border-color) calc(1.75rem - 1px),
+        var(--p-content-border-color) 1.75rem
+    );
+    background-attachment: local;
+    background-position: 0 0.375rem;
+}
+
+.description-textarea::placeholder {
+    color: var(--p-text-muted-color);
+    font-style: italic;
+}
+
+.description-textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-btn {
+    position: absolute;
+    bottom: 0.4rem;
+    right: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--p-content-border-color);
+    background-color: var(--p-content-elevation-section);
+    color: var(--p-text-hover-color);
+    font-size: 0.8rem;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.submit-btn:not(:disabled):hover {
+    opacity: 1;
+    background-color: var(--p-highlight-primary-background);
+    color: var(--p-text-color);
+    border-color: var(--p-primary-300);
+}
+
+.description-wrapper:focus-within .submit-btn:not(:disabled) {
+    opacity: 0.85;
+}
+
+.submit-btn:disabled {
+    cursor: default;
+}
+
+.submit-btn.is-success {
+    background-color: var(--p-highlight-success-background);
+    border-color: var(--p-highlight-success-border);
+    color: var(--p-green-500);
+    opacity: 1;
+}
+
+.submit-btn.is-error {
+    color: var(--p-red-500);
+    background-color: var(--p-highlight-danger-background);
+    border-color: var(--p-highlight-danger-border);
+    opacity: 1;
+}
+
+.submit-btn.is-loading {
+    opacity: 1;
+    cursor: wait;
+}
+.submit-btn.is-loading ::ng-deep .p-progressspinner {
+    margin: 0;
+}
+.submit-btn.is-loading ::ng-deep .p-progressspinner-circle {
+    stroke: var(--p-text-hover-color);
+}
+
+.description-error {
+    margin: 0.35rem 0 0 0;
+    font-size: 0.8rem;
+    color: var(--p-red-500);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
