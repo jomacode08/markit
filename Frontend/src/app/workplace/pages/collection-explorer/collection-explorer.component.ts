@@ -72,12 +72,12 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   //* Floating menu
   public readonly ADD_ITEM_ACTIONS: FloatingMenuOption[] = [
     {
-      label: 'Add collection',
+      label: 'Collection',
       icon: this.ICONS.FOLDER,
       command: () => this.addItem(CollectionItemType.Collection)
     },
     {
-      label: 'Add notebook',
+      label: 'Notebook',
       icon: this.ICONS.NOTE,
       command: () => this.addItem(CollectionItemType.Notebook)
     },

@@ -13,14 +13,14 @@ import { CollectionItemActionService } from '../../services/collection-item/acti
 import { CollectionItemDialogComponent } from '../collection-item-dialog/collection-item-dialog.component';
 import { CollectionItemIconPipe } from '../../pipes/collection-item-icon.pipe';
 import { CollectionItemTypeFilter } from '../../services/collection-item/pagination/collection-item-pagination.service';
+import { CollectionTreeDialogComponent, CollectionTreeDialogData } from '../collection-tree-dialog/collection-tree-dialog.component';
 import { CustomMessageService } from '../../../shared/services/custom-message.service';
+import { EmptyStateIconComponent } from '../../../shared/components/ui/empty-state-icon-component/empty-state-icon.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
 import { IntersectionDirective } from '../../../shared/directives/intersection.directive';
 import { ROUTES } from '../../../shared/utils/constant';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
-import { CollectionTreeDialogComponent, CollectionTreeDialogData } from '../collection-tree-dialog/collection-tree-dialog.component';
-import { EmptyStateIconComponent } from '../../../shared/components/ui/empty-state-icon-component/empty-state-icon.component';
 
 @Component({
     selector: 'collection-item-data-view',
@@ -64,7 +64,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
   public readonly ADD_ITEM_ACTIONS: FloatingMenuOption[] = [
     {
       label: 'Rename',
-      icon: 'fa fa-font',
+      icon: 'rename-outlined',
       command: () => {
         if (this.menuTarget === undefined) return;
         this.renameItem(this.menuTarget);
@@ -72,7 +72,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     },
     {
       label: 'Move',
-      icon: 'fa-regular fa-folder-open',
+      icon: 'folder-move-outlined',
       command: () => {
         if (this.menuTarget === undefined) return;
         this.moveItem(this.menuTarget);
@@ -80,7 +80,7 @@ export class CollectionItemDataViewComponent implements OnDestroy {
     },
     {
       label: 'Delete',
-      icon: 'fa fa-trash',
+      icon: 'fa-regular fa-trash-can',
       command: () => {
         if (this.menuTarget === undefined) return;
         this.deleteItem(this.menuTarget);
