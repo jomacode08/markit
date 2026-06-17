@@ -25,7 +25,8 @@ namespace markit.Infrastructure.Repositories
 						SELECT
 							c1.id, c1.name, c1.path, c1.path_names, c1.is_main,
 							c1.parent_id, c1.user_id, c1.is_favorite, c1.emoji,
-							c1.created_date, c1.created_by, c1.updated_date, c1.updated_by, c1.enable,
+							c1.created_date, c1.created_by, c1.updated_date,
+							c1.updated_by, c1.enable, c1.description,
 							0 AS depth
 						FROM collections AS c1
 						WHERE c1.id = {rootCollectionId} AND c1.enable = true
@@ -35,7 +36,8 @@ namespace markit.Infrastructure.Repositories
 						SELECT
 							c2.id, c2.name, c2.path, c2.path_names, c2.is_main,
 							c2.parent_id, c2.user_id, c2.is_favorite, c2.emoji,
-							c2.created_date, c2.created_by, c2.updated_date, c2.updated_by, c2.enable,
+							c2.created_date, c2.created_by, c2.updated_date,
+							c2.updated_by, c2.enable, c2.description,
 							ch.depth + 1
 						FROM collections AS c2
 						INNER JOIN collection_hierarchy ch ON c2.parent_id = ch.id
@@ -45,7 +47,8 @@ namespace markit.Infrastructure.Repositories
 					SELECT
 						id, name, path, path_names, is_main,
 						parent_id, user_id, is_favorite, emoji,
-						created_date, created_by, updated_date, updated_by, enable
+						created_date, created_by, updated_date,
+						updated_by, enable, description
 					FROM collection_hierarchy
 					WHERE NOT is_cycle;
                 ").IgnoreQueryFilters();
