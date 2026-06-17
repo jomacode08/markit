@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AngularNodeViewComponent, TiptapNodeViewContentDirective } from 'ngx-tiptap';
-import { TableMap } from 'prosemirror-tables';
+import { TableMap } from '@tiptap/pm/tables';
 
 @Component({
   selector: 'app-table-node-view',

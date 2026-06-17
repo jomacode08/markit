@@ -1,5 +1,5 @@
 import { Editor } from "@tiptap/core";
-import { CellSelection } from "prosemirror-tables";
+import { CellSelection } from "@tiptap/pm/tables";
 
 export function deleteTableSelection(editor: Editor): boolean {
     const { selection } = editor.state;
