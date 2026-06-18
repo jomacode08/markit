@@ -1,4 +1,4 @@
-<div class="flex justify-content-between align-items-center">
+<div class="flex align-items-center gap-5 mb-3">
     <!-- Filters -->
     <div class="filter-container flex gap-2">
         @for (filter of collectionItemTypeFilters; track $index) {
@@ -16,8 +16,12 @@
     <!-- Loading spinner -->
     @if (displaySpinner()) {
         <p-progressSpinner
-            [style]="{ width: '1.5rem', height: '1.5rem' }"
             strokeWidth="4"
+            [style]="{
+                width: '1.5rem',
+                height: '1.5rem',
+                margin: '0'
+            }"
         ></p-progressSpinner>
     }
 </div>

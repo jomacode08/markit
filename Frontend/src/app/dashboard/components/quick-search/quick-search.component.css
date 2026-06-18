@@ -51,6 +51,7 @@ span.fa-search{
   margin-bottom: .5rem;
   border: 1px solid var(--p-content-border-color);
   border-radius: .375rem;
+  overflow: hidden;
 }
 .item-result:hover {
   background-color: var(--p-content-elevation-section);

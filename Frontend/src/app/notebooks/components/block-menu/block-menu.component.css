@@ -11,7 +11,6 @@ button {
 }
 
 input {
-  border: none;
   width: 100%;
   padding: 0.5rem;
   background-color: var(--p-content-elevation-main);
@@ -46,13 +45,9 @@ input {
 }
 .block-item.active {
   border: 1px solid var(--p-content-border-color);
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 5px,
-    var(--p-overlay-modal-border-color) 5px,
-    var(--p-overlay-modal-border-color) 6px
-  );
+  .block-title {
+    font-weight: 600;
+  }
 }
 
 #addBlockBtn:hover, .block-item:hover {

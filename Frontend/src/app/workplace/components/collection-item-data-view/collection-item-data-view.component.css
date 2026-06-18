@@ -3,10 +3,6 @@ button {
   cursor: pointer;
 }
 
-.filter-container {
-  margin-bottom: 1rem;
-}
-
 .filter-container .filter {
   font-size: .95rem;
   padding: 0.5rem 0.75rem;

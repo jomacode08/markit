@@ -36,7 +36,6 @@
 
 .description-textarea::placeholder {
     color: var(--p-text-muted-color);
-    font-style: italic;
 }
 
 .description-textarea:disabled {
