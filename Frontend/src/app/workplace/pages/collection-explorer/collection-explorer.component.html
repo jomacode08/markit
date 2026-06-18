@@ -1,4 +1,4 @@
-<ng-container *ngIf="collection$ | async as collection">
+@if (collection$ | async; as collection) {
     <!-- Breadcrumb -->
     <collection-explorer-breadcrumb class="mb-4" [pathSegments]="collection.path ?? []" [currentIdCollection]="collection.id" />
 
@@ -6,11 +6,12 @@
     <collection-description
         class="mb-4"
         [collectionId]="collection.id"
-        [description]="collection.description"
+        [description]="description()"
+        (descriptionUpdated)="onDescriptionUpdated($event)"
     />
 
     <!-- Data  -->
-    <ng-container *ngIf="items$ | async as items">
+    @if (items$ | async; as items) {
         <collection-item-data-view
             [items]="items"
             [currentFilter]="currentFilter()"
@@ -19,7 +20,7 @@
             (onItemViewChange)="onItemViewChange($event, items.length)"
             (onItemUpdated)="onItemUpdated()"
         />
-    </ng-container>
+    }
 
     <!-- Floating action button -->
     <shared-floating-action-button
@@ -34,4 +35,4 @@
         [options]="ADD_ITEM_ACTIONS"
         [dismissible]="true"
     />
-</ng-container>
+}

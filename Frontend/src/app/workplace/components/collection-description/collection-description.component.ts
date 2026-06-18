@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, input, OnDestroy, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -18,10 +18,15 @@ type DescriptionState = 'idle' | 'loading' | 'success' | 'error';
 export class CollectionDescriptionComponent implements OnDestroy {
     public collectionId = input.required<number>();
     public description = input<string | undefined>(undefined);
+    @Output() public descriptionUpdated = new EventEmitter<string>(); 
 
-    // Each time the description input changes (new collection), a fresh writable
+    // Each time the collectionId input changes (new collection), a fresh writable
     // signal is created — discarding any unsaved edits automatically.
-    protected localDescription = computed(() => signal(this.description() ?? ''));
+    protected localDescription = computed(() => {
+        this.collectionId();
+        return signal(this.description() ?? '');
+    });
+
     protected state = signal<DescriptionState>('idle');
     protected isDirty = computed(
         () => this.localDescription()() !== (this.description() ?? '')
@@ -45,6 +50,7 @@ export class CollectionDescriptionComponent implements OnDestroy {
             .subscribe({
                 next: () => {
                     this.state.set('success');
+                    this.descriptionUpdated.emit(this.localDescription()());
                     this.successTimeout = setTimeout(() => this.state.set('idle'), 2000);
                 },
                 error: () => this.state.set('error'),

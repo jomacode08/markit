@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -62,8 +62,9 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   public loading = signal<boolean>(false);
 
   //* Collection
-  private collectionId?: number;
   public collection$: Observable<Collection | null>;
+  protected collection = signal<Collection | undefined>(undefined);
+  protected description = computed<string>(() => this.collection()?.description ?? '');
 
   //* Collection Items
   public items$: Observable<CollectionItem[]>;
@@ -99,7 +100,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       switchMap((params) => this.getCollectionObservable(params.id)),
       //* Load first items page
       tap((collection) => {
-        this.collectionId = collection.id;
+        this.collection.set(collection);
         this.collectionItemPaginationService.resetAndLoad({
           type: CollectionItemTypeFilter.All,
           collectionId : collection.id,
@@ -127,6 +128,16 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
     if (this.itemsFilterSubscription) this.itemsFilterSubscription.unsubscribe();
   }
 
+  public onDescriptionUpdated(newDescription: string): void {
+    this.collection.update((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        description: newDescription
+      } as Collection;
+    });
+  }
+  
   public onFloatingButtonClick(): void {
     this.changeFloatingMenuState();
   }
@@ -141,15 +152,18 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
   }
 
   public applyCollectionItemFilter( filter: CollectionItemTypeFilter ): void {
-    if (this.collectionId === undefined) return;
+    const collectionId = this.collection()?.id;
+    if (collectionId === undefined) return;
     this.collectionItemPaginationService.resetAndLoad({
       type: filter,
-      collectionId : this.collectionId,
+      collectionId : collectionId,
       onlyFavorites : false
     });
   }
 
   private addItem( type: CollectionItemType ): void {
+    const collection = this.collection();
+    if (!collection) return;
     const action = CollectionItemAction.Add;
     const header = `${ action } ${ type }`;
     const collectionItemEntry = {
@@ -157,7 +171,7 @@ export class CollectionExplorerComponent implements OnDestroy, OnInit {
       name : '',
       type : type,
       typeId : 0,
-      collectionId : this.collectionId,
+      collectionId : collection.id,
     } as CollectionItem;
     const data = {
       action : action,
