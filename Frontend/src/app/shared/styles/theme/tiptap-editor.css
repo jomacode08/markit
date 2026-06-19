@@ -36,6 +36,7 @@
 
   p {
     margin: .25rem 0;
+    line-height: 1.5;
   }
 
   hr {
@@ -49,6 +50,16 @@
     padding: 0 .25rem;
     background: var(--p-text-highlight-color);
     color: var(--p-text-color);
+  }
+
+  blockquote {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 4px solid var(--p-content-border-color);
+    line-height: 1.5;
+    > p {
+      color: var(--p-text-muted-color);
+    }
   }
 
   ul,ol {
