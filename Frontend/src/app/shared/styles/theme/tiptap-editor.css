@@ -6,8 +6,8 @@
   --tt-code-block-bg: var(--p-content-elevation-section);
   --tt-code-block-border: var(--p-content-border-color);
   --tt-code-block-text: var(--p-text-color);
-  --tt-code-inline-bg: var(--p-content-elevation-card);
-  --tt-code-inline-text: var(--p-text-color);
+  --tt-code-inline-bg: var(--p-content-elevation-section);
+  --tt-code-inline-text: var(--p-red-400);
   --tt-code-token-keyword: var(--p-primary-600);
   --tt-code-token-type: var(--p-secondary-600);
   --tt-code-token-string: var(--p-green-700);
@@ -16,6 +16,8 @@
   --tt-code-token-comment: var(--p-text-muted-color);
   --tt-code-token-meta: var(--p-violet-700);
   --tt-code-token-operator: var(--p-text-hover-color);
+  --tt-blockquote-text: var(--p-stone-600);
+  --tt-blockquote-border: var(--p-stone-300);
 
   h1,h2,h3 {
     border-bottom: 1px solid var(--p-overlay-modal-border-color);
@@ -55,10 +57,10 @@
   blockquote {
     margin: 0;
     padding-left: 1rem;
-    border-left: 4px solid var(--p-content-border-color);
+    border-left: 4px solid var(--tt-blockquote-border);
     line-height: 1.5;
     > p {
-      color: var(--p-text-muted-color);
+      color: var(--tt-blockquote-text);
     }
   }
 
@@ -172,11 +174,12 @@
   code {
     background-color: var(--tt-code-inline-bg);
     color: var(--tt-code-inline-text);
+    border: 1px solid var(--tt-code-block-border);
     border-radius: 0.4rem;
     font-size: 0.85rem;
-    font-weight: 600;
     padding: 0.25em 0.3em;
   }
+
   
   pre {
     background: var(--tt-code-block-bg);
@@ -191,6 +194,7 @@
   
     code {
       background: none;
+      border: none;
       color: inherit;
       padding: 0;
       font-size: 0.9rem;
@@ -323,7 +327,7 @@
 
 .markit-dark .tiptap {
   --tt-code-block-text: var(--p-text-color);
-  --tt-code-inline-text: var(--p-primary-50);
+  --tt-code-inline-text: var(--p-green-300);
   --tt-code-token-keyword: var(--p-primary-300);
   --tt-code-token-type: var(--p-secondary-300);
   --tt-code-token-string: var(--p-green-300);
@@ -332,4 +336,6 @@
   --tt-code-token-comment: var(--p-text-muted-color);
   --tt-code-token-meta: var(--p-violet-300);
   --tt-code-token-operator: var(--p-text-hover-color);
+  --tt-blockquote-text: var(--p-neutral-300);
+  --tt-blockquote-border: var(--p-neutral-600);
 }
