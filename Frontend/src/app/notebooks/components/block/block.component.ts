@@ -123,6 +123,8 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
 
   //* Lyfecycle hooks
   ngOnInit(): void {
+    this.editor.commands.focus('end');
+    this.editorSelected.emit(this.editor);
     this.debouncer.pipe(
       debounceTime(1000)
     ).subscribe((value) => this.debouncedChange.emit(value));
@@ -152,8 +154,6 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  //* Events
-  onEditorClick = (): void => this.editorSelected.emit(this.editor);
   //* Utils
   isValidUri(url: string, ctx: UriValidationContext): boolean {
     try {

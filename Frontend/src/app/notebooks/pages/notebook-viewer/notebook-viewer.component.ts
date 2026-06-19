@@ -352,6 +352,7 @@ export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentD
     if (newIndex < 0 || newIndex >= currentNotebook.blocks.length) return;
     this.currentBlockIndex.update(c => newIndex);
     this.currentBlock.update(c => currentNotebook.blocks[newIndex]);
+    this.editor()?.commands.focus('end');
   }
 
   private getValidNotebookId(notebookIdParam: string): number {
