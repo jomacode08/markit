@@ -1,12 +1,12 @@
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { catchError, debounceTime, delay, Observable, of, retry, RetryConfig, Subject, Subscription, switchMap, take, takeUntil, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, signal, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Editor } from '@tiptap/core';
+import { Editor, getMarkRange, Range } from '@tiptap/core';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -25,6 +25,7 @@ import { EmojiPickerComponent } from '../../../shared/components/ui/emoji-picker
 import { FloatingActionButtonComponent } from '../../../shared/components/ui/buttons/floating-action-button/floating-action-button.component';
 import { FloatingMenuComponent } from '../../../shared/components/layout/floating-menu/floating-menu.component';
 import { FloatingMenuOption } from '../../../shared/components/layout/floating-menu/floating-menu-option';
+import { LinkDialogCloseResponse, LinkDialogComponent } from '../../components/tiptap/link-dialog/link-dialog.component';
 import { Notebook } from '../../interfaces/notebook';
 import { NOTEBOOK_VIEWER_CONSTANTS } from './constants/notebook-viewer-constants';
 import { NotebookAutosaveIndicatorComponent, SaveState } from '../../components/notebook-autosave-indicator/notebook-autosave-indicator.component';
@@ -58,6 +59,7 @@ export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentD
   //* Configuration
   @ViewChild('floatingMenu') private floatingMenu !: FloatingMenuComponent;
   private blockMenuDialogRef ?: DynamicDialogRef<BlockMenuComponent> | null;
+  private linkDialogRef ?: DynamicDialogRef<LinkDialogComponent> | null;
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
 
@@ -126,7 +128,9 @@ export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentD
   }
   
   public async ngOnInit(): Promise<void> {
-    this.floatingMenuOptions.set(createTextFormattingOptions(this.editor));
+    this.floatingMenuOptions.set(createTextFormattingOptions(this.editor, {
+      openLinkDialog: () => this.openLinkDialog(),
+    }));
     this.subscribeToFormChanges();
     this.subscribeToEmojiChanges();
     this.subscribeToDebouncedNotebookNameInput();
@@ -197,6 +201,38 @@ export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentD
     .subscribe(async ( response: OnCloseResponse ) => 
       await this.handleOnCloseBlockMenu(response)
     );
+  }
+
+  public openLinkDialog(): void {
+    const editor = this.editor();
+    if (!editor) return;
+
+    const range = this.getCurrentLinkRange(editor);
+    const selectedText = editor.state.doc.textBetween(range.from, range.to, ' ');
+    const linkAttributes = editor.getAttributes('link');
+
+    this.linkDialogRef = this.dialogService.open(LinkDialogComponent, {
+      header: 'Link',
+      width : '30rem',
+      modal : true,
+      closable : true,
+      dismissableMask : true,
+      styleClass : 'custom-dialog',
+      data: {
+        shared : {
+          text: selectedText,
+          url: linkAttributes['href'] ?? '',
+        }
+      }
+    });
+
+    this.linkDialogRef?.onClose
+    .pipe(take(1))
+    .subscribe((response: LinkDialogCloseResponse | undefined) => {
+      this.linkDialogRef = null;
+      if (!response) return;
+      this.applyLinkToEditor(editor, range, response);
+    });
   }
 
   private async handleOnCloseBlockMenu(response: OnCloseResponse): Promise<void> {
@@ -364,6 +400,39 @@ export class NotebookViewerComponent implements OnInit, OnDestroy, CanComponentD
 
   private changeFloatingMenuState(): void {
     this.floatingMenu.toggle();
+  }
+
+  private getCurrentLinkRange(editor: Editor): Range {
+    const { selection, schema } = editor.state;
+    const linkMark = schema.marks['link'];
+
+    if (selection.empty && linkMark) {
+      const linkRange = getMarkRange(selection.$from, linkMark);
+      if (linkRange) return linkRange;
+    }
+
+    return {
+      from: selection.from,
+      to: selection.to,
+    };
+  }
+
+  private applyLinkToEditor(
+    editor: Editor,
+    range: Range,
+    response: LinkDialogCloseResponse
+  ): void {
+    const text: string = response.text.trim();
+    const to: number = range.from + text.length;
+
+    editor
+      .chain()
+      .focus()
+      .insertContentAt(range, text)
+      .setTextSelection({ from: range.from, to })
+      .setLink({ href: response.href })
+      .setTextSelection(to)
+      .run();
   }
 
   private getErrorRetryConfig(): RetryConfig {

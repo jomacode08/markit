@@ -1,0 +1,3 @@
+.modal-body {
+  min-width: min(26rem, 80vw);
+}

@@ -3,7 +3,14 @@ import { Editor } from '@tiptap/core';
 import { FloatingMenuOption } from '../../shared/components/layout/floating-menu/floating-menu-option';
 import { Signal } from '@angular/core';
 
-export function createTextFormattingOptions( editor: Signal<Editor | undefined> ): FloatingMenuOption[] {
+interface TextFormattingOptionHandlers {
+  openLinkDialog?(): void;
+}
+
+export function createTextFormattingOptions(
+  editor: Signal<Editor | undefined>,
+  handlers: TextFormattingOptionHandlers = {},
+): FloatingMenuOption[] {
     return [
     {
       label: 'Bold',
@@ -22,6 +29,13 @@ export function createTextFormattingOptions( editor: Signal<Editor | undefined> 
       icon: 'fa fa-underline',
       command: () => editor()?.chain().focus().toggleUnderline().run(),
       isActive: () => isNodeMarkActive(editor(), { name: 'underline' }),
+    },
+    {
+      label: 'Link',
+      icon: 'fa fa-link',
+      command: () => handlers.openLinkDialog?.(),
+      isActive: () => isNodeMarkActive(editor(), { name: 'link' }),
+      isDisabled: () => editor() === undefined,
     },
     {
       label: 'Heading',

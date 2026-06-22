@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Injector, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import type { LinkProtocolOptions } from '@tiptap/extension-link';
 
 //* Tiptap Extensions
 import { Editor } from '@tiptap/core';
@@ -24,14 +23,10 @@ import { common, createLowlight } from 'lowlight'
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, Subject } from 'rxjs';
 import GistBlockExtension from '../../extensions/gist-block.extension';
+import { isWebUrl } from '../../utils/link-url';
+import { MarkdownLinkInputRule } from '../../extensions/markdown-link-input-rule.extension';
 import { TableNodeViewComponent } from '../tiptap/table-node-view/table-node-view.component';
 import { deleteTableSelection } from '../../../shared/utils/tiptap';
-
-type UriValidationContext = {
-  defaultValidate: (url: string) => boolean;
-  protocols: Array<LinkProtocolOptions | string>;
-  defaultProtocol: string;
-}
 
 @Component({
     selector: 'notebooks-block',
@@ -69,15 +64,14 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
         multicolor: true,
       }),
       Link.configure({
-        openOnClick: true,
+        openOnClick: false,
         autolink: true,
+        linkOnPaste: true,
         defaultProtocol: 'https',
-        protocols: ['http', 'https'],
-        isAllowedUri: (url, ctx) => this.isValidUri(url, ctx)
-      }).extend({
-        inclusive: false,
+        isAllowedUri: (url: string) => isWebUrl(url),
       }),
       Markdown,
+      MarkdownLinkInputRule,
       Placeholder.configure({
         placeholder: 'Type something here'
       }),
@@ -152,38 +146,5 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  //* Utils
-  isValidUri(url: string, ctx: UriValidationContext): boolean {
-    try {
-      // construct URL
-      const parsedUrl = url.includes(':') ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`)
-
-      // use default validation
-      if (!ctx.defaultValidate(parsedUrl.href)) {
-        return false
-      }
-
-      // disallowed protocols
-      const disallowedProtocols = ['ftp', 'file', 'mailto']
-      const protocol = parsedUrl.protocol.replace(':', '')
-
-      if (disallowedProtocols.includes(protocol)) {
-        return false
-      }
-
-      // only allow protocols specified in ctx.protocols
-      const allowedProtocols = ctx.protocols.map(p => (typeof p === 'string' ? p : p.scheme))
-
-      if (!allowedProtocols.includes(protocol)) {
-        return false
-      }
-
-      // all checks have passed
-      return true
-    } catch {
-      return false
-    }
   }
 }
