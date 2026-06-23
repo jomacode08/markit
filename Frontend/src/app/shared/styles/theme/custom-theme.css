@@ -140,6 +140,9 @@
       font-size: .85rem;
     }
   }
+  .p-tieredmenu-item.selected .p-tieredmenu-item-content {
+    background-color: var(--p-highlight-primary-background);
+  }
   .p-menu:not(.popup) {
     .p-menu-item-content {
       width: 100%;

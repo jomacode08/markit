@@ -8,7 +8,7 @@ import { TieredMenu, TieredMenuModule } from 'primeng/tieredmenu';
 import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
-import { ThemeService } from '../../../../shared/services/theme.service';
+import { ThemeMode, ThemeService } from '../../../../shared/services/theme.service';
 
 @Component({
     selector: 'app-profile-menu',
@@ -38,6 +38,8 @@ export class ProfileMenu {
 
   @ViewChild('profileMenu') private profileMenu !: TieredMenu;
   private readonly STOP_SCROLLING_CLASS_NAME = 'stop-scrolling';
+  private readonly MENU_ITEM_SELECTED_CLASS_NAME = 'selected';
+
   protected profileMenuItems = computed<MenuItem[]>(() => [
     {
       label: 'Settings',
@@ -55,14 +57,22 @@ export class ProfileMenu {
       icon: 'fa-solid fa-circle-half-stroke',
       items: [
         {
+          label: 'System',
+          icon: 'fa-solid fa-display',
+          command: () => this.themeService.setSystemMode(),
+          styleClass: this.getCurrentThemeClass('system')
+        },
+        {
           label: 'Light',
           icon: 'fa-regular fa-sun',
-          command: () => this.themeService.setLightMode()
+          command: () => this.themeService.setLightMode(),
+          styleClass: this.getCurrentThemeClass('light')
         },
         {
           label: 'Dark',
           icon: 'fa-regular fa-moon',
-          command: () => this.themeService.setDarkMode()
+          command: () => this.themeService.setDarkMode(),
+          styleClass: this.getCurrentThemeClass('dark')
         }
       ]
     },
@@ -91,5 +101,9 @@ export class ProfileMenu {
       this.document.body,
       this.STOP_SCROLLING_CLASS_NAME
     );
+  }
+
+  private getCurrentThemeClass(theme: ThemeMode): string {
+    return this.themeService.theme() === theme ? this.MENU_ITEM_SELECTED_CLASS_NAME : '';
   }
 }

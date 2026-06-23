@@ -26,8 +26,8 @@ export const ROUTES = {
 };
 
 export const THEME = {
-    LIGHT_THEME: 'Light',
-    DARK_THEME: 'Dark',
+    LIGHT_THEME: 'light',
+    DARK_THEME: 'dark',
     DARK_MODE_SELECTOR: 'markit-dark',
     THEME_PREFERENCE_KEY: 'theme-preference',
 }
