@@ -108,6 +108,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       Underline
     ],
     contentType: 'markdown',
+    autofocus: 'start',
     onUpdate: ({editor}) => {
       const content = editor.getMarkdown();
       this.onChange(content);
@@ -117,7 +118,6 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
 
   //* Lyfecycle hooks
   ngOnInit(): void {
-    this.editor.commands.focus('end');
     this.editorSelected.emit(this.editor);
     this.debouncer.pipe(
       debounceTime(1000)
@@ -138,6 +138,7 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       contentType: 'markdown',
       emitUpdate: false
     });
+    this.editor.commands.focus('start');
   }
 
   registerOnChange(fn: any): void {
