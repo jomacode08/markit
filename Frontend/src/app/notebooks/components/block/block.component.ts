@@ -1,32 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Injector, OnInit, Output, ViewEncapsulation, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { debounceTime, Subject } from 'rxjs';
+
+import { SkeletonModule } from 'primeng/skeleton';
 
 //* Tiptap Extensions
+import { AngularNodeViewRenderer, TiptapEditorDirective } from 'ngx-tiptap';
 import { Editor } from '@tiptap/core';
 import { Markdown } from '@tiptap/markdown';
-import { AngularNodeViewRenderer, TiptapEditorDirective } from 'ngx-tiptap';
+import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Highlighter from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
-import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 
-//* Lowlight Code block dependency
-import { common, createLowlight } from 'lowlight'
-
-import { SkeletonModule } from 'primeng/skeleton';
-import { debounceTime, Subject } from 'rxjs';
-import GistBlockExtension from '../../extensions/gist-block.extension';
+import { codeBlockLowlight } from '../../extensions/code-block-lowlight';
+import { CodeBlockNodeViewComponent } from '../tiptap/code-block-node-view/code-block-node-view.component';
+import { deleteTableSelection } from '../../../shared/utils/tiptap';
 import { isWebUrl } from '../../utils/link-url';
 import { MarkdownLinkInputRule } from '../../extensions/markdown-link-input-rule.extension';
 import { TableNodeViewComponent } from '../tiptap/table-node-view/table-node-view.component';
-import { deleteTableSelection } from '../../../shared/utils/tiptap';
+import GistBlockExtension from '../../extensions/gist-block.extension';
 
 @Component({
     selector: 'notebooks-block',
@@ -56,8 +56,20 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
   private debouncer = new Subject<string>();
   public editor = new Editor({
     extensions: [
-      CodeBlockLowlight.configure({
-        lowlight : createLowlight(common),
+      CodeBlockLowlight
+      .extend({
+        addNodeView: () => {
+          return AngularNodeViewRenderer(
+            CodeBlockNodeViewComponent,
+            {
+              injector: this.injector,
+            }
+          );
+        },
+      })
+      .configure({
+        lowlight: codeBlockLowlight,
+        enableTabIndentation: true,
       }),
       GistBlockExtension(this.injector),
       Highlighter.configure({

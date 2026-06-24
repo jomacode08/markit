@@ -1,0 +1,56 @@
+<div class="markit-code-block">
+  <div class="markit-code-block__toolbar" contenteditable="false">
+    <div class="markit-code-block__actions">
+      @if (isEditingLanguage()) {
+        <p-select
+          class="markit-code-block__language-select"
+          panelStyleClass="markit-code-block__language-panel"
+          optionLabel="label"
+          optionValue="value"
+          scrollHeight="16rem"
+          appendTo="body"
+          ariaLabel="Code block language"
+          [autofocus]="true"
+          [filter]="true"
+          filterBy="label"
+          [options]="languageOptions"
+          [ngModel]="selectedLanguage()"
+          (onChange)="setLanguage($event.value)"
+          (onHide)="closeLanguageSelector()"
+        />
+      } @else {
+        <button
+          type="button"
+          class="markit-code-block__language"
+          aria-label="Change code block language"
+          title="Change language"
+          (click)="openLanguageSelector()"
+        >
+          <span class="fa-solid fa-code" aria-hidden="true"></span>
+          <span>{{ languageLabel() }}</span>
+        </button>
+      }
+
+      <button
+        type="button"
+        class="markit-code-block__copy"
+        [class.is-success]="copied()"
+        [class.is-error]="copyFailed()"
+        [attr.aria-label]="copied() ? 'Copied code' : 'Copy code'"
+        [title]="copied() ? 'Copied' : copyFailed() ? 'Copy failed' : 'Copy code'"
+        (click)="copyCode()"
+      >
+        <span
+          [ngClass]="copied()
+              ? 'fa-solid fa-check'
+            : copyFailed() 
+              ? 'fa-solid fa-triangle-exclamation' 
+              : 'fa-regular fa-copy'"
+          aria-hidden="true"
+        ></span>
+      </button>
+    </div>
+  </div>
+
+  <pre class="markit-code-block__pre"><code tiptapNodeViewContent></code></pre>
+</div>

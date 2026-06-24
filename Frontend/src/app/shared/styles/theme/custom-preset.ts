@@ -689,6 +689,11 @@ export const CustomPreset = definePreset(Aura, {
                 }
             }
         },
+        select: {
+            root: {
+                shadow: 'none'
+            }
+        },
         skeleton: {
             root: {
                 background: '{surface.900}',
