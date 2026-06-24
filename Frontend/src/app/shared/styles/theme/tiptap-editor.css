@@ -1,6 +1,6 @@
 .tiptap {
   flex: 1;
-  font-size: 1.175;
+  font-size: 1rem;
   padding-bottom: 30vh;
 
   --tt-code-block-control-radius: 6px;
@@ -8,15 +8,16 @@
   --tt-code-block-border: var(--p-content-border-color);
   --tt-code-block-text: var(--p-text-color);
   --tt-code-inline-bg: var(--p-content-elevation-section);
-  --tt-code-inline-text: var(--p-red-400);
-  --tt-code-token-keyword: var(--p-primary-600);
-  --tt-code-token-type: var(--p-secondary-600);
-  --tt-code-token-string: var(--p-green-700);
-  --tt-code-token-number: var(--p-amber-700);
-  --tt-code-token-title: var(--p-blue-700);
+  --tt-code-inline-text: var(--p-red-600);
+  --tt-code-token-keyword: var(--p-primary-700);
+  --tt-code-token-type: var(--p-secondary-700);
+  --tt-code-token-string: var(--p-green-800);
+  --tt-code-token-number: var(--p-amber-800);
+  --tt-code-token-title: var(--p-blue-800);
   --tt-code-token-comment: var(--p-text-muted-color);
-  --tt-code-token-meta: var(--p-violet-700);
+  --tt-code-token-meta: var(--p-violet-800);
   --tt-code-token-operator: var(--p-text-hover-color);
+  --tt-code-token-deletion: var(--p-red-700);
   --tt-blockquote-text: var(--p-stone-600);
   --tt-blockquote-border: var(--p-stone-300);
 
@@ -177,7 +178,10 @@
     color: var(--tt-code-inline-text);
     border: 1px solid var(--tt-code-block-border);
     border-radius: 0.4rem;
-    font-size: 0.85rem;
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.86em;
+    font-weight: 500;
+    line-height: 1.45;
     padding: 0.25em 0.3em;
   }
 
@@ -185,21 +189,23 @@
   pre {
     background: var(--tt-code-block-bg);
     color: var(--tt-code-block-text);
-    font-family: 'Fira Code', monospace;
-    font-size: 0.95rem;
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.94rem;
     line-height: 1.6;
     padding: 1em;
     border: 1px solid var(--tt-code-block-border);
     border-radius: 0.5rem;
     overflow-x: auto;
+    tab-size: 2;
   
     code {
       background: none;
       border: none;
       color: inherit;
       padding: 0;
-      font-size: 0.9rem;
+      font-size: 0.9em;
       font-weight: 500;
+      line-height: inherit;
     }
 
     .hljs-comment,
@@ -216,7 +222,11 @@
     }
 
     .hljs-type,
-    .hljs-class .hljs-title {
+    .hljs-class .hljs-title,
+    .hljs-name,
+    .hljs-tag,
+    .hljs-attr,
+    .hljs-property {
       color: var(--tt-code-token-type);
     }
 
@@ -225,7 +235,10 @@
     .hljs-addition,
     .hljs-attribute,
     .hljs-template-tag,
-    .hljs-template-variable {
+    .hljs-template-variable,
+    .hljs-char.escape_,
+    .hljs-code,
+    .hljs-formula {
       color: var(--tt-code-token-string);
     }
 
@@ -233,18 +246,29 @@
     .hljs-symbol,
     .hljs-bullet,
     .hljs-variable,
-    .hljs-params {
+    .hljs-params,
+    .hljs-variable.constant_,
+    .hljs-variable.language_ {
       color: var(--tt-code-token-number);
     }
 
     .hljs-title,
     .hljs-section,
-    .hljs-function .hljs-title {
+    .hljs-function .hljs-title,
+    .hljs-title.function_,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-selector-id,
+    .hljs-selector-class,
+    .hljs-selector-attr,
+    .hljs-selector-pseudo {
       color: var(--tt-code-token-title);
     }
 
     .hljs-meta,
-    .hljs-meta .hljs-keyword {
+    .hljs-meta .hljs-keyword,
+    .hljs-built_in,
+    .hljs-builtin-name {
       color: var(--tt-code-token-meta);
     }
 
@@ -252,6 +276,24 @@
     .hljs-punctuation,
     .hljs-subst {
       color: var(--tt-code-token-operator);
+    }
+
+    .hljs-deletion {
+      color: var(--tt-code-token-deletion);
+    }
+
+    .hljs-link {
+      color: var(--tt-code-token-title);
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+
+    .hljs-emphasis {
+      font-style: italic;
+    }
+
+    .hljs-strong {
+      font-weight: 700;
     }
   }
 
@@ -293,7 +335,6 @@
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0;
-      text-transform: uppercase;
       cursor: pointer;
       transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
 
@@ -358,7 +399,6 @@
       width: 1.85rem;
       height: 1.85rem;
       color: var(--p-text-muted-color);
-      background: var(--p-content-elevation-main);
       border: 1px solid var(--p-content-border-color);
       border-radius: var(--tt-code-block-control-radius);
       cursor: pointer;
@@ -368,7 +408,7 @@
     .markit-code-block__copy:hover,
     .markit-code-block__copy:focus-visible {
       color: var(--p-text-color);
-      border-color: var(--p-primary-400);
+      background: var(--p-content-elevation-main);
     }
 
     .markit-code-block__copy:focus-visible {
@@ -542,6 +582,7 @@
   --tt-code-token-comment: var(--p-text-muted-color);
   --tt-code-token-meta: var(--p-violet-300);
   --tt-code-token-operator: var(--p-text-hover-color);
+  --tt-code-token-deletion: var(--p-red-300);
   --tt-blockquote-text: var(--p-neutral-300);
   --tt-blockquote-border: var(--p-neutral-600);
 }
