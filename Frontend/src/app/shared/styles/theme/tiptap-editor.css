@@ -431,17 +431,24 @@
       padding: 1rem;
       max-width: 100%;
       overflow-x: auto;
+      scrollbar-gutter: stable;
       border: none;
       border-radius: 0;
       box-shadow: none;
 
       @supports (-moz-appearance: none) {
-        scrollbar-width: none;
+        scrollbar-color: transparent transparent;
+        scrollbar-width: thin;
       }
 
       &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
+        width: var(--markit-scrollbar-size);
+        height: var(--markit-scrollbar-size);
+      }
+
+      &::-webkit-scrollbar-thumb,
+      &::-webkit-scrollbar-track {
+        background: transparent;
       }
 
       code {
@@ -456,12 +463,12 @@
   .markit-code-block:focus-within {
     .markit-code-block__pre {
       @supports (-moz-appearance: none) {
-        scrollbar-width: thin;
+        scrollbar-color: var(--p-content-border-color) transparent;
       }
 
-      &::-webkit-scrollbar {
-        width: var(--markit-scrollbar-size);
-        height: var(--markit-scrollbar-size);
+      &::-webkit-scrollbar-thumb {
+        background: var(--p-content-border-color);
+        border-radius: var(--markit-scrollbar-size);
       }
     }
   }
