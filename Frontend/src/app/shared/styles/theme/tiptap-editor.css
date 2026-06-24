@@ -391,10 +391,13 @@
       padding: 1rem;
       max-width: 100%;
       overflow-x: auto;
-      scrollbar-width: none;
       border: none;
       border-radius: 0;
       box-shadow: none;
+
+      @supports (-moz-appearance: none) {
+        scrollbar-width: none;
+      }
 
       &::-webkit-scrollbar {
         width: 0;
@@ -412,11 +415,13 @@
   .markit-code-block:hover,
   .markit-code-block:focus-within {
     .markit-code-block__pre {
-      scrollbar-width: thin;
+      @supports (-moz-appearance: none) {
+        scrollbar-width: thin;
+      }
 
       &::-webkit-scrollbar {
-        width: 0.65rem;
-        height: 0.65rem;
+        width: var(--markit-scrollbar-size);
+        height: var(--markit-scrollbar-size);
       }
     }
   }
