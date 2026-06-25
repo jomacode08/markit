@@ -31,13 +31,6 @@ export function createTextFormattingOptions(
       isActive: () => isNodeMarkActive(editor(), { name: 'underline' }),
     },
     {
-      label: 'Link',
-      icon: 'fa fa-link',
-      command: () => handlers.openLinkDialog?.(),
-      isActive: () => isNodeMarkActive(editor(), { name: 'link' }),
-      isDisabled: () => editor() === undefined,
-    },
-    {
       label: 'Heading',
       icon: 'fa fa-heading',
       children: [
@@ -87,6 +80,13 @@ export function createTextFormattingOptions(
       },
     },
     {
+      label: 'Link',
+      icon: 'fa fa-link',
+      command: () => handlers.openLinkDialog?.(),
+      isActive: () => isNodeMarkActive(editor(), { name: 'link' }),
+      isDisabled: () => editor() === undefined,
+    },
+    {
       label: 'List',
       icon: 'fa fa-list',
       command: () => editor()?.chain().focus().toggleBulletList().run(),
@@ -100,16 +100,16 @@ export function createTextFormattingOptions(
         || isNodeMarkActive(editor(), { name: 'tableHeader' })
     },
     {
-      label: 'Code',
-      icon: 'fa fa-code',
-      command: () => editor()?.chain().focus().toggleCodeBlock().run(),
-      isActive: () => isNodeMarkActive(editor(), { name: 'codeBlock' }),
-    },
-    {
       label: 'Task',
       icon: 'fa fa-square-check',
       command: () => editor()?.chain().focus().toggleTaskList().run(),
       isActive: () => isNodeMarkActive(editor(), { name: 'taskList' }),
+    },
+    {
+      label: 'Code',
+      icon: 'fa fa-code',
+      command: () => editor()?.chain().focus().toggleCodeBlock().run(),
+      isActive: () => isNodeMarkActive(editor(), { name: 'codeBlock' }),
     },
     {
       label: 'Gist',
