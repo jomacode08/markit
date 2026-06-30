@@ -1,6 +1,5 @@
-import { APP_INITIALIZER, ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, TitleStrategy, withRouterConfig, withViewTransitions } from '@angular/router';
 
 import { AuthService } from './auth/services/auth.service';
@@ -17,7 +16,6 @@ import { THEME } from './shared/utils/constant';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideAnimations(),
     provideRouter(
       routes,
       withRouterConfig({ onSameUrlNavigation: 'reload' }),
