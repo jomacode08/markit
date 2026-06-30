@@ -1,6 +1,6 @@
 <p-panel
     class="mb-2 fadein animation-duration-500"
-    [ngClass]="{ 'selected' : selected }"
+    [ngClass]="{ 'selected' : selected() }"
     [toggleable]="true"
     [collapsed]="!gist() && managerState() === managerStates.active"
     (collapsedChange)="onPanelToggle($event)"
