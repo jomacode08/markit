@@ -8,7 +8,7 @@ import { TieredMenu, TieredMenuModule } from 'primeng/tieredmenu';
 import { AuthRole } from '../../../../auth/interfaces/auth-role.enum';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
-import { ThemeMode, ThemeService } from '../../../../shared/services/theme.service';
+import { Theme, ThemeService } from '../../../../shared/services/theme.service';
 
 @Component({
     selector: 'app-profile-menu',
@@ -60,7 +60,7 @@ export class ProfileMenu {
           label: 'System',
           icon: 'fa-solid fa-display',
           command: () => this.themeService.setSystemMode(),
-          styleClass: this.getCurrentThemeClass('system')
+          styleClass: this.themeService.isSystemModeEnabled() ? this.MENU_ITEM_SELECTED_CLASS_NAME : ''
         },
         {
           label: 'Light',
@@ -103,7 +103,8 @@ export class ProfileMenu {
     );
   }
 
-  private getCurrentThemeClass(theme: ThemeMode): string {
+  private getCurrentThemeClass(theme: Theme): string {
+    if (this.themeService.isSystemModeEnabled()) return '';
     return this.themeService.theme() === theme ? this.MENU_ITEM_SELECTED_CLASS_NAME : '';
   }
 }
