@@ -1,3 +1,4 @@
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideRouter, TitleStrategy, withRouterConfig, withViewTransitions } from '@angular/router';
@@ -16,6 +17,7 @@ import { THEME } from './shared/utils/constant';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideAnimations(),
     provideRouter(
       routes,
       withRouterConfig({ onSameUrlNavigation: 'reload' }),
