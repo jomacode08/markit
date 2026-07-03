@@ -66,22 +66,29 @@ namespace markit.Infrastructure.Security.Services.Demo
             // Phase 1: Load template collections and their notebooks + blocks
             List<Collection> templateDirectory = await GetTemplateDirectoryAsync(templateUserId);
             List<Collection> templateCollections = [.. templateDirectory.Where(c => !c.IsMain)];
-            List<Notebook> templateNotebooks = [.. templateCollections.SelectMany(c => c.Notebooks ?? [])];
-            int? templateMainCollectionId = templateDirectory.FirstOrDefault(c => c.IsMain)?.Id;
+            List<Notebook> templateNotebooks = [.. templateDirectory.SelectMany(c => c.Notebooks ?? [])];
+            Collection? templateMainCollection = templateDirectory.FirstOrDefault(c => c.IsMain);
+            Collection guestMainCollection = await GetGuestMainCollectionAsync(guestUserId);
 
-            if (templateMainCollectionId is null || templateCollections.Count == 0)
+            if (templateMainCollection is null || templateCollections.Count == 0)
             {
                 _logger.LogWarning(TEMPLATE_NOT_FOUND_MESSAGE, templateUserId);
                 return;
             }
 
-            int guestMainCollectionId = (await GetGuestMainCollectionAsync(guestUserId)).Id;
+            if (templateMainCollection.Description != guestMainCollection.Description)
+            {
+                await UpdateGuestMainCollectionDescriptionAsync(
+                    guestMainCollection,
+                    newDescription: templateMainCollection.Description
+                );
+            }
 
             // Phase 2: Pre-allocate collection IDs via nextval + generate_series
             int count = templateCollections.Count;
             List<int> newCollectionIds = await GetPreAllocateCollectionIdsAsync(count);
             Dictionary<int, int> idMap = ConstructIdMap(templateCollections, newCollectionIds);
-            idMap.Add(templateMainCollectionId.Value, guestMainCollectionId);
+            idMap.Add(templateMainCollection.Id, guestMainCollection.Id);
 
             // Phase 3: Construct and insert new collections sorted by depth (parents before children)
             List<Collection> sortedTemplate = [.. templateCollections.OrderBy(c => GetPathDepth(c.Path))];
@@ -94,7 +101,7 @@ namespace markit.Infrastructure.Security.Services.Demo
                 IsMain = false,
                 ParentId = tc.ParentId.HasValue && idMap.TryGetValue(tc.ParentId.Value, out int mappedParentId) 
                     ? mappedParentId 
-                    : guestMainCollectionId,
+                    : guestMainCollection.Id,
                 UserId = guestUserId,
                 Path = RemapPathIds(tc.Path, idMap),
                 PathNames = tc.PathNames,
@@ -102,7 +109,8 @@ namespace markit.Infrastructure.Security.Services.Demo
                 Emoji = tc.Emoji,
                 Enable = true,
                 CreatedDate = now,
-                CreatedBy = CREATED_BY_SYSTEM
+                CreatedBy = CREATED_BY_SYSTEM,
+                Description = tc.Description,
             })];
 
             // Bulk insert collections via raw SQL (explicit IDs require bypassing EF identity)
@@ -173,7 +181,7 @@ namespace markit.Infrastructure.Security.Services.Demo
             StringBuilder sb = new();
             sb.Append(
                 "INSERT INTO collections " +
-                "(id, name, path, path_names, is_main, parent_id, user_id, is_favorite, emoji, created_date, created_by, updated_date, updated_by, enable) " +
+                "(id, name, path, path_names, is_main, parent_id, user_id, is_favorite, emoji, created_date, created_by, updated_date, updated_by, enable, description) " +
                 "VALUES "
             );
 
@@ -181,9 +189,9 @@ namespace markit.Infrastructure.Security.Services.Demo
 
             for (int i = 0; i < collections.Count; i++)
             {
-                int b = i * 14;
+                int b = i * 15;
                 if (i > 0) sb.Append(',');
-                sb.Append($"(@p{b},@p{b+1},@p{b+2},@p{b+3},@p{b+4},@p{b+5},@p{b+6},@p{b+7},@p{b+8},@p{b+9},@p{b+10},@p{b+11},@p{b+12},@p{b+13})");
+                sb.Append($"(@p{b},@p{b+1},@p{b+2},@p{b+3},@p{b+4},@p{b+5},@p{b+6},@p{b+7},@p{b+8},@p{b+9},@p{b+10},@p{b+11},@p{b+12},@p{b+13},@p{b+14})");
 
                 Collection? col = collections[i];
                 dbParams.Add(new NpgsqlParameter($"p{b}", NpgsqlDbType.Integer) { Value = col.Id });
@@ -200,9 +208,10 @@ namespace markit.Infrastructure.Security.Services.Demo
                 dbParams.Add(new NpgsqlParameter($"p{b+11}", NpgsqlDbType.TimestampTz) { Value = DBNull.Value });
                 dbParams.Add(new NpgsqlParameter($"p{b+12}", NpgsqlDbType.Text) { Value = DBNull.Value });
                 dbParams.Add(new NpgsqlParameter($"p{b+13}", NpgsqlDbType.Boolean) { Value = col.Enable });
+                dbParams.Add(new NpgsqlParameter($"p{b+14}", NpgsqlDbType.Text) { Value = (object?)col.Description ?? DBNull.Value });
             }
 
-            await _context.Database.ExecuteSqlRawAsync(sb.ToString(), dbParams.Cast<object>().ToArray());
+            await _context.Database.ExecuteSqlRawAsync(sb.ToString(), [.. dbParams.Cast<object>()]);
         }
 
         private async Task BulkInsertNotebooksAsync(List<Notebook> notebooks)
@@ -235,6 +244,13 @@ namespace markit.Infrastructure.Security.Services.Demo
                 .AsSingleQuery()
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        private async Task UpdateGuestMainCollectionDescriptionAsync(Collection guestMainCollection, string? newDescription)
+        {
+            guestMainCollection.Description = newDescription;
+            _context.Collections.Update(guestMainCollection);
+            await _context.SaveChangesAsync();
         }
         #endregion
     }
