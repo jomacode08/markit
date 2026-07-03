@@ -120,7 +120,6 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
       Underline
     ],
     contentType: 'markdown',
-    autofocus: 'start',
     onUpdate: ({editor}) => {
       const content = editor.getMarkdown();
       this.onChange(content);
@@ -156,8 +155,9 @@ export class BlockComponent implements OnInit, ControlValueAccessor {
         contentType: 'markdown',
         emitUpdate: false,
       })
-      .focus('start')
       .run();
+    // Set focus before the content was loaded.
+    this.editor.commands.focus("start");
   }
 
   registerOnChange(fn: any): void {
