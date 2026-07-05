@@ -11,9 +11,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace markit.Application.Features.Reports.Dashboard.Queries
 {
-    public class DashboardReportQuery(string userId) : IRequest<DashboardReportVm>
+    public class DashboardReportQuery(string userId, string clientTimeZone) : IRequest<DashboardReportVm>
     {
-        public string UserId { get; set; } = userId;
+        public string UserId { get; private set; } = userId;
+        public string ClientTimeZone { get; private set; } = clientTimeZone;
     }
 
     public class DashboardReportQueryHandler : IRequestHandler<DashboardReportQuery, DashboardReportVm>
@@ -34,7 +35,7 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             await ValidateUserExistence(request.UserId);
             List<NotebookViewModel> recentNotebooks = await GetRecentNotebooksAsync(request.UserId);
             List<CollectionViewModel> starredCollections = await GetStarredCollectionsAsync(request.UserId);
-            var activityStats = await GetActivityStatsAsync(request.UserId);
+            var activityStats = await GetActivityStatsAsync(request.UserId, request.ClientTimeZone);
 
             return new DashboardReportVm(
                 UserId : request.UserId,
@@ -68,15 +69,21 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             return _mapper.Map<List<CollectionViewModel>>(collections);
         }
 
-        private async Task<ActivityStats> GetActivityStatsAsync(string userId)
+        private async Task<ActivityStats> GetActivityStatsAsync(string userId, string timeZone)
         {
             int DAYS_OF_THE_WEEK = Enum.GetValues<DayOfWeek>().Length;
+            
+            if (!TimeZoneInfo.TryFindSystemTimeZoneById(timeZone, out TimeZoneInfo? clientTimeZoneInfo))
+            {
+                clientTimeZoneInfo = TimeZoneInfo.Utc;
+            }
+            
             // Get global counts by user
             int notebooksCount = await _unitOfWork.NotebookRepository.CountByUserIdAsync(userId);
             int collectionsCount = await _unitOfWork.CollectionRepository.CountByUserIdAsync(userId);
 
             // Get notebook stats of the week
-            IReadOnlyList<Notebook> notebooksOfTheWeek = await GetNotebooksOfTheCurrentWeekAsync(userId);
+            IReadOnlyList<Notebook> notebooksOfTheWeek = await GetNotebooksOfTheCurrentWeekAsync(userId, clientTimeZoneInfo);
             Dictionary<DayOfWeek, int> dailyNotebookActivity = new() {
                 { DayOfWeek.Sunday, 0 },
                 { DayOfWeek.Monday, 0 },
@@ -87,9 +94,9 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
                 { DayOfWeek.Saturday, 0 }
             };
 
-            var notebooksByDay = notebooksOfTheWeek
+            IDictionary<DayOfWeek, int> notebooksByDay = notebooksOfTheWeek
                     .Where(m => m.CreatedDate != null)
-                    .GroupBy(m => ((DateTime)m.CreatedDate!).DayOfWeek)
+                    .GroupBy(m => TimeZoneInfo.ConvertTimeFromUtc(m.CreatedDate!.Value, clientTimeZoneInfo).DayOfWeek)
                     .ToDictionary(g => g.Key, g => g.Count());
 
             // Update dailyNotebookActivity with actual counts
@@ -111,13 +118,15 @@ namespace markit.Application.Features.Reports.Dashboard.Queries
             );
         }
 
-        private async Task<IReadOnlyList<Notebook>> GetNotebooksOfTheCurrentWeekAsync(string userId)
+        private async Task<IReadOnlyList<Notebook>> GetNotebooksOfTheCurrentWeekAsync(string userId, TimeZoneInfo clientTimeZoneinfo)
         {
-            DateTime today = GetDateZeroTime(DateTime.UtcNow);
-            DateTime weekStart = today.AddDays(-(int)today.DayOfWeek);
+            DateTime clientNow = GetDateZeroTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, clientTimeZoneinfo));
+            DateTime clientWeekStart = DateTime.SpecifyKind(clientNow.AddDays(-(int)clientNow.DayOfWeek), DateTimeKind.Unspecified);
+            DateTime weekStartUtc = TimeZoneInfo.ConvertTimeToUtc(clientWeekStart, clientTimeZoneinfo);
+
             return await _unitOfWork.NotebookRepository
             .GetAsync(
-                m => m.Collection != null && m.Collection.UserId.Equals(userId) && m.CreatedDate >= weekStart,
+                m => m.Collection != null && m.Collection.UserId.Equals(userId) && m.CreatedDate >= weekStartUtc,
                 m => m.OrderByDescending(m => m.CreatedDate)
             );
         }

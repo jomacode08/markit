@@ -11,6 +11,9 @@ export class DashboardService {
     constructor(private http: HttpClient) { }
 
     public getReportByCurrentSession(): Observable<DashboardReport> {
-        return this.http.get<DashboardReport>(`${ this.baseUrl }`);
+        const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        return this.http.get<DashboardReport>(`${ this.baseUrl }`, {
+            params: { 'clientTimeZone' : clientTimeZone }
+        });
     }
 }

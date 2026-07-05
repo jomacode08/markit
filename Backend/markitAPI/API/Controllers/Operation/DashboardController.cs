@@ -21,9 +21,9 @@ namespace markit.API.Controllers.Operation
         }
 
         [HttpGet]
-        public async Task<ActionResult<DashboardReportVm>> GetReportByCurrentSession()
+        public async Task<ActionResult<DashboardReportVm>> GetReportByCurrentSession([FromQuery]string clientTimeZone)
         {
-            DashboardReportQuery query = new(userId: _sessionService.GetUserId());
+            DashboardReportQuery query = new(userId: _sessionService.GetUserId(), clientTimeZone);
             return Ok(await _mediator.Send(query));
         }
     }
