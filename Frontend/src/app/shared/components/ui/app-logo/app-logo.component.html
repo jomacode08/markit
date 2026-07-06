@@ -1,0 +1,22 @@
+@if (canRedirect) {
+  <a
+    class="logo-link"
+    [routerLink]="homeUrl"
+    aria-label="Go to dashboard"
+  >
+    <ng-container *ngTemplateOutlet="logo" />
+  </a>
+} @else {
+  <ng-container *ngTemplateOutlet="logo" />
+}
+
+<ng-template #logo>
+  <svg class="markit-logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <!-- square -->
+    <rect x="20" y="20" width="50" height="50" fill="var(--p-contrast-400)"/>
+    <!-- circle -->
+    <circle cx="70" cy="70" r="40" fill="var(--p-primary-500)"/>
+    <!-- quarter circle (cut/overlay) -->
+    <path d="M70 30 A40 40 0 0 0 30 70 L70 70 Z" fill="var(--p-surface-50)"/>
+  </svg>
+</ng-template>

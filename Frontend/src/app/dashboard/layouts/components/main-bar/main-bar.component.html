@@ -1,17 +1,7 @@
 <nav>
     <!-- Logo -->
     <div class="brand md:mb-3 md:py-3 md:w-full">
-        <svg width="40" height="40" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-        <!-- square -->
-        <rect x="20" y="20" width="50" height="50" fill="var(--p-contrast-400)"/>
-        <!-- circle -->
-        <circle cx="70" cy="70" r="40" fill="var(--p-primary-500)"/>
-        <!-- quarter circle (cut/overlay) -->
-        <path d="M70 30
-                A40 40 0 0 0 30 70
-                L70 70 Z"
-                fill="var(--p-surface-50)"/>
-        </svg>
+        <app-logo [canRedirect]="true" />
     </div>
     <!-- Navigation buttons -->
     <div class="flex-wrapper h-full md:flex-column md:justify-content-between md:w-full">

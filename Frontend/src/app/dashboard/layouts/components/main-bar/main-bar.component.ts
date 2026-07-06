@@ -8,6 +8,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { AuthService } from './../../../../auth/services/auth.service';
 import { ROUTES } from '../../../../shared/utils/constant';
 import { ProfileMenu } from '../profile-menu/profile-menu.component';
+import { AppLogoComponent } from '../../../../shared/components/ui/app-logo/app-logo.component';
 
 @Component({
     selector: 'app-main-bar',
@@ -18,6 +19,7 @@ import { ProfileMenu } from '../profile-menu/profile-menu.component';
       TooltipModule,
       RouterLinkActive,
       ProfileMenu,
+      AppLogoComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     styleUrl: './main-bar.component.css'

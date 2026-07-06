@@ -21,6 +21,7 @@ import { RedirectResponse } from '../../interfaces/redirect';
 import { ValidatorErrorField } from '../../../shared/utils/validator-error-field';
 import { ValidatorService } from '../../../shared/services/validator.service';
 import { DemoDialog } from '../../components/demo-dialog/demo-dialog.component';
+import { AppLogoComponent } from '../../../shared/components/ui/app-logo/app-logo.component';
 
 @Component({
     selector: 'app-login',
@@ -31,6 +32,7 @@ import { DemoDialog } from '../../components/demo-dialog/demo-dialog.component';
       ReactiveFormsModule,
       ErrorFieldComponent,
       PasswordModule,
+      AppLogoComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './login.component.html',

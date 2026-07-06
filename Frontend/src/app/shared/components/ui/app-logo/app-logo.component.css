@@ -1,0 +1,29 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.markit-logo {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+:host-context(app-login) .markit-logo {
+  width: auto;
+  height: 65px;
+}
+
+@media only screen and (max-width: 768px) {
+  :host-context(app-login) .markit-logo {
+    height: 50px;
+  }
+}
