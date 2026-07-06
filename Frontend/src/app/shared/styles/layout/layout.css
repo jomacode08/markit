@@ -66,8 +66,7 @@ a {
         .p-drawer-content {
             width: auto;
             border-radius: .5rem .5rem 0 0;
-            padding-left:  3rem !important;
-            padding-right: 3rem !important;
+            padding: 0 3rem 0 3rem;
         }
     }
     #main-bar-container {

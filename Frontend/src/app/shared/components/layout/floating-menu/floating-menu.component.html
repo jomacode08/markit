@@ -38,23 +38,21 @@
                 (click)="onOptionClick(option)"
                 [disabled]='option.isDisabled ? option.isDisabled() : false'
             >
-                <div class="flex gap-1 flex-1 flex-column justify-content-end align-items-center">
-                    <!-- Icon -->
-                    <span
-                        [class]="option.icon"
-                        [ngClass]="{
-                            'icon' : true,
-                            'active' : (option.isActive?.() && !option.color) 
-                        }"
-                        [style]="getColorStyleDeclaration(option.color)"
-                    ></span>
-                    <!-- Label -->
-                    <span 
-                        class="label"
-                        [ngClass]="{'font-semibold' : option.isActive?.() }"
-                    >
-                        {{ option.label }}
-                    </span>
+                <!-- Icon -->
+                <span
+                    [class]="option.icon"
+                    [ngClass]="{
+                        'icon' : true,
+                        'active' : (option.isActive?.() && !option.color) 
+                    }"
+                    [style]="getColorStyleDeclaration(option.color)"
+                ></span>
+                <!-- Label -->
+                <div 
+                    class="label"
+                    [ngClass]="{'font-semibold' : option.isActive?.() }"
+                >
+                    {{ option.label }}
                 </div>
             </button>
         }
