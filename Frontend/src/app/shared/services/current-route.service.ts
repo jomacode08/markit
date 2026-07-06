@@ -50,7 +50,7 @@ export class CurrentRouteService {
             }
             this._breadcrumbs.set(breadcrumbs);
             this._previousSuccessfulUrl.set(this.url());
-            this._url.set(event.url);
+            this._url.set(event.urlAfterRedirects);
         });
     }
 
