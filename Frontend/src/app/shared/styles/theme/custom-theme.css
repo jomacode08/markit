@@ -50,8 +50,6 @@
 
   /** Button */
   button {
-    border: none;
-    color: var(--p-text-color);
     appearance: none;
     -webkit-appearance: none;
   }
