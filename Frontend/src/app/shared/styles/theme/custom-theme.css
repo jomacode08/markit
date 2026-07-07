@@ -50,7 +50,10 @@
 
   /** Button */
   button {
-    color: inherit;
+    border: none;
+    color: var(--p-text-color);
+    appearance: none;
+    -webkit-appearance: none;
   }
   button:not(.p-button):not(.p-ripple):not(.avatar) {
     background-color: transparent;
