@@ -4,8 +4,14 @@
 
 .table-wrapper {
   position: relative;
-  display: inline-block;
-  margin-bottom: 25px;
+  display: block;
+  padding-right: 25px;
+  padding-bottom: 25px;
+  width: 100%;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }
 
 .add-col-btn, .add-row-btn {
@@ -19,15 +25,16 @@
 
 .add-col-btn {
   width: 25px;
-  right: -25px;
+  right: 0;
   top: 0;
-  height: 100%;
+  height: calc(100% - 25px);
   border-left: none;
 }
 .add-row-btn {
-  width: 100%;
+  width: calc(100% - 25px);
   height: 25px;
-  bottom: -25px;
+  left: 0;
+  bottom: 0;
   border-top: none;
 }
 

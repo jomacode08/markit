@@ -1,17 +1,18 @@
 @layer project {  
   :root {
     --markit-scrollbar-size: 0.625rem;
-    --markit-scrollbar-track: transparent;
+    --markit-scrollbar-track: rgba(15, 23, 42, 0.10);;
     --markit-scrollbar-thumb: rgba(15, 23, 42, 0.22);
     --markit-scrollbar-thumb-hover: rgba(15, 23, 42, 0.34);
   }
-
+  
   body {
     color: var(--p-text-color);
     background-color: var(--p-content-elevation-main);
   }
-
+  
   .markit-dark {
+    --markit-scrollbar-track: rgba(248, 250, 252, 0.10);
     --markit-scrollbar-thumb: rgba(248, 250, 252, 0.22);
     --markit-scrollbar-thumb-hover: rgba(248, 250, 252, 0.34);
   }
@@ -55,6 +56,7 @@
   }
   button:not(.p-button):not(.p-ripple):not(.avatar) {
     background-color: transparent;
+    color: inherit;
   }
   .external-login-button {
     .p-button-icon {

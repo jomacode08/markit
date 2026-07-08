@@ -7,9 +7,12 @@ import { TableMap } from '@tiptap/pm/tables';
   imports: [TiptapNodeViewContentDirective],
   template: `
     <div class="table-wrapper">
-      <table>
-        <tbody tiptapNodeViewContent></tbody>
-      </table>
+      <!-- Table -->
+      <div class="table-scroll">
+        <table>
+          <tbody tiptapNodeViewContent></tbody>
+        </table>
+      </div>
       <!-- Add column button -->
       <button
         type="button"
