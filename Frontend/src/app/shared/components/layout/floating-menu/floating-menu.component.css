@@ -44,6 +44,9 @@ span.icon {
   color: var(--p-text-muted-color);
   margin-top: 0.25rem;
 }
+.active {
+  color: var(--p-secondary-400);
+}
 
 .scroll-container {
   display: flex;
